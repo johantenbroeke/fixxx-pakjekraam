@@ -60,7 +60,7 @@ node {
 
 String BRANCH = "${env.BRANCH_NAME}"
 
-if (BRANCH == "master") {
+if (BRANCH == "master" || BRANCH == "acceptance") {
 
     node {
         stage('Push acceptance image') {
@@ -91,6 +91,9 @@ if (BRANCH == "master") {
         input "Deploy to Production?"
     }
 
+}
+
+if (BRANCH == "master") {
     node {
         stage('Push production image') {
             tryStep "image tagging", {
