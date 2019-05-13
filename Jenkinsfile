@@ -60,7 +60,7 @@ node {
 
 String BRANCH = "${env.BRANCH_NAME}"
 
-if (BRANCH == "master" || BRANCH == "acceptance") {
+if (BRANCH == "master" || BRANCH == "production") {
 
     node {
         stage('Push acceptance image') {
@@ -87,7 +87,7 @@ if (BRANCH == "master" || BRANCH == "acceptance") {
 
 }
 
-if (BRANCH == "master") {
+if (BRANCH == "production") {
 
     stage('Waiting for approval') {
         slackSend channel: '#ci-channel-app', color: 'warning', message: 'pakjekraam is waiting for Production Release - please confirm'
