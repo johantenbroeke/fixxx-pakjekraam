@@ -82,9 +82,6 @@ if (BRANCH == "production") {
         input "Deploy to Production?"
     }
 
-}
-
-if (BRANCH == "master") {
     node {
         stage('Push production image') {
             tryStep "image tagging", {
