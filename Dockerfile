@@ -78,7 +78,7 @@ ENV \
     https_proxy=$HTTPS_PROXY \
     no_proxy=$NO_PROXY
 
-EXPOSE 8080/tcp
+EXPOSE 8080
 
 ENTRYPOINT ["npm", "run"]
 

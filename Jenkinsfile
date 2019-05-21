@@ -68,7 +68,6 @@ if (BRANCH == "master" || BRANCH == "production") {
                 def image = docker.image("build.app.amsterdam.nl:5000/fixxx/pakjekraam:${env.BUILD_NUMBER}")
                 image.pull()
                 image.push("acceptance")
-                image.push("production")
             }
         }
     }
