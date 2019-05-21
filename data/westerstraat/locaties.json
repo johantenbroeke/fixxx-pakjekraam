@@ -3,13 +3,15 @@
     "locatie": "1"
   },
   {
-    "locatie": "2"
+    "locatie": "2",
+    "branche": ["bak"]
   },
   {
     "locatie": "3"
   },
   {
-    "locatie": "4"
+    "locatie": "4",
+    "branche": ["bak"]
   },
   {
     "locatie": "5"
@@ -303,13 +305,15 @@
     "locatie": "101"
   },
   {
-    "locatie": "102"
+    "locatie": "102",
+    "branche": ["bak"]
   },
   {
     "locatie": "103"
   },
   {
-    "locatie": "104"
+    "locatie": "104",
+    "branche": ["bak"]
   },
   {
     "locatie": "105"
@@ -402,7 +406,8 @@
     "locatie": "134"
   },
   {
-    "locatie": "135"
+    "locatie": "135",
+    "tags": ["promo"]
   },
   {
     "locatie": "136"
@@ -423,7 +428,8 @@
     "locatie": "141"
   },
   {
-    "locatie": "142"
+    "locatie": "142",
+    "tags": ["standwerkersplaats"]
   },
   {
     "locatie": "143"
@@ -600,13 +606,15 @@
     "locatie": "200"
   },
   {
-    "locatie": "201"
+    "locatie": "201",
+    "branche": ["bak"]
   },
   {
     "locatie": "202"
   },
   {
-    "locatie": "203"
+    "locatie": "203",
+    "branche": ["bak"]
   },
   {
     "locatie": "204"
@@ -747,7 +755,8 @@
     "locatie": "249"
   },
   {
-    "locatie": "250"
+    "locatie": "250",
+    "branche": ["promo"]
   },
   {
     "locatie": "251"
@@ -948,7 +957,8 @@
     "locatie": "316"
   },
   {
-    "locatie": "317"
+    "locatie": "317",
+    "tags": ["standwerkersplaats"]
   },
   {
     "locatie": "318"
@@ -990,7 +1000,8 @@
     "locatie": "330"
   },
   {
-    "locatie": "331"
+    "locatie": "331",
+    "tags": ["standwerkersplaats"]
   },
   {
     "locatie": "332"
