@@ -1,8 +1,9 @@
 const PrintableBackground = require('./PrintableBackground');
 const PropTypes = require('prop-types');
 const React = require('react');
+const { formatOndernemerName } = require('../../domain-knowledge.js');
 
-const Plaats = ({ plaats, vph, first, aanmelding, markt, datum, type }) => {
+const Plaats = ({ plaats, vph, first, aanmelding, markt, datum, type, toewijzing }) => {
     const colorList = {
         'branche-vis': '#343797',
         vis: '#343797',
@@ -106,7 +107,11 @@ const Plaats = ({ plaats, vph, first, aanmelding, markt, datum, type }) => {
             >
                 {vph ? vph.description : <strong>{tags}</strong>}
             </td>
-            <td className="Plaats__prop Plaats__prop-empty-fields">{aanmelding ? '🆗' : null}</td>
+            <td className="Plaats__prop Plaats__prop-empty-fields">
+                {aanmelding ? '🆗' : null}
+                {toewijzing ? <strong>{toewijzing.ondernemer.sollicitatieNummer}</strong> : null}
+                {toewijzing ? toewijzing.ondernemer.description : null}
+            </td>
         </tr>
     );
 };
@@ -118,6 +123,7 @@ Plaats.propTypes = {
     markt: PropTypes.object.isRequired,
     datum: PropTypes.string,
     type: PropTypes.string,
+    toewijzing: PropTypes.object,
 };
 
 module.exports = Plaats;
