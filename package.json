@@ -29,6 +29,7 @@
     "lint-fix:tslint": "npm run lint:tslint -- --fix",
     "lint-non-npm": "git ls-files '*.yml' | tr '\n' '\\0' | xargs -0 yamllint",
     "prewatch": "npm run clean && npm run build",
+    "import": "node src/import-makkelijke-markt.js",
     "mailing-list": "ts-node src/mailing-list.js",
     "watch": "gulp watch"
   },
