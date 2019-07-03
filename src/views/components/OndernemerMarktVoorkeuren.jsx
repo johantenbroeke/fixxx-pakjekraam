@@ -4,23 +4,21 @@ const { paginate } = require('../../util.js');
 const Button = require('./Button');
 const HeaderTitleButton = require('./HeaderTitleButton');
 
-const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, ondernemer, query }) => {
-    const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id);
-    const voorkeurEntries = plaatsvoorkeuren
-        .map((voorkeur, index) => {
-            return {
-                marktId: voorkeur.dataValues.marktId,
-                plaatsId: voorkeur.plaatsId,
-                priority: voorkeur.priority,
-            };
-        })
+const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, ondernemer, query, sollicitatie }) => {
+    const entriesFiltered = plaatsvoorkeuren.filter(entry => entry.marktId === markt.id);
+    const entriesSplit = entriesFiltered
         .sort((a, b) => b.priority - a.priority)
-        .filter(m => m.marktId === markt.id);
+        .reduce((t, e) => {
+            !t.includes(e.priority) && t.push(e.priority);
 
-    const voorkeurEntriesGrouped = paginate(
-        voorkeurEntries,
-        sollicitatie.status === 'vpl' ? sollicitatie.vastePlaatsen.length : 1,
-    );
+            return t;
+        }, [])
+        .reduce((t, p) => {
+            t.push(entriesFiltered.filter(e => e.priority === p));
+
+            return t;
+        }, [])
+        .map(e => e.map(p => p.dataValues));
 
     return (
         <div className="OndernemerVoorkeuren background-link-parent">
@@ -45,11 +43,11 @@ const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, ondernemer, query 
                         </span>
                     </div>
                 ) : null}
-                {voorkeurEntriesGrouped.length ? (
+                {entriesSplit.length ? (
                     <div className="margin-top" key="voorkeuren">
                         <strong>Dit zijn je plaatsvoorkeuren</strong>
                         <ul>
-                            {voorkeurEntriesGrouped.map((entry, i) => (
+                            {entriesSplit.map((entry, i) => (
                                 <li key={`${i + 1}e keuze`}>
                                     {i + 1}e keuze: <strong>{entry.map(e => e.plaatsId).join(' & ')}</strong>
                                 </li>
@@ -74,6 +72,7 @@ OndernemerMarktVoorkeuren.propTypes = {
     plaatsvoorkeuren: PropTypes.array.isRequired,
     markt: PropTypes.object.isRequired,
     ondernemer: PropTypes.object.isRequired,
+    sollicitatie: PropTypes.object.isRequired,
     query: PropTypes.string,
 };
 
