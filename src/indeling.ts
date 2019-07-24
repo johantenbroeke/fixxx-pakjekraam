@@ -52,13 +52,6 @@ const heeftVastePlaatsen = (ondernemer: IMarktondernemer): boolean => {
     return isVast(ondernemer.status) && count(ondernemer.plaatsen) > 0;
 };
 
-const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur) => {
-    const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : VOORKEUR_MINIMUM_PRIORITY;
-    const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : VOORKEUR_MINIMUM_PRIORITY;
-
-    return numberSort(-prioA, -prioB);
-};
-
 const ondernemerCompare = (a: IMarktondernemer, b: IMarktondernemer, aLijst: IMarktondernemer[]): number => {
     // Sorteer eerst op aanwezigheid in de A-lijst...
     const sort1 = Number(aLijst.includes(b)) -
@@ -72,13 +65,23 @@ const ondernemerCompare = (a: IMarktondernemer, b: IMarktondernemer, aLijst: IMa
     return sort1 || sort2 || sort3;
 };
 
-const sortPlaatsen = (plaatsen: IMarktplaats[], voorkeuren: IPlaatsvoorkeur[]) =>
-    [...plaatsen].sort((a, b) => {
-        const voorkeurA = voorkeuren.find(voorkeur => voorkeur.plaatsId === a.plaatsId);
-        const voorkeurB = voorkeuren.find(voorkeur => voorkeur.plaatsId === b.plaatsId);
+const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur): number => {
+    const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : VOORKEUR_MINIMUM_PRIORITY;
+    const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : VOORKEUR_MINIMUM_PRIORITY;
 
-        return priorityCompare(voorkeurA, voorkeurB);
-    });
+    return numberSort(-prioA, -prioB);
+};
+
+const plaatsVoorkeurCompare = (plaatsA: IMarktplaats, plaatsB: IMarktplaats, voorkeuren: IPlaatsvoorkeur[]): number => {
+    const voorkeurA = voorkeuren.find(voorkeur => voorkeur.plaatsId === plaatsA.plaatsId);
+    const voorkeurB = voorkeuren.find(voorkeur => voorkeur.plaatsId === plaatsB.plaatsId);
+
+    return priorityCompare(voorkeurA, voorkeurB);
+};
+
+const sortPlaatsen = (plaatsen: IMarktplaats[], voorkeuren: IPlaatsvoorkeur[]): IMarktplaats[] => {
+    return [...plaatsen].sort((a, b) => plaatsVoorkeurCompare(a, b, voorkeuren));
+};
 
 const createToewijzing = (markt: IMarkt, plaats: IMarktplaats, ondernemer: IMarktondernemer): IToewijzing => ({
     marktId: markt.marktId,
@@ -362,53 +365,32 @@ const rejectOndernemer = (state: IMarktindeling, ondernemer: IMarktondernemer, r
     };
 };
 
-const assignVastePlaats = (state: IMarktindeling, ondernemer: IMarktondernemer): IMarktindeling => {
-    const { openPlaatsen } = state;
+const assignVastePlaats = (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktindeling => {
+    const { openPlaatsen } = indeling;
+    const voorkeuren = getOndernemerVoorkeuren(indeling, ondernemer);
 
-    let vastePlaatsen = ondernemer.plaatsen
-        .map(vastePlaatsId => openPlaatsen.find(({ plaatsId }) => plaatsId === vastePlaatsId))
-        .filter(Boolean);
+    const beschikbaar = openPlaatsen
+    .filter(openPlaats => {
+        return ondernemer.plaatsen.find(plaatsId => plaatsId === openPlaats.plaatsId);
+    })
+    .sort((a, b) => plaatsVoorkeurCompare(a, b, voorkeuren));
 
-    vastePlaatsen = sortPlaatsen(vastePlaatsen, getOndernemerVoorkeuren(state, ondernemer));
+    // FIXME: Handle rejections correctly
+    // FIXME: ondernemer doesn't have to be rejected when they can move to another open spot
+    // `beschikbaar.length < ondernemer.plaatsen.length &&
+    if (beschikbaar.length === 0) {
+        return rejectOndernemer(indeling, ondernemer, { message: 'Vaste plaats(en) niet beschikbaar' });
+    } else {
+        const maxPlaatsen = ondernemer.voorkeur && ondernemer.voorkeur.maximum ?
+                            Math.min(beschikbaar.length, ondernemer.voorkeur.maximum) :
+                            beschikbaar.length;
 
-    /*
-     * TODO: Handle the cases filtered out by `filter(Boolean)`,
-     * at least log a notification someone could't be assigned to their designated spot.
-     */
-
-    if (vastePlaatsen.length < ondernemer.plaatsen.length && vastePlaatsen.length === 0) {
-        /*
-         * Not a single spot was available, consider the `ondernemer` fully rejected
-         * FIXME: ondernemer doesn't have to be rejected when it can move to another open spot
-         */
-        state = rejectOndernemer(state, ondernemer, { message: 'Vaste plaats(en) niet beschikbaar' });
+        return beschikbaar
+        .slice(0, maxPlaatsen)
+        .reduce((indeling, plaats) => {
+            return assignPlaats(indeling, createToewijzing(indeling, plaats, ondernemer), ondernemer, 'merge');
+        }, indeling);
     }
-
-    state = vastePlaatsen
-        .slice(
-            0,
-            ondernemer.voorkeur && ondernemer.voorkeur.maximum
-                ? Math.min(vastePlaatsen.length, ondernemer.voorkeur.maximum || null)
-                : vastePlaatsen.length,
-        )
-        .map(plaats => {
-            log(`Wijs ondernemer ${ondernemer.erkenningsNummer} toe aan vaste plaats ${plaats.plaatsId}`);
-
-            return plaats;
-        })
-        .reduce((state, plaats) => {
-            const openPlaats = openPlaatsen.find(openPlaats => openPlaats.plaatsId === plaats.plaatsId);
-
-            if (openPlaats) {
-                return assignPlaats(state, createToewijzing(state, plaats, ondernemer), ondernemer, 'merge');
-            } else {
-                return rejectOndernemer(state, ondernemer, {
-                    message: `Een van de vaste plaatsen is niet beschikbaar: ${plaats.plaatsId}`,
-                });
-            }
-        }, state);
-
-    return state;
 };
 
 const assignUitbreiding = (indeling: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => {
