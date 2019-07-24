@@ -115,7 +115,7 @@
     "no-unexpected-multiline": true,
     "object-curly-spacing": true,
     "space-in-parens": false,
-    "ter-arrow-body-style": true,
+    "ter-arrow-body-style": false,
     "ter-arrow-spacing": true,
     "ter-computed-property-spacing": true,
     "ter-func-call-spacing": true,
