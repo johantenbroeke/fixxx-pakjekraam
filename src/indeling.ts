@@ -14,51 +14,31 @@ import {
     PlaatsId,
 } from './markt.model';
 
+import {
+    count,
+    exclude,
+    flatten,
+    intersection,
+    intersects,
+    isEqualArray,
+    log,
+    numberSort,
+    sum,
+    unique,
+} from './util';
+
 /*
  * https://decentrale.regelgeving.overheid.nl/cvdr/XHTMLoutput/Actueel/Amsterdam/396119.html#id1-3-2-2-3-4-5
  */
 const VOORKEUR_MINIMUM_PRIORITY = 0;
-
-const intersects = (a: any[] = [], b: any[] = []) =>
-    a.some(value => b.includes(value)) || b.some(value => a.includes(value));
-
-const intersection = (a: any[] = [], b: any[] = []) => a.filter(value => b.includes(value));
-
-const exclude = <T>(a: T[] = [], b: any[] = []): T[] => a.filter(value => !b.includes(value));
-
-const isVast = (status: DeelnemerStatus): boolean => status === 'vpl' || status === 'vkk';
-
-/*
- * Example usage: [42, 37].sort(numberSort)
- */
-const numberSort = (a: number, b: number): number => (a > b ? 1 : a === b ? 0 : -1);
-
-/*
- * Example usage: [[1], [2]].reduce(flatten, [])
- */
-const flatten = <T>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
-
-/*
- * Example usage: [1, 2].reduce(sum, 0)
- */
-const sum = (a: number, b: number): number => a + b;
-
-/*
- * Example usage: [1, 2, 1, 2, 3].reduce(unique, [])
- */
-const unique = <T>(a: T[], b: T): T[] => (a.includes(b) ? a : [...a, b]);
-
-const isEqualArray = (a: any[], b: any[]): boolean =>
-    Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value, index) => value === b[index]);
-
-const log = (...arg: any) => {
-    if (process.env.NODE_ENV !== 'production') {
-        console.log.apply(console, arg);
-    }
+const FULL_REASON: IAfwijzingReason = {
+    code: 1,
+    message: 'Alle marktplaatsen zijn reeds ingedeeld',
 };
-
-const count = <T>(arrayMaybe: T | T[]): number =>
-    arrayMaybe ? (Array.isArray(arrayMaybe) ? arrayMaybe.length : 1) : 0;
+const BRANCHE_FULL_REASON: IAfwijzingReason = {
+    code: 2,
+    message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld',
+};
 
 const prioritySort = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur) => {
     const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : VOORKEUR_MINIMUM_PRIORITY;
@@ -67,7 +47,26 @@ const prioritySort = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur) 
     return numberSort(-prioA, -prioB);
 };
 
+const isVast = (status: DeelnemerStatus): boolean => {
+    return status === 'vpl' || status === 'vkk';
+};
+const heeftVastePlaatsen = (ondernemer: IMarktondernemer): boolean => {
+    return isVast(ondernemer.status) && count(ondernemer.plaatsen) > 0;
+};
+
 const PRIORITIES = ['soll', 'vkk', 'vpl'];
+const ondernemerCompare = (a: IMarktondernemer, b: IMarktondernemer, aLijst: IMarktondernemer[]): number => {
+    // Sorteer eerst op aanwezigheid in de A-lijst...
+    const sort1 = Number(aLijst.includes(b)) -
+                  Number(aLijst.includes(a));
+    // ... dan op status (Vastekaarthouders, tijdelijkevasteplaatshouders, sollicitanten)...
+    const sort2 = Math.max(PRIORITIES.indexOf(b.status), 0) -
+                  Math.max(PRIORITIES.indexOf(a.status), 0);
+    // ... dan op anciënniteitsnummer
+    const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
+
+    return sort1 || sort2 || sort3;
+};
 
 const sortPlaatsen = (plaatsen: IMarktplaats[], voorkeuren: IPlaatsvoorkeur[]) =>
     [...plaatsen].sort((a, b) => {
@@ -76,16 +75,6 @@ const sortPlaatsen = (plaatsen: IMarktplaats[], voorkeuren: IPlaatsvoorkeur[]) =
 
         return prioritySort(voorkeurA, voorkeurB);
     });
-
-const FULL_REASON: IAfwijzingReason = {
-    code: 1,
-    message: 'Alle marktplaatsen zijn reeds ingedeeld',
-};
-
-const BRANCHE_FULL_REASON: IAfwijzingReason = {
-    code: 2,
-    message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld',
-};
 
 const createToewijzing = (markt: IMarkt, plaats: IMarktplaats, ondernemer: IMarktondernemer): IToewijzing => ({
     marktId: markt.marktId,
@@ -99,23 +88,21 @@ const matchesObstakel = (plaatsA: string, plaatsB: string, obstakel: IObstakelBe
     (obstakel.kraamA === plaatsA && obstakel.kraamB === plaatsB) ||
     (obstakel.kraamA === plaatsB && obstakel.kraamB === plaatsA);
 
-const logOpenPlaatsen = (indeling: IMarktindeling) => log(`Nog ${indeling.openPlaatsen.length} vrije plaatsen`);
-
 export const getAdjacentPlaatsen = (
     rows: IMarktplaats[][],
     plaatsId: PlaatsId,
     obstakels: IObstakelBetween[] = [],
-): IMarktplaats[] =>
-    rows
-        .map(row => {
-            const targetIndex = row.findIndex(plaats => plaats.plaatsId === plaatsId);
+): IMarktplaats[] => {
+    return rows.map(row => {
+        const targetIndex = row.findIndex(plaats => plaats.plaatsId === plaatsId);
 
-            return targetIndex !== -1
-                ? row.filter((_, index) => index === targetIndex - 1 || index === targetIndex + 1)
-                : [];
-        })
-        .reduce(flatten, [])
-        .filter(plaatsB => !obstakels.some(obstakel => matchesObstakel(plaatsId, plaatsB.plaatsId, obstakel)));
+        return targetIndex !== -1 ?
+               row.filter((_, index) => index === targetIndex - 1 || index === targetIndex + 1) :
+               [];
+    })
+    .reduce(flatten, [])
+    .filter(plaatsB => !obstakels.some(obstakel => matchesObstakel(plaatsId, plaatsB.plaatsId, obstakel)));
+};
 
 /*
  * Returns adjacent places in either direction,
@@ -487,9 +474,6 @@ const assignUitbreiding = (indeling: IMarktindeling, toewijzing: IToewijzing): I
     return indeling;
 };
 
-const heeftVastePlaatsen = (ondernemer: IMarktondernemer): boolean =>
-    isVast(ondernemer.status) && count(ondernemer.plaatsen) > 0;
-
 const getBrancheStats = (state: IMarktindeling, brancheId: string) => {
     const branche = (state.branches || []).find(item => item.brancheId === brancheId);
 
@@ -518,19 +502,18 @@ const getBrancheStats = (state: IMarktindeling, brancheId: string) => {
     };
 };
 
-const calcDefaultVoorkeuren = (markt: IMarkt, ondernemers: IMarktondernemer[]): IPlaatsvoorkeur[] =>
-    ondernemers
-        .map(({ plaatsen, erkenningsNummer }) =>
-            (plaatsen || []).map(
-                (plaatsId: string): IPlaatsvoorkeur => ({
-                    erkenningsNummer,
-                    marktId: markt.marktId,
-                    plaatsId,
-                    priority: VOORKEUR_MINIMUM_PRIORITY,
-                }),
-            ),
-        )
-        .reduce(flatten, []);
+const calcDefaultVoorkeuren = (markt: IMarkt, ondernemers: IMarktondernemer[]): IPlaatsvoorkeur[] => {
+    return ondernemers
+    .map(({ plaatsen = [], erkenningsNummer }) => {
+        return plaatsen.map((plaatsId: string): IPlaatsvoorkeur => ({
+            erkenningsNummer,
+            marktId: markt.marktId,
+            plaatsId,
+            priority: VOORKEUR_MINIMUM_PRIORITY,
+        }));
+    })
+    .reduce(flatten, []);
+};
 
 const getMaxedOutBranches = (state: IMarktindeling, branches: string[]) =>
     branches.filter(brancheId => {
@@ -587,8 +570,7 @@ const findPlaats = (
         reason = BRANCHE_FULL_REASON;
     }
 
-    logOpenPlaatsen(state);
-
+    log(`Nog ${state.openPlaatsen.length} vrije plaatsen`);
     log(`Ondernemer ${ondernemer.erkenningsNummer} heeft ${ondernemerVoorkeuren.length} voorkeuren genoemd`);
 
     let plaats;
@@ -650,19 +632,6 @@ const getPossibleMoves = (state: IMarktindeling, toewijzing: IToewijzing): MoveQ
     };
 };
 
-const ondernemerCompare = (a: IMarktondernemer, b: IMarktondernemer, aLijst: IMarktondernemer[]): number => {
-    // Sorteer eerst op aanwezigheid in de A-lijst...
-    const sort1 = Number(aLijst.includes(b)) -
-                  Number(aLijst.includes(a));
-    // ... dan op status (Vastekaarthouders, tijdelijkevasteplaatshouders, sollicitanten)...
-    const sort2 = Math.max(PRIORITIES.indexOf(b.status), 0) -
-                  Math.max(PRIORITIES.indexOf(a.status), 0);
-    // ... dan op anciënniteitsnummer
-    const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
-
-    return sort1 || sort2 || sort3;
-};
-
 export const sortOndernemers = (ondernemers: IMarktondernemer[], aLijst: IMarktondernemer[] = []): IMarktondernemer[] => {
     return [...ondernemers].sort((a, b) => ondernemerCompare(a, b, aLijst));
 };
@@ -685,7 +654,8 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * De bij een herindeling gekozen marktplaats wordt verwerkt als de initiele voorkeur van de ondernemer.
      * Bij de dagindeling kan een andere voorkeur worden uitgesproken.
      */
-    const defaultVoorkeuren = calcDefaultVoorkeuren(markt, aanwezigen.filter(({ status }) => isVast(status)));
+    const aanwezigenVast = aanwezigen.filter((ondernemer) => isVast(ondernemer.status));
+    const defaultVoorkeuren = calcDefaultVoorkeuren(markt, aanwezigenVast);
 
     const initialState: IMarktindeling = {
         ...markt,
@@ -702,14 +672,12 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         voorkeuren: [...defaultVoorkeuren, ...voorkeuren],
     };
 
-    const vastePlaatsenQueue = initialState.toewijzingQueue.filter(heeftVastePlaatsen);
-
-    log(`Vasteplaatshouders eerst: ${vastePlaatsenQueue.length}`);
-
     /*
      * stap 1:
      * vasteplaatshouders
      */
+    const vastePlaatsenQueue = initialState.toewijzingQueue.filter(heeftVastePlaatsen);
+    log(`Vasteplaatshouders eerst: ${vastePlaatsenQueue.length}`);
 
     let indeling = vastePlaatsenQueue.reduce(assignVastePlaats, initialState);
 

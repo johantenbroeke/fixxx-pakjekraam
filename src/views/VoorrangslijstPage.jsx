@@ -4,7 +4,7 @@ const OndernemerList = require('./components/OndernemerList.tsx');
 const PrintPage = require('./components/PrintPage');
 const PropTypes = require('prop-types');
 const { paginate } = require('../util');
-const { calcVolgorde, isAanwezig } = require('../indeling');
+const { sortOndernemers, isAanwezig } = require('../indeling');
 
 class VoorrangslijstPage extends React.Component {
     propTypes = {
@@ -16,7 +16,7 @@ class VoorrangslijstPage extends React.Component {
         datum: PropTypes.string,
         type: PropTypes.string,
         user: PropTypes.object,
-        toewijzingen: PropTypes.array.isRequired,
+        toewijzingen: PropTypes.array.isRequired
     };
 
     render() {
@@ -26,13 +26,13 @@ class VoorrangslijstPage extends React.Component {
 
         ondernemers = ondernemers.filter(
             ondernemer =>
-                !toewijzingen.find(({ erkenningsNummer }) => erkenningsNummer === ondernemer.erkenningsNummer),
+                !toewijzingen.find(({ erkenningsNummer }) => erkenningsNummer === ondernemer.erkenningsNummer)
         );
 
-        ondernemers = calcVolgorde(ondernemers, aLijst);
+        ondernemers = sortOndernemers(ondernemers, aLijst);
         ondernemers = [
             ...ondernemers.filter(ondernemer => isAanwezig(aanmeldingen, ondernemer)),
-            ...ondernemers.filter(ondernemer => !isAanwezig(aanmeldingen, ondernemer)),
+            ...ondernemers.filter(ondernemer => !isAanwezig(aanmeldingen, ondernemer))
         ];
         const aLijstAangemeld = 0;
         const Aangemeld = 1;
@@ -55,7 +55,7 @@ class VoorrangslijstPage extends React.Component {
 
                     return total;
                 },
-                [[], [], [], []],
+                [[], [], [], []]
             )
             .map(group => paginate(paginate(group, itemsOnPage), 2));
 
@@ -63,13 +63,13 @@ class VoorrangslijstPage extends React.Component {
             `Voorrangslijst A lijst, aangemeld: ${markt.naam}`,
             `Voorrangslijst aangemeld: ${markt.naam}`,
             `Voorrangslijst A lijst, niet aangemeld: ${markt.naam}`,
-            `Voorrangslijst niet aangemeld: ${markt.naam}`,
+            `Voorrangslijst niet aangemeld: ${markt.naam}`
         ];
 
         return (
             <MarktDetailBase
-                bodyClass="page-markt-sollicitanten page-print"
-                title="Voorrangslijst"
+                bodyClass='page-markt-sollicitanten page-print'
+                title='Voorrangslijst'
                 markt={markt}
                 datum={datum}
                 type={type}
@@ -98,7 +98,7 @@ class VoorrangslijstPage extends React.Component {
                                   ))}
                               </PrintPage>
                           ))
-                        : null,
+                        : null
                 )}
             </MarktDetailBase>
         );
