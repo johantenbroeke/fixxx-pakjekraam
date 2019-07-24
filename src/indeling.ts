@@ -663,10 +663,7 @@ const ondernemerCompare = (a: IMarktondernemer, b: IMarktondernemer, aLijst: IMa
     return sort1 || sort2 || sort3;
 };
 
-export const sortOndernemers = (
-    ondernemers: IMarktondernemer[],
-    aLijst: IMarktondernemer[] = [],
-): IMarktondernemer[] => {
+export const sortOndernemers = (ondernemers: IMarktondernemer[], aLijst: IMarktondernemer[] = []): IMarktondernemer[] => {
     return [...ondernemers].sort((a, b) => ondernemerCompare(a, b, aLijst));
 };
 
