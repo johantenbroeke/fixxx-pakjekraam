@@ -244,7 +244,7 @@ const findOptimalSpot = (
     mogelijkePlaatsen = sortPlaatsen(mogelijkePlaatsen, voorkeuren);
 
     if (maximum > 1) {
-        console.log(`Ondernemer ${ondernemer.erkenningsNummer} wil in één keer ${maximum} plaatsen`);
+        log(`Ondernemer ${ondernemer.erkenningsNummer} wil in één keer ${maximum} plaatsen`);
         const prevMogelijkePlaatsen = mogelijkePlaatsen;
         mogelijkePlaatsen = mogelijkePlaatsen.filter(p => {
             const expansionSize = maximum - 1;
@@ -253,7 +253,7 @@ const findOptimalSpot = (
             return adjacent.length >= expansionSize;
         });
 
-        console.log(
+        log(
             'Van deze plaatsen: ',
             prevMogelijkePlaatsen.map(({ plaatsId }) => plaatsId),
             ` hebben de volgende mogelijkheid tot uitbreiden naar ${maximum} plaatsen: `,
@@ -798,7 +798,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
 
     // Deel sollicitanten in
     indeling = indeling.toewijzingQueue
-        .filter(ondernemer => !heeftVastePlaatsen(ondernemer))
+        .filter(ondernemer => !heeftVastePlaatsen(ondernemer)) // TODO: process entire queue, VPH too!
         .reduce(findPlaats, indeling);
 
     const calculateMoveQueue = (state: IMarktindeling): MoveQueueItem[] =>
