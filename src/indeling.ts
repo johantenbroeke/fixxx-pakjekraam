@@ -67,13 +67,7 @@ const prioritySort = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur) 
     return numberSort(-prioA, -prioB);
 };
 
-const PRIORITIES = ['vpl', 'vkk', 'soll'];
-const LOWEST_STATUS_PRIORITY = PRIORITIES.length;
-const statusPriority = (status: DeelnemerStatus): number => {
-    const index = PRIORITIES.indexOf(status);
-
-    return index === -1 ? LOWEST_STATUS_PRIORITY : index;
-};
+const PRIORITIES = ['soll', 'vkk', 'vpl'];
 
 const sortPlaatsen = (plaatsen: IMarktplaats[], voorkeuren: IPlaatsvoorkeur[]) =>
     [...plaatsen].sort((a, b) => {
@@ -656,55 +650,32 @@ const getPossibleMoves = (state: IMarktindeling, toewijzing: IToewijzing): MoveQ
     };
 };
 
-export const calcVolgorde = (ondernemers: IMarktondernemer[], aLijst: IMarktondernemer[] = []): IMarktondernemer[] => {
-    const abLijstPriority = (ondernemer: IMarktondernemer): number => (aLijst.includes(ondernemer) ? 1 : 2);
+const ondernemerCompare = (a: IMarktondernemer, b: IMarktondernemer, aLijst: IMarktondernemer[]): number => {
+    // Sorteer eerst op aanwezigheid in de A-lijst...
+    const sort1 = Number(aLijst.includes(b)) -
+                  Number(aLijst.includes(a));
+    // ... dan op status (Vastekaarthouders, tijdelijkevasteplaatshouders, sollicitanten)...
+    const sort2 = Math.max(PRIORITIES.indexOf(b.status), 0) -
+                  Math.max(PRIORITIES.indexOf(a.status), 0);
+    // ... dan op anciënniteitsnummer
+    const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
 
-    const ondernemerSort = (a: IMarktondernemer, b: IMarktondernemer) => {
-        // A-lijst of B-lijst
-        const sort1 = numberSort(abLijstPriority(a), abLijstPriority(b));
-
-        // Vastekaarthouders, tijdelijkevasteplaatshouders, sollicitanten
-        const sort2 = numberSort(statusPriority(a.status), statusPriority(b.status));
-
-        // Ancienniteitsnummer
-        const sort3 = numberSort(a.sollicitatieNummer, b.sollicitatieNummer);
-
-        return sort1 || sort2 || sort3;
-    };
-
-    return [...ondernemers].sort(ondernemerSort);
+    return sort1 || sort2 || sort3;
 };
 
-export const calcAanwezigenVolgorde = (
+export const sortOndernemers = (
     ondernemers: IMarktondernemer[],
-    aanwezigheid: IRSVP[] = [],
-    aLijst: IMarktondernemer[],
+    aLijst: IMarktondernemer[] = [],
 ): IMarktondernemer[] => {
-    const aanwezigen = ondernemers.filter(ondernemer => isAanwezig(aanwezigheid, ondernemer));
-
-    return calcVolgorde(aanwezigen, aLijst);
+    return [...ondernemers].sort((a, b) => ondernemerCompare(a, b, aLijst));
 };
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
     const { marktplaatsen, ondernemers, voorkeuren } = markt;
     const { aanwezigheid, aLijst } = markt;
 
-    const abLijstPriority = (ondernemer: IMarktondernemer): number => (aLijst.includes(ondernemer) ? 1 : 2);
-
-    const ondernemerSort = (a: IMarktondernemer, b: IMarktondernemer) => {
-        // A-lijst of B-lijst
-        const sort1 = numberSort(abLijstPriority(a), abLijstPriority(b));
-
-        // Vastekaarthouders, tijdelijkevasteplaatshouders, sollicitanten
-        const sort2 = numberSort(statusPriority(a.status), statusPriority(b.status));
-
-        // Ancienniteitsnummer
-        const sort3 = numberSort(a.sollicitatieNummer, b.sollicitatieNummer);
-
-        return sort1 || sort2 || sort3;
-    };
-
-    const aanwezigen = calcAanwezigenVolgorde(ondernemers, aanwezigheid, aLijst);
+    const aanwezigen = ondernemers.filter(ondernemer => isAanwezig(aanwezigheid, ondernemer));
+    aanwezigen.sort((a, b) => ondernemerCompare(a, b, aLijst));
 
     log(
         `Aanwezigen: ${aanwezigen.length}/${ondernemers.length} (${(
@@ -805,7 +776,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         state.toewijzingen
             .map(toewijzing => getPossibleMoves(state, toewijzing))
             .filter(obj => obj.betereVoorkeuren.length > 0)
-            .sort((objA, objB) => ondernemerSort(objA.toewijzing.ondernemer, objB.toewijzing.ondernemer))
+            .sort((objA, objB) => ondernemerCompare(objA.toewijzing.ondernemer, objB.toewijzing.ondernemer, aLijst))
             .map(obj => {
                 const {
                     toewijzing: { ondernemer },
