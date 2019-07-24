@@ -31,6 +31,11 @@ import {
  * https://decentrale.regelgeving.overheid.nl/cvdr/XHTMLoutput/Actueel/Amsterdam/396119.html#id1-3-2-2-3-4-5
  */
 const VOORKEUR_MINIMUM_PRIORITY = 0;
+const STATUS_PRIORITIES = [
+    DeelnemerStatus.SOLLICITANT,
+    DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS,
+    DeelnemerStatus.VASTE_PLAATS,
+];
 const FULL_REASON: IAfwijzingReason = {
     code: 1,
     message: 'Alle marktplaatsen zijn reeds ingedeeld',
@@ -40,13 +45,6 @@ const BRANCHE_FULL_REASON: IAfwijzingReason = {
     message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld',
 };
 
-const prioritySort = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur) => {
-    const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : VOORKEUR_MINIMUM_PRIORITY;
-    const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : VOORKEUR_MINIMUM_PRIORITY;
-
-    return numberSort(-prioA, -prioB);
-};
-
 const isVast = (status: DeelnemerStatus): boolean => {
     return status === 'vpl' || status === 'vkk';
 };
@@ -54,14 +52,20 @@ const heeftVastePlaatsen = (ondernemer: IMarktondernemer): boolean => {
     return isVast(ondernemer.status) && count(ondernemer.plaatsen) > 0;
 };
 
-const PRIORITIES = ['soll', 'vkk', 'vpl'];
+const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur) => {
+    const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : VOORKEUR_MINIMUM_PRIORITY;
+    const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : VOORKEUR_MINIMUM_PRIORITY;
+
+    return numberSort(-prioA, -prioB);
+};
+
 const ondernemerCompare = (a: IMarktondernemer, b: IMarktondernemer, aLijst: IMarktondernemer[]): number => {
     // Sorteer eerst op aanwezigheid in de A-lijst...
     const sort1 = Number(aLijst.includes(b)) -
                   Number(aLijst.includes(a));
     // ... dan op status (Vastekaarthouders, tijdelijkevasteplaatshouders, sollicitanten)...
-    const sort2 = Math.max(PRIORITIES.indexOf(b.status), 0) -
-                  Math.max(PRIORITIES.indexOf(a.status), 0);
+    const sort2 = Math.max(STATUS_PRIORITIES.indexOf(b.status), 0) -
+                  Math.max(STATUS_PRIORITIES.indexOf(a.status), 0);
     // ... dan op anciënniteitsnummer
     const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
 
@@ -73,7 +77,7 @@ const sortPlaatsen = (plaatsen: IMarktplaats[], voorkeuren: IPlaatsvoorkeur[]) =
         const voorkeurA = voorkeuren.find(voorkeur => voorkeur.plaatsId === a.plaatsId);
         const voorkeurB = voorkeuren.find(voorkeur => voorkeur.plaatsId === b.plaatsId);
 
-        return prioritySort(voorkeurA, voorkeurB);
+        return priorityCompare(voorkeurA, voorkeurB);
     });
 
 const createToewijzing = (markt: IMarkt, plaats: IMarktplaats, ondernemer: IMarktondernemer): IToewijzing => ({
@@ -84,9 +88,46 @@ const createToewijzing = (markt: IMarkt, plaats: IMarktplaats, ondernemer: IMark
     erkenningsNummer: ondernemer.erkenningsNummer,
 });
 
-const matchesObstakel = (plaatsA: string, plaatsB: string, obstakel: IObstakelBetween): boolean =>
-    (obstakel.kraamA === plaatsA && obstakel.kraamB === plaatsB) ||
-    (obstakel.kraamA === plaatsB && obstakel.kraamB === plaatsA);
+const removeToewijzing = (state: IMarktindeling, toewijzing: IToewijzing) => {
+    const { openPlaatsen, toewijzingen } = state;
+
+    if (toewijzingen.includes(toewijzing)) {
+        log(`Verwijder toewijzing van ${toewijzing.erkenningsNummer} aan ${toewijzing.plaatsen}`);
+
+        const plaatsen = state.marktplaatsen.filter(plaats => toewijzing.plaatsen.includes(plaats.plaatsId));
+
+        return {
+            ...state,
+            toewijzingen: toewijzingen.filter(t => t !== toewijzing),
+            openPlaatsen: [...openPlaatsen, ...plaatsen],
+        };
+    } else {
+        return state;
+    }
+};
+
+const findToewijzing = (state: IMarktindeling, ondernemer: IMarktondernemer) =>
+    state.toewijzingen.find(toewijzing => toewijzing.erkenningsNummer === ondernemer.erkenningsNummer);
+
+const addToewijzing = (state: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => ({
+    ...state,
+    toewijzingQueue: state.toewijzingQueue.filter(
+        ondernemer => ondernemer.erkenningsNummer !== toewijzing.erkenningsNummer,
+    ),
+    openPlaatsen: state.openPlaatsen.filter(plaats => !toewijzing.plaatsen.includes(plaats.plaatsId)),
+    toewijzingen: [...state.toewijzingen, toewijzing],
+});
+
+const replaceToewijzing = (indeling: IMarktindeling, remove: IToewijzing, add: IToewijzing): IMarktindeling => ({
+    ...indeling,
+    toewijzingen: [...indeling.toewijzingen.filter(item => item !== remove), add],
+});
+
+const mergeToewijzing = (a: IToewijzing, b: IToewijzing): IToewijzing => ({
+    ...a,
+    ...b,
+    plaatsen: flatten(a.plaatsen, b.plaatsen),
+});
 
 export const getAdjacentPlaatsen = (
     rows: IMarktplaats[][],
@@ -101,7 +142,16 @@ export const getAdjacentPlaatsen = (
                [];
     })
     .reduce(flatten, [])
-    .filter(plaatsB => !obstakels.some(obstakel => matchesObstakel(plaatsId, plaatsB.plaatsId, obstakel)));
+    .filter(plaatsB => {
+        // Does this place border an obstacle?
+        return !obstakels.some(obstakel => {
+            const plaatsIdA = plaatsId;
+            const plaatsIdB = plaatsB.plaatsId;
+
+            return (obstakel.kraamA === plaatsIdA && obstakel.kraamB === plaatsIdB) ||
+                   (obstakel.kraamA === plaatsIdB && obstakel.kraamB === plaatsIdA);
+        });
+    });
 };
 
 /*
@@ -259,47 +309,6 @@ export const isAanwezig = (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) 
         return !!rsvp && !!rsvp.attending;
     }
 };
-
-const removeToewijzing = (state: IMarktindeling, toewijzing: IToewijzing) => {
-    const { openPlaatsen, toewijzingen } = state;
-
-    if (toewijzingen.includes(toewijzing)) {
-        log(`Verwijder toewijzing van ${toewijzing.erkenningsNummer} aan ${toewijzing.plaatsen}`);
-
-        const plaatsen = state.marktplaatsen.filter(plaats => toewijzing.plaatsen.includes(plaats.plaatsId));
-
-        return {
-            ...state,
-            toewijzingen: toewijzingen.filter(t => t !== toewijzing),
-            openPlaatsen: [...openPlaatsen, ...plaatsen],
-        };
-    } else {
-        return state;
-    }
-};
-
-const findToewijzing = (state: IMarktindeling, ondernemer: IMarktondernemer) =>
-    state.toewijzingen.find(toewijzing => toewijzing.erkenningsNummer === ondernemer.erkenningsNummer);
-
-const addToewijzing = (state: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => ({
-    ...state,
-    toewijzingQueue: state.toewijzingQueue.filter(
-        ondernemer => ondernemer.erkenningsNummer !== toewijzing.erkenningsNummer,
-    ),
-    openPlaatsen: state.openPlaatsen.filter(plaats => !toewijzing.plaatsen.includes(plaats.plaatsId)),
-    toewijzingen: [...state.toewijzingen, toewijzing],
-});
-
-const replaceToewijzing = (indeling: IMarktindeling, remove: IToewijzing, add: IToewijzing): IMarktindeling => ({
-    ...indeling,
-    toewijzingen: [...indeling.toewijzingen.filter(item => item !== remove), add],
-});
-
-const mergeToewijzing = (a: IToewijzing, b: IToewijzing): IToewijzing => ({
-    ...a,
-    ...b,
-    plaatsen: [...(a.plaatsen || []), ...(b.plaatsen || [])],
-});
 
 const assignPlaats = (
     markt: IMarktindeling,
@@ -611,7 +620,7 @@ const move = (state: IMarktindeling, obj: MoveQueueItem) =>
 
 const getPossibleMoves = (state: IMarktindeling, toewijzing: IToewijzing): MoveQueueItem => {
     const { ondernemer } = toewijzing;
-    const voorkeuren = getOndernemerVoorkeuren(state, ondernemer).sort(prioritySort);
+    const voorkeuren = getOndernemerVoorkeuren(state, ondernemer).sort(priorityCompare);
 
     const currentIndex = voorkeuren.findIndex(voorkeur => toewijzing.plaatsen.includes(voorkeur.plaatsId));
     const betereVoorkeuren = voorkeuren.slice(0, currentIndex === -1 ? voorkeuren.length : currentIndex);
