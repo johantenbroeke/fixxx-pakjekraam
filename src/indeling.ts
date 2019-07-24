@@ -315,7 +315,7 @@ const assignPlaats = (
     toewijzing: IToewijzing,
     ondernemer: IMarktondernemer,
     conflictResolution: 'merge' | 'reassign' | 'keep-both' = 'keep-both',
-) => {
+): IMarktindeling => {
     log(`Plaats toegewezen aan ${ondernemer.erkenningsNummer}: ${toewijzing.plaatsen}`);
     const existingToewijzing = findToewijzing(markt, ondernemer);
 
@@ -344,7 +344,7 @@ const assignPlaats = (
     return addToewijzing(markt, newToewijzing);
 };
 
-const rejectOndernemer = (state: IMarktindeling, ondernemer: IMarktondernemer, reason: IAfwijzingReason) => {
+const rejectOndernemer = (state: IMarktindeling, ondernemer: IMarktondernemer, reason: IAfwijzingReason): IMarktindeling => {
     log(`Aanmelding afgewezen voor ${ondernemer.erkenningsNummer}: ${reason.message} ${state.afwijzingen.length}`);
 
     return {
@@ -685,10 +685,10 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * stap 1:
      * vasteplaatshouders
      */
-    const vastePlaatsenQueue = initialState.toewijzingQueue.filter(heeftVastePlaatsen);
+    const vastePlaatsenQueue: IMarktondernemer[] = initialState.toewijzingQueue.filter(heeftVastePlaatsen);
     log(`Vasteplaatshouders eerst: ${vastePlaatsenQueue.length}`);
 
-    let indeling = vastePlaatsenQueue.reduce(assignVastePlaats, initialState);
+    let indeling: IMarktindeling = vastePlaatsenQueue.reduce(assignVastePlaats, initialState);
 
     /*
      * stap 2:
