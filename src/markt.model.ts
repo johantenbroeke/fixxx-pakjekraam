@@ -47,11 +47,6 @@ export interface IMarkt {
     expansionLimit?: number;
 }
 
-export interface IMarktindelingSeed {
-    aanwezigheid: IRSVP[];
-    aLijst: IMarktondernemer[];
-}
-
 export interface IRSVP {
     // `id` is used by Sequelize
     id?: number;
@@ -152,14 +147,17 @@ export interface IAfwijzing {
     reason: IAfwijzingReason;
 }
 
-export interface IMarktindelingState extends IMarkt {
+export interface IMarktindelingSeed {
+    aanwezigheid: IRSVP[];
+    aLijst: IMarktondernemer[];
+}
+
+export interface IMarktindeling extends IMarkt, IMarktindelingSeed {
     toewijzingQueue: IMarktondernemer[];
     openPlaatsen: IMarktplaats[];
     expansionQueue: IToewijzing[];
     expansionIteration: number;
-}
 
-export interface IMarktindeling extends IMarkt, IMarktindelingSeed, IMarktindelingState {
     afwijzingen: IAfwijzing[];
     toewijzingen: IToewijzing[];
 }
