@@ -2,7 +2,7 @@
   "defaultSeverity": "error",
   "extends": ["tslint-eslint-rules"],
   "rules": {
-    "only-arrow-functions": true,
+    "only-arrow-functions": false,
     "typedef-whitespace": [
       true,
       {
@@ -33,7 +33,7 @@
     "trailing-comma": [
       true,
       {
-        "multiline": "always",
+        "multiline": "never",
         "singleline": "never"
       }
     ],
@@ -53,10 +53,10 @@
     "match-default-export-name": true,
     "max-line-length": [true, 140],
     "member-access": true,
-    "newline-before-return": true,
+    "newline-before-return": false,
     "new-parens": true,
     "no-boolean-literal-compare": true,
-    "no-consecutive-blank-lines": [true, 1],
+    "no-consecutive-blank-lines": [true, 2],
     "no-debugger": true,
     "no-eval": true,
     "no-reference": true,
@@ -120,7 +120,7 @@
     "ter-computed-property-spacing": true,
     "ter-func-call-spacing": true,
     "ter-max-len": false,
-    "ter-newline-after-var": true,
+    "ter-newline-after-var": false,
     "ter-no-mixed-spaces-and-tabs": true,
     "ter-no-tabs": true,
     "ter-prefer-arrow-callback": true,
@@ -148,7 +148,7 @@
     "no-arg": true,
     "no-bitwise": true,
     "no-conditional-assignment": true,
-    "no-consecutive-blank-lines": true,
+    "no-consecutive-blank-lines": [true, 2],
     "no-console": true,
     "no-construct": true,
     "no-debugger": true,
