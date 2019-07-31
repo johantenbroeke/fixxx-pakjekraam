@@ -31,7 +31,7 @@
     "linebreak-style": [true, "LF"],
     "prefer-const": true,
     "trailing-comma": [
-      true,
+      false,
       {
         "multiline": "never",
         "singleline": "never"
@@ -81,8 +81,6 @@
     "whitespace": [
       true,
       "check-branch",
-      "check-decl",
-      "check-operator",
       "check-module",
       "check-separator",
       "check-type",
@@ -109,7 +107,7 @@
     "no-inner-declarations": true,
     "no-invalid-regexp": true,
     "no-irregular-whitespace": true,
-    "no-multi-spaces": true,
+    "no-multi-spaces": false,
     "no-regex-spaces": true,
     "no-sparse-arrays": true,
     "no-unexpected-multiline": true,
@@ -201,7 +199,12 @@
       "options": ["ban-keywords", "check-format", "allow-pascal-case"]
     },
     "whitespace": {
-      "options": ["check-branch", "check-decl", "check-operator", "check-separator", "check-type", "check-typecast"]
+      "options": [
+        "check-branch",
+        "check-separator",
+        "check-type",
+        "check-typecast"
+      ]
     }
   }
 }
