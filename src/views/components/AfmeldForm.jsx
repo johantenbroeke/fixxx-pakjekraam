@@ -1,7 +1,15 @@
 const OndernemerMarktHeading = require('./OndernemerMarktHeading');
 const React = require('react');
 const PropTypes = require('prop-types');
-const { formatDayOfWeek, WEEK_DAYS, today, formatDate, relativeHumanDay, endOfWeek } = require('../../util.ts');
+const {
+    formatDayOfWeek,
+    WEEK_DAYS,
+    today,
+    formatDate,
+    relativeHumanDay,
+    endOfWeek,
+    addDays,
+} = require('../../util.ts');
 const { filterRsvpList, isVast } = require('../../domain-knowledge.js');
 
 class AfmeldForm extends React.Component {
@@ -23,23 +31,27 @@ class AfmeldForm extends React.Component {
         );
         const markt = markten.find(m => String(m.id) === currentMarktId);
 
-        const rsvpEntries = filterRsvpList(aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id), markt);
+        const rsvpEntries = filterRsvpList(
+            aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id),
+            markt,
+            role === 'marktmeester' ? today() : addDays(today(), 1),
+        );
         const weekAanmeldingen = rsvpEntries.reduce(
             (t, { date, rsvp, index }, i) => {
+                const week = new Date(date) > new Date(endOfWeek()) ? 1 : 0;
                 const attending = rsvp
                     ? rsvp.attending
                     : sollicitatie.status === 'vkk' || sollicitatie.status === 'vpl';
-                t[t.length - 1].push({
+                t[week].push({
                     index,
                     attending,
                     date,
                     weekDay: formatDayOfWeek(date),
                 });
-                new Date(date) >= new Date(endOfWeek()) && t.length === 1 && t.push([]);
 
                 return t;
             },
-            [[]],
+            [[], []],
         );
 
         return (
@@ -51,7 +63,16 @@ class AfmeldForm extends React.Component {
                     defaultValue={ondernemer.erkenningsnummer}
                     type="hidden"
                 />
-
+                <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />
+                {isVast(sollicitatie.status) ? (
+                    <span className="Fieldset__subtitle">
+                        Vink uit op welke dagen u (of uw vervanger) niet op deze markt staat.
+                    </span>
+                ) : (
+                    <span className="Fieldset__subtitle">
+                        Vink aan op welke dagen u (of uw vervanger) naar de markt wilt komen.
+                    </span>
+                )}
                 {weekAanmeldingen.map((week, i) => (
                     <div key={i}>
                         <span className="OndernemerMarktAanwezigheid__divider">
