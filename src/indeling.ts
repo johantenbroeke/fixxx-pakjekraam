@@ -91,34 +91,34 @@ const createToewijzing = (markt: IMarkt, plaats: IMarktplaats, ondernemer: IMark
     erkenningsNummer: ondernemer.erkenningsNummer,
 });
 
-const removeToewijzing = (state: IMarktindeling, toewijzing: IToewijzing) => {
-    const { openPlaatsen, toewijzingen } = state;
+const removeToewijzing = (indeling: IMarktindeling, toewijzing: IToewijzing) => {
+    const { openPlaatsen, toewijzingen } = indeling;
 
     if (toewijzingen.includes(toewijzing)) {
         log(`Verwijder toewijzing van ${toewijzing.erkenningsNummer} aan ${toewijzing.plaatsen}`);
 
-        const plaatsen = state.marktplaatsen.filter(plaats => toewijzing.plaatsen.includes(plaats.plaatsId));
+        const plaatsen = indeling.marktplaatsen.filter(plaats => toewijzing.plaatsen.includes(plaats.plaatsId));
 
         return {
-            ...state,
+            ...indeling,
             toewijzingen: toewijzingen.filter(t => t !== toewijzing),
             openPlaatsen: [...openPlaatsen, ...plaatsen],
         };
     } else {
-        return state;
+        return indeling;
     }
 };
 
-const findToewijzing = (state: IMarktindeling, ondernemer: IMarktondernemer) =>
-    state.toewijzingen.find(toewijzing => toewijzing.erkenningsNummer === ondernemer.erkenningsNummer);
+const findToewijzing = (indeling: IMarktindeling, ondernemer: IMarktondernemer) =>
+    indeling.toewijzingen.find(toewijzing => toewijzing.erkenningsNummer === ondernemer.erkenningsNummer);
 
-const addToewijzing = (state: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => ({
-    ...state,
-    toewijzingQueue: state.toewijzingQueue.filter(
+const addToewijzing = (indeling: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => ({
+    ...indeling,
+    toewijzingQueue: indeling.toewijzingQueue.filter(
         ondernemer => ondernemer.erkenningsNummer !== toewijzing.erkenningsNummer,
     ),
-    openPlaatsen: state.openPlaatsen.filter(plaats => !toewijzing.plaatsen.includes(plaats.plaatsId)),
-    toewijzingen: [...state.toewijzingen, toewijzing],
+    openPlaatsen: indeling.openPlaatsen.filter(plaats => !toewijzing.plaatsen.includes(plaats.plaatsId)),
+    toewijzingen: [...indeling.toewijzingen, toewijzing],
 });
 
 const replaceToewijzing = (indeling: IMarktindeling, remove: IToewijzing, add: IToewijzing): IMarktindeling => ({
@@ -314,17 +314,17 @@ export const isAanwezig = (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) 
 };
 
 const assignPlaats = (
-    markt: IMarktindeling,
+    indeling: IMarktindeling,
     toewijzing: IToewijzing,
     ondernemer: IMarktondernemer,
     conflictResolution: 'merge' | 'reassign' | 'keep-both' = 'keep-both',
 ): IMarktindeling => {
     log(`Plaats toegewezen aan ${ondernemer.erkenningsNummer}: ${toewijzing.plaatsen}`);
-    const existingToewijzing = findToewijzing(markt, ondernemer);
+    const existingToewijzing = findToewijzing(indeling, ondernemer);
 
     let newToewijzing: IToewijzing = {
-        marktId: markt.marktId,
-        marktDate: markt.marktDate,
+        marktId: indeling.marktId,
+        marktDate: indeling.marktDate,
         plaatsen: [...toewijzing.plaatsen],
         erkenningsNummer: ondernemer.erkenningsNummer,
 
@@ -340,11 +340,11 @@ const assignPlaats = (
         }
 
         if (conflictResolution !== 'keep-both') {
-            markt = removeToewijzing(markt, existingToewijzing);
+            indeling = removeToewijzing(indeling, existingToewijzing);
         }
     }
 
-    return addToewijzing(markt, newToewijzing);
+    return addToewijzing(indeling, newToewijzing);
 };
 
 const rejectOndernemer = (state: IMarktindeling, ondernemer: IMarktondernemer, reason: IAfwijzingReason): IMarktindeling => {
@@ -667,10 +667,9 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * stap 1:
      * vasteplaatshouders
      */
-    const vastePlaatsenQueue: IMarktondernemer[] = initialState.toewijzingQueue.filter(heeftVastePlaatsen);
-    log(`Vasteplaatshouders eerst: ${vastePlaatsenQueue.length}`);
-
-    let indeling: IMarktindeling = vastePlaatsenQueue.reduce(assignVastePlaats, initialState);
+    const { toewijzingQueue } = initialState;
+    const vplQueue = toewijzingQueue.filter(heeftVastePlaatsen);
+    let indeling: IMarktindeling = vplQueue.reduce(assignVastePlaats, initialState);
 
     /*
      * stap 2:
