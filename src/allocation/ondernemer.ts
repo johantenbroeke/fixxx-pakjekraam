@@ -46,7 +46,17 @@ const Ondernemer = {
                1;
     },
 
-    getVoorkeuren: (markt: IMarkt, ondernemer: IMarktondernemer): IPlaatsvoorkeur[] => {
+    getDefaultVoorkeurPlaatsen: (markt: IMarkt, ondernemer: IMarktondernemer): IPlaatsvoorkeur[] => {
+        const { plaatsen = [], erkenningsNummer } = ondernemer;
+        return plaatsen.map(plaatsId => ({
+            erkenningsNummer,
+            marktId: markt.marktId,
+            plaatsId,
+            priority: 0
+        }));
+    },
+
+    getVoorkeurPlaatsen: (markt: IMarkt, ondernemer: IMarktondernemer): IPlaatsvoorkeur[] => {
         const voorkeuren = markt.voorkeuren.filter(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer);
         return voorkeuren.sort(priorityCompare);
     },

@@ -1,5 +1,6 @@
 import {
     IAfwijzingReason,
+    IBranche,
     IMarktindeling,
     IMarktondernemer,
     IMarktplaats,
@@ -12,11 +13,21 @@ import {
     log
 } from '../util';
 
+import Markt from './markt';
 import Ondernemer from './ondernemer';
 import Toewijzing from './toewijzing';
 
+const FULL_REASON: IAfwijzingReason = {
+    code: 1,
+    message: 'Alle marktplaatsen zijn reeds ingedeeld'
+};
+const BRANCHE_FULL_REASON: IAfwijzingReason = {
+    code: 2,
+    message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld'
+};
+
 // `voorkeuren` should always be sorted by priority DESC, because we're using its array
-// indices to sort by priority. See `Ondernemer.getVoorkeuren()`.
+// indices to sort by priority. See `Ondernemer.getVoorkeurPlaatseng()`.
 const plaatsVoorkeurCompare = (plaatsA: IMarktplaats, plaatsB: IMarktplaats, voorkeuren: IPlaatsvoorkeur[]): number => {
     const max = voorkeuren.length;
     const a   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsA.plaatsId);
@@ -82,10 +93,113 @@ const Indeling = {
         }
     },
 
+    findBestePlaats: (
+        ondernemer: IMarktondernemer,
+        openPlaatsen: IMarktplaats[],
+        indeling: IMarktindeling,
+        maximum: number = 1
+    ) => {
+        let mogelijkePlaatsen = openPlaatsen;
+
+        // log(`Vind een plaats voor ${ondernemer.id}`);
+        const ondernemerBranches = Ondernemer.getBranches(indeling, ondernemer);
+        const voorkeuren = Ondernemer.getVoorkeurPlaatsen(indeling, ondernemer);
+
+        mogelijkePlaatsen = ondernemerBranches.reduce(
+            (mogelijkePlaatsen: IMarktplaats[], branche: IBranche): IMarktplaats[] => {
+                if (branche.verplicht) {
+                    /*
+                     * Bijvoorbeeld: als de ondernemer een wil frituren (`{ "branche": "bak" }`)
+                     * dan blijven alleen nog de kramen over waarop frituren is toegestaan.
+                     */
+                    mogelijkePlaatsen = mogelijkePlaatsen.filter(
+                        plaats => plaats.branches && plaats.branches.find(brancheId => brancheId === branche.brancheId)
+                    );
+                    log(
+                        `Filter op branche: ${branche.brancheId} (${mogelijkePlaatsen.length}/${openPlaatsen.length} over)`
+                    );
+                } else {
+                    log(`Sorteer op branche: ${branche.brancheId}`);
+                    /*
+                     * Een groenteboer wordt bij voorkeur geplaatst op een plaats in de branch AGF.
+                     */
+                    mogelijkePlaatsen = [...mogelijkePlaatsen].sort((a, b) => {
+                        if (a.branches && a.branches.includes(branche.brancheId)) {
+                            return -1;
+                        } else if (b.branches && b.branches.includes(branche.brancheId)) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    });
+                }
+
+                return mogelijkePlaatsen;
+            },
+            mogelijkePlaatsen
+        );
+
+        if (ondernemer.voorkeur && typeof ondernemer.voorkeur.anywhere === 'boolean' && !ondernemer.voorkeur.anywhere) {
+            const voorkeurIds = voorkeuren.map(({ plaatsId }) => plaatsId);
+            mogelijkePlaatsen = mogelijkePlaatsen.filter(({ plaatsId }) => voorkeurIds.includes(plaatsId));
+        }
+
+        mogelijkePlaatsen.sort((a, b) => plaatsVoorkeurCompare(a, b, voorkeuren));
+
+        if (maximum > 1) {
+            log(`Ondernemer ${ondernemer.erkenningsNummer} wil in één keer ${maximum} plaatsen`);
+            const prevMogelijkePlaatsen = mogelijkePlaatsen;
+            mogelijkePlaatsen = mogelijkePlaatsen.filter(p => {
+                const expansionSize = maximum - 1;
+                const adjacent = Markt.getAdjacentPlaatsenRecursive(indeling.rows, p.plaatsId, expansionSize, indeling.obstakels);
+
+                return adjacent.length >= expansionSize;
+            });
+
+            log(
+                'Van deze plaatsen: ',
+                prevMogelijkePlaatsen.map(({ plaatsId }) => plaatsId),
+                ` hebben de volgende mogelijkheid tot uitbreiden naar ${maximum} plaatsen: `,
+                mogelijkePlaatsen.map(({ plaatsId }) => plaatsId)
+            );
+        }
+
+        return mogelijkePlaatsen[0];
+    },
+
+    findPlaats: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer,
+        plaatsen: IMarktplaats[],
+        handleRejection: 'reject' | 'ignore' = 'reject',
+        maximum: number = 1
+    ): IMarktindeling => {
+        try {
+            if (indeling.openPlaatsen.length === 0) {
+                throw FULL_REASON;
+            } else if (Ondernemer.isInMaxedOutBranche(indeling, ondernemer)) {
+                throw BRANCHE_FULL_REASON;
+            }
+
+            const mogelijkePlaatsen = plaatsen || indeling.openPlaatsen;
+            const plaats = Indeling.findBestePlaats(ondernemer, mogelijkePlaatsen, indeling, maximum);
+            if (!plaats) {
+                throw 'Geen plaats gevonden';
+            }
+
+            return Indeling.assignPlaats(indeling, ondernemer, plaats, 'reassign');
+        } catch (errorMessage) {
+            log(`Geen plaats gevonden voor ${ondernemer.erkenningsNummer}`);
+            return handleRejection === 'reject' ?
+                   Indeling.rejectOndernemer(indeling, ondernemer, errorMessage) :
+                   indeling;
+        }
+    },
+
     // Returns the vaste plaatsen that are still available for this ondernemer in the
     // current indeling.
     getVastePlaatsenFor: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktplaats[] => {
-        const voorkeuren = Ondernemer.getVoorkeuren(indeling, ondernemer);
+        const voorkeuren = Ondernemer.getVoorkeurPlaatsen(indeling, ondernemer);
         return indeling.openPlaatsen
                .filter(plaats => Ondernemer.heeftVastePlaats(ondernemer, plaats))
                .sort((a, b) => plaatsVoorkeurCompare(a, b, voorkeuren));

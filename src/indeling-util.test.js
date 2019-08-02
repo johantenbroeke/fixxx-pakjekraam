@@ -1,4 +1,7 @@
-const { getAdjacentPlaatsen, getAdjacentPlaatsenRecursive } = require('./indeling.ts');
+const {
+    getAdjacentPlaatsen,
+    getAdjacentPlaatsenRecursive
+} = require('./allocation/markt.ts').default;
 
 describe('Aanliggende plaatsen', () => {
     const toMarktplaatsen = rows => {
@@ -51,7 +54,7 @@ describe('Aanliggende plaatsen', () => {
                 '1',
                 '2',
                 '4',
-                '5',
+                '5'
             ]);
         });
 
@@ -62,7 +65,7 @@ describe('Aanliggende plaatsen', () => {
                 '2',
                 '3',
                 '4',
-                '5',
+                '5'
             ]);
         });
     });
