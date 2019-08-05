@@ -99,6 +99,11 @@ const Ondernemer = {
 
     isVast: (ondernemer: IMarktondernemer): boolean => {
         return ondernemer.status === 'vpl' || ondernemer.status === 'vkk';
+    },
+
+    wantsExpansion: (indeling: IMarktindeling, ondernemer: IMarktondernemer): number => {
+        const targetSize = Ondernemer.getTargetSize(ondernemer);
+        return Math.max(0, targetSize - indeling.expansionIteration);
     }
 };
 

@@ -10,6 +10,7 @@ import {
 } from '../markt.model';
 
 import {
+    intersection,
     log
 } from '../util';
 
@@ -70,6 +71,41 @@ const Indeling = {
         }
 
         return Toewijzing.add(indeling, newToewijzing);
+    },
+
+    assignExpansion: (indeling: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => {
+        const { ondernemer, plaatsen } = toewijzing;
+        const targetSize = Ondernemer.getTargetSize(ondernemer);
+        const currentSize = plaatsen.length;
+
+        if (currentSize >= targetSize) {
+            return indeling;
+        }
+
+        const adjacent = Markt.getAdjacentPlaatsenForMultiple(indeling.rows, plaatsen, indeling.obstakels);
+        const openAdjacent = intersection(adjacent, indeling.openPlaatsen);
+        const uitbreidingPlaats = Indeling.findBestePlaats(ondernemer, openAdjacent, indeling);
+
+        if (!uitbreidingPlaats) {
+            return Indeling._removeFromExpansionQueue(indeling, toewijzing);
+        }
+
+        // Remove vrije plaats
+        indeling = {
+            ...indeling,
+            openPlaatsen: indeling.openPlaatsen.filter(plaats => plaats.plaatsId !== uitbreidingPlaats.plaatsId)
+        };
+
+        const uitbreiding = {
+            ...toewijzing,
+            plaatsen: [...toewijzing.plaatsen, uitbreidingPlaats.plaatsId]
+        };
+
+        // TODO: Merge `toewijzing` and `uitbreiding` objects, add to `indeling`
+        indeling = Toewijzing.replace(indeling, toewijzing, uitbreiding);
+        return currentSize + 1 < targetSize ?
+               Indeling._replaceInExpansionQueue(indeling, toewijzing, uitbreiding) :
+               Indeling._removeFromExpansionQueue(indeling, toewijzing);
     },
 
     assignVastePlaatsen: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktindeling => {
@@ -196,6 +232,16 @@ const Indeling = {
         }
     },
 
+    generateExpansionQueue: (indeling: IMarktindeling): IMarktindeling => {
+        const queue = indeling.toewijzingen.filter(({ ondernemer }) => {
+            return Ondernemer.wantsExpansion(indeling, ondernemer);
+        });
+        return {
+            ...indeling,
+            expansionQueue: queue
+        };
+    },
+
     // Returns the vaste plaatsen that are still available for this ondernemer in the
     // current indeling.
     getVastePlaatsenFor: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktplaats[] => {
@@ -220,6 +266,29 @@ const Indeling = {
         }
     },
 
+    processExpansionQueue: (indeling: IMarktindeling): IMarktindeling => {
+        while (indeling.expansionIteration <= indeling.expansionLimit) {
+            // TODO: Remove items from expansion queue for which expansion was impossible,
+            // skip those in the next iteration.
+
+            indeling = indeling.expansionQueue
+            .filter(toewijzing => {
+                const { ondernemer, plaatsen } = toewijzing;
+                const currentSize = plaatsen.length;
+                const targetSize  = Ondernemer.getTargetSize(ondernemer);
+                const maxSize     = Math.min(targetSize, indeling.expansionIteration, indeling.expansionLimit);
+
+                return currentSize < maxSize &&
+                       !Ondernemer.isInMaxedOutBranche(indeling, ondernemer);
+            })
+            .reduce(Indeling.assignExpansion, indeling);
+
+            indeling.expansionIteration++;
+        }
+
+        return indeling;
+    },
+
     rejectOndernemer: (indeling: IMarktindeling, ondernemer: IMarktondernemer, reason: IAfwijzingReason): IMarktindeling => {
         const afwijzingen = [
             ...indeling.afwijzingen,
@@ -233,6 +302,20 @@ const Indeling = {
         ];
 
         return { ...indeling, afwijzingen };
+    },
+
+    _removeFromExpansionQueue: (indeling: IMarktindeling, toewijzing: IToewijzing) => {
+        return {
+            ...indeling,
+            expansionQueue: (indeling.expansionQueue || []).filter(t => t !== toewijzing)
+        };
+    },
+
+    _replaceInExpansionQueue: (indeling: IMarktindeling, current: IToewijzing, replacement: IToewijzing) => {
+        return {
+            ...indeling,
+            expansionQueue: indeling.expansionQueue.map(item => (item === current ? replacement : item))
+        };
     }
 };
 

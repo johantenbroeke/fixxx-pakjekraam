@@ -57,8 +57,12 @@ const move = (state: IMarktindeling, obj: MoveQueueItem) => {
 };
 
 const Moving = {
-    generateQueue: (indeling: IMarktindeling, aLijst: IMarktondernemer[]): MoveQueueItem[] => {
-        return indeling.toewijzingen
+    generateQueue: (
+        indeling: IMarktindeling,
+        aLijst: IMarktondernemer[],
+        toewijzingen: IToewijzing[] = indeling.toewijzingen
+    ): MoveQueueItem[] => {
+        return toewijzingen
         .map(toewijzing => getPossibleMoves(indeling, toewijzing))
         .filter(obj => obj.betereVoorkeuren.length > 0)
         .sort((objA, objB) => Ondernemers.compare(objA.toewijzing.ondernemer, objB.toewijzing.ondernemer, aLijst))
@@ -83,7 +87,11 @@ const Moving = {
         });
     },
 
-    processQueue: (indeling: IMarktindeling, aLijst: IMarktondernemer[], queue: MoveQueueItem[]): IMarktindeling => {
+    processQueue: (
+        indeling: IMarktindeling,
+        aLijst: IMarktondernemer[],
+        queue: MoveQueueItem[]
+    ): IMarktindeling => {
         let i = 0;
         const MOVE_LIMIT = 100;
 

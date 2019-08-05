@@ -145,7 +145,6 @@ export interface IToewijzing {
     plaatsen: PlaatsId[];
     erkenningsNummer: ErkenningsNummer;
 
-    // TODO: Remove ondernemer, only keep `erkenningsNummer`
     ondernemer?: IMarktondernemer;
 }
 
