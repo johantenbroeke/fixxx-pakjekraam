@@ -82,7 +82,7 @@ const Indeling = {
             return indeling;
         }
 
-        const adjacent = Markt.getAdjacentPlaatsenForMultiple(indeling.rows, plaatsen, indeling.obstakels);
+        const adjacent = Markt.getAdjacentPlaatsen(indeling.rows, plaatsen, 1, indeling.obstakels);
         const openAdjacent = intersection(adjacent, indeling.openPlaatsen);
         const uitbreidingPlaats = Indeling.findBestePlaats(ondernemer, openAdjacent, indeling);
 
@@ -187,7 +187,7 @@ const Indeling = {
             const prevMogelijkePlaatsen = mogelijkePlaatsen;
             mogelijkePlaatsen = mogelijkePlaatsen.filter(p => {
                 const expansionSize = maximum - 1;
-                const adjacent = Markt.getAdjacentPlaatsenRecursive(indeling.rows, p.plaatsId, expansionSize, indeling.obstakels);
+                const adjacent = Markt.getAdjacentPlaatsen(indeling.rows, [p.plaatsId], expansionSize, indeling.obstakels);
 
                 return adjacent.length >= expansionSize;
             });

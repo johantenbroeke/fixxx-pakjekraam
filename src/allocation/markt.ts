@@ -5,82 +5,119 @@ import {
 } from '../markt.model';
 
 import {
-    exclude,
-    flatten,
-    isEqualArray,
-    unique
+    flatten
 } from '../util';
 
 const Markt = {
+    // Get adjacent places for one or multiple `plaatsIds`. The places passed in
+    // `plaatsIds` are expected to be adjacent, or this function's behavior is
+    // undefined.
+    //
+    // The resulting array of adjacent places are sorted in order of expansion:
+    // first the places left of the original `plaatsIds`, then the places to the
+    // right of it.
     getAdjacentPlaatsen: (
         rows: IMarktplaats[][],
-        plaatsId: PlaatsId,
-        obstakels: IObstakelBetween[] = []
+        plaatsIds: PlaatsId[],
+        depth: number = 1,
+        obstacles: IObstakelBetween[] = []
     ): IMarktplaats[] => {
-        return rows.map(row => {
-            const targetIndex = row.findIndex(plaats => plaats.plaatsId === plaatsId);
+        const row = Markt._findRowForPlaatsen(rows, plaatsIds);
 
-            return targetIndex !== -1 ?
-                   row.filter((_, index) => index === targetIndex - 1 || index === targetIndex + 1) :
-                   [];
+        return plaatsIds
+        .map(plaatsId => {
+            return [].concat(
+                Markt._getAdjacent(row, plaatsId, -1, depth, obstacles),
+                Markt._getAdjacent(row, plaatsId, 1, depth, obstacles)
+            );
         })
         .reduce(flatten, [])
-        .filter(plaatsB => {
-            // Does this place border an obstacle?
-            return !obstakels.find(obstakel => {
-                const plaatsIdA = plaatsId;
-                const plaatsIdB = plaatsB.plaatsId;
-
-                return (obstakel.kraamA === plaatsIdA && obstakel.kraamB === plaatsIdB) ||
-                       (obstakel.kraamA === plaatsIdB && obstakel.kraamB === plaatsIdA);
-            });
-        });
+        // We need to filter out duplicates, and places that are included
+        // in the `plaatsIds` argument. This occurs when multiple IDs are
+        // requested — some overlap cannot be avoided.
+        .reduce((result: IMarktplaats[], plaats) => {
+            const plaatsId = plaats.plaatsId;
+            if (
+                !~plaatsIds.findIndex(id => id === plaatsId) &&
+                !~result.findIndex(plaats => plaats.plaatsId === plaatsId)
+            ) {
+                result.push(plaats);
+            }
+            return result;
+        }, []);
     },
 
-    getAdjacentPlaatsenForMultiple: (
+    // Helper function for `getAdjacentPlaatsen`. All the `plaatsIds` should
+    // reside in a single row, otherwise expansion to these places would be
+    // impossible anyway — places in different rows are in a different physical
+    // location.
+    _findRowForPlaatsen: (
         rows: IMarktplaats[][],
-        plaatsIds: PlaatsId[],
-        obstakels: IObstakelBetween[] = []
+        plaatsIds: PlaatsId[]
     ): IMarktplaats[] => {
-        return plaatsIds
-        .map(plaatsId => Markt.getAdjacentPlaatsen(rows, plaatsId, obstakels))
-        .reduce(flatten, [])
-        .reduce(unique, []);
-    },
-
-    /*
-     * Returns adjacent places in either direction,
-     * `steps` defines the limit of how far to look in either direction.
-     * The number of adjacent spots can be greater than  the number of steps, if a number
-     * of spots is available in either direction.
-     */
-    getAdjacentPlaatsenRecursive: (
-        rows: IMarktplaats[][],
-        plaatsId: string,
-        steps: number = 1,
-        obstakels: IObstakelBetween[] = []
-    ): string[] => {
-        let plaatsen: string[]     = [plaatsId];
-        let prevPlaatsen: string[] = [];
-        let i = 0;
-
-        while (i < steps && !isEqualArray(plaatsen, prevPlaatsen)) {
-            const newPlaatsen: string[] = exclude(plaatsen, prevPlaatsen);
-            prevPlaatsen = plaatsen;
-
-            const adjacentPlaatsen = newPlaatsen
-                .map(p => Markt.getAdjacentPlaatsen(rows, p, obstakels))
-                .reduce(flatten, [])
-                .map(({ plaatsId }) => plaatsId);
-
-            plaatsen = [...plaatsen, ...adjacentPlaatsen];
-
-            i++;
+        let found = 0;
+        const result = rows.find(row => {
+            const result = plaatsIds.filter(id => row.find(({ plaatsId }) => plaatsId === id));
+            found = result.length;
+            return !!result.length;
+        });
+        if (!result) {
+            throw Error('Expected 1 result row');
+        }
+        if (found !== plaatsIds.length) {
+            throw Error('Could not find all places in row');
         }
 
-        plaatsen = exclude(plaatsen, [plaatsId]);
+        return result;
+    },
 
-        return plaatsen;
+    // Search function for `getAdjacentPlaatsen`. Loops through array index numbers
+    // starting from the index of `plaatsId`. When the row is circular the element
+    // index number is wrapped around (see the assignment of `current` and `next` in
+    // the loop).
+    //
+    // A circular row has the first element repeated at the end:
+    //   `[1,2,3,1]` is a circular row where 3 and 1 are connected.
+    _getAdjacent: (
+        row: IMarktplaats[],
+        plaatsId: PlaatsId,
+        dir: number,
+        depth: number = 1,
+        obstacles: IObstakelBetween[] = []
+    ) => {
+        const isCircular = row[0].plaatsId === row[row.length-1].plaatsId;
+        row = isCircular ? row.slice(0, -1) : row;
+
+        const places = [];
+        const len    = row.length;
+        const start  = row.findIndex(plaats => plaats.plaatsId === plaatsId);
+        for (let i = 0; i < depth && i < len; i++) {
+            const current = isCircular ?
+                            row[(start + len+i*dir%len) % len] :
+                            row[(start + i*dir)];
+            const next    = isCircular ?
+                            row[(start + len+(i+1)*dir%len) % len] :
+                            row[(start + (i+1)*dir)];
+
+            if (!next || Markt._hasObstacleBetween(obstacles, current.plaatsId, next.plaatsId)) {
+                break;
+            }
+
+            places.push(next);
+        }
+
+        return places;
+    },
+
+    _hasObstacleBetween: (
+        obstacles: IObstakelBetween[],
+        plaatsAId: string,
+        plaatsBId: string
+    ): boolean => {
+        return !!obstacles.find(obstacle => {
+            return (obstacle.kraamA === plaatsAId && obstacle.kraamB === plaatsBId) ||
+                   (obstacle.kraamA === plaatsBId && obstacle.kraamB === plaatsAId);
+        });
     }
 };
 
