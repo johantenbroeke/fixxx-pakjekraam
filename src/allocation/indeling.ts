@@ -28,7 +28,7 @@ const BRANCHE_FULL_REASON: IAfwijzingReason = {
 };
 
 // `voorkeuren` should always be sorted by priority DESC, because we're using its array
-// indices to sort by priority. See `Ondernemer.getVoorkeurPlaatseng()`.
+// indices to sort by priority. See `Ondernemer.getPlaatsVoorkeuren()`.
 const plaatsVoorkeurCompare = (plaatsA: IMarktplaats, plaatsB: IMarktplaats, voorkeuren: IPlaatsvoorkeur[]): number => {
     const max = voorkeuren.length;
     const a   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsA.plaatsId);
@@ -109,7 +109,7 @@ const Indeling = {
     },
 
     assignVastePlaatsen: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktindeling => {
-        const beschikbaar = Indeling.getVastePlaatsenFor(indeling, ondernemer);
+        const beschikbaar = Indeling.getAvailableVastePlaatsenFor(indeling, ondernemer);
 
         // FIXME: Handle rejections correctly
         // FIXME: ondernemer doesn't have to be rejected when they can move to another open spot
@@ -138,7 +138,7 @@ const Indeling = {
         let mogelijkePlaatsen = openPlaatsen;
 
         const ondernemerBranches = Ondernemer.getBranches(indeling, ondernemer);
-        const voorkeuren = Ondernemer.getVoorkeurPlaatsen(indeling, ondernemer);
+        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
 
         mogelijkePlaatsen = ondernemerBranches.reduce(
             (mogelijkePlaatsen: IMarktplaats[], branche: IBranche): IMarktplaats[] => {
@@ -235,11 +235,18 @@ const Indeling = {
 
     // Returns the vaste plaatsen that are still available for this ondernemer in the
     // current indeling.
-    getVastePlaatsenFor: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktplaats[] => {
-        const voorkeuren = Ondernemer.getVoorkeurPlaatsen(indeling, ondernemer);
-        return indeling.openPlaatsen
-               .filter(plaats => Ondernemer.heeftVastePlaats(ondernemer, plaats))
-               .sort((a, b) => plaatsVoorkeurCompare(a, b, voorkeuren));
+    getAvailableVastePlaatsenFor: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktplaats[] => {
+        // `voorkeuren` is een op prio gesorteerde lijst van plaatsvoorkeuren die
+        // hier enkel gebruikt wordt om de nog beschikbare plekken voor deze ondernemer
+        // te kunnen sorteren.
+        return Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer)
+        .filter(voorkeur => {
+             return Ondernemer.heeftVastePlaats(ondernemer, voorkeur) &&
+                    ~indeling.openPlaatsen.findIndex(({ plaatsId }) =>
+                        plaatsId === voorkeur.plaatsId
+                    );
+         })
+        .map(({ plaatsId }) => ({ plaatsId }));
     },
 
     isAanwezig: (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) => {

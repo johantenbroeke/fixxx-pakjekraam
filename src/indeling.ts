@@ -6,7 +6,6 @@ import {
 
 import {
     count,
-    flatten,
     intersects,
 } from './util';
 
@@ -30,11 +29,6 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * De bij een herindeling gekozen marktplaats wordt verwerkt als de initiele voorkeur van de ondernemer.
      * Bij de dagindeling kan een andere voorkeur worden uitgesproken.
      */
-    const aanwezigenVast = aanwezigen.filter((ondernemer) => Ondernemer.isVast(ondernemer));
-    const defaultVoorkeuren = aanwezigenVast
-                              .map(ondernemer => Ondernemer.getDefaultVoorkeurPlaatsen(markt, ondernemer))
-                              .reduce(flatten, []);
-
     const initialState: IMarktindeling = {
         ...markt,
         toewijzingQueue: [...aanwezigen],
@@ -47,7 +41,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         afwijzingen: [],
         toewijzingen: [],
         openPlaatsen: [...marktplaatsen.filter(plaats => !plaats.inactive)],
-        voorkeuren: [...defaultVoorkeuren, ...voorkeuren]
+        voorkeuren: [...voorkeuren]
     };
 
     /*

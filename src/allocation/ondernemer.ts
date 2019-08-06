@@ -38,6 +38,33 @@ const Ondernemer = {
         }, []);
     },
 
+    getPlaatsVoorkeuren: (markt: IMarkt, ondernemer: IMarktondernemer, merge: boolean = true): IPlaatsvoorkeur[] => {
+        // Merge de vaste plaatsen van deze ondernemer...
+        let vastePlaatsenAsVoorkeur = <IPlaatsvoorkeur[]>[];
+        if (merge) {
+            const plaatsen = Ondernemer.getVastePlaatsen(ondernemer);
+            vastePlaatsenAsVoorkeur = plaatsen.map(plaats => ({
+                ...plaats,
+                erkenningsNummer: ondernemer.erkenningsNummer,
+                marktId: markt.marktId,
+                priority: 0
+            }));
+        }
+        // ...samen met hun verplaatsingsvoorkeuren. Sorteer aflopend op prioriteit...
+        const voorkeuren = [
+            ...vastePlaatsenAsVoorkeur,
+            ...markt.voorkeuren.filter(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer)
+        ].sort(priorityCompare);
+
+        // ...en haal duplicaten eruit.
+        return voorkeuren.reduce((unique, voorkeur) => {
+            if (!~unique.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId)) {
+                unique.push(voorkeur);
+            }
+            return unique;
+        }, []);
+    },
+
     getTargetSize: (ondernemer: IMarktondernemer): number => {
         const voorkeur = ondernemer.voorkeur;
         return voorkeur ?
@@ -45,19 +72,9 @@ const Ondernemer = {
                1;
     },
 
-    getDefaultVoorkeurPlaatsen: (markt: IMarkt, ondernemer: IMarktondernemer): IPlaatsvoorkeur[] => {
-        const { plaatsen = [], erkenningsNummer } = ondernemer;
-        return plaatsen.map(plaatsId => ({
-            erkenningsNummer,
-            marktId: markt.marktId,
-            plaatsId,
-            priority: 0
-        }));
-    },
-
-    getVoorkeurPlaatsen: (markt: IMarkt, ondernemer: IMarktondernemer): IPlaatsvoorkeur[] => {
-        const voorkeuren = markt.voorkeuren.filter(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer);
-        return voorkeuren.sort(priorityCompare);
+    getVastePlaatsen: (ondernemer: IMarktondernemer): IMarktplaats[] => {
+        const { plaatsen = [] } = ondernemer;
+        return plaatsen.map(plaatsId => ({ plaatsId }));
     },
 
     heeftVastePlaats: (ondernemer: IMarktondernemer, plaats: IMarktplaats): boolean => {
