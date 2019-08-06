@@ -63,10 +63,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * beperkt de indeling tot kramen met een bepaalde verkoopinrichting
      */
     // const brancheKramen = initialState.openPlaatsen.filter(plaats => count(plaats.branches) > 0);
-    const brancheOndernemers = indeling.toewijzingQueue.filter(
-        ondernemer => count(ondernemer.voorkeur && ondernemer.voorkeur.branches) > 0
-    );
-
+    const brancheOndernemers = indeling.toewijzingQueue.filter(ondernemer => Ondernemer.isInBranche(indeling, ondernemer));
     indeling = brancheOndernemers.reduce((indeling, ondernemer, index, ondernemers) => {
         const ondernemerBranchePlaatsen = indeling.openPlaatsen.filter(plaats =>
             intersects(plaats.branches, ondernemer.voorkeur && ondernemer.voorkeur.branches)

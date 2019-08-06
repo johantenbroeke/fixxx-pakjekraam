@@ -72,9 +72,9 @@ const Ondernemer = {
         return Ondernemer.isVast(ondernemer) && count(ondernemer.plaatsen) > 0;
     },
 
-    isInBranche: (markt: IMarkt, ondernemer: IMarktondernemer, branche: IBranche): boolean => {
+    isInBranche: (markt: IMarkt, ondernemer: IMarktondernemer, branche?: IBranche): boolean => {
         const brancheIds = Ondernemer.getBrancheIds(markt, ondernemer);
-        return brancheIds.includes(branche.brancheId);
+        return branche ? brancheIds.includes(branche.brancheId) : !!brancheIds.length;
     },
 
     isInMaxedOutBranche: (indeling: IMarktindeling, ondernemer: IMarktondernemer): boolean => {

@@ -86,6 +86,7 @@ const Markt = {
         obstacles: IObstakelBetween[] = []
     ) => {
         const isCircular = row[0].plaatsId === row[row.length-1].plaatsId;
+        // The first and last element are equal, so remove the one at the end.
         row = isCircular ? row.slice(0, -1) : row;
 
         const places = [];
