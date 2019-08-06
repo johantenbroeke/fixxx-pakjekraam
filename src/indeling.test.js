@@ -572,7 +572,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
     });
 
-    it.skip('met meerdere plaatsen behoudt dit aantal na verplaatsing', () => {
+    it('met meerdere plaatsen behoudt dit aantal na verplaatsing', () => {
         /*
          * Scenario:
          * - 2 marktplaatsen
@@ -581,20 +581,21 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          */
         const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
-                ondernemer({ status: 'vpl', sollicitatieNummer: 42, plaatsen: ['1', '2'] }),
-                ondernemer({ status: 'vpl', sollicitatieNummer: 99, plaatsen: ['3'] })
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
+                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3'] })
             ],
-            marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats()],
+            marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats(), plaats()],
             voorkeuren: [
-                voorkeur({ sollicitatieNummer: 42, plaatsId: '4', priority: FIRST_CHOICE }),
-                voorkeur({ sollicitatieNummer: 42, plaatsId: '5', priority: SECOND_CHOICE })
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '5', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '6', priority: SECOND_CHOICE }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '5', priority: FIRST_CHOICE })
             ]
         }));
 
         expect(toewijzingen.length).toBe(2);
         expect(afwijzingen.length).toBe(0);
-        expect(findPlaatsen(toewijzingen, 42)).toStrictEqual(['1', '2']);
-        expect(findPlaatsen(toewijzingen, 99)).toStrictEqual(['3']);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['5', '6']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
     });
 });
 

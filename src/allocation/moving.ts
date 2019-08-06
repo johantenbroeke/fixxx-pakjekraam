@@ -40,10 +40,15 @@ const Moving = {
     ): MoveQueueItem[] => {
         return toewijzingen
         .reduce((queue, toewijzing) => {
-            const item = Moving._createQueueItem(indeling, toewijzing);
-            if (item.betereVoorkeuren.length > 0) {
-                queue.push(item);
+            const betereVoorkeuren = Moving._getBetereVoorkeuren(indeling, toewijzing);
+            if (betereVoorkeuren.length < toewijzing.plaatsen.length) {
+                return queue;
             }
+
+            queue.push(
+                Moving._createQueueItem(indeling, toewijzing, betereVoorkeuren)
+            );
+
             return queue;
         }, [])
         .sort((a, b) => {
@@ -83,23 +88,32 @@ const Moving = {
         return indeling;
     },
 
-    _createQueueItem: (
+    _getBetereVoorkeuren: (
         indeling: IMarktindeling,
         toewijzing: IToewijzing
+    ): IPlaatsvoorkeur[] => {
+        const { ondernemer, plaatsen } = toewijzing;
+        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+        const currentIndex = voorkeuren.findIndex(voorkeur => plaatsen.includes(voorkeur.plaatsId));
+        const end = currentIndex === -1 ? voorkeuren.length : currentIndex;
+
+        return voorkeuren.slice(0, end);
+    },
+
+    _createQueueItem: (
+        indeling: IMarktindeling,
+        toewijzing: IToewijzing,
+        betereVoorkeuren: IPlaatsvoorkeur[]
     ): MoveQueueItem => {
-        const { ondernemer } = toewijzing;
-        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
+        const beterePlaatsen = betereVoorkeuren.map(voorkeur =>
+            indeling.marktplaatsen.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId)
+        )
+        .filter(Boolean);
 
-        const currentIndex = voorkeuren.findIndex(voorkeur => toewijzing.plaatsen.includes(voorkeur.plaatsId));
-        const betereVoorkeuren = voorkeuren.slice(0, currentIndex === -1 ? voorkeuren.length : currentIndex);
-
-        const beterePlaatsen = betereVoorkeuren
-                               .map(voorkeur => indeling.marktplaatsen.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId))
-                               .filter(Boolean);
-
-        const openPlaatsen = betereVoorkeuren
-                             .map(voorkeur => indeling.openPlaatsen.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId))
-                             .filter(Boolean);
+        const openPlaatsen = betereVoorkeuren.map(voorkeur =>
+            indeling.openPlaatsen.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId)
+        )
+        .filter(Boolean);
 
         return {
             toewijzing,
