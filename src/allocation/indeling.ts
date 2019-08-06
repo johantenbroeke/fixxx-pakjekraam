@@ -137,28 +137,19 @@ const Indeling = {
     ) => {
         let mogelijkePlaatsen = openPlaatsen;
 
-        // log(`Vind een plaats voor ${ondernemer.id}`);
         const ondernemerBranches = Ondernemer.getBranches(indeling, ondernemer);
         const voorkeuren = Ondernemer.getVoorkeurPlaatsen(indeling, ondernemer);
 
         mogelijkePlaatsen = ondernemerBranches.reduce(
             (mogelijkePlaatsen: IMarktplaats[], branche: IBranche): IMarktplaats[] => {
                 if (branche.verplicht) {
-                    /*
-                     * Bijvoorbeeld: als de ondernemer een wil frituren (`{ "branche": "bak" }`)
-                     * dan blijven alleen nog de kramen over waarop frituren is toegestaan.
-                     */
+                    // Bijvoorbeeld: als een ondernemer wil frituren (`{ "branche": "bak" }`)
+                    // dan blijven alleen nog de kramen over waarop frituren is toegestaan.
                     mogelijkePlaatsen = mogelijkePlaatsen.filter(
                         plaats => plaats.branches && plaats.branches.find(brancheId => brancheId === branche.brancheId)
                     );
-                    log(
-                        `Filter op branche: ${branche.brancheId} (${mogelijkePlaatsen.length}/${openPlaatsen.length} over)`
-                    );
                 } else {
-                    log(`Sorteer op branche: ${branche.brancheId}`);
-                    /*
-                     * Een groenteboer wordt bij voorkeur geplaatst op een plaats in de branch AGF.
-                     */
+                    // Een groenteboer wordt bij voorkeur geplaatst op een plaats in de branch AGF.
                     mogelijkePlaatsen = [...mogelijkePlaatsen].sort((a, b) => {
                         if (a.branches && a.branches.includes(branche.brancheId)) {
                             return -1;
@@ -254,11 +245,9 @@ const Indeling = {
     isAanwezig: (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) => {
         const rsvp = aanwezigheid.find(aanmelding => aanmelding.erkenningsNummer === ondernemer.erkenningsNummer);
 
-        /*
-         * Vasteplaatshouders die niets hebben laten weten en die hebben bevestigd dat ze
-         * komen worden meegeteld als aanwezig. Alleen de expliciete afmeldingen worden
-         * niet in overweging genomen in de toedeling van kramen.
-         */
+        // Vasteplaatshouders die niets hebben laten weten en die hebben bevestigd dat ze
+        // komen worden meegeteld als aanwezig. Alleen de expliciete afmeldingen worden
+        // niet in overweging genomen in de indeling van kramen.
         if (ondernemer.status === 'vpl') {
             return !rsvp || !!rsvp.attending || rsvp.attending === null;
         } else {

@@ -107,13 +107,15 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     .reduce((indeling, ondernemer) => Indeling.findPlaats(indeling, ondernemer, indeling.openPlaatsen), indeling);
 
     /*
-     * Stap 6: Verwerk verplaatsingsvoorkeuren voor niet-VPH.
+     * Stap 6:
+     * Verwerk verplaatsingsvoorkeuren voor niet-VPH
      */
     const queueRest = Moving.generateQueue(indeling, aLijst);
     indeling = Moving.processQueue(indeling, aLijst, queueRest);
 
     /*
-     * Stap 7: Verwerk uitbreidingsvoorkeuren
+     * Stap 7:
+     * Verwerk uitbreidingsvoorkeuren
      */
     indeling = Indeling.generateExpansionQueue(indeling);
     indeling = Indeling.processExpansionQueue(indeling);

@@ -9,7 +9,6 @@ import {
 
 import {
     count,
-    numberSort,
     sum
 } from '../util';
 
@@ -18,7 +17,7 @@ const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeu
     const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : 0;
     const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : 0;
 
-    return numberSort(prioB, prioA);
+    return prioB - prioA;
 };
 
 const Ondernemer = {

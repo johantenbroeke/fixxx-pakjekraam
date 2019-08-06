@@ -217,7 +217,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
 });
 
 describe('Een ondernemer krijgt voorkeur', () => {
-    it('als zij VPH zijn', () => {
+    it('over sollicitanten als zij VPH zijn', () => {
         /*
          * Scenario:
          * - 1 marktplaats
@@ -237,7 +237,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
         expect(findPlaatsen(toewijzingen, 99)).toStrictEqual(['1']);
     });
 
-    it('als zij VKK zijn', () => {
+    it('over sollicitanten als zij VKK zijn', () => {
         /*
          * Scenario:
          * - 1 marktplaats
@@ -323,7 +323,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
         expect(isRejected(afwijzingen, 42));
     });
 
-    it('op de A-lijst staan', () => {
+    it('als zij op de A-lijst staan', () => {
         /*
          * Scenario:
          * - 1 marktplaats

@@ -7,8 +7,7 @@ import {
 } from '../markt.model';
 
 import {
-    intersection,
-    log
+    intersection
 } from '../util';
 
 import Indeling from './indeling';
@@ -46,13 +45,13 @@ const getPossibleMoves = (state: IMarktindeling, toewijzing: IToewijzing): MoveQ
 };
 
 // Reducer for `Moving.processMoveQueue` below.
-const move = (state: IMarktindeling, obj: MoveQueueItem) => {
+const move = (indeling: IMarktindeling, item: MoveQueueItem) => {
     return Indeling.findPlaats(
-        state,
-        obj.toewijzing.ondernemer,
-        intersection(obj.beterePlaatsen, state.openPlaatsen),
+        indeling,
+        item.toewijzing.ondernemer,
+        intersection(item.beterePlaatsen, indeling.openPlaatsen),
         'ignore',
-        obj.toewijzing.plaatsen.length
+        item.toewijzing.plaatsen.length
     );
 };
 
@@ -96,16 +95,14 @@ const Moving = {
         const MOVE_LIMIT = 100;
 
         for (; queue.length > 0 && i < MOVE_LIMIT; i++) {
-            log(`Move-queue #${i}: ${queue.length}`);
-
             const previousState = indeling;
 
             indeling = queue.reduce(move, indeling);
 
             if (previousState === indeling) {
-                // Non-essential optimization: nothing changed, so this was the last iteration.
-                // This could happen when someone wants to move to an open spot, but something is preventing the move.
-                // In this case don't retry the same move until the `MOVE_LIMIT` is exhausted.
+                // This could happen when someone wants to move to an open
+                // spot, but something is preventing the move. Just stop
+                // trying instead of reaching `MOVE_LIMIT`.
                 break;
             }
             // TODO: the new `queue` should be created as copy or subset of the existing `queue`,
