@@ -51,15 +51,23 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     };
 
     /*
-     * stap 1:
-     * vasteplaatshouders
+     * Stap 1:
+     * Deel vasteplaatshouders in
      */
     const { toewijzingQueue } = initialState;
     const vplQueue = toewijzingQueue.filter(Ondernemer.heeftVastePlaatsen);
     let indeling: IMarktindeling = vplQueue.reduce(Indeling.assignVastePlaatsen, initialState);
 
     /*
-     * stap 2:
+     * Stap 2:
+     * Verwerk verplaatsingen voor VPH
+     */
+    const vasteToewijzingen = indeling.toewijzingen.filter(({ ondernemer }) => Ondernemer.isVast);
+    const queueVast = Moving.generateQueue(indeling, aLijst, vasteToewijzingen);
+    indeling = Moving.processQueue(indeling, aLijst, queueVast);
+
+    /*
+     * Stap 3:
      * beperkt de indeling tot kramen met een bepaalde verkoopinrichting
      */
     // const brancheKramen = initialState.openPlaatsen.filter(plaats => count(plaats.branches) > 0);
@@ -73,7 +81,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     }, indeling);
 
     /*
-     * stap 3:
+     * Stap 4:
      * beperkt de indeling tot kramen met een toewijzingsbeperking (branche, eigen materieel)
      * en ondernemers met een bijbehorende eigenschap
      */
@@ -91,7 +99,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     }, indeling);
 
     /*
-     * Stap 4:
+     * Stap 5:
      * Deel sollicitanten in
      */
     indeling = indeling.toewijzingQueue
@@ -99,20 +107,13 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     .reduce((indeling, ondernemer) => Indeling.findPlaats(indeling, ondernemer, indeling.openPlaatsen), indeling);
 
     /*
-     * Stap 5: Verwerk verplaatsingsvoorkeuren
+     * Stap 6: Verwerk verplaatsingsvoorkeuren voor niet-VPH.
      */
-    // Verplaats eerst vasteplaatshouders...
-    const vasteToewijzingen = indeling.toewijzingen.filter(toewijzing => {
-        return Ondernemer.isVast(toewijzing.ondernemer);
-    });
-    const queueVast = Moving.generateQueue(indeling, aLijst, vasteToewijzingen);
-    indeling = Moving.processQueue(indeling, aLijst, queueVast);
-    // ...en daarna de rest.
     const queueRest = Moving.generateQueue(indeling, aLijst);
     indeling = Moving.processQueue(indeling, aLijst, queueRest);
 
     /*
-     * Stap 6: Verwerk uitbreidingsvoorkeuren
+     * Stap 7: Verwerk uitbreidingsvoorkeuren
      */
     indeling = Indeling.generateExpansionQueue(indeling);
     indeling = Indeling.processExpansionQueue(indeling);

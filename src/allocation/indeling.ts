@@ -33,7 +33,7 @@ const plaatsVoorkeurCompare = (plaatsA: IMarktplaats, plaatsB: IMarktplaats, voo
     const max = voorkeuren.length;
     const a   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsA.plaatsId);
     const b   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsB.plaatsId);
-    // Bit ~-1 == 0, so we can kick a or b to EOL if it's not found.
+    // ~-1 == 0, so we can kick a or b to EOL if it's not found.
     return (~a ? a : max) - (~b ? b : max);
 };
 
