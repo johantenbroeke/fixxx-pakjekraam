@@ -257,28 +257,32 @@ describe('Een ondernemer krijgt voorkeur', () => {
         expect(findPlaatsen(toewijzingen, 99)).toStrictEqual(['1']);
     });
 
-    it.skip('op hun toegewezen plaats(en) als zij VPH of VKK zijn', () => {
+    it('over andere VPHs op hun toegewezen plaats(en) indien zij VPH of VKK zijn', () => {
         /*
          * Scenario:
          * - 5 marktplaatsen
          * - 2 ondernemer met lage anceniteit maar met vaste plaatsen
          * - 3 ondernemers met hoge anceniteit die ook graag op de vaste plaatsen willen staan
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
-                ondernemer({ sollicitatieNummer: 42, status: 'vpl' }),
-                ondernemer({ sollicitatieNummer: 43, status: 'vkk' }),
-                ondernemer({ sollicitatieNummer: 44, status: 'soll' }),
-                ondernemer({ sollicitatieNummer: 98, status: 'vkk', plaatsen: ['2'] }),
-                ondernemer({ sollicitatieNummer: 99, status: 'vpl', plaatsen: ['1'] })
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl' }),
+                ondernemer({ sollicitatieNummer: 2, status: 'vkk' }),
+                ondernemer({ sollicitatieNummer: 3, status: 'soll' }),
+                ondernemer({ sollicitatieNummer: 4, status: 'vkk', plaatsen: ['2'] }),
+                ondernemer({ sollicitatieNummer: 5, status: 'vpl', plaatsen: ['1'] })
             ],
-            marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats()]
+            marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats()],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '1' }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '2' })
+            ]
         }));
 
         expect(toewijzingen.length).toBe(5);
         expect(afwijzingen.length).toBe(0);
-        expect(findPlaatsen(toewijzingen, 98)).toStrictEqual(['2']);
-        expect(findPlaatsen(toewijzingen, 99)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 4)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 5)).toStrictEqual(['1']);
     });
 
     it('als zij een brancheplek willen', () => {
