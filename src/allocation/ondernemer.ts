@@ -38,10 +38,14 @@ const Ondernemer = {
         }, []);
     },
 
-    getPlaatsVoorkeuren: (markt: IMarkt, ondernemer: IMarktondernemer, merge: boolean = true): IPlaatsvoorkeur[] => {
+    getPlaatsVoorkeuren: (
+        markt: IMarkt,
+        ondernemer: IMarktondernemer,
+        includeVastePlaatsen: boolean = true
+    ): IPlaatsvoorkeur[] => {
         // Merge de vaste plaatsen van deze ondernemer...
         let vastePlaatsenAsVoorkeur = <IPlaatsvoorkeur[]>[];
-        if (merge) {
+        if (includeVastePlaatsen) {
             const plaatsen = Ondernemer.getVastePlaatsen(ondernemer);
             vastePlaatsenAsVoorkeur = plaatsen.map(plaats => ({
                 ...plaats,
