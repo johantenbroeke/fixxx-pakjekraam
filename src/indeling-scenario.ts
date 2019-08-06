@@ -44,7 +44,7 @@ const isEqualRSVPKey = (a: IRSVP, b: IRSVP): boolean =>
 
 type scenarioUtils = {
     aanmelding: (stub: IRSVPStub) => IRSVP;
-    marktplaats: (stub: IMarktplaatsStub) => IMarktplaats;
+    plaats: (stub: IMarktplaatsStub) => IMarktplaats;
     ondernemer: (stub: IMarktondernemerStub) => IMarktondernemer;
     voorkeur: (stub: IPlaatsvoorkeurStub) => IPlaatsvoorkeur;
 };
@@ -65,10 +65,13 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
                 ondernemer.erkenningsNummer === desc.erkenningsNummer
         );
 
-    const marktplaats = (data: IMarktplaatsStub): IMarktplaats => ({
-        plaatsId: String(plaatsIncrement++),
-        ...data
-    });
+    const plaats = (data: IMarktplaatsStub): IMarktplaats => {
+        const plaatsId = data && data.plaatsId || String(plaatsIncrement++);
+        return {
+            plaatsId,
+            ...data
+        };
+    };
 
     const ondernemer = (data: IMarktondernemerStub = {}): IMarktondernemer => {
         const existingOndernemer = findOndernemer(data);
@@ -144,7 +147,7 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
         obstakels: []
     };
 
-    const seed: IMarktScenarioStub = callback({ marktplaats, ondernemer, voorkeur, aanmelding });
+    const seed: IMarktScenarioStub = callback({ plaats, ondernemer, voorkeur, aanmelding });
 
     const seedMixin = {
         aanwezigheid: seed.aanwezigheid || [],
