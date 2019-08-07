@@ -57,8 +57,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * Verwerk verplaatsingen voor VPH
      */
     const vasteToewijzingen = indeling.toewijzingen.filter(({ ondernemer }) => Ondernemer.isVast);
-    const queueVast = Moving.generateQueue(indeling, aLijst, vasteToewijzingen);
-    indeling = Moving.processQueue(indeling, aLijst, queueVast);
+    indeling = Moving.performFor(indeling, aLijst, vasteToewijzingen);
 
     /*
      * Stap 3:
@@ -104,8 +103,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * Stap 6:
      * Verwerk verplaatsingsvoorkeuren voor niet-VPH
      */
-    const queueRest = Moving.generateQueue(indeling, aLijst);
-    indeling = Moving.processQueue(indeling, aLijst, queueRest);
+    indeling = Moving.performFor(indeling, aLijst);
 
     /*
      * Stap 7:
