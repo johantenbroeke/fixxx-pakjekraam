@@ -81,7 +81,7 @@ const Moving = {
     },
 
     _processQueueItem: (indeling: IMarktindeling, item: MoveQueueItem): IMarktindeling => {
-        return Indeling.findPlaats(
+        return Indeling.assignPlaats(
             indeling,
             item.toewijzing.ondernemer,
             intersection(item.beterePlaatsen, indeling.openPlaatsen),

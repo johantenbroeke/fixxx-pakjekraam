@@ -29,7 +29,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * De bij een herindeling gekozen marktplaats wordt verwerkt als de initiele voorkeur van de ondernemer.
      * Bij de dagindeling kan een andere voorkeur worden uitgesproken.
      */
-    const initialState: IMarktindeling = {
+    let indeling: IMarktindeling = {
         ...markt,
         toewijzingQueue: [...aanwezigen],
         expansionQueue: [],
@@ -48,9 +48,9 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * Stap 1:
      * Deel vasteplaatshouders in
      */
-    const { toewijzingQueue } = initialState;
+    const { toewijzingQueue } = indeling;
     const vplQueue = toewijzingQueue.filter(Ondernemer.heeftVastePlaatsen);
-    let indeling: IMarktindeling = vplQueue.reduce(Indeling.assignVastePlaatsen, initialState);
+    indeling = vplQueue.reduce(Indeling.assignVastePlaatsen, indeling);
 
     /*
      * Stap 2:
@@ -63,14 +63,14 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * Stap 3:
      * beperkt de indeling tot kramen met een bepaalde verkoopinrichting
      */
-    // const brancheKramen = initialState.openPlaatsen.filter(plaats => count(plaats.branches) > 0);
+    // const brancheKramen = indeling.openPlaatsen.filter(plaats => count(plaats.branches) > 0);
     const brancheOndernemers = indeling.toewijzingQueue.filter(ondernemer => Ondernemer.isInBranche(indeling, ondernemer));
     indeling = brancheOndernemers.reduce((indeling, ondernemer, index, ondernemers) => {
         const ondernemerBranchePlaatsen = indeling.openPlaatsen.filter(plaats =>
             intersects(plaats.branches, ondernemer.voorkeur && ondernemer.voorkeur.branches)
         );
 
-        return Indeling.findPlaats(indeling, ondernemer, ondernemerBranchePlaatsen, 'ignore');
+        return Indeling.assignPlaats(indeling, ondernemer, ondernemerBranchePlaatsen, 'ignore');
     }, indeling);
 
     /*
@@ -78,7 +78,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * beperkt de indeling tot kramen met een toewijzingsbeperking (branche, eigen materieel)
      * en ondernemers met een bijbehorende eigenschap
      */
-    // const verkoopinrichtingKramen = initialState.openPlaatsen.filter(plaats => count(plaats.verkoopinrichting) > 0);
+    // const verkoopinrichtingKramen = indeling.openPlaatsen.filter(plaats => count(plaats.verkoopinrichting) > 0);
     const verkoopinrichtingOndernemers = indeling.toewijzingQueue.filter(
         ondernemer => count(ondernemer.voorkeur && ondernemer.voorkeur.verkoopinrichting) > 0
     );
@@ -88,7 +88,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
             intersects(plaats.verkoopinrichting, ondernemer.voorkeur ? ondernemer.voorkeur.verkoopinrichting : [])
         );
 
-        return Indeling.findPlaats(indeling, ondernemer, ondernemerVerkoopinrichtingPlaatsen, 'ignore');
+        return Indeling.assignPlaats(indeling, ondernemer, ondernemerVerkoopinrichtingPlaatsen, 'ignore');
     }, indeling);
 
     /*
@@ -97,7 +97,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      */
     indeling = indeling.toewijzingQueue
     .filter(ondernemer => !Ondernemer.heeftVastePlaatsen(ondernemer)) // TODO: process entire queue, VPH too!
-    .reduce((indeling, ondernemer) => Indeling.findPlaats(indeling, ondernemer, indeling.openPlaatsen), indeling);
+    .reduce((indeling, ondernemer) => Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen), indeling);
 
     /*
      * Stap 6:
