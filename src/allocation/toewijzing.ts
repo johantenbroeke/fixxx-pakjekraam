@@ -44,9 +44,6 @@ export default {
     add: (indeling: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => {
         return {
             ...indeling,
-            toewijzingQueue: indeling.toewijzingQueue.filter(
-                ondernemer => ondernemer.erkenningsNummer !== toewijzing.erkenningsNummer
-            ),
             openPlaatsen: indeling.openPlaatsen.filter(plaats => !toewijzing.plaatsen.includes(plaats.plaatsId)),
             toewijzingen: [...indeling.toewijzingen, toewijzing]
         };

@@ -10,8 +10,7 @@ import {
 } from '../markt.model';
 
 import {
-    intersection,
-    log
+    intersection
 } from '../util';
 
 import Markt from './markt';
@@ -61,7 +60,7 @@ const Indeling = {
             return Indeling._assignPlaats(indeling, ondernemer, plaats, 'reassign');
         } catch (errorMessage) {
             return handleRejection === 'reject' ?
-                   Indeling.rejectOndernemer(indeling, ondernemer, errorMessage) :
+                   Indeling._rejectOndernemer(indeling, ondernemer, errorMessage) :
                    indeling;
         }
     },
@@ -197,21 +196,6 @@ const Indeling = {
         return indeling;
     },
 
-    rejectOndernemer: (indeling: IMarktindeling, ondernemer: IMarktondernemer, reason: IAfwijzingReason): IMarktindeling => {
-        const afwijzingen = [
-            ...indeling.afwijzingen,
-            {
-                marktId          : indeling.marktId,
-                marktDate        : indeling.marktDate,
-                erkenningsNummer : ondernemer.erkenningsNummer,
-                reason,
-                ondernemer
-            }
-        ];
-
-        return { ...indeling, afwijzingen };
-    },
-
     _assignExpansion: (indeling: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => {
         const { ondernemer, plaatsen } = toewijzing;
         const targetSize = Ondernemer.getTargetSize(ondernemer);
@@ -253,33 +237,46 @@ const Indeling = {
         plaats: IMarktplaats,
         conflictResolution: 'merge' | 'reassign' | 'keep-both' = 'keep-both'
     ): IMarktindeling => {
-        const toewijzing = Toewijzing.create(indeling, plaats, ondernemer);
-        log(`Plaats toegewezen aan ${ondernemer.erkenningsNummer}: ${toewijzing.plaatsen}`);
-
+        const { erkenningsNummer } = ondernemer;
         const existingToewijzing = Toewijzing.find(indeling, ondernemer);
-        let newToewijzing: IToewijzing = {
-            marktId: indeling.marktId,
-            marktDate: indeling.marktDate,
-            plaatsen: [...toewijzing.plaatsen],
-            erkenningsNummer: ondernemer.erkenningsNummer,
-
-            // For convenience, access to the full object
-            ondernemer
-        };
+        let newToewijzing = Toewijzing.create(indeling, plaats, ondernemer);
 
         if (existingToewijzing) {
-            log(`Ondernemer is reeds toegwezen aan plaats(en): ${existingToewijzing.plaatsen.join(', ')}`);
-
             if (conflictResolution === 'merge') {
                 newToewijzing = Toewijzing.merge(existingToewijzing, newToewijzing);
             }
-
             if (conflictResolution !== 'keep-both') {
                 indeling = Toewijzing.remove(indeling, existingToewijzing);
             }
         }
 
-        return Toewijzing.add(indeling, newToewijzing);
+        indeling = Toewijzing.add(indeling, newToewijzing);
+
+        return {
+            ...indeling,
+            toewijzingQueue: indeling.toewijzingQueue.filter(ondernemer =>
+                ondernemer.erkenningsNummer !== erkenningsNummer
+            )
+        };
+    },
+
+    _rejectOndernemer: (indeling: IMarktindeling, ondernemer: IMarktondernemer, reason: IAfwijzingReason): IMarktindeling => {
+        const { erkenningsNummer } = ondernemer;
+        const afwijzingen = indeling.afwijzingen.concat({
+            marktId          : indeling.marktId,
+            marktDate        : indeling.marktDate,
+            erkenningsNummer : ondernemer.erkenningsNummer,
+            reason,
+            ondernemer
+        });
+
+        return {
+            ...indeling,
+            afwijzingen,
+            toewijzingQueue: indeling.toewijzingQueue.filter(ondernemer =>
+                ondernemer.erkenningsNummer !== erkenningsNummer
+            )
+        };
     },
 
     _removeFromExpansionQueue: (indeling: IMarktindeling, toewijzing: IToewijzing) => {
