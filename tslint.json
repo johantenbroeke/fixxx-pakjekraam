@@ -170,7 +170,7 @@
       "options": ["ignore-for-loop"]
     },
     "quotemark": {
-      "options": ["avoid-escape", "avoid-template", "single"]
+      "options": ["avoid-escape", "avoid-template", "single", "jsx-double"]
     },
     "radix": true,
     "semicolon": {
