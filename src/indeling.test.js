@@ -13,9 +13,8 @@ function calc(callback) {
     return calcToewijzingen(markt);
 }
 function findPlaatsen(toewijzingen, sollicitatieNummer) {
-    return toewijzingen
-    .find(({ ondernemer }) => ondernemer.sollicitatieNummer === sollicitatieNummer)
-    .plaatsen.sort();
+    const ond = toewijzingen.find(({ ondernemer }) => ondernemer.sollicitatieNummer === sollicitatieNummer);
+    return ond ? ond.plaatsen.sort() : [];
 }
 function isRejected(afwijzingen, sollicitatieNummer) {
     return afwijzingen.some(({ ondernemer }) => ondernemer.sollicitatieNummer === sollicitatieNummer);
@@ -529,9 +528,9 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          */
         const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
-                ondernemer({ status: 'vpl', plaatsen: ['1'] }),
-                ondernemer({ status: 'vpl', plaatsen: ['2'] }),
-                ondernemer({ status: 'vpl', plaatsen: ['3'] })
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] }),
+                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] }),
+                ondernemer({ sollicitatieNummer: 3, status: 'vpl', plaatsen: ['3'] })
             ],
             marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats()],
             voorkeuren: [
@@ -845,7 +844,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
     });
 });
 
-describe('Automatisch toewijzen: edge cases', () => {
+describe('Edge cases', () => {
     it.skip('Een vasteplaatshouder niet toegewezen kan worden aan één van de vaste plaatsen', () => {
         /*
          * Scenario:
@@ -881,7 +880,7 @@ describe('Automatisch toewijzen: edge cases', () => {
          */
     });
 
-    it.skip('Een wordt gecompenseerd voor een (tijdelijk) inactieve vaste plaats', () => {
+    it.skip('Een ondernemer wordt gecompenseerd voor een (tijdelijk) inactieve vaste plaats', () => {
         /*
          * Scenario:
          * - 1 inactieve marktplaats
@@ -890,7 +889,10 @@ describe('Automatisch toewijzen: edge cases', () => {
          * - 1 sollicitant
          */
         const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
-            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }), ondernemer()],
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
+                ondernemer()
+            ],
             marktplaatsen: [plaats({ inactive: true }), plaats(), plaats()]
         }));
 
@@ -909,7 +911,9 @@ describe('Automatisch toewijzen: edge cases', () => {
          * - 1 ondernemer die deze als vaste plaatsen heeft
          */
         const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
-            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['3', '4'] })],
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['3', '4'] })
+            ],
             marktplaatsen: [plaats(), plaats(), plaats({ inactive: true }), plaats()]
         }));
 
@@ -978,26 +982,10 @@ describe('Automatisch toewijzen: edge cases', () => {
                 plaats({ branches: ['branche-x'] })
             ],
             voorkeuren: [
-                voorkeur({
-                    sollicitatieNummer: 1,
-                    plaatsId: '3',
-                    priority: FIRST_CHOICE
-                }),
-                voorkeur({
-                    sollicitatieNummer: 1,
-                    plaatsId: '2',
-                    priority: SECOND_CHOICE
-                }),
-                voorkeur({
-                    sollicitatieNummer: 2,
-                    plaatsId: '4',
-                    priority: FIRST_CHOICE
-                }),
-                voorkeur({
-                    sollicitatieNummer: 2,
-                    plaatsId: '3',
-                    priority: SECOND_CHOICE
-                })
+                voorkeur({sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE}),
+                voorkeur({sollicitatieNummer: 1, plaatsId: '2', priority: SECOND_CHOICE}),
+                voorkeur({sollicitatieNummer: 2, plaatsId: '4', priority: FIRST_CHOICE}),
+                voorkeur({sollicitatieNummer: 2, plaatsId: '3', priority: SECOND_CHOICE})
             ]
         }));
 
