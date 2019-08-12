@@ -73,7 +73,7 @@
     "max-params": ["off"],
     "max-statements-per-line": ["error", { "max": 2 }],
     "max-statements": ["off"],
-    "multiline-comment-style": ["error"],
+    "multiline-comment-style": ["off"],
     "multiline-ternary": ["off"],
     "new-parens": ["error"],
     "newline-after-var": ["off", "always"],
@@ -86,7 +86,7 @@
         "properties": true
       }
     ],
-    "newline-before-return": ["error"],
+    "newline-before-return": ["off"],
     "newline-per-chained-call": ["off"],
     "no-alert": ["error"],
     "no-array-constructor": ["error"],
@@ -226,7 +226,10 @@
     "operator-assignment": ["off"],
     "operator-linebreak": ["off", "before"],
     "padded-blocks": ["error", "never"],
-    "padding-line-between-statements": ["error", { "blankLine": "always", "prev": "*", "next": "return" }],
+    "padding-line-between-statements": [
+        "off",
+        { "blankLine": "always", "prev": "*", "next": "return" }
+    ],
     "prefer-arrow-callback": ["off"],
     "prefer-const": ["error"],
     "prefer-destructuring": ["off"],
@@ -239,7 +242,7 @@
     "radix": ["error", "always"],
     "require-atomic-updates": ["error"],
     "require-await": ["error"],
-    "require-jsdoc": ["error"],
+    "require-jsdoc": ["off"],
     "rest-spread-spacing": ["error"],
     "require-unicode-regexp": ["off"],
     "require-yield": ["error"],
