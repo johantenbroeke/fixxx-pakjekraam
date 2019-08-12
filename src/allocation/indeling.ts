@@ -53,7 +53,7 @@ const Indeling = {
             }
 
             const mogelijkePlaatsen = plaatsen || indeling.openPlaatsen;
-            const plaats = Indeling.findBestePlaats(ondernemer, mogelijkePlaatsen, indeling, maximum);
+            const plaats = Indeling.findBestePlaats(indeling, ondernemer, mogelijkePlaatsen, maximum);
             if (!plaats) {
                 throw 'Geen plaats gevonden';
             }
@@ -88,9 +88,9 @@ const Indeling = {
     },
 
     findBestePlaats: (
+        indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
         openPlaatsen: IMarktplaats[],
-        indeling: IMarktindeling,
         maximum: number = 1
     ) => {
         let mogelijkePlaatsen = openPlaatsen;
@@ -226,7 +226,7 @@ const Indeling = {
 
         const adjacent = Markt.getAdjacentPlaatsen(indeling.rows, plaatsen, 1, indeling.obstakels);
         const openAdjacent = intersection(adjacent, indeling.openPlaatsen);
-        const uitbreidingPlaats = Indeling.findBestePlaats(ondernemer, openAdjacent, indeling);
+        const uitbreidingPlaats = Indeling.findBestePlaats(indeling, ondernemer, openAdjacent);
 
         if (!uitbreidingPlaats) {
             return Indeling._removeFromExpansionQueue(indeling, toewijzing);
