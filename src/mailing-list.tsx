@@ -15,7 +15,7 @@ import {
 } from './pakjekraam-api';
 import { retry } from './rxjs-util';
 import { getAllUsers } from './keycloak-api';
-import { readOnlyLogin } from './makkelijkemarkt-auth';
+import { checkLogin } from './makkelijkemarkt-api';
 
 requireEnv('MAILER_FROM');
 
@@ -27,7 +27,7 @@ const users$ = defer(() => getAllUsers()).pipe(
     shareReplay(1),
 );
 
-const makkelijkeMarkt$ = defer(() => readOnlyLogin()).pipe(
+const makkelijkeMarkt$ = defer(() => checkLogin()).pipe(
     tap(
         () => console.log('Makkelijke Markt API OK!'),
         () => console.log('Unable to connect to the Makkelijke Markt API'),
@@ -37,12 +37,12 @@ const makkelijkeMarkt$ = defer(() => readOnlyLogin()).pipe(
 );
 
 makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]) =>
-    getMarktenByDate(makkelijkeMarkt.token, marktDate).then(markten =>
+    getMarktenByDate(marktDate).then(markten =>
         markten
             .filter(markt => markt.id === 20)
             .map(markt =>
                 Promise.all([
-                    getMarktondernemersByMarkt(makkelijkeMarkt.token, String(markt.id)),
+                    getMarktondernemersByMarkt(String(markt.id)),
                     getToewijzingen(String(markt.id), marktDate),
                     getPlaatsvoorkeuren(String(markt.id)),
                     getAanmeldingen(String(markt.id), marktDate),

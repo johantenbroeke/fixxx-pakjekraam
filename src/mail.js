@@ -16,7 +16,7 @@ const transport = nodemailer.createTransport(
     hostname === 'smtp.sendgrid.net' && username === 'apikey'
         ? sgTransport({
               auth: {
-                  api_key: password || searchParams.get('password') // eslint-disable-line camelcase
+                  api_key: password || searchParams.get('password'), // eslint-disable-line camelcase
               }
           })
         : {

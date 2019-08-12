@@ -15,6 +15,7 @@ const IndelingslijstGroup = ({
     toewijzingen,
     type,
     datum,
+    plaatsvoorkeuren,
 }) => {
     let first = true;
     const renderPlaats = props => {
@@ -38,11 +39,11 @@ const IndelingslijstGroup = ({
                         <th className="IndelingslijstGroup__header IndelingslijstGroup__header-plaats Plaats__prop Plaats__prop-plaats-nr">
                             nr.
                         </th>
-                        <th className="IndelingslijstGroup__header IndelingslijstGroup__vph Plaats__prop Plaats__prop-vph">
+                        <th className="IndelingslijstGroup__header IndelingslijstGroup__vph Plaats__prop Plaats__prop-soll">
                             vph
                         </th>
                         <th className="IndelingslijstGroup__header IndelingslijstGroup__vph Plaats__prop Plaats__prop-naam" />
-                        <th className="IndelingslijstGroup__header IndelingslijstGroup__empty-field Plaats__prop Plaats__prop-vph" />
+                        <th className="IndelingslijstGroup__header IndelingslijstGroup__empty-field Plaats__prop Plaats__prop-soll" />
                         <th className="IndelingslijstGroup__header IndelingslijstGroup__empty-field Plaats__prop Plaats__prop-naam" />
                         <th className="IndelingslijstGroup__header IndelingslijstGroup__status Plaats__prop Plaats__prop-status" />
                     </tr>
@@ -73,6 +74,7 @@ const IndelingslijstGroup = ({
                             datum,
                             type,
                             toewijzing,
+                            plaatsvoorkeuren,
                         };
 
                         if (plaatsList[plaatsNr]) {
@@ -118,6 +120,7 @@ IndelingslijstGroup.propTypes = {
     markt: PropTypes.object.isRequired,
     type: PropTypes.string,
     datum: PropTypes.string,
+    plaatsvoorkeuren: PropTypes.array,
 };
 
 module.exports = IndelingslijstGroup;
