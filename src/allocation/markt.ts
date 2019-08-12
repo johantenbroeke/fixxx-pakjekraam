@@ -1,4 +1,5 @@
 import {
+    IMarkt,
     IMarktplaats,
     IObstakelBetween,
     PlaatsId
@@ -17,18 +18,18 @@ const Markt = {
     // first the places left of the original `plaatsIds`, then the places to the
     // right of it.
     getAdjacentPlaatsen: (
-        rows: IMarktplaats[][],
+        markt: IMarkt,
         plaatsIds: PlaatsId[],
-        depth: number = 1,
-        obstacles: IObstakelBetween[] = []
+        depth: number = 1
     ): IMarktplaats[] => {
+        const { rows, obstakels } = markt;
         const row = Markt._findRowForPlaatsen(rows, plaatsIds);
 
         return plaatsIds
         .map(plaatsId => {
             return [].concat(
-                Markt._getAdjacent(row, plaatsId, -1, depth, obstacles),
-                Markt._getAdjacent(row, plaatsId, 1, depth, obstacles)
+                Markt._getAdjacent(row, plaatsId, -1, depth, obstakels),
+                Markt._getAdjacent(row, plaatsId, 1, depth, obstakels)
             );
         })
         .reduce(flatten, [])

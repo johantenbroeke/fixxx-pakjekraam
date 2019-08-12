@@ -129,7 +129,7 @@ const Indeling = {
         if (maximum > 1) {
             mogelijkePlaatsen = mogelijkePlaatsen.filter(p => {
                 const expansionSize = maximum - 1;
-                const adjacent = Markt.getAdjacentPlaatsen(indeling.rows, [p.plaatsId], expansionSize, indeling.obstakels);
+                const adjacent = Markt.getAdjacentPlaatsen(indeling, [p.plaatsId], expansionSize);
 
                 return adjacent.length >= expansionSize;
             });
@@ -203,7 +203,7 @@ const Indeling = {
             return indeling;
         }
 
-        const adjacent = Markt.getAdjacentPlaatsen(indeling.rows, plaatsen, 1, indeling.obstakels);
+        const adjacent = Markt.getAdjacentPlaatsen(indeling, plaatsen, 1);
         const openAdjacent = intersection(adjacent, indeling.openPlaatsen);
         const uitbreidingPlaats = Indeling.findBestePlaats(indeling, ondernemer, openAdjacent);
 

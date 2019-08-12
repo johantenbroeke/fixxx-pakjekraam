@@ -1,10 +1,20 @@
 const Markt = require('./allocation/markt.ts').default;
 
 describe('Aanliggende plaatsen', () => {
-    const getAdjacent = (marketDef, placeIds, depth=1, obstacles) => {
-        const rows = marketDef.map(ids => ids.map(plaatsId => ({ plaatsId })));
+    const getAdjacent = (marketDef, placeIds, depth=1, obstakels) => {
+        const markt = {
+            rows          : marketDef.map(ids => ids.map(plaatsId => ({ plaatsId }))),
+            obstakels,
+            marktId       : '0',
+            marktDate     : 'unused',
+            naam          : 'unused',
+            branches      : [],
+            marktplaatsen : [],
+            voorkeuren    : [],
+            ondernemers   : []
+        };
 
-        return Markt.getAdjacentPlaatsen(rows, placeIds, depth, obstacles)
+        return Markt.getAdjacentPlaatsen(markt, placeIds, depth)
         .map(({ plaatsId }) => plaatsId)
         .sort();
     };
