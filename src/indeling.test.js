@@ -27,7 +27,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 1 marktplaats
          * - 1 ondernemer
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer()],
             marktplaatsen: [plaats()]
         }));
@@ -42,7 +42,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 1 inactieve marktplaats
          * - 2 ondernemers
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ status: 'vpl', plaatsen: ['1'] }), ondernemer()],
             marktplaatsen: [plaats({ inactive: true })]
         }));
@@ -52,7 +52,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
     });
 
     it('kan kiezen niet te worden ingedeeld op willekeurige plaatsen', () => {
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ voorkeur: { anywhere: false, maximum: 3 } }),
                 ondernemer({ voorkeur: { anywhere: false } })
@@ -76,7 +76,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 2 marktplaatsen
          * - 1 ondernemer
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['2'] })],
             marktplaatsen: [plaats(), plaats()]
         }));
@@ -90,7 +90,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 4 marktplaatsen
          * - 1 ondernemer met een meervoudige plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['2', '3', '4'] })],
             marktplaatsen: [plaats(), plaats(), plaats(), plaats()]
         }));
@@ -105,7 +105,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 3 marktplaatsen
          * - 1 ondernemer met een meervoudige plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { maximum: 1 } })],
             marktplaatsen: [plaats(), plaats()],
             voorkeuren: [
@@ -126,7 +126,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 1 ondernemer met lage anceniteit en branchetoewijzing
          */
 
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, voorkeur: { branches: ['standwerker'] } }),
                 ondernemer({ sollicitatieNummer: 2, voorkeur: { branches: ['standwerker'] } })
@@ -148,7 +148,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 1 marktplaats
          * - 2 ondernemers
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 99 }),
                 ondernemer({ sollicitatieNummer: 42 })
@@ -169,7 +169,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 2 ondernemers met dezelfde branchetoewijzing
          * - de markt staat maximaal 1 ondernemer toe met deze branchetoewijzing
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } }),
                 ondernemer({ sollicitatieNummer: 42, voorkeur: { branches: ['branche-x'] } })
@@ -196,7 +196,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 2 ondernemers met dezelfde branchetoewijzing
          * - de markt staat maximaal 1 ondernemer toe met deze branchetoewijzing
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } }),
                 ondernemer({ sollicitatieNummer: 42, voorkeur: { branches: ['branche-x'] } })
@@ -223,7 +223,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
          * - 1 ondernemer met hoge anceniteit zonder vaste plaats
          * - 1 ondernemer met lagere anceniteit en vaste plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 42, status: 'soll' }),
                 ondernemer({ sollicitatieNummer: 99, status: 'vpl' })
@@ -243,7 +243,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
          * - 1 ondernemer met hoge anceniteit zonder vaste plaats
          * - 1 ondernemer met lagere anceniteit en tijdelijke vaste plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 42, status: 'soll' }),
                 ondernemer({ sollicitatieNummer: 99, status: 'vkk' })
@@ -263,7 +263,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
          * - 2 ondernemer met lage anceniteit maar met vaste plaatsen
          * - 3 ondernemers met hoge anceniteit die ook graag op de vaste plaatsen willen staan
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl' }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vkk' }),
@@ -292,7 +292,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
          * - 1 ondernemer met lage anceniteit en branchetoewijzing
          */
 
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 42 }),
                 ondernemer({ sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } })
@@ -312,7 +312,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
          * - 1 ondernemer met hoge anceniteit zonder eigen materieel
          * - 1 ondernemer met lage anceniteit met eigen materieel
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 42 }),
                 ondernemer({ sollicitatieNummer: 99, voorkeur: { verkoopinrichting: ['eigen-materieel'] } })
@@ -333,7 +333,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
          * - 1 ondernemer op de A-lijst met lage anceniteit
          * - 1 ondernemer niet op de A-lijst met hoge anceniteit
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 42 }),
                 ondernemer({ sollicitatieNummer: 99 })
@@ -359,7 +359,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - 1 sollicitant wil ook graag op de tweede plaats staan
          */
 
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, aanmelding, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, aanmelding, voorkeur }) => ({
             ondernemers: [ondernemer(), ondernemer({ plaatsen: ['1'], status: 'vpl' })],
             marktplaatsen: [plaats(), plaats()],
             voorkeuren: [
@@ -381,7 +381,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - 1 ondernemer met vaste plaats is toegekend aan de eerste plaats
          *   en heeft een voorkeur geuit om op tweede plaats te staan
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] })
             ],
@@ -402,7 +402,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - 2 marktplaatsen
          * - 2 ondernemers
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] })
@@ -424,7 +424,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          *   en heeft een voorkeur geuit om op tweede plaats te staan
          */
 
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, aanmelding, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, aanmelding, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 42, plaatsen: ['2'], status: 'vpl' }),
                 ondernemer({ sollicitatieNummer: 99 })
@@ -448,7 +448,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - 2 marktplaatsen
          * - 2 ondernemers
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ status: 'vpl', plaatsen: ['1'] }),
                 ondernemer({ status: 'vpl', plaatsen: ['2'] })
@@ -471,7 +471,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - 2 marktplaatsen
          * - 2 ondernemers
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] })
@@ -495,7 +495,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - 4 marktplaatsen
          * - 3 ondernemers
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3'] }),
@@ -526,7 +526,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - wanneer de ondernemer met 1e anceniteit verschuift, komt de plek vrij waar ondernemer 2 en 3 ook graag naar toe willen
          * - de tweede ondernemer heeft meer recht dan de ondernemer die in eerste instantie al kon verschuiven
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] }),
@@ -554,7 +554,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - 2 marktplaatsen
          * - 2 ondernemers
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] })
@@ -578,7 +578,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
          * - 1 ondernemer met vaste plaats is toegekend aan de eerste plaats
          *   en heeft een voorkeur geuit om op tweede plaats te staan
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3'] })
@@ -605,7 +605,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 2 marktplaatsen
          * - 1 ondernemer met een dubbele plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 2 } })],
             marktplaatsen: [plaats(), plaats()]
         }));
@@ -620,7 +620,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 3 marktplaatsen
          * - 1 ondernemer met een meervoudige plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 3 } })],
             marktplaatsen: [plaats(), plaats(), plaats()]
         }));
@@ -635,7 +635,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 3 marktplaatsen
          * - 1 ondernemer met een meervoudige plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 3 } })],
             marktplaatsen: [plaats(), plaats(), plaats()],
             voorkeuren: [
@@ -656,7 +656,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 2 marktplaatsen
          * - 1 ondernemer met een dubbele plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, voorkeur: { minimum: 2 } })],
             marktplaatsen: [plaats(), plaats()]
         }));
@@ -673,7 +673,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 1 ondernemers met branchetoewijzing, wil 3 plaatsen
          * - de markt staat maximaal 2 plaatsen toe met deze branchetoewijzing
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 3, branches: ['branche-x'] } })],
             marktplaatsen: [plaats(), plaats(), plaats()],
             branches: [{
@@ -692,7 +692,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 2 marktplaatsen gescheiden door een straat
          * - 1 ondernemer met een voorkeur voor 2 kramen
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 2 } })],
             marktplaatsen: [plaats(), plaats()],
             rows: [['1'], ['2']]
@@ -710,7 +710,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 1 ondernemer met een vaste plek op de middelste kraam
          * - de ondernemer heeft een voorkeur voor kraam 2, daarna 1, daarna 3
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 2 } })],
             marktplaatsen: [plaats(), plaats(), plaats()],
             voorkeuren: [
@@ -731,7 +731,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 1 ondernemer met een vaste plek op de middelste kraam
          * - de ondernemer heeft een voorkeur voor kraam 2, daarna 1, daarna 3
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ voorkeur: { maximum: 2 } }), ondernemer({ voorkeur: { maximum: 2 } })],
             marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats(), plaats()],
             voorkeuren: [
@@ -755,7 +755,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 1 ondernemer met een vaste plek op de middelste kraam
          * - de ondernemer heeft een voorkeur voor kraam 2, daarna 1, daarna 3
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ voorkeur: { maximum: 3 }, plaatsen: ['3', '4'], status: 'vpl' }),
                 ondernemer({ voorkeur: { maximum: 2 } })
@@ -782,7 +782,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 2 marktplaatsen
          * - 1 ondernemer met een dubbele plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ voorkeur: { minimum: 2 } })],
             marktplaatsen: [plaats()]
         }));
@@ -797,7 +797,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 2 marktplaatsen
          * - 1 ondernemer met een dubbele plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ voorkeur: { minimum: 2, anywhere: false } })],
             marktplaatsen: [plaats(), plaats({ inactive: true }), plaats(), plaats()],
             voorkeuren: [
@@ -822,7 +822,7 @@ describe('Een ondernemer die wil uitbreiden', () => {
          * - 2 marktplaatsen
          * - 1 ondernemer met een dubbele plaats
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ voorkeur: { minimum: 2 } }), ondernemer()],
             marktplaatsen: [plaats(), plaats(), plaats(), plaats()],
             voorkeuren: [
@@ -851,7 +851,7 @@ describe('Edge cases', () => {
          * - 3 marktplaatsen, waarvan de middelste tijdelijk buiten gebruik is
          * - 1 ondernemer met een meervoudige plaats, die niet op zijn vaste plaats kan
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [ondernemer({ status: 'vpl', plaatsen: ['1', '2', '3'] })],
             marktplaatsen: [plaats(), plaats({ inactive: true }), plaats()]
         }));
@@ -866,7 +866,7 @@ describe('Edge cases', () => {
          * - 1 actieve marktplaats
          * - 1 ondernemer die deze als vaste plaatsen heeft
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ status: 'vpl', plaatsen: ['1', '2'] })
             ],
@@ -892,7 +892,7 @@ describe('Edge cases', () => {
          * - 1 ondernemer die deze als vaste plaatsen heeft
          * - 1 sollicitant
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
                 ondernemer()
@@ -914,7 +914,7 @@ describe('Edge cases', () => {
          * - 1 actieve marktplaats
          * - 1 ondernemer die deze als vaste plaatsen heeft
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['3', '4'] })
             ],
@@ -938,7 +938,7 @@ describe('Edge cases', () => {
          * - beide ondernemers willen uitbreiden naar dezelfde brancheplaats in het midden,
          *   en de ondernemer zonder branche heeft betere anceniteit
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ voorkeur: { maximum: 3 } })],
             marktplaatsen: [plaats(), plaats(), plaats(), plaats()],
             voorkeuren: [
@@ -974,7 +974,7 @@ describe('Edge cases', () => {
          * - beide ondernemers willen uitbreiden naar dezelfde brancheplaats in het midden,
          *   en de ondernemer zonder branche heeft betere anceniteit
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 2 } }),
                 ondernemer({ sollicitatieNummer: 2, voorkeur: { maximum: 2, branches: ['branche-x'] } })
@@ -986,10 +986,10 @@ describe('Edge cases', () => {
                 plaats({ branches: ['branche-x'] })
             ],
             voorkeuren: [
-                voorkeur({sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE}),
-                voorkeur({sollicitatieNummer: 1, plaatsId: '2', priority: SECOND_CHOICE}),
-                voorkeur({sollicitatieNummer: 2, plaatsId: '4', priority: FIRST_CHOICE}),
-                voorkeur({sollicitatieNummer: 2, plaatsId: '3', priority: SECOND_CHOICE})
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '2', priority: SECOND_CHOICE }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '4', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '3', priority: SECOND_CHOICE })
             ]
         }));
 
@@ -1005,7 +1005,7 @@ describe('Edge cases', () => {
          * - 2 marktrijen met elk 2 marktplaatsen
          * - 2 ondernemers met een voorkeur voor 2 kramen
          */
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 2 } }),
                 ondernemer({ sollicitatieNummer: 2, voorkeur: { maximum: 2 } })
@@ -1021,7 +1021,7 @@ describe('Edge cases', () => {
     });
 
     it('Een ondernemer kan niet uitbreiden wanneer een obstakel dat blokeert', () => {
-        const {toewijzingen, afwijzingen} = calc(({ ondernemer, plaats, voorkeur }) => ({
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, voorkeur: { maximum: 2 } })],
             marktplaatsen: [plaats(), plaats()],
             obstakels: [{ kraamA: '1', kraamB: '2', obstakel: ['boom'] }]
