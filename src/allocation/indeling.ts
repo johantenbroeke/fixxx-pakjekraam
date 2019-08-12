@@ -66,14 +66,13 @@ const Indeling = {
     },
 
     assignVastePlaatsen: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktindeling => {
-        const beschikbaar = Indeling.getAvailableVastePlaatsenFor(indeling, ondernemer);
+        const beschikbaar = Indeling.getAvailablePlaatsenFor(indeling, ondernemer);
 
         if (beschikbaar.length === 0) {
             return Indeling.assignPlaats(indeling, ondernemer, null, 'reject');
         } else {
-            const maxPlaatsen = ondernemer.voorkeur && ondernemer.voorkeur.maximum ?
-                                Math.min(beschikbaar.length, ondernemer.voorkeur.maximum) :
-                                beschikbaar.length;
+            const { voorkeur = { maximum: Infinity }, plaatsen = [] } = ondernemer;
+            const maxPlaatsen = Math.min(voorkeur.maximum, beschikbaar.length, plaatsen.length);
 
             return beschikbaar
             .slice(0, maxPlaatsen)
@@ -149,13 +148,12 @@ const Indeling = {
         };
     },
 
-    // Returns the vaste plaatsen that are still available for this ondernemer in the
+    // Returns the desired spots that are still available for this ondernemer in the
     // current indeling.
-    getAvailableVastePlaatsenFor: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktplaats[] => {
+    getAvailablePlaatsenFor: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktplaats[] => {
         return Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer)
         .filter(voorkeur => {
-             return Ondernemer.heeftVastePlaats(ondernemer, voorkeur) &&
-                    ~indeling.openPlaatsen.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId);
+             return ~indeling.openPlaatsen.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId);
          })
         .map(({ plaatsId }) => ({ plaatsId }));
     },

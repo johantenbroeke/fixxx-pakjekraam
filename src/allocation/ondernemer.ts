@@ -43,8 +43,8 @@ const Ondernemer = {
         ondernemer: IMarktondernemer,
         includeVastePlaatsen: boolean = true
     ): IPlaatsvoorkeur[] => {
-        // Merge de vaste plaatsen van deze ondernemer...
         let vastePlaatsenAsVoorkeur = <IPlaatsvoorkeur[]>[];
+        // Merge de vaste plaatsen van deze ondernemer...
         if (includeVastePlaatsen) {
             const plaatsen = Ondernemer.getVastePlaatsen(ondernemer);
             vastePlaatsenAsVoorkeur = plaatsen.map(plaats => ({
@@ -124,6 +124,15 @@ const Ondernemer = {
     wantsExpansion: (indeling: IMarktindeling, ondernemer: IMarktondernemer): number => {
         const targetSize = Ondernemer.getTargetSize(ondernemer);
         return Math.max(0, targetSize - indeling.expansionIteration);
+    } ,
+
+    wantsToMove: (indeling: IMarktindeling, ondernemer: IMarktondernemer): boolean => {
+        if (!Ondernemer.heeftVastePlaatsen(ondernemer)) {
+            return false;
+        }
+
+        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+        return voorkeuren.length >= ondernemer.plaatsen.length;
     }
 };
 

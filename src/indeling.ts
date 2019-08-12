@@ -6,7 +6,7 @@ import {
 
 import {
     count,
-    intersects,
+    intersects
 } from './util';
 
 import Indeling from './allocation/indeling';
@@ -48,16 +48,13 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * Stap 1:
      * Deel vasteplaatshouders in
      */
-    const { toewijzingQueue } = indeling;
-    const vplQueue = toewijzingQueue.filter(Ondernemer.heeftVastePlaatsen);
-    indeling = vplQueue.reduce(Indeling.assignVastePlaatsen, indeling);
+    const vphZonderVerplaatsing = indeling.toewijzingQueue.filter(ondernemer => {
+        return Ondernemer.isVast(ondernemer) && !Ondernemer.wantsToMove(indeling, ondernemer);
+    });
+    indeling = vphZonderVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
 
-    /*
-     * Stap 2:
-     * Verwerk verplaatsingen voor VPH
-     */
-    const vasteToewijzingen = indeling.toewijzingen.filter(({ ondernemer }) => Ondernemer.isVast);
-    indeling = Moving.performFor(indeling, aLijst, vasteToewijzingen);
+    const vphMetVerplaatsing = indeling.toewijzingQueue.filter(Ondernemer.heeftVastePlaatsen);
+    indeling = vphMetVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
 
     /*
      * Stap 3:
@@ -96,7 +93,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * Deel sollicitanten in
      */
     indeling = indeling.toewijzingQueue
-    .filter(ondernemer => !Ondernemer.heeftVastePlaatsen(ondernemer)) // TODO: process entire queue, VPH too!
+    .filter(ondernemer => !Ondernemer.heeftVastePlaatsen(ondernemer))
     .reduce((indeling, ondernemer) => Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen), indeling);
 
     /*
