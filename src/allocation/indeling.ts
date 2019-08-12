@@ -69,11 +69,8 @@ const Indeling = {
     assignVastePlaatsen: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktindeling => {
         const beschikbaar = Indeling.getAvailableVastePlaatsenFor(indeling, ondernemer);
 
-        // FIXME: Handle rejections correctly
-        // FIXME: ondernemer doesn't have to be rejected when they can move to another open spot
-        // `beschikbaar.length < ondernemer.plaatsen.length &&
         if (beschikbaar.length === 0) {
-            return Indeling.rejectOndernemer(indeling, ondernemer, { message: 'Vaste plaats(en) niet beschikbaar' });
+            return Indeling.assignPlaats(indeling, ondernemer, null, 'reject');
         } else {
             const maxPlaatsen = ondernemer.voorkeur && ondernemer.voorkeur.maximum ?
                                 Math.min(beschikbaar.length, ondernemer.voorkeur.maximum) :
