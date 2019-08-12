@@ -4,8 +4,10 @@ const OndernemerList = require('./components/OndernemerList.tsx');
 const PrintPage = require('./components/PrintPage');
 const PropTypes = require('prop-types');
 const { paginate } = require('../util');
-const { sortOndernemers, isAanwezig } = require('../indeling');
 const { A_LIJST_DAYS } = require('../domain-knowledge.js');
+
+import Indeling from '../allocation/indeling';
+import Ondernemers from '../allocation/ondernemers';
 
 class VoorrangslijstPage extends React.Component {
     propTypes = {
@@ -31,7 +33,7 @@ class VoorrangslijstPage extends React.Component {
             type,
             user,
             toewijzingen,
-            algemenevoorkeuren,
+            algemenevoorkeuren
         } = this.props;
         let { ondernemers } = this.props;
         const aLijstSollNummers = aLijst.map(ondernemer => ondernemer.sollicitatieNummer);
@@ -49,10 +51,10 @@ class VoorrangslijstPage extends React.Component {
                 !toewijzingen.find(({ erkenningsNummer }) => erkenningsNummer === ondernemer.erkenningsNummer)
         );
 
-        ondernemers = sortOndernemers(ondernemers, aLijst);
+        ondernemers = Ondernemers.sort(ondernemers, aLijst);
         ondernemers = [
-            ...ondernemers.filter(ondernemer => isAanwezig(aanmeldingen, ondernemer)),
-            ...ondernemers.filter(ondernemer => !isAanwezig(aanmeldingen, ondernemer))
+            ...ondernemers.filter(ondernemer => Indeling.isAanwezig(aanmeldingen, ondernemer)),
+            ...ondernemers.filter(ondernemer => !Indeling.isAanwezig(aanmeldingen, ondernemer))
         ];
         const ondernemersErkenningsNummers = ondernemers.map(ondernemer => ondernemer.erkenningsNummer);
         const ondernemersRest = aLijstErkenningsNummers.filter(nr => !ondernemersErkenningsNummers.includes(nr));
@@ -61,16 +63,16 @@ class VoorrangslijstPage extends React.Component {
             .reduce(
                 (total, ondernemer) => {
                     total[
-                        isAanwezig(aanmeldingen, ondernemer) &&
+                        Indeling.isAanwezig(aanmeldingen, ondernemer) &&
                         aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? aLijstAangemeld
-                            : isAanwezig(aanmeldingen, ondernemer) &&
+                            : Indeling.isAanwezig(aanmeldingen, ondernemer) &&
                               !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? Aangemeld
-                            : !isAanwezig(aanmeldingen, ondernemer) &&
+                            : !Indeling.isAanwezig(aanmeldingen, ondernemer) &&
                               aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? aLijstNietAangemeld
-                            : !isAanwezig(aanmeldingen, ondernemer) &&
+                            : !Indeling.isAanwezig(aanmeldingen, ondernemer) &&
                               !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? NietAangemeld
                             : NietAangemeld
@@ -86,7 +88,7 @@ class VoorrangslijstPage extends React.Component {
             `${titleBase} ${aLijstDay ? ', A lijst' : ''} aangemeld: ${markt.naam}`,
             `${titleBase} ${aLijstDay ? ', A lijst' : ''} niet aangemeld: ${markt.naam}`,
             `${titleBase} ${aLijstDay ? ', B lijst' : ''} aangemeld: ${markt.naam}`,
-            `${titleBase} ${aLijstDay ? ', B lijst' : ''} niet aangemeld: ${markt.naam}`,
+            `${titleBase} ${aLijstDay ? ', B lijst' : ''} niet aangemeld: ${markt.naam}`
         ];
         const plaatsvoorkeuren = voorkeuren.reduce((t, voorkeur) => {
             if (!t[voorkeur.erkenningsNummer]) {
