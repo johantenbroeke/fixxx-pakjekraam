@@ -16,7 +16,7 @@ const {
     today,
     nextWeek,
     endOfWeek,
-    stringSort,
+    stringSort
 } = require('./util.ts');
 
 const DAPPERMARKT_ID = 16;
@@ -32,7 +32,7 @@ const slugs = {
     [PLEIN_40_45_ID]: 'plein-40-45',
     [WESTERSTRAAT_ID]: 'westerstraat',
     [REIGERSBOS_ID]: 'reigersbos',
-    [TUSSEN_MEER_ID]: 'tussen-meer',
+    [TUSSEN_MEER_ID]: 'tussen-meer'
 };
 
 const slugifyMarkt = marktId => slugs[marktId] || String(marktId);
@@ -44,7 +44,7 @@ const dagen = {
     wo: 3,
     do: 4,
     vr: 5,
-    za: 6,
+    za: 6
 };
 
 const parseMarktDag = dag => (dagen.hasOwnProperty(dag) ? dagen[dag] : -1);
@@ -56,7 +56,7 @@ const isoMarktDagen = {
     do: ISO_THURSDAY,
     vr: ISO_FRIDAY,
     za: ISO_SATURDAY,
-    zo: ISO_SUNDAY,
+    zo: ISO_SUNDAY
 };
 
 const A_LIJST_DAYS = [FRIDAY, SATURDAY, SUNDAY];
@@ -66,8 +66,8 @@ const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDag
 const isVast = status => status === 'vpl' || status === 'vkk';
 
 const getMarktDays = (startDate, endDate, daysOfWeek) => {
-    const start = Date.parse(startDate),
-        end = Date.parse(endDate);
+    const start = Date.parse(startDate);
+    const end = Date.parse(endDate);
 
     const days = Math.max(0, (end - start) / MILLISECONDS_IN_DAY);
 
@@ -113,14 +113,14 @@ const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
     const dates = getMarktDays(
         startDate ? startDate : addDays(Date.now(), 1),
         endDate ? endDate : addDays(endOfWeek(), DAYS_IN_WEEK),
-        (markt.marktDagen || []).map(parseMarktDag),
+        (markt.marktDagen || []).map(parseMarktDag)
     );
     const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
     // TODO: Replace non-pure `rsvpIndex` with grouping by `markt.id` afterwards
     const rsvpList = dates.map(date => ({
         date,
         rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date),
-        index: rsvpIndex++,
+        index: rsvpIndex++
     }));
 
     return rsvpList;
@@ -128,16 +128,16 @@ const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
 
 const plaatsParts = plaatsId => plaatsId.replace(/([^0-9])([0-9])|([0-9])([^0-9])/g, '$1$3 $2$4').split(/\s+/);
 const plaatsSort = (plaatsA, plaatsB, byKey) => {
-    const partsA = plaatsParts(byKey ? plaatsA[byKey] : plaatsA),
-        partsB = plaatsParts(byKey ? plaatsB[byKey] : plaatsB),
-        l = Math.min(partsA.length, partsB.length);
+    const partsA = plaatsParts(byKey ? plaatsA[byKey] : plaatsA);
+    const partsB = plaatsParts(byKey ? plaatsB[byKey] : plaatsB);
+    const l = Math.min(partsA.length, partsB.length);
 
-    let i = 0,
-        delta = 0;
+    let i = 0;
+    let delta = 0;
 
     for (; delta === 0 && i < l; i++) {
-        const partA = partsA[i],
-            partB = partsB[i];
+        const partA = partsA[i];
+        const partB = partsB[i];
 
         delta =
             /^[0-9]+$/.test(partA) && /^[0-9]+$/.test(partB)
@@ -169,5 +169,5 @@ module.exports = {
     obstakelsToLocatieKeyValue,
     filterRsvpList,
     plaatsSort,
-    isErkenningsnummer,
+    isErkenningsnummer
 };
