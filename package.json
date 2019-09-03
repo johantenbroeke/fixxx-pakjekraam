@@ -105,9 +105,11 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js,json,jsx,ts,tsx}": [
-      "tslint --type-check --project tsconfig.json --config tslint.json",
-      "git add"
+    "src/**/*.{js,json,jsx}": [
+        "eslint"
+    ],
+    "src/**/*.{ts,tsx}": [
+      "tslint --type-check --project tsconfig.json --config tslint.json"
     ]
   }
 }
