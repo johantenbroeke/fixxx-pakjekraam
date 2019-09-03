@@ -839,8 +839,8 @@ describe('Een ondernemer die wil uitbreiden', () => {
             ondernemers: [ondernemer({ voorkeur: { minimum: 2, anywhere: false } })],
             marktplaatsen: [plaats(), plaats({ inactive: true }), plaats(), plaats()],
             voorkeuren: [
-                voorkeur({sollicitatieNummer: 1, plaatsId: '1'}),
-                voorkeur({sollicitatieNummer: 1, plaatsId: '2'})
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '1' }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '2' })
             ]
         }));
 
