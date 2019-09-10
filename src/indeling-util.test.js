@@ -2,7 +2,7 @@
 
 const Markt = require('./allocation/markt.ts').default;
 
-describe('Aanliggende plaatsen', () => {
+describe('Adjacent places', () => {
     const getAdjacent = (marketDef, placeIds, depth=1, obstakels) => {
         const markt = {
             rows          : marketDef.map(ids => ids.map(plaatsId => ({ plaatsId }))),
@@ -108,11 +108,11 @@ describe('Aanliggende plaatsen', () => {
         const obstacles = [{
             kraamA   : '2',
             kraamB   : '3',
-            obstakel : ['lantaarnpaal']
+            obstakel : ['bergketen']
         }, {
             kraamA   : '6',
             kraamB   : '1',
-            obstakel : ['lantaarnpaal']
+            obstakel : ['waterzuivering']
         }];
 
         it('stops expanding at an obstacle in a linear row', () => {
@@ -129,5 +129,44 @@ describe('Aanliggende plaatsen', () => {
             expect(getAdjacent([['1', '2', '3', '4', '5', '6', '1']], ['1'], 2, obstacles)).toStrictEqual(['2']);
             expect(getAdjacent([['1', '2', '3', '4', '5', '6', '1']], ['4'], 3, obstacles)).toStrictEqual(['3', '5', '6']);
         });
+    });
+});
+
+describe('Group by adjacent', () => {
+    const groupByAdjacent = (rowDefs, placeIds, obstakels) => {
+        const markt = {
+            rows          : rowDefs.map(ids => ids.map(plaatsId => ({ plaatsId }))),
+            obstakels,
+            marktId       : '0',
+            marktDate     : 'unused',
+            naam          : 'unused',
+            branches      : [],
+            marktplaatsen : [],
+            voorkeuren    : [],
+            ondernemers   : []
+        };
+
+        return Markt.groupByAdjacent(markt, placeIds)
+        .map(group => {
+            return group.slice(0).sort();
+        });
+    };
+
+    it('works', () => {
+        expect(groupByAdjacent(
+            [
+                ['1', '2', '3', '4', '5', '6'],
+                ['7', '8', '9', '10'],
+                ['11', '12', '13', '14', '15', '16', '17']
+            ],
+            ['1', '2', '7', '12', '13', '14', '16', '17'],
+            [{
+                kraamA   : '16',
+                kraamB   : '17',
+                obstakel : ['raketlanceerinstallatie']
+            }]
+        )).toStrictEqual(
+            [['1', '2'], ['7'], ['12', '13', '14'], ['16'], ['17']]
+        );
     });
 });

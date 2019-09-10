@@ -48,6 +48,49 @@ const Markt = {
         }, []);
     },
 
+    // Provided an array in the form `['1', '2', '4', '6', '7']` will return a
+    // grouped array, where every group is a set of adjacent places. E.g.:
+    // `[['1', '2'], ['4'], ['6', '7']]`.
+    groupByAdjacent: (
+        markt: IMarkt,
+        plaatsIds: PlaatsId[],
+        result: PlaatsId[][] = []
+    ): PlaatsId[][] => {
+        const { rows, obstakels } = markt;
+        plaatsIds   = plaatsIds.slice(0);
+
+        const start = plaatsIds.shift();
+        let current = start;
+        let dir     = -1;
+
+        const group = [current];
+        result.push(group);
+
+        while (current) {
+            const row                         = Markt._findRowForPlaatsen(rows, [current]);
+            const { plaatsId: nextId = null } = Markt._getAdjacent(row, current, dir, 1, obstakels)[0] || {};
+            const nextIndex                   = plaatsIds.findIndex(id => id === nextId);
+
+            if (nextIndex === -1) {
+                if (dir === -1) {
+                    dir = 1;
+                    current = start;
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            const next = plaatsIds.splice(nextIndex, 1)[0];
+            group.push(next);
+            current = next;
+        }
+
+        return plaatsIds.length ?
+               Markt.groupByAdjacent(markt, plaatsIds, result) :
+               result;
+    },
+
     // Helper function for `getAdjacentPlaatsen`. All the `plaatsIds` should
     // reside in a single row, otherwise expansion to these places would be
     // impossible anyway — places in different rows are in a different physical
@@ -85,7 +128,7 @@ const Markt = {
         dir: number,
         depth: number = 1,
         obstacles: IObstakelBetween[] = []
-    ) => {
+    ): IMarktplaats[] => {
         const isCircular = row[0].plaatsId === row[row.length-1].plaatsId;
         // The first and last element are equal, so remove the one at the end.
         row = isCircular ? row.slice(0, -1) : row;
