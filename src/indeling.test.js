@@ -316,8 +316,8 @@ describe('Een ondernemer krijgt voorkeur', () => {
          */
         const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
-                ondernemer({ sollicitatieNummer: 1, status: 'vpl' }),
-                ondernemer({ sollicitatieNummer: 2, status: 'vkk' }),
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['3'] }),
+                ondernemer({ sollicitatieNummer: 2, status: 'vkk', plaatsen: ['4'] }),
                 ondernemer({ sollicitatieNummer: 3, status: 'soll' }),
                 ondernemer({ sollicitatieNummer: 4, status: 'vkk', plaatsen: ['2'] }),
                 ondernemer({ sollicitatieNummer: 5, status: 'vpl', plaatsen: ['1'] })
