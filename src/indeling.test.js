@@ -16,7 +16,10 @@ function calc(callback) {
 }
 function findPlaatsen(toewijzingen, sollicitatieNummer) {
     const ond = toewijzingen.find(({ ondernemer }) => ondernemer.sollicitatieNummer === sollicitatieNummer);
-    return ond ? ond.plaatsen.sort() : [];
+    return ond ? ond.plaatsen.sort() : ['Ondernemer niet gevonden in toewijzingen'];
+}
+function getOndernemers(wijzingen) {
+    return wijzingen.map(({ ondernemer }) => ondernemer.sollicitatieNummer).sort();
 }
 function isRejected(afwijzingen, sollicitatieNummer) {
     return afwijzingen.some(({ ondernemer }) => ondernemer.sollicitatieNummer === sollicitatieNummer);
@@ -279,8 +282,8 @@ describe('Een ondernemer krijgt voorkeur', () => {
             marktplaatsen: [plaats()]
         }));
 
-        expect(toewijzingen.length).toBe(1);
-        expect(afwijzingen.length).toBe(1);
+        expect(getOndernemers(toewijzingen)).toStrictEqual([99]);
+        expect(getOndernemers(afwijzingen)).toStrictEqual([42]);
         expect(findPlaatsen(toewijzingen, 99)).toStrictEqual(['1']);
     });
 
@@ -299,8 +302,8 @@ describe('Een ondernemer krijgt voorkeur', () => {
             marktplaatsen: [plaats()]
         }));
 
-        expect(toewijzingen.length).toBe(1);
-        expect(afwijzingen.length).toBe(1);
+        expect(getOndernemers(toewijzingen)).toStrictEqual([99]);
+        expect(getOndernemers(afwijzingen)).toStrictEqual([42]);
         expect(findPlaatsen(toewijzingen, 99)).toStrictEqual(['1']);
     });
 
