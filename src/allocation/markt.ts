@@ -56,6 +56,10 @@ const Markt = {
         plaatsen: IMarktplaats[],
         result: IMarktplaats[][] = []
     ): IMarktplaats[][] => {
+        if (!plaatsen || !plaatsen.length) {
+            return result;
+        }
+
         const { rows, obstakels } = markt;
         plaatsen                  = plaatsen.slice(0);
 

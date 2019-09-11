@@ -58,7 +58,7 @@ const Ondernemer = {
         // ...samen met hun verplaatsingsvoorkeuren. Sorteer aflopend op prioriteit...
         const voorkeuren = [
             ...(includeVastePlaatsen ? vastePlaatsen : []),
-            ...markt.voorkeuren.filter(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer)
+            ...markt.voorkeuren.filter(({ erkenningsNummer }) => erkenningsNummer === ondernemer.erkenningsNummer)
         ].sort(priorityCompare);
         // ...en elimineer duplicaten na sortering.
         return voorkeuren.reduce((unique, voorkeur) => {
@@ -72,7 +72,7 @@ const Ondernemer = {
     getMinimumSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] } = ondernemer;
         const { minimum = Infinity } = ondernemer.voorkeur || {};
-        return Math.min(plaatsen.length, minimum);
+        return Math.min(plaatsen.length || 1, minimum);
     },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
         const { minimum = 1, maximum = 0 } = ondernemer.voorkeur || {};
