@@ -53,13 +53,13 @@ const Markt = {
     // `[['1', '2'], ['4'], ['6', '7']]`.
     groupByAdjacent: (
         markt: IMarkt,
-        plaatsIds: PlaatsId[],
-        result: PlaatsId[][] = []
-    ): PlaatsId[][] => {
+        plaatsen: IMarktplaats[],
+        result: IMarktplaats[][] = []
+    ): IMarktplaats[][] => {
         const { rows, obstakels } = markt;
-        plaatsIds   = plaatsIds.slice(0);
+        plaatsen                  = plaatsen.slice(0);
 
-        const start = plaatsIds.shift();
+        const start = plaatsen.shift();
         let current = start;
         let dir     = -1;
 
@@ -67,9 +67,10 @@ const Markt = {
         result.push(group);
 
         while (current) {
-            const row                         = Markt._findRowForPlaatsen(rows, [current]);
-            const { plaatsId: nextId = null } = Markt._getAdjacent(row, current, dir, 1, obstakels)[0] || {};
-            const nextIndex                   = plaatsIds.findIndex(id => id === nextId);
+            const currentId                   = current.plaatsId;
+            const row                         = Markt._findRowForPlaatsen(rows, [currentId]);
+            const { plaatsId: nextId = null } = Markt._getAdjacent(row, currentId, dir, 1, obstakels)[0] || {};
+            const nextIndex                   = plaatsen.findIndex(({ plaatsId }) => plaatsId === nextId);
 
             if (nextIndex === -1) {
                 if (dir === -1) {
@@ -81,13 +82,13 @@ const Markt = {
                 }
             }
 
-            const next = plaatsIds.splice(nextIndex, 1)[0];
+            const next = plaatsen.splice(nextIndex, 1)[0];
             group.push(next);
             current = next;
         }
 
-        return plaatsIds.length ?
-               Markt.groupByAdjacent(markt, plaatsIds, result) :
+        return plaatsen.length ?
+               Markt.groupByAdjacent(markt, plaatsen, result) :
                result;
     },
 

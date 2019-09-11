@@ -2,7 +2,7 @@
 
 const Markt = require('./allocation/markt.ts').default;
 
-describe('Adjacent places', () => {
+describe('Markt.getAdjacentPlaatsen', () => {
     const getAdjacent = (marketDef, placeIds, depth=1, obstakels) => {
         const markt = {
             rows          : marketDef.map(ids => ids.map(plaatsId => ({ plaatsId }))),
@@ -132,7 +132,7 @@ describe('Adjacent places', () => {
     });
 });
 
-describe('Group by adjacent', () => {
+describe('Markt.groupByAdjacent', () => {
     const groupByAdjacent = (rowDefs, placeIds, obstakels) => {
         const markt = {
             rows          : rowDefs.map(ids => ids.map(plaatsId => ({ plaatsId }))),
@@ -145,10 +145,12 @@ describe('Group by adjacent', () => {
             voorkeuren    : [],
             ondernemers   : []
         };
+        const plaatsen = placeIds.map(id => ({ plaatsId: id }));
 
-        return Markt.groupByAdjacent(markt, placeIds)
+        return Markt.groupByAdjacent(markt, plaatsen)
         .map(group => {
-            return group.slice(0).sort();
+            return group.map(({ plaatsId }) => plaatsId)
+                        .sort();
         });
     };
 
@@ -157,16 +159,17 @@ describe('Group by adjacent', () => {
             [
                 ['1', '2', '3', '4', '5', '6'],
                 ['7', '8', '9', '10'],
-                ['11', '12', '13', '14', '15', '16', '17']
+                ['11', '12', '13', '14', '15', '16', '17'],
+                ['18', '19', '20', '18']
             ],
-            ['1', '2', '7', '12', '13', '14', '16', '17'],
+            ['1', '2', '7', '12', '13', '14', '16', '17', '20', '18'],
             [{
                 kraamA   : '16',
                 kraamB   : '17',
                 obstakel : ['raketlanceerinstallatie']
             }]
         )).toStrictEqual(
-            [['1', '2'], ['7'], ['12', '13', '14'], ['16'], ['17']]
+            [['1', '2'], ['7'], ['12', '13', '14'], ['16'], ['17'], ['18', '20']]
         );
     });
 });
