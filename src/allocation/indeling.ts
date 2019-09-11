@@ -74,12 +74,15 @@ const Indeling = {
         }
     },
 
-    assignVastePlaatsen: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktindeling => {
+    assignVastePlaatsen: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): IMarktindeling => {
         const beschikbaar = Indeling.getAvailablePlaatsenForVPH(indeling, ondernemer);
 
         if (beschikbaar.length === 0) {
-            const minimum = Ondernemer.getMinimumSize(ondernemer);
-            return Indeling.assignPlaats(indeling, ondernemer, null, 'reject', minimum);
+            const startSize = Ondernemer.getStartSize(ondernemer);
+            return Indeling.assignPlaats(indeling, ondernemer, null, 'reject', startSize);
         } else {
             const { plaatsen = [] } = ondernemer;
             const { maximum = Infinity } = ondernemer.voorkeur || {};
@@ -149,32 +152,35 @@ const Indeling = {
         return mogelijkePlaatsen.slice(0, maximum);
     },
 
-    getAvailablePlaatsenForVPH: (indeling: IMarktindeling, ondernemer: IMarktondernemer): IMarktplaats[] => {
-        // Verwerk verplaatsingsvoorkeuren enkel als de ondernemer ook wil verplaatsen.
-        // Een VPH met 2 plaatsen die maar 1 verplaatsingsvoorkeur opgeeft wordt niet
-        // beschouwd als iemand die wil verplaatsen. De voorkeursplaats wordt in dit geval
-        // dan ook genegeerd.
-        //
-        // Tevens, als er niet genoeg voorkeuren vrij zijn om het gewenste aantal kramen te
-        // kunnen verplaatsen worden de resterende voorkeursplaatsen ook genegeerd.
-        let plaatsen;
+    getAvailablePlaatsenForVPH: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): IMarktplaats[] => {
         const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
-        const minimum       = Ondernemer.getMinimumSize(ondernemer);
 
         if (!Ondernemer.wantsToMove(indeling, ondernemer)) {
-            plaatsen = vastePlaatsen;
-        } else {
-            const availableVoorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false).filter(voorkeur =>
-                ~indeling.openPlaatsen.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId)
+            return vastePlaatsen.filter(plaats =>
+                Indeling._isAvailable(indeling, plaats)
             );
-            plaatsen = availableVoorkeuren.length >= Math.min(minimum, vastePlaatsen.length) ?
-                       Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer) :
-                       vastePlaatsen;
         }
 
-        return plaatsen.filter(plaats =>
-            ~indeling.openPlaatsen.findIndex(({ plaatsId }) => plaatsId === plaats.plaatsId)
-        );
+        const startSize  = Ondernemer.getStartSize(ondernemer);
+        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+
+        const available = Markt.groupByAdjacent(indeling, voorkeuren)
+        .reduce((result, adjacentPlaatsen) => {
+            const available = adjacentPlaatsen.filter(plaats =>
+                Indeling._isAvailable(indeling, plaats)
+            );
+            return available.length >= startSize ?
+                   result.concat(available) :
+                   result;
+        }, []);
+
+        return [
+            ...available,
+            ...vastePlaatsen
+        ];
     },
 
     isAanwezig: (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) => {
@@ -255,7 +261,20 @@ const Indeling = {
         };
     },
 
-    _rejectOndernemer: (indeling: IMarktindeling, ondernemer: IMarktondernemer, reason: IAfwijzingReason): IMarktindeling => {
+    _isAvailable: (
+        indeling: IMarktindeling,
+        plaats: IMarktplaats
+    ): boolean => {
+        return !!~indeling.openPlaatsen.findIndex(({ plaatsId }) =>
+            plaatsId === plaats.plaatsId
+        );
+    },
+
+    _rejectOndernemer: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer,
+        reason: IAfwijzingReason
+    ): IMarktindeling => {
         const { erkenningsNummer } = ondernemer;
         const afwijzingen = indeling.afwijzingen.concat({
             marktId          : indeling.marktId,

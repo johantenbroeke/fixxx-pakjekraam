@@ -16,7 +16,9 @@ function calc(callback) {
 }
 function findPlaatsen(toewijzingen, sollicitatieNummer) {
     const ond = toewijzingen.find(({ ondernemer }) => ondernemer.sollicitatieNummer === sollicitatieNummer);
-    return ond ? ond.plaatsen.sort() : ['Ondernemer niet gevonden in toewijzingen'];
+    return ond ?
+           ond.plaatsen.sort((a, b) => Number(a) - Number(b)) :
+           ['Ondernemer niet gevonden in toewijzingen'];
 }
 function getOndernemers(wijzingen) {
     return wijzingen.map(({ ondernemer }) => ondernemer.sollicitatieNummer).sort();
@@ -402,7 +404,7 @@ describe('Een ondernemer krijgt voorkeur', () => {
 
 describe('Een vasteplaatshouder die wil verplaatsen', () => {
     it('wordt enkel verplaatst als zij genoeg voorkeuren hebben opgegeven', () => {
-        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, aanmelding, voorkeur }) => ({
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, aanmelding, voorkeur }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['4'] })
@@ -414,10 +416,33 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
             ]
         }));
 
-        expect(toewijzingen.length).toBe(2);
-        expect(afwijzingen.length).toBe(0);
+        expect(getOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(getOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['5']);
+
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, aanmelding, voorkeur }) => ({
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
+                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['6', '7'] })
+            ],
+            marktplaatsen: [
+                plaats(), plaats(), plaats(), plaats(), plaats(), plaats(),
+                plaats(), plaats(), plaats(), plaats(), plaats(), plaats()
+            ],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: 2 }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '5', priority: 1 }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '8', priority: 1 }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '10', priority: 1 }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '11', priority: 1 }),
+            ]
+        }));
+
+        expect(getOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(getOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['10', '11']);
     });
 
     it('mag dit voor sollicitanten worden ingedeeld', () => {

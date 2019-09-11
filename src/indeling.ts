@@ -12,7 +12,6 @@ import {
 import Indeling from './allocation/indeling';
 import Ondernemers from './allocation/ondernemers';
 import Ondernemer from './allocation/ondernemer';
-import Moving from './allocation/moving';
 
 /*
  * https://decentrale.regelgeving.overheid.nl/cvdr/XHTMLoutput/Actueel/Amsterdam/396119.html#id1-3-2-2-3-4-5
@@ -49,7 +48,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      * Deel vasteplaatshouders in
      */
     const vphZonderVerplaatsing = indeling.toewijzingQueue.filter(ondernemer => {
-        return Ondernemer.isVast(ondernemer) && !Ondernemer.wantsToMove(indeling, ondernemer);
+        return Ondernemer.heeftVastePlaatsen(ondernemer) && !Ondernemer.wantsToMove(indeling, ondernemer);
     });
     indeling = vphZonderVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
 
@@ -64,12 +63,13 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         Ondernemer.isInBranche(indeling, ondernemer)
     );
 
-    indeling = brancheOndernemers.reduce((indeling, ondernemer, index, ondernemers) => {
-        const ondernemerBranchePlaatsen = indeling.openPlaatsen.filter(plaats =>
-            intersects(plaats.branches, ondernemer.voorkeur && ondernemer.voorkeur.branches)
+    indeling = brancheOndernemers.reduce((indeling, ondernemer) => {
+        const { branches = [] } = ondernemer.voorkeur || {};
+        const plaatsen = indeling.openPlaatsen.filter(plaats =>
+            intersects(plaats.branches, branches)
         );
 
-        return Indeling.assignPlaats(indeling, ondernemer, ondernemerBranchePlaatsen, 'ignore');
+        return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
     }, indeling);
 
     /*
@@ -81,7 +81,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         count(ondernemer.voorkeur && ondernemer.voorkeur.verkoopinrichting) > 0
     );
 
-    indeling = verkoopinrichtingOndernemers.reduce((indeling, ondernemer, index, ondernemers) => {
+    indeling = verkoopinrichtingOndernemers.reduce((indeling, ondernemer) => {
         const plaatsen = indeling.openPlaatsen.filter(plaats => {
             const { verkoopinrichting = [] } = ondernemer.voorkeur || {};
             return intersects(plaats.verkoopinrichting, verkoopinrichting);
@@ -96,16 +96,12 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
      */
     indeling = indeling.toewijzingQueue
     .filter(ondernemer => !Ondernemer.heeftVastePlaatsen(ondernemer))
-    .reduce((indeling, ondernemer) => Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen), indeling);
+    .reduce((indeling, ondernemer) => {
+        return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen);
+    }, indeling);
 
     /*
      * Stap 6:
-     * Verwerk verplaatsingsvoorkeuren voor niet-VPH
-     */
-    indeling = Moving.performFor(indeling, aLijst);
-
-    /*
-     * Stap 7:
      * Verwerk uitbreidingsvoorkeuren
      */
     indeling = Indeling.performExpansion(indeling);

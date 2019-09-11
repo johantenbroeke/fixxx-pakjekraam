@@ -2,6 +2,7 @@ import {
     IMarkt,
     IMarktplaats,
     IObstakelBetween,
+    IPlaatsvoorkeur,
     PlaatsId
 } from '../markt.model';
 
@@ -48,14 +49,19 @@ const Markt = {
         }, []);
     },
 
-    // Provided an array in the form `['1', '2', '4', '6', '7']` will return a
-    // grouped array, where every group is a set of adjacent places. E.g.:
-    // `[['1', '2'], ['4'], ['6', '7']]`.
+    // Provided an array in the form `['1', '2', '4', '6', '7']`, will return a
+    // grouped array, where every group is a set of adjacent places grouped by
+    // priority. E.g.: `[['1', '2'], ['4'], ['6', '7']]`.
+    //
+    // It executes recursively, where every run of this functions tries to form
+    // one group of adjacent places, starting with the first place it finds in the
+    // `plaatsen` array. It will continue recursing until all elements in the `plaatsen`
+    // array are spliced out.
     groupByAdjacent: (
         markt: IMarkt,
-        plaatsen: IMarktplaats[],
-        result: IMarktplaats[][] = []
-    ): IMarktplaats[][] => {
+        plaatsen: IPlaatsvoorkeur[],
+        result: IPlaatsvoorkeur[][] = []
+    ): IPlaatsvoorkeur[][] => {
         if (!plaatsen || !plaatsen.length) {
             return result;
         }
@@ -78,10 +84,12 @@ const Markt = {
 
             if (nextIndex === -1) {
                 if (dir === -1) {
+                    // Switch search direction
                     dir = 1;
                     current = start;
                     continue;
                 } else {
+                    // Both directions exhausted — no adjacent place found anymore.
                     break;
                 }
             }
@@ -90,6 +98,12 @@ const Markt = {
             group.push(next);
             current = next;
         }
+
+        // A group of places must be resorted, because the loop above
+        // might have messed up the priority order.
+        group.sort((a, b) =>
+            (Number(b.priority) || 0) - (Number(a.priority) || 0)
+        );
 
         return plaatsen.length ?
                Markt.groupByAdjacent(markt, plaatsen, result) :

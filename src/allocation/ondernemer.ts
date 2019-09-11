@@ -9,9 +9,10 @@ import {
 } from '../markt.model';
 
 import {
-    count,
     sum
 } from '../util';
+
+import Markt from './markt';
 
 const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur): number => {
     const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : 0;
@@ -69,10 +70,10 @@ const Ondernemer = {
         }, []);
     },
 
-    getMinimumSize: (ondernemer: IMarktondernemer): number => {
+    getStartSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] } = ondernemer;
-        const { minimum = Infinity } = ondernemer.voorkeur || {};
-        return Math.min(plaatsen.length || 1, minimum);
+        const { maximum = Infinity } = ondernemer.voorkeur || {};
+        return Math.min(plaatsen.length || 1, maximum);
     },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
         const { minimum = 1, maximum = 0 } = ondernemer.voorkeur || {};
@@ -97,7 +98,8 @@ const Ondernemer = {
     },
 
     heeftVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
-        return Ondernemer.isVast(ondernemer) && count(ondernemer.plaatsen) > 0;
+        const { plaatsen = [] } = ondernemer;
+        return Ondernemer.isVast(ondernemer) && plaatsen.length > 0;
     },
 
     isInBranche: (markt: IMarkt, ondernemer: IMarktondernemer, branche?: IBranche): boolean => {
@@ -137,10 +139,18 @@ const Ondernemer = {
     } ,
 
     wantsToMove: (indeling: IMarktindeling, ondernemer: IMarktondernemer): boolean => {
-        const plaatsen   = Ondernemer.getVastePlaatsen(indeling, ondernemer);
-        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+        const { plaatsen = [] } = ondernemer;
+        const targetSize        = Ondernemer.getTargetSize(ondernemer);
+        const minSize           = Math.min(plaatsen.length, targetSize);
 
-        return voorkeuren.length >= plaatsen.length;
+        if (!minSize) {
+            return false;
+        }
+
+        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+        const grouped    = Markt.groupByAdjacent(indeling, voorkeuren);
+
+        return !!grouped.find(group => group.length >= minSize);
     }
 };
 
