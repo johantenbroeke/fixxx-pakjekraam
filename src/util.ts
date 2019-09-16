@@ -167,8 +167,8 @@ export const intersection = (a: any[] = [], b: any[] = []) => {
     return a.filter(value => b.includes(value));
 };
 
-export const intersects = (a: any[] = [], b: any[] = []) => {
-    return a.some(value => b.includes(value)) || b.some(value => a.includes(value));
+export const intersects = (a: any[] = [], b: any[] = []): boolean => {
+    return !!a.find(value => b.includes(value));
 };
 
 export const isEqualArray = (a: any[], b: any[]): boolean => {
