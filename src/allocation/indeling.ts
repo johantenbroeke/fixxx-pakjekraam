@@ -9,7 +9,8 @@ import {
 } from '../markt.model';
 
 import {
-    intersection
+    intersection,
+    intersects
 } from '../util';
 
 import Markt from './markt';
@@ -41,6 +42,11 @@ const plaatsVoorkeurCompare = (plaatsA: IMarktplaats, plaatsB: IMarktplaats, voo
     const b   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsB.plaatsId);
     // ~-1 == 0, so we can kick a or b to EOL if it's not found.
     return (~a ? a : max) - (~b ? b : max);
+};
+// Sort DESC on branche overlap with provided `branches` array. The more overlap, the better.
+const brancheCompare = (a: IMarktplaats, b: IMarktplaats, branches: IBranche[]): number => {
+    return intersection(b.branches, branches).length -
+           intersection(a.branches, branches).length;
 };
 
 const Indeling = {
@@ -102,54 +108,38 @@ const Indeling = {
         openPlaatsen: IMarktplaats[],
         maximum: number = 1
     ) => {
-        let mogelijkePlaatsen = openPlaatsen;
+        const expansionSize        = maximum - 1;
+        const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
+        const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);
 
-        const ondernemerBranches = Ondernemer.getBranches(indeling, ondernemer);
-        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
+        const { anywhere = true }  = ondernemer.voorkeur || {};
+        const voorkeurIds          = voorkeuren.map(({ plaatsId }) => plaatsId);
+        const verplichteBrancheIds = ondernemerBranches
+                                    .filter(({ verplicht = false }) => verplicht)
+                                    .map(({ brancheId }) => brancheId);
 
-        mogelijkePlaatsen = ondernemerBranches.reduce(
-            (mogelijkePlaatsen: IMarktplaats[], branche: IBranche): IMarktplaats[] => {
-                if (branche.verplicht) {
-                    // Bijvoorbeeld: als een ondernemer wil frituren (`{ "branche": "bak" }`)
-                    // dan blijven alleen nog de kramen over waarop frituren is toegestaan.
-                    mogelijkePlaatsen = mogelijkePlaatsen.filter(
-                        plaats => plaats.branches && plaats.branches.find(brancheId => brancheId === branche.brancheId)
-                    );
-                } else {
-                    // Een groenteboer wordt bij voorkeur geplaatst op een plaats in de branch AGF.
-                    mogelijkePlaatsen = [...mogelijkePlaatsen].sort((a, b) => {
-                        if (a.branches && a.branches.includes(branche.brancheId)) {
-                            return -1;
-                        } else if (b.branches && b.branches.includes(branche.brancheId)) {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
-                    });
-                }
+        const mogelijkePlaatsen = openPlaatsen.filter(({ plaatsId, branches = [] }) => {
+            if (
+                // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
+                verplichteBrancheIds.length && !intersects(verplichteBrancheIds, branches) ||
+                // Ondernemer wil niet willekeurig ingedeeld worden en plaats staat niet in voorkeuren.
+                !anywhere && !voorkeurIds.includes(plaatsId) ||
+                // Niet genoeg vrije aansluitende plaatsen om maximum te verzadigen.
+                Markt.getAdjacentPlaatsen(indeling, [plaatsId], expansionSize).length < expansionSize
+            ) {
+                return false;
+            } else {
+                return true;
+            }
+        });
 
-                return mogelijkePlaatsen;
-            },
-            mogelijkePlaatsen
-        );
-
-        if (ondernemer.voorkeur && ondernemer.voorkeur.anywhere === false) {
-            const voorkeurIds = voorkeuren.map(({ plaatsId }) => plaatsId);
-            mogelijkePlaatsen = mogelijkePlaatsen.filter(({ plaatsId }) => voorkeurIds.includes(plaatsId));
-        }
-
-        mogelijkePlaatsen.sort((a, b) => plaatsVoorkeurCompare(a, b, voorkeuren));
-
-        if (maximum > 1) {
-            mogelijkePlaatsen = mogelijkePlaatsen.filter(p => {
-                const expansionSize = maximum - 1;
-                const adjacent = Markt.getAdjacentPlaatsen(indeling, [p.plaatsId], expansionSize);
-
-                return adjacent.length >= expansionSize;
-            });
-        }
-
-        return mogelijkePlaatsen.slice(0, maximum);
+        // Sorteer plaatsen op voorkeursprioriteit, daarna op overlap in ondernemersbranches.
+        return mogelijkePlaatsen
+        .sort((a, b) => {
+            return plaatsVoorkeurCompare(a, b, voorkeuren) ||
+                   brancheCompare(a, b, ondernemerBranches);
+        })
+        .slice(0, maximum);
     },
 
     getAvailablePlaatsenForVPH: (
