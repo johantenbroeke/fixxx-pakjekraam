@@ -21,16 +21,21 @@ const Markt = {
     getAdjacentPlaatsen: (
         markt: IMarkt,
         plaatsIds: PlaatsId[],
-        depth: number = 1
+        depth: number = 1,
+        filter?: (plaats: IMarktplaats) => boolean
     ): IMarktplaats[] => {
+        if (!depth) {
+            return [];
+        }
+
         const { rows, obstakels } = markt;
         const row = Markt._findRowForPlaatsen(rows, plaatsIds);
 
         return plaatsIds
         .map(plaatsId => {
             return [].concat(
-                Markt._getAdjacent(row, plaatsId, -1, depth, obstakels),
-                Markt._getAdjacent(row, plaatsId, 1, depth, obstakels)
+                Markt._getAdjacent(row, plaatsId, -1, depth, obstakels, filter),
+                Markt._getAdjacent(row, plaatsId, 1, depth, obstakels, filter)
             );
         })
         .reduce(flatten, [])
@@ -101,9 +106,7 @@ const Markt = {
 
         // A group of places must be resorted, because the loop above
         // might have messed up the priority order.
-        group.sort((a, b) =>
-            (Number(b.priority) || 0) - (Number(a.priority) || 0)
-        );
+        group.sort(({ priority: a = 1 }, { priority: b = 1 }) => b - a);
 
         return plaatsen.length ?
                Markt.groupByAdjacent(markt, plaatsen, result) :
@@ -146,7 +149,8 @@ const Markt = {
         plaatsId: PlaatsId,
         dir: number,
         depth: number = 1,
-        obstacles: IObstakelBetween[] = []
+        obstacles: IObstakelBetween[] = [],
+        filter?: (plaats: IMarktplaats) => boolean
     ): IMarktplaats[] => {
         const isCircular = row[0].plaatsId === row[row.length-1].plaatsId;
         // The first and last element are equal, so remove the one at the end.
@@ -163,7 +167,11 @@ const Markt = {
                             row[(start + len+(i+1)*dir%len) % len] :
                             row[(start + (i+1)*dir)];
 
-            if (!next || Markt._hasObstacleBetween(obstacles, current.plaatsId, next.plaatsId)) {
+            if (
+                !next ||
+                Markt._hasObstacleBetween(obstacles, current.plaatsId, next.plaatsId) ||
+                filter && !filter(next)
+            ) {
                 break;
             }
 
