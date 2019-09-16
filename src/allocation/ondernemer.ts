@@ -33,8 +33,7 @@ const Ondernemer = {
     },
 
     getBrancheIds: (markt: IMarkt, ondernemer: IMarktondernemer) => {
-      return ondernemer.voorkeur && ondernemer.voorkeur.branches ||
-             [];
+        return ondernemer.voorkeur && ondernemer.voorkeur.branches || [];
     },
 
     getBranches: (markt: IMarkt, ondernemer: IMarktondernemer): IBranche[] => {
@@ -63,7 +62,12 @@ const Ondernemer = {
         ].sort(priorityCompare);
         // ...en elimineer duplicaten na sortering.
         return voorkeuren.reduce((unique, voorkeur) => {
-            if (!~unique.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId)) {
+            if (
+                !~unique.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId) && (
+                    includeVastePlaatsen ||
+                    !~vastePlaatsen.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId)
+                )
+            ) {
                 unique.push(voorkeur);
             }
             return unique;
@@ -72,8 +76,8 @@ const Ondernemer = {
 
     getStartSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] } = ondernemer;
-        const { maximum = Infinity } = ondernemer.voorkeur || {};
-        return Math.min(plaatsen.length || 1, maximum);
+        const { maximum = plaatsen.length } = ondernemer.voorkeur || {};
+        return Math.min(plaatsen.length || 1, maximum || 1);
     },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
         const { minimum = 1, maximum = 0 } = ondernemer.voorkeur || {};
