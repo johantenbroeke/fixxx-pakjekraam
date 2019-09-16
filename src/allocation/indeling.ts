@@ -84,19 +84,13 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): IMarktindeling => {
-        const beschikbaar = Indeling.getAvailablePlaatsenForVPH(indeling, ondernemer);
+        const available = Indeling.findBestePlaatsenForVPH(indeling, ondernemer);
 
-        if (beschikbaar.length === 0) {
+        if (available.length === 0) {
             const startSize = Ondernemer.getStartSize(ondernemer);
             return Indeling.assignPlaats(indeling, ondernemer, null, 'reject', startSize);
         } else {
-            const { plaatsen = [] } = ondernemer;
-            const { maximum = Infinity } = ondernemer.voorkeur || {};
-            const maxPlaatsen = Math.min(maximum, beschikbaar.length, plaatsen.length);
-
-            return beschikbaar
-            .slice(0, maxPlaatsen)
-            .reduce((indeling, plaats) => {
+            return available.reduce((indeling, plaats) => {
                 return Indeling._assignPlaats(indeling, ondernemer, plaats);
             }, indeling);
         }
@@ -142,35 +136,47 @@ const Indeling = {
         .slice(0, maximum);
     },
 
-    getAvailablePlaatsenForVPH: (
+    findBestePlaatsenForVPH: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): IMarktplaats[] => {
-        const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
+        const startSize  = Ondernemer.getStartSize(ondernemer);
+        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
+        const available  = voorkeuren.filter(plaats =>
+            Indeling._isAvailable(indeling, plaats)
+        );
+        const grouped    = Markt.groupByAdjacent(indeling, available);
 
         if (!Ondernemer.wantsToMove(indeling, ondernemer)) {
-            return vastePlaatsen.filter(plaats =>
-                Indeling._isAvailable(indeling, plaats)
-            );
+            return grouped.reduce((result, group) => {
+                return group.length > result.length ? group : result;
+            }, [])
+            .slice(0, startSize);
         }
 
-        const startSize  = Ondernemer.getStartSize(ondernemer);
-        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+        let result;
+        const { anywhere = true } = ondernemer.voorkeur || {};
+        grouped.some(group => {
+            if (group.length < startSize && anywhere) {
+                const depth     = startSize - group.length;
+                const plaatsIds = group.map(({ plaatsId }) => plaatsId);
+                const adjacent  = <IPlaatsvoorkeur[]> Markt.getAdjacentPlaatsen(indeling, plaatsIds, depth, (plaats) =>
+                    Indeling._isAvailable(indeling, plaats)
+                );
+                group = group.concat(adjacent);
+                group = Markt.groupByAdjacent(indeling, group)[0];
+            }
 
-        const available = Markt.groupByAdjacent(indeling, voorkeuren)
-        .reduce((result, adjacentPlaatsen) => {
-            const available = adjacentPlaatsen.filter(plaats =>
-                Indeling._isAvailable(indeling, plaats)
-            );
-            return available.length >= startSize ?
-                   result.concat(available) :
-                   result;
-        }, []);
 
-        return [
-            ...available,
-            ...vastePlaatsen
-        ];
+            if (group.length >= startSize) {
+                result = group.slice(0, startSize);
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        return result || [];
     },
 
     isAanwezig: (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) => {

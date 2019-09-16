@@ -12,8 +12,6 @@ import {
     sum
 } from '../util';
 
-import Markt from './markt';
-
 const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur): number => {
     const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : 0;
     const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : 0;
@@ -143,18 +141,8 @@ const Ondernemer = {
     } ,
 
     wantsToMove: (indeling: IMarktindeling, ondernemer: IMarktondernemer): boolean => {
-        const { plaatsen = [] } = ondernemer;
-        const targetSize        = Ondernemer.getTargetSize(ondernemer);
-        const minSize           = Math.min(plaatsen.length, targetSize);
-
-        if (!minSize) {
-            return false;
-        }
-
         const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
-        const grouped    = Markt.groupByAdjacent(indeling, voorkeuren);
-
-        return !!grouped.find(group => group.length >= minSize);
+        return !!voorkeuren.length;
     }
 };
 

@@ -129,7 +129,9 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
          * - 1 ondernemer met een meervoudige plaats
          */
         const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
-            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { maximum: 1 } })],
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { maximum: 1 } })
+            ],
             marktplaatsen: [plaats(), plaats()],
             voorkeuren: [
                 voorkeur({ sollicitatieNummer: 1, plaatsId: '2', priority: FIRST_CHOICE }),
@@ -418,12 +420,12 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
 
         expect(getOndernemers(toewijzingen)).toStrictEqual([1, 2]);
         expect(getOndernemers(afwijzingen)).toStrictEqual([]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['5']);
 
         var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, aanmelding, voorkeur }) => ({
             ondernemers: [
-                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { anywhere: false } }),
                 ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['6', '7'] })
             ],
             marktplaatsen: [
@@ -431,7 +433,6 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
                 plaats(), plaats(), plaats(), plaats(), plaats(), plaats()
             ],
             voorkeuren: [
-                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: 2 }),
                 voorkeur({ sollicitatieNummer: 1, plaatsId: '5', priority: 1 }),
                 voorkeur({ sollicitatieNummer: 2, plaatsId: '8', priority: 1 }),
                 voorkeur({ sollicitatieNummer: 2, plaatsId: '10', priority: 1 }),
@@ -442,7 +443,7 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
         expect(getOndernemers(toewijzingen)).toStrictEqual([1, 2]);
         expect(getOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['10', '11']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['7', '8']);
     });
 
     it('mag dit voor sollicitanten worden ingedeeld', () => {
@@ -666,6 +667,25 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
     });
 
+    it('met meerdere plaatsen blijft staan als onvoldoende voorkeuren vrij zijn', () => {
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
+                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3'] })
+            ],
+            marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats(), plaats()],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '4', priority: SECOND_CHOICE })
+            ]
+        }));
+
+        expect(toewijzingen.length).toBe(2);
+        expect(afwijzingen.length).toBe(0);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
+    });
+
     it('met meerdere plaatsen behoudt dit aantal na verplaatsing', () => {
         /*
          * Scenario:
@@ -689,25 +709,6 @@ describe('Een vasteplaatshouder die wil verplaatsen', () => {
         expect(toewijzingen.length).toBe(2);
         expect(afwijzingen.length).toBe(0);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['5', '6']);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
-    });
-
-    it('met meerdere plaatsen blijft staan als onvoldoende voorkeuren vrij zijn', () => {
-        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
-            ondernemers: [
-                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
-                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3'] })
-            ],
-            marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats(), plaats()],
-            voorkeuren: [
-                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }),
-                voorkeur({ sollicitatieNummer: 1, plaatsId: '4', priority: SECOND_CHOICE })
-            ]
-        }));
-
-        expect(toewijzingen.length).toBe(2);
-        expect(afwijzingen.length).toBe(0);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
     });
 });
@@ -866,31 +867,23 @@ describe('Een ondernemer die wil uitbreiden', () => {
     });
 
     it('kan eerst uitbreiden naar 2 plaatsen voordat anderen mogen uitbreiden naar meer plaatsen', () => {
-        /*
-         * Scenario:
-         * - 3 marktplaatsen
-         * - 1 ondernemer met een vaste plek op de middelste kraam
-         * - de ondernemer heeft een voorkeur voor kraam 2, daarna 1, daarna 3
-         */
         const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
-                ondernemer({ voorkeur: { maximum: 3 }, plaatsen: ['3', '4'], status: 'vpl' }),
-                ondernemer({ voorkeur: { maximum: 2 } })
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['2', '3'], voorkeur: { maximum: 3 } }),
+                ondernemer({ sollicitatieNummer: 2, voorkeur: { maximum: 2 } })
             ],
             marktplaatsen: [plaats(), plaats(), plaats(), plaats()],
             voorkeuren: [
-                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }),
-                voorkeur({ sollicitatieNummer: 1, plaatsId: '4', priority: SECOND_CHOICE }),
-                voorkeur({ sollicitatieNummer: 1, plaatsId: '2', priority: THIRD_CHOICE }),
-                voorkeur({ sollicitatieNummer: 2, plaatsId: '1', priority: FIRST_CHOICE }),
-                voorkeur({ sollicitatieNummer: 2, plaatsId: '2', priority: SECOND_CHOICE })
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '1', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '3', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 2, plaatsId: '4', priority: SECOND_CHOICE })
             ]
         }));
 
-        expect(toewijzingen.length).toBe(2);
+        expect(getOndernemers(toewijzingen)).toStrictEqual([1, 2]);
         expect(afwijzingen.length).toBe(0);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3', '4']);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1', '2']);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3', '4']);
     });
 
     it.skip('Een ondernemer kan kiezen NIET te verschuiven om het minimum aantal plaatsen te krijgen', () => {

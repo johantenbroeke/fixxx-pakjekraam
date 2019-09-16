@@ -3,7 +3,7 @@
 const Markt = require('./allocation/markt.ts').default;
 
 describe('Markt.getAdjacentPlaatsen', () => {
-    const getAdjacent = (marketDef, placeIds, depth=1, obstakels) => {
+    const getAdjacent = (marketDef, placeIds, depth=1, obstakels, filter) => {
         const markt = {
             rows          : marketDef.map(ids => ids.map(plaatsId => ({ plaatsId }))),
             obstakels,
@@ -16,7 +16,7 @@ describe('Markt.getAdjacentPlaatsen', () => {
             ondernemers   : []
         };
 
-        return Markt.getAdjacentPlaatsen(markt, placeIds, depth)
+        return Markt.getAdjacentPlaatsen(markt, placeIds, depth, filter)
         .map(({ plaatsId }) => plaatsId)
         .sort();
     };
@@ -31,15 +31,21 @@ describe('Markt.getAdjacentPlaatsen', () => {
             // Needle at beginning...
             expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['1'])).toStrictEqual(['2']);
             expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['1'], 2)).toStrictEqual(['2', '3']);
+            expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['1'], 2, [], ({ plaatsId }) => plaatsId !== '3')).toStrictEqual(['2']);
+            expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['1'], 2, [], ({ plaatsId }) => plaatsId !== '2')).toStrictEqual([]);
             // ...and end.
             expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['6'])).toStrictEqual(['5']);
             expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['6'], 2)).toStrictEqual(['4', '5']);
+            expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['6'], 2, [], ({ plaatsId }) => plaatsId !== '4')).toStrictEqual(['5']);
+            expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['6'], 2, [], ({ plaatsId }) => plaatsId !== '5')).toStrictEqual([]);
         });
 
         it('returns places from both sides when needle is not at beginning/end', () => {
             expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['2'])).toStrictEqual(['1', '3']);
             expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['2'], 2)).toStrictEqual(['1', '3', '4']);
             expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['3'], 2)).toStrictEqual(['1', '2', '4', '5']);
+            expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['3'], 2, [], ({ plaatsId }) => plaatsId !== '2')).toStrictEqual(['4', '5']);
+            expect(getAdjacent([['1', '2', '3', '4', '5', '6']], ['3'], 2, [], ({ plaatsId }) => plaatsId !== '4')).toStrictEqual(['1', '2']);
         });
 
         it('does not return places from adjacent rows', () => {
