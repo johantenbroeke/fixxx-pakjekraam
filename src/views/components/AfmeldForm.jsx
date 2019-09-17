@@ -3,7 +3,9 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {
     formatDayOfWeek,
+    addMinutes,
     WEEK_DAYS,
+    MINUTES_IN_HOUR,
     today,
     formatDate,
     relativeHumanDay,
@@ -30,12 +32,15 @@ class AfmeldForm extends React.Component {
             soll => !soll.doorgehaald && String(soll.markt.id) === currentMarktId,
         );
         const markt = markten.find(m => String(m.id) === currentMarktId);
+        const OFFSET = 5; // from 24:00 to 21:00
+        const now = addMinutes(new Date(), MINUTES_IN_HOUR * OFFSET);
 
         const rsvpEntries = filterRsvpList(
             aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id),
             markt,
-            role === 'marktmeester' ? today() : addDays(today(), 1),
+            role === 'marktmeester' ? now : addDays(now, 1),
         );
+
         const weekAanmeldingen = rsvpEntries.reduce(
             (t, { date, rsvp, index }, i) => {
                 const week = new Date(date) > new Date(endOfWeek()) ? 1 : 0;
@@ -82,7 +87,7 @@ class AfmeldForm extends React.Component {
                 {weekAanmeldingen.map((week, i) => (
                     <div key={i}>
                         <span className="OndernemerMarktAanwezigheid__divider">
-                            {i === 0 ? `Deze week` : `Volgende week`}
+                            {i === 0 ? 'Deze week' : 'Volgende week'}
                         </span>
                         <ul className="CheckboxList">
                             {week.map(({ date, attending, index, weekDay }) => (

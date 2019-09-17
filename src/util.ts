@@ -1,3 +1,15 @@
+// String function
+// ===============
+
+export const capitalize = (s: string) => {
+    return typeof s === 'string' ?
+           s.charAt(0).toUpperCase() + s.slice(1) :
+           '';
+};
+
+// Date functions
+// ==============
+
 export const DAYS_IN_WEEK = 7;
 export const MILLISECONDS_IN_SECOND = 1000;
 export const SECONDS_IN_MINUTE = 60;
@@ -47,13 +59,10 @@ export const formatISODayOfWeek = (day: number) => ISO_WEEK_DAYS[day];
 export const formatDayOfWeek = (date: string) => WEEK_DAYS[new Date(date).getDay()];
 export const formatMonth = (date: string) => monthName[new Date(date).getMonth()];
 
-export const paginate = <T>(arr: T[], count: number): T[][] =>
-    arr.reduce((t, a, i) => {
-        !(i % count) && t.push([]);
-        t[t.length - 1].push(a);
-
-        return t;
-    }, []);
+export const getMaDiWoDoOfToday = () => {
+    const dayOfWeek = WEEK_DAYS[new Date().getDay()];
+    return dayOfWeek.substring(0,2);
+};
 
 export const formatDate = (date: string): string =>
     `${new Date(date).getDate()} ${formatMonth(date).slice(0, shortMonthCharCount)} '${String(
@@ -76,14 +85,6 @@ export const dateDiffInDays = (date1: string, date2: string): number => {
     );
 };
 
-export const capitalize = (s: string) => {
-    if (typeof s !== 'string') {
-        return '';
-    }
-
-    return s.charAt(0).toUpperCase() + s.slice(1);
-};
-
 export const relativeHumanDay = (date: string) => {
     const dayOptions: { [index: string]: string } = { '0': 'vandaag', '1': 'morgen', '-1': 'gisteren' };
     const diff = String(dateDiffInDays(today(), date));
@@ -102,7 +103,14 @@ export const addDays = (offsetDate: string | number, days: number): string => {
     return date.toISOString().replace(/T.+/, '');
 };
 
+export const addMinutes = (offsetDate: string | number, minutes: number): string => {
+    const date = new Date(offsetDate);
+
+    return new Date(date.getTime() + minutes * 60000).toISOString().replace(/T.+/, '');
+};
+
 export const tomorrow = (): string => addDays(Date.now(), 1);
+export const yesterday = (): string => addDays(Date.now(), -1);
 
 export const endOfWeek = (): string => {
     const date = new Date();
@@ -114,15 +122,40 @@ export const nextWeek = (): string => addDays(Date.now(), DAYS_IN_WEEK);
 
 export const toISODate = (date: Date): string => date.toISOString().replace(/T.+/, '');
 
-export const arrayToObject = <T, K extends keyof T>(array: T[], keyField: K): { [index: string]: T } =>
-    array.reduce((obj: { [index: string]: T }, item: T) => {
+// Array functions
+// ===============
+
+// Sort functions
+// --------------
+export const numberSort = (a: number, b: number): number => (a > b ? 1 : a === b ? 0 : -1);
+export const stringSort = (a: string, b: string): number => (a > b ? 1 : a === b ? 0 : -1);
+// Reduce functions
+// ----------------
+// Example usage: [[1], [2]].reduce(methodName, [])
+export const sum = (a: number, b: number): number => a + b;
+export const flatten = <T>(a: T[] = [], b: T[] = []): T[] => [...(a || []), ...(b || [])];
+export const unique = <T>(a: T[], b: T): T[] => (a.includes(b) ? a : [...a, b]);
+
+// General
+// -------
+export const arrayToObject = <T, K extends keyof T>(array: T[], keyField: K): { [index: string]: T } => {
+    return array.reduce((obj: { [index: string]: T }, item: T) => {
         obj[String(item[keyField])] = item;
 
         return obj;
     }, {});
+};
 
-export const groupBy = <T, K extends keyof T>(array: T[], keyField: K): { [index: string]: T[] } =>
-    array.reduce((obj: { [index: string]: T[] }, item: T) => {
+export const count = <T>(arrayMaybe: T | T[]): number => {
+    return arrayMaybe ? (Array.isArray(arrayMaybe) ? arrayMaybe.length : 1) : 0;
+};
+
+export const exclude = <T>(a: T[] = [], b: any[] = []): T[] => {
+    return a.filter(value => !b.includes(value));
+};
+
+export const groupBy = <T, K extends keyof T>(array: T[], keyField: K): { [index: string]: T[] } => {
+    return array.reduce((obj: { [index: string]: T[] }, item: T) => {
         const key = String(item[keyField]);
 
         if (obj.hasOwnProperty(key)) {
@@ -133,12 +166,30 @@ export const groupBy = <T, K extends keyof T>(array: T[], keyField: K): { [index
 
         return obj;
     }, {});
+};
 
-export const numberSort = (a: number, b: number): number => (a > b ? 1 : a === b ? 0 : -1);
+export const intersection = (a: any[] = [], b: any[] = []) => {
+    return a.filter(value => b.includes(value));
+};
 
-export const stringSort = (a: string, b: string): number => (a > b ? 1 : a === b ? 0 : -1);
+export const intersects = (a: any[] = [], b: any[] = []) => {
+    return a.some(value => b.includes(value)) || b.some(value => a.includes(value));
+};
 
-export const flatten = <T>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
+export const isEqualArray = (a: any[], b: any[]): boolean => {
+    return Array.isArray(a) && Array.isArray(b) &&
+           a.length === b.length &&
+           a.every((value, index) => value === b[index]);
+};
+
+export const paginate = <T>(arr: T[], count: number): T[][] => {
+    return arr.reduce((t, a, i) => {
+        !(i % count) && t.push([]);
+        t[t.length - 1].push(a);
+
+        return t;
+    }, []);
+};
 
 export const requireOne = <T>(arg: T[] | T | null): T => {
     if (Array.isArray(arg) && arg.length >= 1) {
@@ -150,6 +201,15 @@ export const requireOne = <T>(arg: T[] | T | null): T => {
     }
 };
 
+// Debug functions
+// ===============
+
+export const log = (...arg: any) => {
+    // if (process.env.NODE_ENV !== 'production') {
+    //     console.log.apply(console, arg);
+    // }
+};
+
 export const trace = (arg: any) => {
     console.log(arg);
 
@@ -158,9 +218,11 @@ export const trace = (arg: any) => {
 
 export const traceError = (message: string) => (err: Error) => {
     console.error(message, err);
-
     throw err;
 };
+
+// Misc
+// ====
 
 export const requireEnv = (key: string) => {
     if (!process.env[key]) {

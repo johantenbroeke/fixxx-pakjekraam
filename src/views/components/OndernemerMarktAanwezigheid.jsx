@@ -5,9 +5,8 @@ const { formatDayOfWeek, formatDate, relativeHumanDay, WEEK_DAYS, endOfWeek, tod
 const HeaderTitleButton = require('./HeaderTitleButton');
 const { isVast, formatOndernemerName } = require('../../domain-knowledge.js');
 
-const OndernemerMarktAanwezigheid = ({ markt, rsvpEntries, sollicitatie, ondernemer }) => {
+const OndernemerMarktAanwezigheid = ({ markt, rsvpEntries, sollicitatie, ondernemer, toewijzingen }) => {
     const blockUrl = `../../afmelden/${markt.id}/`;
-
     const lastDivider = false;
 
     const weekAanmeldingen = rsvpEntries.reduce(
@@ -41,7 +40,6 @@ const OndernemerMarktAanwezigheid = ({ markt, rsvpEntries, sollicitatie, onderne
             <HeaderTitleButton title="Aanwezigheid" url={blockUrl} />
             <div className="well">
                 <span>Op welke dagen staat er iemand (vergunninghouder of vervanger) in de kraam?</span>
-
                 {weekAanmeldingen.map((week, i) => (
                     <div key={i}>
                         <span className="OndernemerMarktAanwezigheid__divider">
@@ -77,6 +75,7 @@ OndernemerMarktAanwezigheid.propTypes = {
     sollicitatie: PropTypes.object,
     ondernemer: PropTypes.object,
     rsvpEntries: PropTypes.array,
+    toewijzingen: PropTypes.array,
 };
 
 module.exports = OndernemerMarktAanwezigheid;

@@ -37,12 +37,9 @@ models.sequelize
     )
     .then(
         affectedRows => {
-            console.log(`Market allocation for ${marktDate} succeeded. ${affectedRows.length} allocations stored.`);
             process.exit(0);
         },
         err => {
-            console.log('Market allocation failed.');
-            console.error(err);
             process.exit(1);
         },
     );

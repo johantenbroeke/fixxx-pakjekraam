@@ -5,7 +5,7 @@ export type ErkenningsNummer = string;
 export type BrancheId = string;
 
 export enum KraamInrichting {
-    EIGEN_MATERIEEL = 'eigen-materieel',
+    EIGEN_MATERIEEL = 'eigen-materieel'
 }
 
 export enum ObstakelType {
@@ -13,17 +13,17 @@ export enum ObstakelType {
     OPTIONAL_LOOPJE = 'loopjediedichtmag',
     LANTAARNPAAL = 'lantaarnpaal',
     BOOM = 'boom',
-    BANKJE = 'bankje',
+    BANKJE = 'bankje'
 }
 
 export enum VerkoopinrichtingType {
-    EIGEN_MATERIEEL = 'eigen-materieel',
+    EIGEN_MATERIEEL = 'eigen-materieel'
 }
 
 export enum DeelnemerStatus {
     VASTE_PLAATS = 'vpl',
     TIJDELIJKE_VASTE_PLAATS = 'vkk',
-    SOLLICITANT = 'soll',
+    SOLLICITANT = 'soll'
 }
 
 export interface IMarktProperties {
@@ -50,6 +50,16 @@ export interface IMarkt {
 export interface IMarktindelingSeed {
     aanwezigheid: IRSVP[];
     aLijst: IMarktondernemer[];
+}
+
+export interface IMarktindeling extends IMarkt, IMarktindelingSeed {
+    toewijzingQueue: IMarktondernemer[];
+    openPlaatsen: IMarktplaats[];
+    expansionQueue: IToewijzing[];
+    expansionIteration: number;
+
+    afwijzingen: IAfwijzing[];
+    toewijzingen: IToewijzing[];
 }
 
 export interface IRSVP {
@@ -135,7 +145,6 @@ export interface IToewijzing {
     plaatsen: PlaatsId[];
     erkenningsNummer: ErkenningsNummer;
 
-    // TODO: Remove ondernemer, only keep `erkenningsNummer`
     ondernemer?: IMarktondernemer;
 }
 
@@ -150,18 +159,6 @@ export interface IAfwijzing {
     erkenningsNummer: string;
     ondernemer: IMarktondernemer;
     reason: IAfwijzingReason;
-}
-
-export interface IMarktindelingState extends IMarkt {
-    toewijzingQueue: IMarktondernemer[];
-    openPlaatsen: IMarktplaats[];
-    expansionQueue: IToewijzing[];
-    expansionIteration: number;
-}
-
-export interface IMarktindeling extends IMarkt, IMarktindelingSeed, IMarktindelingState {
-    afwijzingen: IAfwijzing[];
-    toewijzingen: IToewijzing[];
 }
 
 export interface IBranche {
@@ -186,4 +183,11 @@ export interface IPlaatsvoorkeurRow {
     erkenningsNummer: string;
     plaatsId: string;
     priority: number;
+}
+
+export interface IMarktInfo {
+    telefoonnummer: string;
+    erkenningsNummer: ErkenningsNummer;
+    marktdagen: string;
+    indelingstijdstip: string;
 }

@@ -5,33 +5,40 @@ import {
     getMarktProperties,
     getOndernemerVoorkeuren,
     getAanmeldingenByOndernemer,
+    getToewijzingenByOndernemer,
 } from '../pakjekraam-api';
 import { errorPage, getQueryErrors } from '../express-util';
 import { tomorrow, nextWeek } from '../util';
+// import { parse } from '@babel/core';
+// import { promises } from 'fs';
 
 export const vendorDashboardPage = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
+
     const messages = getQueryErrors(req.query);
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
     const ondernemerVoorkeurenPromise = getOndernemerVoorkeuren(erkenningsNummer);
-    const marktenPromise = getMarkten();
-    const marktenPromiseProps = marktenPromise.then(markten => {
-        const propsPromise = markten.map(markt => {
-            return getMarktProperties(String(markt.id)).then(props => ({
-                ...markt,
-                ...props,
-            }));
+
+    const marktenPromise = getMarkten()
+        .then(markten => {
+            const marktenMetProperties = markten.map(markt => {
+                return getMarktProperties(String(markt.id)).then(props => ({
+                    ...markt,
+                    ...props,
+                }));
+            });
+            return Promise.all(marktenMetProperties);
         });
 
-        return Promise.all(propsPromise);
-    });
     Promise.all([
         ondernemerPromise,
-        marktenPromiseProps,
+        marktenPromise,
         ondernemerVoorkeurenPromise,
         getAanmeldingenByOndernemer(erkenningsNummer),
+        getToewijzingenByOndernemer(erkenningsNummer)
     ])
         .then(
-            ([ondernemer, markten, plaatsvoorkeuren, aanmeldingen]) => {
+            ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen ]) => {
+
                 res.render('OndernemerDashboard', {
                     ondernemer,
                     aanmeldingen,
@@ -40,6 +47,8 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
                     startDate: tomorrow(),
                     endDate: nextWeek(),
                     messages,
+                    toewijzingen,
+                    eggie: req.query.eggie ? JSON.parse(req.query.eggie) : false,
                 });
             },
             err => errorPage(res, err),

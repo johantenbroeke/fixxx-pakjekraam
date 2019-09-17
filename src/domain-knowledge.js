@@ -66,8 +66,8 @@ const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDag
 const isVast = status => status === 'vpl' || status === 'vkk';
 
 const getMarktDays = (startDate, endDate, daysOfWeek) => {
-    const start = Date.parse(startDate),
-        end = Date.parse(endDate);
+    const start = Date.parse(startDate);
+    const end = Date.parse(endDate);
 
     const days = Math.max(0, (end - start) / MILLISECONDS_IN_DAY);
 
@@ -110,6 +110,7 @@ const obstakelsToLocatieKeyValue = array =>
 
 const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
     let rsvpIndex = 0;
+
     const dates = getMarktDays(
         startDate ? startDate : addDays(Date.now(), 1),
         endDate ? endDate : addDays(endOfWeek(), DAYS_IN_WEEK),
@@ -128,16 +129,16 @@ const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
 
 const plaatsParts = plaatsId => plaatsId.replace(/([^0-9])([0-9])|([0-9])([^0-9])/g, '$1$3 $2$4').split(/\s+/);
 const plaatsSort = (plaatsA, plaatsB, byKey) => {
-    const partsA = plaatsParts(byKey ? plaatsA[byKey] : plaatsA),
-        partsB = plaatsParts(byKey ? plaatsB[byKey] : plaatsB),
-        l = Math.min(partsA.length, partsB.length);
+    const partsA = plaatsParts(byKey ? plaatsA[byKey] : plaatsA);
+    const partsB = plaatsParts(byKey ? plaatsB[byKey] : plaatsB);
+    const l = Math.min(partsA.length, partsB.length);
 
-    let i = 0,
-        delta = 0;
+    let i = 0;
+    let delta = 0;
 
     for (; delta === 0 && i < l; i++) {
-        const partA = partsA[i],
-            partB = partsB[i];
+        const partA = partsA[i];
+        const partB = partsB[i];
 
         delta =
             /^[0-9]+$/.test(partA) && /^[0-9]+$/.test(partB)

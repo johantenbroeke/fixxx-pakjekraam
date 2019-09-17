@@ -38,5 +38,4 @@ class PublicProfilePage extends React.Component {
         );
     }
 }
-
 module.exports = PublicProfilePage;

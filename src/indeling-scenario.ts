@@ -5,8 +5,12 @@ import {
     IMarktplaatsStub,
     IMarktondernemerStub,
     IRSVPStub,
-    IPlaatsvoorkeurStub,
+    IPlaatsvoorkeurStub
 } from './indeling-scenario.model';
+
+import {
+    log
+} from './util';
 
 const VOORKEUR_MINIMUM_PRIORITY = 0;
 const VOORKEUR_DEFAULT_PRIORITY = VOORKEUR_MINIMUM_PRIORITY + 1;
@@ -20,7 +24,7 @@ const ondernemerAanmelding = (ondernemer: IMarktondernemer, marktId: string, mar
     marktId,
     marktDate,
     erkenningsNummer: ondernemer.erkenningsNummer,
-    attending: true,
+    attending: true
 });
 
 /*
@@ -40,7 +44,7 @@ const isEqualRSVPKey = (a: IRSVP, b: IRSVP): boolean =>
 
 type scenarioUtils = {
     aanmelding: (stub: IRSVPStub) => IRSVP;
-    marktplaats: (stub: IMarktplaatsStub) => IMarktplaats;
+    plaats: (stub: IMarktplaatsStub) => IMarktplaats;
     ondernemer: (stub: IMarktondernemerStub) => IMarktondernemer;
     voorkeur: (stub: IPlaatsvoorkeurStub) => IPlaatsvoorkeur;
 };
@@ -58,13 +62,16 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
         ondernemers.find(
             ondernemer =>
                 ondernemer.sollicitatieNummer === desc.sollicitatieNummer ||
-                ondernemer.erkenningsNummer === desc.erkenningsNummer,
+                ondernemer.erkenningsNummer === desc.erkenningsNummer
         );
 
-    const marktplaats = (data: IMarktplaatsStub): IMarktplaats => ({
-        plaatsId: String(plaatsIncrement++),
-        ...data,
-    });
+    const plaats = (data: IMarktplaatsStub): IMarktplaats => {
+        const plaatsId = data && data.plaatsId || String(plaatsIncrement++);
+        return {
+            plaatsId,
+            ...data
+        };
+    };
 
     const ondernemer = (data: IMarktondernemerStub = {}): IMarktondernemer => {
         const existingOndernemer = findOndernemer(data);
@@ -76,7 +83,7 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
         const {
             erkenningsNummer = String(erkenningsNummerIncrement++),
             sollicitatieNummer = sollicitatiesIncrement++,
-            status = DeelnemerStatus.SOLLICITANT,
+            status = DeelnemerStatus.SOLLICITANT
         } = data;
 
         const newOndernemer = {
@@ -87,8 +94,8 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
             ...data,
             voorkeur: {
                 maximum: data.plaatsen ? data.plaatsen.length : null,
-                ...data.voorkeur,
-            },
+                ...data.voorkeur
+            }
         };
 
         ondernemers.push(newOndernemer);
@@ -104,7 +111,7 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
             erkenningsNummer: ondernemer ? ondernemer.erkenningsNummer : undefined,
             sollicitatieNummer: ondernemer ? ondernemer.sollicitatieNummer : undefined,
             priority: VOORKEUR_DEFAULT_PRIORITY,
-            ...data,
+            ...data
         };
     };
 
@@ -123,7 +130,7 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
             erkenningsNummer,
             sollicitatieNummer,
             attending: !!data.attending,
-            ...data,
+            ...data
         };
     };
 
@@ -137,10 +144,10 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
         rows: [],
         aLijst: [],
         branches: [],
-        obstakels: [],
+        obstakels: []
     };
 
-    const seed: IMarktScenarioStub = callback({ marktplaats, ondernemer, voorkeur, aanmelding });
+    const seed: IMarktScenarioStub = callback({ plaats, ondernemer, voorkeur, aanmelding });
 
     const seedMixin = {
         aanwezigheid: seed.aanwezigheid || [],
@@ -150,17 +157,17 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
         aLijst: seed.aLijst || [],
         branches: seed.branches || [],
         expansionLimit: seed.expansionLimit,
-        obstakels: seed.obstakels,
+        obstakels: seed.obstakels
     };
 
     const markt: IMarktScenario = {
         ...defaultMarkt,
-        ...seedMixin,
+        ...seedMixin
     };
 
     if (seed.rows) {
         markt.rows = seed.rows.map(row =>
-            row.map(plaatsRef => markt.marktplaatsen.find(({ plaatsId }) => plaatsId === plaatsRef)),
+            row.map(plaatsRef => markt.marktplaatsen.find(({ plaatsId }) => plaatsId === plaatsRef))
         );
     } else {
         /*
@@ -168,7 +175,7 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
          * assume there is one big row that is ordered by `plaatsId` in alphanumeric order.
          */
         markt.rows = [
-            [...markt.marktplaatsen].sort((plaatsA, plaatsB) => stringSort(plaatsA.plaatsId, plaatsB.plaatsId)),
+            [...markt.marktplaatsen].sort((plaatsA, plaatsB) => stringSort(plaatsA.plaatsId, plaatsB.plaatsId))
         ];
     }
 
@@ -177,8 +184,8 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
             ...seed.aanwezigheid,
             ...deFactoAanmeldingen(markt.ondernemers, marktId, marktDate).filter(
                 deFactoAanmelding =>
-                    !markt.aanwezigheid.find(aanmelding => isEqualRSVPKey(aanmelding, deFactoAanmelding)),
-            ),
+                    !markt.aanwezigheid.find(aanmelding => isEqualRSVPKey(aanmelding, deFactoAanmelding))
+            )
         ];
     } else {
         /*
@@ -186,15 +193,15 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
          * assume everyone form `ondernemers` will be attending.
          */
         markt.aanwezigheid = markt.ondernemers.map(ondernemer =>
-            ondernemerAanmelding(ondernemer, markt.marktId, markt.marktDate),
+            ondernemerAanmelding(ondernemer, markt.marktId, markt.marktDate)
         );
     }
 
-    console.log(markt);
+    log(markt);
 
     return markt;
 };
 
 module.exports = {
-    marktScenario,
+    marktScenario
 };

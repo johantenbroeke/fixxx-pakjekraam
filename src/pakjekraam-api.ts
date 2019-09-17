@@ -15,6 +15,7 @@ import { calcToewijzingen } from './indeling';
 import {
     IMarkt,
     IBranche,
+    IMarktInfo,
     IMarktProperties,
     IMarktondernemer,
     IMarktondernemerVoorkeur,
@@ -40,18 +41,42 @@ const loadJSON = <T>(path: string, defaultValue: T = null): Promise<T> =>
         console.log(`Load ${path}`);
         fs.readFile(path, (err, data) => {
             if (err) {
+                console.log(err);
                 resolve(defaultValue);
             } else {
                 try {
                     resolve(JSON.parse(String(data)));
                 } catch (e) {
+                    console.log(e);
                     reject(e);
                 }
             }
         });
     });
 
+const toewijzingenPerDatum = (toewijzingen: IToewijzing[], row: Allocation): IToewijzing[] => {
+
+    const { marktId, marktDate, erkenningsNummer } = row;
+
+    const existing = toewijzingen.find(toewijzing => toewijzing.marktDate === marktDate);
+
+    const voorkeur: IToewijzing = {
+        marktId,
+        marktDate,
+        erkenningsNummer,
+        plaatsen: [...(existing ? existing.plaatsen : []), row.plaatsId],
+    };
+
+    if (existing) {
+        return [...toewijzingen.filter(toewijzing => toewijzing.marktDate !== marktDate), voorkeur];
+    } else {
+        return [...toewijzingen, voorkeur];
+    }
+
+};
+
 const groupAllocationRows = (toewijzingen: IToewijzing[], row: Allocation): IToewijzing[] => {
+
     const { marktId, marktDate, erkenningsNummer } = row;
 
     const existing = toewijzingen.find(toewijzing => toewijzing.erkenningsNummer === erkenningsNummer);
@@ -93,6 +118,24 @@ export const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<I
             raw: true,
         })
         .then(aanmeldingen => aanmeldingen);
+
+export const getToewijzingenByOndernemer = (erkenningsNummer: string): Promise<IToewijzing[]> =>
+        allocation
+            .findAll<Allocation>({
+                where: { erkenningsNummer },
+                raw: true,
+            })
+            .then(toewijzingen => {
+                return toewijzingen.reduce(toewijzingenPerDatum, []);
+            });
+
+export const getToewijzingenByOndernemerEnMarkt = (marktId: string, erkenningsNummer: string): Promise<IToewijzing[]> =>
+    allocation
+        .findAll<Allocation>({
+            where: { marktId, erkenningsNummer },
+            raw: true,
+        })
+        .then(toewijzingen => toewijzingen.reduce(toewijzingenPerDatum, []));
 
 export const getToewijzingen = (marktId: string, marktDate: string): Promise<IToewijzing[]> =>
     allocation
@@ -208,7 +251,7 @@ const groupByErkenningsNummer = (
 ): IMarktondernemerVoorkeur[][] => {
     let group;
 
-    for (let i = groups.length; i--; ) {
+    for (let i = groups.length; i--;) {
         if (groups[i][0].erkenningsNummer === voorkeur.erkenningsNummer) {
             group = groups[i];
             break;
@@ -280,6 +323,8 @@ export const getMarktPaginas = (marktId: string): Promise<IAllocationPrintout> =
 export const getMarktGeografie = (marktId: string): Promise<{ obstakels: IObstakelBetween[] }> =>
     loadJSON(`./data/${slugifyMarkt(marktId)}/geografie.json`, { obstakels: [] });
 
+export const getMarktInfo = (marktId: string): Promise<IMarktInfo> =>
+    loadJSON(`./data/${slugifyMarkt(marktId)}/info.json`);
 /*
  * Convert an object from Makkelijke Markt to our own type of `IMarktondernemer` object
  */
@@ -329,9 +374,11 @@ export const getMarktondernemersByMarkt = (marktId: string) =>
     );
 
 export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
+
     const ondernemersPromise = getMarktondernemersByMarktMM(marktId).then(ondernemers =>
         ondernemers.filter(ondernemer => !ondernemer.doorgehaald).map(convertSollicitatie),
     );
+
     const voorkeurenPromise = getIndelingVoorkeuren(marktId, marktDate).then(voorkeuren =>
         voorkeuren.map(convertVoorkeur),
     );
@@ -356,6 +403,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
         getBranches(marktId),
         getMarktPaginas(marktId),
         getMarktGeografie(marktId),
+        // getMarktInfo(marktId),
         getMarkt(marktId),
         getALijst(marktId, marktDate),
     ]).then(args => {
@@ -428,7 +476,7 @@ export const getToewijzingslijst = (marktId: string, marktDate: string) =>
 
 export const getMailContext = (marktId: string, erkenningsNr: string, marktDate: string) =>
     Promise.all([
-        getIndelingslijst(marktId, marktDate),
+        getToewijzingslijst(marktId, marktDate),
         getVoorkeurenMarktOndern(marktId, erkenningsNr),
         getAanmeldingenMarktOndern(marktId, erkenningsNr),
         getAllBranches(),
@@ -529,9 +577,9 @@ export const isConflictingApplication = (existing: IRSVP[], application: IRSVP):
     // TODO: In addition to `attending`, check the vendors 'default days' and `isVast()`
     application.attending
         ? existing
-              .filter(a => String(a.marktId) !== String(application.marktId))
-              .filter(a => a.marktDate === application.marktDate)
-              .filter(a => a.attending !== null && !!a.attending)
+            .filter(a => String(a.marktId) !== String(application.marktId))
+            .filter(a => a.marktDate === application.marktDate)
+            .filter(a => a.attending !== null && !!a.attending)
         : [];
 
 export const getConflictingApplications = (application: IRSVP): Promise<IRSVP[]> =>

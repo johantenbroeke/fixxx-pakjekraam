@@ -4,8 +4,10 @@ const OndernemerList = require('./components/OndernemerList.tsx');
 const PrintPage = require('./components/PrintPage');
 const PropTypes = require('prop-types');
 const { paginate } = require('../util');
-const { calcVolgorde, isAanwezig } = require('../indeling');
 const { A_LIJST_DAYS } = require('../domain-knowledge.js');
+
+import Indeling from '../allocation/indeling';
+import Ondernemers from '../allocation/ondernemers';
 
 class VoorrangslijstPage extends React.Component {
     propTypes = {
@@ -49,10 +51,10 @@ class VoorrangslijstPage extends React.Component {
                 !toewijzingen.find(({ erkenningsNummer }) => erkenningsNummer === ondernemer.erkenningsNummer),
         );
 
-        ondernemers = calcVolgorde(ondernemers, aLijst);
+        ondernemers = Ondernemers.sort(ondernemers, aLijst);
         ondernemers = [
-            ...ondernemers.filter(ondernemer => isAanwezig(aanmeldingen, ondernemer)),
-            ...ondernemers.filter(ondernemer => !isAanwezig(aanmeldingen, ondernemer)),
+            ...ondernemers.filter(ondernemer => Indeling.isAanwezig(aanmeldingen, ondernemer)),
+            ...ondernemers.filter(ondernemer => !Indeling.isAanwezig(aanmeldingen, ondernemer)),
         ];
         const ondernemersErkenningsNummers = ondernemers.map(ondernemer => ondernemer.erkenningsNummer);
         const ondernemersRest = aLijstErkenningsNummers.filter(nr => !ondernemersErkenningsNummers.includes(nr));
@@ -61,16 +63,16 @@ class VoorrangslijstPage extends React.Component {
             .reduce(
                 (total, ondernemer) => {
                     total[
-                        isAanwezig(aanmeldingen, ondernemer) &&
+                        Indeling.isAanwezig(aanmeldingen, ondernemer) &&
                         aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? aLijstAangemeld
-                            : isAanwezig(aanmeldingen, ondernemer) &&
+                            : Indeling.isAanwezig(aanmeldingen, ondernemer) &&
                               !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? Aangemeld
-                            : !isAanwezig(aanmeldingen, ondernemer) &&
+                            : !Indeling.isAanwezig(aanmeldingen, ondernemer) &&
                               aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? aLijstNietAangemeld
-                            : !isAanwezig(aanmeldingen, ondernemer) &&
+                            : !Indeling.isAanwezig(aanmeldingen, ondernemer) &&
                               !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? NietAangemeld
                             : NietAangemeld
