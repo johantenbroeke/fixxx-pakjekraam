@@ -43,22 +43,20 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         voorkeuren: [...voorkeuren]
     };
 
-    /*
-     * Stap 1:
-     * Deel vasteplaatshouders in
-     */
+
+    // Stap 1: Deel vasteplaatshouders in
+    // ----------------------------------
     const vphZonderVerplaatsing = indeling.toewijzingQueue.filter(ondernemer => {
-        return Ondernemer.heeftVastePlaatsen(ondernemer) && !Ondernemer.wantsToMove(indeling, ondernemer);
+        return Ondernemer.heeftVastePlaatsen(ondernemer) &&
+              !Ondernemer.wantsToMove(indeling, ondernemer);
     });
     indeling = vphZonderVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
 
     const vphMetVerplaatsing = indeling.toewijzingQueue.filter(Ondernemer.heeftVastePlaatsen);
     indeling = vphMetVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
 
-    /*
-     * Stap 3:
-     * beperkt de indeling tot kramen met een bepaalde verkoopinrichting
-     */
+    // Stap 2: Deel ondernemers met een verkoopinrichting in
+    // -----------------------------------------------------
     const brancheOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
         Ondernemer.isInBranche(indeling, ondernemer)
     );
@@ -72,11 +70,8 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
     }, indeling);
 
-    /*
-     * Stap 4:
-     * beperkt de indeling tot kramen met een toewijzingsbeperking (branche, eigen materieel)
-     * en ondernemers met een bijbehorende eigenschap
-     */
+    // Stap 3: Deel branche ondernemers in
+    // -----------------------------------
     const verkoopinrichtingOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
         count(ondernemer.voorkeur && ondernemer.voorkeur.verkoopinrichting) > 0
     );
@@ -90,20 +85,16 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
     }, indeling);
 
-    /*
-     * Stap 5:
-     * Deel sollicitanten in
-     */
+    // Stap 4: Deel sollicitanten in
+    // -----------------------------
     indeling = indeling.toewijzingQueue
     .filter(ondernemer => !Ondernemer.heeftVastePlaatsen(ondernemer))
     .reduce((indeling, ondernemer) => {
         return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen);
     }, indeling);
 
-    /*
-     * Stap 6:
-     * Verwerk uitbreidingsvoorkeuren
-     */
+    // Stap 5: Verwerk uitbreidingsvoorkeuren
+    // --------------------------------------
     indeling = Indeling.performExpansion(indeling);
 
     return indeling;

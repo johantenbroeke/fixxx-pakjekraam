@@ -100,8 +100,9 @@ const Ondernemer = {
     },
 
     heeftVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
-        const { plaatsen = [] } = ondernemer;
-        return Ondernemer.isVast(ondernemer) && plaatsen.length > 0;
+        return Ondernemer.isVast(ondernemer) &&
+               ondernemer.plaatsen &&
+               ondernemer.plaatsen.length > 0;
     },
 
     isInBranche: (markt: IMarkt, ondernemer: IMarktondernemer, branche?: IBranche): boolean => {
