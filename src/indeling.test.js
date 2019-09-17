@@ -112,17 +112,38 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
     it('krijgt hetzelfde aantal willekeurige plaatsen als zijn vaste plaatsen niet beschikbaar zijn', () => {
         const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
-                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
-                ondernemer()
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { anywhere: true } }),
+                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3', '4'] })
             ],
             marktplaatsen: [
+                plaats({ inactive: true }), plaats({ inactive: true }),
                 plaats({ inactive: true }), plaats({ inactive: true }),
                 plaats(), plaats()
             ]
         }));
 
-        expect(toewijzingen.length).toBe(1);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3', '4']);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['5', '6']);
+    });
+
+    it('komt niet op de plek van een andere VPH als zijn plaatsen niet beschikbaar zijn', () => {
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { anywhere: true } }),
+                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3'], voorkeur: { anywhere: true } })
+            ],
+            marktplaatsen: [
+                plaats({ inactive: true }), plaats(),
+                plaats(), plaats(),
+                plaats()
+            ]
+        }));
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
     });
 
     it('kan zijn aantal vaste plaatsen verkleinen door een maximum in te stellen', () => {
@@ -914,7 +935,7 @@ describe('Edge cases', () => {
         // TODO: What should happen in this case?
     });
 
-    it('Een vasteplaatshouder wordt voor zover mogelijk toegewezen aan de vaste plaatsen', () => {
+    it.skip('Een vasteplaatshouder wordt voor zover mogelijk toegewezen aan zijn vaste plaatsen', () => {
         /*
          * Scenario:
          * - 1 inactieve marktplaats
