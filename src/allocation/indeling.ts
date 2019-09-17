@@ -140,43 +140,39 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): IMarktplaats[] => {
-        const startSize  = Ondernemer.getStartSize(ondernemer);
-        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
-        const available  = voorkeuren.filter(plaats =>
+        const { anywhere  = true } = ondernemer.voorkeur || {};
+        const wantsToMove = Ondernemer.wantsToMove(indeling, ondernemer);
+        const startSize   = Ondernemer.getStartSize(ondernemer);
+        const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
+        const available   = voorkeuren.filter(plaats =>
             Indeling._isAvailable(indeling, plaats)
         );
-        const grouped    = Markt.groupByAdjacent(indeling, available);
+        const grouped     = Markt.groupByAdjacent(indeling, available);
 
-        if (!Ondernemer.wantsToMove(indeling, ondernemer)) {
-            return grouped.reduce((result, group) => {
-                return group.length > result.length ? group : result;
-            }, [])
-            .slice(0, startSize);
-        }
+        return grouped.reduce((result, adjacent) => {
+            if (wantsToMove && result.length) {
+                return result;
+            }
 
-        let result;
-        const { anywhere = true } = ondernemer.voorkeur || {};
-        grouped.some(group => {
-            if (group.length < startSize && anywhere) {
-                const depth     = startSize - group.length;
-                const plaatsIds = group.map(({ plaatsId }) => plaatsId);
-                const adjacent  = <IPlaatsvoorkeur[]> Markt.getAdjacentPlaatsen(indeling, plaatsIds, depth, (plaats) =>
+            if (adjacent.length < startSize && anywhere) {
+                const depth     = startSize - adjacent.length;
+                const plaatsIds = adjacent.map(({ plaatsId }) => plaatsId);
+                const extra     = Markt.getAdjacentPlaatsen(indeling, plaatsIds, depth, (plaats) =>
                     Indeling._isAvailable(indeling, plaats)
                 );
-                group = group.concat(adjacent);
-                group = Markt.groupByAdjacent(indeling, group)[0];
+                adjacent = adjacent.concat(<IPlaatsvoorkeur[]> extra);
+                // adjacent = Markt.groupByAdjacent(indeling, adjacent)[0];
             }
 
-
-            if (group.length >= startSize) {
-                result = group.slice(0, startSize);
-                return true;
+            if (
+                !wantsToMove && adjacent.length > result.length ||
+                adjacent.length >= startSize
+            ) {
+                return adjacent.slice(0, startSize);
             } else {
-                return false;
+                return result;
             }
-        });
-
-        return result || [];
+        }, []);
     },
 
     isAanwezig: (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) => {
