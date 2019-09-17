@@ -163,6 +163,10 @@ export const groupBy = <T, K extends keyof T>(array: T[], keyField: K): { [index
     }, {});
 };
 
+export const difference = (a: any[] = [], b: any[] = []) => {
+    return a.filter(value => !b.includes(value));
+};
+
 export const intersection = (a: any[] = [], b: any[] = []) => {
     return a.filter(value => b.includes(value));
 };
