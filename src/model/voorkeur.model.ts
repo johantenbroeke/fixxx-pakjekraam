@@ -19,5 +19,5 @@ export class Voorkeur extends Model<IMarktondernemerVoorkeurRow, IMarktonderneme
     public brancheId: string | null;
     public parentBrancheId: string | null;
     public inrichting: string | null;
-    public inactive: boolean | null;
+    // public inactive: boolean | null;
 }
