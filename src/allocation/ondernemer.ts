@@ -20,7 +20,10 @@ const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeu
 };
 
 const Ondernemer = {
-    canExpandInIteration: (indeling: IMarktindeling, toewijzing: IToewijzing): boolean => {
+    canExpandInIteration: (
+        indeling: IMarktindeling,
+        toewijzing: IToewijzing
+    ): boolean => {
         const { ondernemer, plaatsen } = toewijzing;
         const currentSize = plaatsen.length;
         const targetSize  = Ondernemer.getTargetSize(ondernemer);
@@ -30,11 +33,17 @@ const Ondernemer = {
                !Ondernemer.isInMaxedOutBranche(indeling, ondernemer);
     },
 
-    getBrancheIds: (markt: IMarkt, ondernemer: IMarktondernemer) => {
+    getBrancheIds: (
+        markt: IMarkt,
+        ondernemer: IMarktondernemer
+    ) => {
         return ondernemer.voorkeur && ondernemer.voorkeur.branches || [];
     },
 
-    getBranches: (markt: IMarkt, ondernemer: IMarktondernemer): IBranche[] => {
+    getBranches: (
+        markt: IMarkt,
+        ondernemer: IMarktondernemer
+    ): IBranche[] => {
         const brancheIds = Ondernemer.getBrancheIds(markt, ondernemer);
 
         return brancheIds.reduce((branches, brancheId) => {
@@ -87,7 +96,10 @@ const Ondernemer = {
         return Math.max(1, minimum, maximum);
     },
 
-    getVastePlaatsen: (markt: IMarkt, ondernemer: IMarktondernemer): IPlaatsvoorkeur[] => {
+    getVastePlaatsen: (
+        markt: IMarkt,
+        ondernemer: IMarktondernemer
+    ): IPlaatsvoorkeur[] => {
         const { plaatsen = [] } = ondernemer;
         return plaatsen.map(plaatsId => ({
             plaatsId,
@@ -97,7 +109,10 @@ const Ondernemer = {
         }));
     },
 
-    heeftVastePlaats: (ondernemer: IMarktondernemer, plaats: IMarktplaats): boolean => {
+    heeftVastePlaats: (
+        ondernemer: IMarktondernemer,
+        plaats: IMarktplaats
+    ): boolean => {
         if (!ondernemer.plaatsen) {
             return false;
         }
@@ -110,12 +125,19 @@ const Ondernemer = {
                ondernemer.plaatsen.length > 0;
     },
 
-    isInBranche: (markt: IMarkt, ondernemer: IMarktondernemer, branche?: IBranche): boolean => {
+    isInBranche: (
+        markt: IMarkt,
+        ondernemer: IMarktondernemer,
+        branche?: IBranche
+    ): boolean => {
         const brancheIds = Ondernemer.getBrancheIds(markt, ondernemer);
         return branche ? brancheIds.includes(branche.brancheId) : !!brancheIds.length;
     },
 
-    isInMaxedOutBranche: (indeling: IMarktindeling, ondernemer: IMarktondernemer): boolean => {
+    isInMaxedOutBranche: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): boolean => {
         const branches = Ondernemer.getBranches(indeling, ondernemer);
 
         // For each branche this ondernemer is in, find out if it has already
@@ -146,7 +168,10 @@ const Ondernemer = {
         return currentSize < targetSize;
     } ,
 
-    wantsToMove: (indeling: IMarktindeling, ondernemer: IMarktondernemer): boolean => {
+    wantsToMove: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): boolean => {
         const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
         return !!voorkeuren.length;
     }

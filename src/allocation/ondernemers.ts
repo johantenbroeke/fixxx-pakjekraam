@@ -10,7 +10,11 @@ const STATUS_PRIORITIES = [
 ];
 
 const Ondernemers = {
-    compare: (a: IMarktondernemer, b: IMarktondernemer, aLijst: IMarktondernemer[]): number => {
+    compare: (
+        a: IMarktondernemer,
+        b: IMarktondernemer,
+        aLijst: IMarktondernemer[]
+    ): number => {
         // Sorteer eerst op aanwezigheid in de A-lijst...
         const sort1 = Number(aLijst.includes(b)) -
                       Number(aLijst.includes(a));
@@ -23,7 +27,10 @@ const Ondernemers = {
         return sort1 || sort2 || sort3;
     },
 
-    sort: (ondernemers: IMarktondernemer[], aLijst: IMarktondernemer[] = []): IMarktondernemer[] => {
+    sort: (
+        ondernemers: IMarktondernemer[],
+        aLijst: IMarktondernemer[] = []
+    ): IMarktondernemer[] => {
         return [...ondernemers].sort((a, b) => Ondernemers.compare(a, b, aLijst));
     }
 };

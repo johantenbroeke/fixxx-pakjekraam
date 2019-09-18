@@ -186,13 +186,19 @@ const Indeling = {
     // Als niet alle vaste plaatsen van een VPH beschikbaar zijn zal hij
     // moeten verplaatsen. Voor de berekening beschouwing we deze ondernemer
     // als iemand die verplaatst.
-    hasToMove: (indeling: IMarktindeling, ondernemer: IMarktondernemer): boolean => {
+    hasToMove: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): boolean => {
         const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
         const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats));
         return beschikbaar.length < vastePlaatsen.length;
     },
 
-    isAanwezig: (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) => {
+    isAanwezig: (
+        aanwezigheid: IRSVP[],
+        ondernemer: IMarktondernemer
+    ) => {
         const rsvp = aanwezigheid.find(aanmelding =>
             aanmelding.erkenningsNummer === ondernemer.erkenningsNummer
         );
@@ -207,7 +213,9 @@ const Indeling = {
         }
     },
 
-    performExpansion: (indeling: IMarktindeling): IMarktindeling => {
+    performExpansion: (
+        indeling: IMarktindeling
+    ): IMarktindeling => {
         let queue = indeling.toewijzingen.filter(toewijzing =>
             Ondernemer.wantsExpansion(toewijzing)
         );
