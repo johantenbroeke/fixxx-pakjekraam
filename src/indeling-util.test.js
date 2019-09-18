@@ -155,8 +155,7 @@ describe('Markt.groupByAdjacent', () => {
 
         return Markt.groupByAdjacent(markt, plaatsen)
         .map(group => {
-            return group.map(({ plaatsId }) => plaatsId)
-                        .sort();
+            return group.map(({ plaatsId }) => plaatsId);
         });
     };
 
@@ -175,7 +174,7 @@ describe('Markt.groupByAdjacent', () => {
                 obstakel : ['raketlanceerinstallatie']
             }]
         )).toStrictEqual(
-            [['1', '2'], ['7'], ['12', '13', '14'], ['16'], ['17'], ['18', '20']]
+            [['1', '2'], ['7'], ['12', '13', '14'], ['16'], ['17'], ['20', '18']]
         );
     });
 });
