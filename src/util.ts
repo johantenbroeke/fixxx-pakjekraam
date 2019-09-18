@@ -128,6 +128,7 @@ export const stringSort = (a: string, b: string): number => (a > b ? 1 : a === b
 // ----------------
 // Example usage: [[1], [2]].reduce(methodName, [])
 export const sum = (a: number, b: number): number => a + b;
+export const max = (a: number, b: number): number => Math.max(a, b);
 export const flatten = <T>(a: T[] = [], b: T[] = []): T[] => [...(a || []), ...(b || [])];
 export const unique = <T>(a: T[], b: T): T[] => (a.includes(b) ? a : [...a, b]);
 

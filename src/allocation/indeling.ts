@@ -11,7 +11,8 @@ import {
 
 import {
     intersection,
-    intersects
+    intersects,
+    max
 } from '../util';
 
 import Markt from './markt';
@@ -176,7 +177,14 @@ const Indeling = {
                 !wantsToMove && group.length > result.length ||
                 group.length >= startSize
             ) {
-                return group.slice(0, startSize);
+                // Reduceer het aantal plaatsen tot `startSize`, maar pak de subset
+                // waar de plaats met de hoogste prioriteit in zit.
+                return group.reduce((best, plaats, index) => {
+                    const current = group.slice(index, index+startSize);
+                    const bestMax = best.map(({ priority }) => priority).reduce(max, 0);
+                    const curMax  = current.map(({ priority }) => priority).reduce(max, 0);
+                    return !best.length || curMax > bestMax ? current : best;
+                }, []);
             } else {
                 return result;
             }

@@ -100,13 +100,17 @@ const Markt = {
             }
 
             const next = plaatsen.splice(nextIndex, 1)[0];
-            group.push(next);
+            if (dir === -1) {
+                group.unshift(next);
+            } else {
+                group.push(next);
+            }
             current = next;
         }
 
         // A group of places must be resorted, because the loop above
         // might have messed up the priority order.
-        group.sort(({ priority: a = 1 }, { priority: b = 1 }) => b - a);
+        // group.sort(({ priority: a = 1 }, { priority: b = 1 }) => b - a);
 
         return plaatsen.length ?
                Markt.groupByAdjacent(markt, plaatsen, result) :
