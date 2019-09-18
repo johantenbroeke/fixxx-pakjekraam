@@ -48,7 +48,8 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     // ----------------------------------
     const vphZonderVerplaatsing = indeling.toewijzingQueue.filter(ondernemer => {
         return Ondernemer.heeftVastePlaatsen(ondernemer) &&
-              !Ondernemer.wantsToMove(indeling, ondernemer);
+              !Ondernemer.wantsToMove(indeling, ondernemer) &&
+              !Indeling.hasToMove(indeling, ondernemer);
     });
     indeling = vphZonderVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
 

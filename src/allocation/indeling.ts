@@ -10,7 +10,6 @@ import {
 } from '../markt.model';
 
 import {
-    difference,
     intersection,
     intersects
 } from '../util';
@@ -100,7 +99,7 @@ const Indeling = {
             }, indeling);
         } else if (anywhere) {
             const openPlaatsen = indeling.openPlaatsen.filter(plaats =>
-                Indeling._isAvailableFor(indeling, ondernemer, plaats)
+                Indeling._isAvailable(indeling, plaats)
             );
             return Indeling.assignPlaats(indeling, ondernemer, openPlaatsen, 'reject', startSize);
         } else {
@@ -156,36 +155,47 @@ const Indeling = {
         const startSize   = Ondernemer.getStartSize(ondernemer);
         const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const available   = voorkeuren.filter(plaats =>
-            Indeling._isAvailableFor(indeling, ondernemer, plaats)
+            Indeling._isAvailable(indeling, plaats)
         );
         const grouped     = Markt.groupByAdjacent(indeling, available);
 
-        return grouped.reduce((result, adjacent) => {
+        return grouped.reduce((result, group) => {
             if (wantsToMove && result.length) {
                 return result;
             }
 
-            if (adjacent.length < startSize) {
-                const depth     = startSize - adjacent.length;
-                const plaatsIds = adjacent.map(({ plaatsId }) => plaatsId);
+            if (group.length < startSize) {
+                const depth     = startSize - group.length;
+                const plaatsIds = group.map(({ plaatsId }) => plaatsId);
                 const extra     = Indeling._getAvailableAdjacentFor(indeling, ondernemer, plaatsIds, depth);
-                adjacent = adjacent.concat(<IPlaatsvoorkeur[]> extra);
-                // adjacent = Markt.groupByAdjacent(indeling, adjacent)[0];
+                group = group.concat(<IPlaatsvoorkeur[]> extra);
+                // group = Markt.groupByAdjacent(indeling, group)[0];
             }
 
             if (
-                !wantsToMove && adjacent.length > result.length ||
-                adjacent.length >= startSize
+                !wantsToMove && group.length > result.length ||
+                group.length >= startSize
             ) {
-                return adjacent.slice(0, startSize);
+                return group.slice(0, startSize);
             } else {
                 return result;
             }
         }, []);
     },
 
+    // Als niet alle vaste plaatsen van een VPH beschikbaar zijn zal hij
+    // moeten verplaatsen. Voor de berekening beschouwing we deze ondernemer
+    // als iemand die verplaatst.
+    hasToMove: (indeling: IMarktindeling, ondernemer: IMarktondernemer): boolean => {
+        const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
+        const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats));
+        return beschikbaar.length < vastePlaatsen.length;
+    },
+
     isAanwezig: (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) => {
-        const rsvp = aanwezigheid.find(aanmelding => aanmelding.erkenningsNummer === ondernemer.erkenningsNummer);
+        const rsvp = aanwezigheid.find(aanmelding =>
+            aanmelding.erkenningsNummer === ondernemer.erkenningsNummer
+        );
 
         // Vasteplaatshouders die niets hebben laten weten en die hebben bevestigd dat ze
         // komen worden meegeteld als aanwezig. Alleen de expliciete afmeldingen worden
@@ -268,32 +278,15 @@ const Indeling = {
         depth: number = 1
     ): IMarktplaats[] => {
         return Markt.getAdjacentPlaatsen(indeling, plaatsIds, depth, (plaats) =>
-            Indeling._isAvailableFor(indeling, ondernemer, plaats)
+            Indeling._isAvailable(indeling, plaats)
         );
     },
 
-    _isAvailableFor: (
+    _isAvailable: (
         indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
         plaats: IMarktplaats
     ): boolean => {
-        const { ondernemers, aanwezigheid } = indeling;
-        const willBeUnavailable = ondernemers.reduce((plaatsen, _ondernemer) => {
-            if (
-                _ondernemer.erkenningsNummer !== ondernemer.erkenningsNummer &&
-                Indeling.isAanwezig(aanwezigheid, _ondernemer) &&
-                Ondernemer.heeftVastePlaatsen(_ondernemer) &&
-                !Ondernemer.wantsToMove(indeling, _ondernemer)
-            ) {
-                return plaatsen.concat(_ondernemer.plaatsen);
-            } else {
-                return plaatsen;
-            }
-        }, []);
-        const openPlaatsIds   = indeling.openPlaatsen.map(({ plaatsId }) => plaatsId);
-        const futureAvailable = difference(openPlaatsIds, willBeUnavailable);
-
-        return !!~futureAvailable.findIndex(plaatsId =>
+        return !!~indeling.openPlaatsen.findIndex(({ plaatsId }) =>
             plaatsId === plaats.plaatsId
         );
     },
