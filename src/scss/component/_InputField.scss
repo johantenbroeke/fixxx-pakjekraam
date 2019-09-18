@@ -63,6 +63,12 @@ $radiobutton-left: 0px;
     }
     &--number,
     &--text {
+        color:black;
+        margin: 10px 0;
+        width: 100%;
+        label{
+            margin: 10px 0;
+        }
     }
     &--radiobutton {
         position: relative;

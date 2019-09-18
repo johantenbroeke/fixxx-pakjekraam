@@ -7,7 +7,7 @@ import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import { getAllBranches, getIndelingVoorkeur } from '../pakjekraam-api';
 
 export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurRow => {
-    const { erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
+    const { absentFrom, absentUntil, erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
 
     const inactive = !!body.inactive;
     const anywhere = !!body.anywhere;
@@ -25,7 +25,8 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
         parentBrancheId: parentBrancheId || null,
         inrichting: inrichting || null,
         inactive,
-
+        absentFrom,
+        absentUntil,
         monday: !!body.monday,
         tuesday: !!body.tuesday,
         wednesday: !!body.wednesday,
@@ -34,6 +35,9 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
         saturday: !!body.saturday,
         sunday: !!body.sunday,
     };
+
+    console.log(voorkeur);
+    
 
     return voorkeur;
 };
