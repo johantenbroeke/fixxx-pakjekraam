@@ -21,7 +21,6 @@ export const sollicitantenPage = (req: Request, res: Response) => {
     );
 };
 
-
 export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, next: NextFunction ) => {
 
     const datum = req.params.datum;
