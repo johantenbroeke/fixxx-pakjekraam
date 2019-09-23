@@ -12,7 +12,7 @@ import {
 import {
     intersection,
     intersects,
-    max
+    sum
 } from '../util';
 
 import Markt from './markt';
@@ -181,9 +181,9 @@ const Indeling = {
                 // waar de plaats met de hoogste prioriteit in zit.
                 return group.reduce((best, plaats, index) => {
                     const current = group.slice(index, index+startSize);
-                    const bestMax = best.map(({ priority }) => priority).reduce(max, 0);
-                    const curMax  = current.map(({ priority }) => priority).reduce(max, 0);
-                    return !best.length || curMax > bestMax ? current : best;
+                    const bestSum = best.map(({ priority }) => priority).reduce(sum, 0);
+                    const curSum  = current.map(({ priority }) => priority).reduce(sum, 0);
+                    return !best.length || curSum > bestSum ? current : best;
                 }, []);
             } else {
                 return result;

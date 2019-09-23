@@ -386,20 +386,112 @@ describe('Een VPH die wil verplaatsen', () => {
     });
 
     it('met meerdere plaatsen behoudt dit aantal na verplaatsing', () => {
-        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
-            ondernemers: [
-                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] }),
+        // VPH met plaatsen 1,2 heeft voorkeur 3. Plaats 3 is vrij --> verplaatsing naar 2,3.
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
+            marktplaatsen: [
+                plaats(), plaats(), plaats(), plaats(), plaats()
             ],
-            marktplaatsen: [plaats(), plaats(), plaats(), plaats(), plaats(), plaats()],
             voorkeuren: [
-                voorkeur({ sollicitatieNummer: 1, plaatsId: '5', priority: FIRST_CHOICE }),
-                voorkeur({ sollicitatieNummer: 1, plaatsId: '6', priority: SECOND_CHOICE }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE })
             ]
         }));
-
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
-        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['5', '6']);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
+
+        // VPH met plaatsen 1,2 heeft voorkeur 4. Plaats 3 en 4 is vrij --> verplaatsing naar 3,4.
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
+            marktplaatsen: [
+                plaats(), plaats(), plaats(), plaats(), plaats()
+            ],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '4', priority: FIRST_CHOICE }),
+            ]
+        }));
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3', '4']);
+
+        // VPH met plaatsen 1,2 heeft voorkeur 4. Plaats 3 is niet vrij vrij --> verplaatsing naar 4,5.
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
+            marktplaatsen: [
+                plaats(), plaats(), plaats({ inactive: true }), plaats(), plaats()
+            ],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '4', priority: FIRST_CHOICE })
+            ]
+        }));
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
+
+        // VPH met plaatsen 1,2 heeft voorkeur 3. Plaats 3 is niet vrij --> blijft staan.
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
+            marktplaatsen: [
+                plaats(), plaats(), plaats({ inactive: true }), plaats(), plaats()
+            ],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }),
+            ]
+        }));
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+
+        // VPH met plaatsen 1,2 heeft voorkeur 3,4. Plaats 3 en 4 zijn vrij --> verplaatsing naar 3,4.
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
+            marktplaatsen: [
+                plaats(), plaats(), plaats(), plaats(), plaats()
+            ],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '4', priority: SECOND_CHOICE })
+            ]
+        }));
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3', '4']);
+
+        // VPH met plaatsen 1,2 heeft voorkeur 3,4. Plaats 3 is niet vrij --> verplaatsing naar 4,5.
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
+            marktplaatsen: [
+                plaats(), plaats(), plaats({ inactive: true }), plaats(), plaats()
+            ],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '4', priority: SECOND_CHOICE })
+            ]
+        }));
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
+
+        // VPH met plaatsen 1,2 heeft voorkeur 3,4. Plaats 4 is niet vrij --> verplaatsing naar 4,5.
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
+            marktplaatsen: [
+                plaats(), plaats(), plaats(), plaats({ inactive: true }), plaats()
+            ],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }),
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '4', priority: SECOND_CHOICE })
+            ]
+        }));
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
+
+        // VPH met plaatsen 1,2 heeft voorkeur 5 --> verplaatsing naar 4,5.
+        var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
+            ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
+            marktplaatsen: [
+                plaats(), plaats(), plaats(), plaats(), plaats()
+            ],
+            voorkeuren: [
+                voorkeur({ sollicitatieNummer: 1, plaatsId: '5', priority: FIRST_CHOICE }),
+            ]
+        }));
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
     });
 });
 
