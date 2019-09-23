@@ -117,7 +117,7 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
         const ondernemer = findOndernemer(data);
 
         if (!ondernemer) {
-            throw new Error(`Define ondernemer ${data.erkenningsNummer || data.sollicitatieNummer} before use`);
+            throw Error(`Define ondernemer ${data.erkenningsNummer || data.sollicitatieNummer} before use`);
         }
 
         const { erkenningsNummer, sollicitatieNummer } = ondernemer;

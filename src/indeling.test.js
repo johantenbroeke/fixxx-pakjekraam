@@ -219,6 +219,7 @@ describe('Een VPH die ingedeeld wil worden', () => {
             marktplaatsen: [
                 plaats({ inactive: true }), plaats({ inactive: true }),
                 plaats({ inactive: true }), plaats({ inactive: true }),
+                plaats(), plaats(),
                 plaats(), plaats()
             ]
         }));
