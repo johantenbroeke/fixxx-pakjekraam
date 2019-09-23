@@ -188,26 +188,29 @@ describe('Een VPH die ingedeeld wil worden', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
     });
 
-    it('komt niet op de plek van een andere aanwezige VPH', () => {
-        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
+    it('wordt afgewezen als zijn vaste plaatsen niet beschikbaar zijn', () => {
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [
-                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { anywhere: true } }),
-                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3'], voorkeur: { anywhere: true } })
+                ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] } ),
+                ondernemer({ sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3', '4'], voorkeur: { minimum: 1 } }),
+                ondernemer({ sollicitatieNummer: 3, status: 'vpl', plaatsen: ['5', '6'] }),
             ],
             marktplaatsen: [
                 plaats({ inactive: true }), plaats(),
-                plaats(), plaats(),
-                plaats()
+                plaats({ inactive: true }), plaats(),
+                plaats({ inactive: true }), plaats(),
+                plaats(), plaats()
             ]
         }));
 
-        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
-        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['4']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['6', '7']);
     });
 
-    it('kan hetzelfde aantal willekeurige plaatsen krijgen als zijn eigen plaatsen niet beschikbaar zijn', () => {
+    // Uitgezet, omdat nog niet besloten is hoe om te gaan met 'willekeurig indelen' voor VPH.
+    it.skip('kan hetzelfde aantal willekeurige plaatsen krijgen als zijn eigen plaatsen niet beschikbaar zijn', () => {
         const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
             ondernemers: [
                 ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { anywhere: true } }),
@@ -400,53 +403,19 @@ describe('Een VPH die wil verplaatsen', () => {
 });
 
 describe('Een sollicitant die ingedeeld wil worden', () => {
-    describe('krijg voorkeur als zij', () => {
-        it('een brancheplek willen', () => {
-            const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
-                ondernemers: [
-                    ondernemer({ sollicitatieNummer: 1 }),
-                    ondernemer({ sollicitatieNummer: 2, voorkeur: { branches: ['branche-x'] } })
-                ],
-                marktplaatsen: [
-                    plaats({ branches: ['branche-x'] })
-                ]
-            }));
+    it('krijgt voorkeur als zij op de A-lijst staan', () => {
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1 }),
+                ondernemer({ sollicitatieNummer: 2 })
+            ],
+            marktplaatsen: [plaats()],
+            aLijst: [ondernemer({ sollicitatieNummer: 2 })]
+        }));
 
-            expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
-            expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
-            expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
-        });
-
-        it('eigen materieel hebben', () => {
-            const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
-                ondernemers: [
-                    ondernemer({ sollicitatieNummer: 1 }),
-                    ondernemer({ sollicitatieNummer: 2, voorkeur: { verkoopinrichting: ['eigen-materieel'] } })
-                ],
-                marktplaatsen: [
-                    plaats({ verkoopinrichting: ['eigen-materieel'] })
-                ]
-            }));
-
-            expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
-            expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
-            expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
-        });
-
-        it('op de A-lijst staan', () => {
-            const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
-                ondernemers: [
-                    ondernemer({ sollicitatieNummer: 1 }),
-                    ondernemer({ sollicitatieNummer: 2 })
-                ],
-                marktplaatsen: [plaats()],
-                aLijst: [ondernemer({ sollicitatieNummer: 2 })]
-            }));
-
-            expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
-            expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
-            expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
-        });
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 
     it('mag naar een plaats van een afwezige VPH', () => {
@@ -487,6 +456,44 @@ describe('Een sollicitant die ingedeeld wil worden', () => {
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
+    });
+});
+
+// TODO: Tests uitwerken.
+describe('Een ondernemer met eigen materieel die ingedeeld wil worden', () => {
+    it('krijgt voorkeur op sollicitanten zonder eigen materieel op plaatsen zonder kraam', () => {
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1 }),
+                ondernemer({ sollicitatieNummer: 2, voorkeur: { verkoopinrichting: ['eigen-materieel'] } })
+            ],
+            marktplaatsen: [
+                plaats({ verkoopinrichting: ['eigen-materieel'] })
+            ]
+        }));
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+    });
+});
+
+// TODO: Tests uitwerken.
+describe('Een branche ondernemer die ingedeeld wil worden', () => {
+    it('krijgt voorkeur op sollicitanten zonder branche op brancheplaatsen', () => {
+        const { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats }) => ({
+            ondernemers: [
+                ondernemer({ sollicitatieNummer: 1 }),
+                ondernemer({ sollicitatieNummer: 2, voorkeur: { branches: ['branche-x'] } })
+            ],
+            marktplaatsen: [
+                plaats({ branches: ['branche-x'] })
+            ]
+        }));
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 });
 

@@ -90,20 +90,20 @@ const Indeling = {
         ondernemer: IMarktondernemer
     ): IMarktindeling => {
         const available   = Indeling.findBestePlaatsenForVPH(indeling, ondernemer);
-        const { anywhere  = false } = ondernemer.voorkeur || {};
-        const startSize   = Ondernemer.getStartSize(ondernemer);
+        // const { anywhere  = false } = ondernemer.voorkeur || {};
+        // const startSize   = Ondernemer.getStartSize(ondernemer);
         const minimumSize = Ondernemer.getMinimumSize(ondernemer);
 
         if (available.length && available.length >= minimumSize) {
             return available.reduce((indeling, plaats) => {
                 return Indeling._assignPlaats(indeling, ondernemer, plaats);
             }, indeling);
-        } else if (anywhere) {
-            const openPlaatsen = indeling.openPlaatsen.filter(plaats =>
+        } else /*if (anywhere)*/ {
+            /*const openPlaatsen = indeling.openPlaatsen.filter(plaats =>
                 Indeling._isAvailable(indeling, plaats)
             );
             return Indeling.assignPlaats(indeling, ondernemer, openPlaatsen, 'reject', startSize);
-        } else {
+        } else {*/
             return Indeling._rejectOndernemer(indeling, ondernemer, ADJACENT_UNAVAILABLE);
         }
     },
