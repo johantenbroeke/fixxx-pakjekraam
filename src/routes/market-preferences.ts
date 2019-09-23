@@ -39,7 +39,6 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
         saturday: !!body.saturday,
         sunday: !!body.sunday,
     };
-
     return voorkeur;
 };
 
