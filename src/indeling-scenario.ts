@@ -15,8 +15,6 @@ import {
 const VOORKEUR_MINIMUM_PRIORITY = 0;
 const VOORKEUR_DEFAULT_PRIORITY = VOORKEUR_MINIMUM_PRIORITY + 1;
 
-const stringSort = (a: string, b: string): number => (a > b ? 1 : a === b ? 0 : -1);
-
 const isVast = (status: DeelnemerStatus): boolean =>
     status === DeelnemerStatus.VASTE_PLAATS || status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS;
 
@@ -119,7 +117,7 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
         const ondernemer = findOndernemer(data);
 
         if (!ondernemer) {
-            throw new Error(`Define ondernemer ${data.erkenningsNummer || data.sollicitatieNummer} before use`);
+            throw Error(`Define ondernemer ${data.erkenningsNummer || data.sollicitatieNummer} before use`);
         }
 
         const { erkenningsNummer, sollicitatieNummer } = ondernemer;
@@ -175,7 +173,7 @@ const marktScenario = (callback: (utils: scenarioUtils) => IMarktScenarioStub): 
          * assume there is one big row that is ordered by `plaatsId` in alphanumeric order.
          */
         markt.rows = [
-            [...markt.marktplaatsen].sort((plaatsA, plaatsB) => stringSort(plaatsA.plaatsId, plaatsB.plaatsId))
+            [...markt.marktplaatsen].sort((plaatsA, plaatsB) => Number(plaatsA.plaatsId) - Number(plaatsB.plaatsId))
         ];
     }
 

@@ -12,7 +12,6 @@ import {
 import Indeling from './allocation/indeling';
 import Ondernemers from './allocation/ondernemers';
 import Ondernemer from './allocation/ondernemer';
-import Moving from './allocation/moving';
 
 /*
  * https://decentrale.regelgeving.overheid.nl/cvdr/XHTMLoutput/Actueel/Amsterdam/396119.html#id1-3-2-2-3-4-5
@@ -44,44 +43,26 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         voorkeuren: [...voorkeuren]
     };
 
-    /*
-     * Stap 1:
-     * Deel vasteplaatshouders in
-     */
+
+    // Stap 1: Deel vasteplaatshouders in
+    // ----------------------------------
     const vphZonderVerplaatsing = indeling.toewijzingQueue.filter(ondernemer => {
-        return Ondernemer.isVast(ondernemer) && !Ondernemer.wantsToMove(indeling, ondernemer);
+        return Ondernemer.heeftVastePlaatsen(ondernemer) &&
+              !Ondernemer.wantsToMove(indeling, ondernemer) &&
+              !Indeling.hasToMove(indeling, ondernemer);
     });
     indeling = vphZonderVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
 
     const vphMetVerplaatsing = indeling.toewijzingQueue.filter(Ondernemer.heeftVastePlaatsen);
     indeling = vphMetVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
 
-    /*
-     * Stap 3:
-     * beperkt de indeling tot kramen met een bepaalde verkoopinrichting
-     */
-    const brancheOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
-        Ondernemer.isInBranche(indeling, ondernemer)
-    );
-
-    indeling = brancheOndernemers.reduce((indeling, ondernemer, index, ondernemers) => {
-        const ondernemerBranchePlaatsen = indeling.openPlaatsen.filter(plaats =>
-            intersects(plaats.branches, ondernemer.voorkeur && ondernemer.voorkeur.branches)
-        );
-
-        return Indeling.assignPlaats(indeling, ondernemer, ondernemerBranchePlaatsen, 'ignore');
-    }, indeling);
-
-    /*
-     * Stap 4:
-     * beperkt de indeling tot kramen met een toewijzingsbeperking (branche, eigen materieel)
-     * en ondernemers met een bijbehorende eigenschap
-     */
+    // Stap 2: Deel ondernemers met een verkoopinrichting in
+    // -----------------------------------------------------
     const verkoopinrichtingOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
         count(ondernemer.voorkeur && ondernemer.voorkeur.verkoopinrichting) > 0
     );
 
-    indeling = verkoopinrichtingOndernemers.reduce((indeling, ondernemer, index, ondernemers) => {
+    indeling = verkoopinrichtingOndernemers.reduce((indeling, ondernemer) => {
         const plaatsen = indeling.openPlaatsen.filter(plaats => {
             const { verkoopinrichting = [] } = ondernemer.voorkeur || {};
             return intersects(plaats.verkoopinrichting, verkoopinrichting);
@@ -90,24 +71,31 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
     }, indeling);
 
-    /*
-     * Stap 5:
-     * Deel sollicitanten in
-     */
+    // Stap 3: Deel branche ondernemers in
+    // -----------------------------------
+    const brancheOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
+        Ondernemer.isInBranche(indeling, ondernemer)
+    );
+
+    indeling = brancheOndernemers.reduce((indeling, ondernemer) => {
+        const { branches = [] } = ondernemer.voorkeur || {};
+        const plaatsen = indeling.openPlaatsen.filter(plaats =>
+            intersects(plaats.branches, branches)
+        );
+
+        return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
+    }, indeling);
+
+    // Stap 4: Deel sollicitanten in
+    // -----------------------------
     indeling = indeling.toewijzingQueue
     .filter(ondernemer => !Ondernemer.heeftVastePlaatsen(ondernemer))
-    .reduce((indeling, ondernemer) => Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen), indeling);
+    .reduce((indeling, ondernemer) => {
+        return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen);
+    }, indeling);
 
-    /*
-     * Stap 6:
-     * Verwerk verplaatsingsvoorkeuren voor niet-VPH
-     */
-    indeling = Moving.performFor(indeling, aLijst);
-
-    /*
-     * Stap 7:
-     * Verwerk uitbreidingsvoorkeuren
-     */
+    // Stap 5: Verwerk uitbreidingsvoorkeuren
+    // --------------------------------------
     indeling = Indeling.performExpansion(indeling);
 
     return indeling;

@@ -11,7 +11,10 @@ import {
 } from '../util';
 
 const Toewijzing = {
-    add: (indeling: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => {
+    add: (
+        indeling: IMarktindeling,
+        toewijzing: IToewijzing
+    ): IMarktindeling => {
         return {
             ...indeling,
             openPlaatsen: indeling.openPlaatsen.filter(plaats => !toewijzing.plaatsen.includes(plaats.plaatsId)),
@@ -19,7 +22,11 @@ const Toewijzing = {
         };
     },
 
-    create: (markt: IMarkt, plaats: IMarktplaats, ondernemer: IMarktondernemer): IToewijzing => {
+    create: (
+        markt: IMarkt,
+        plaats: IMarktplaats,
+        ondernemer: IMarktondernemer
+    ): IToewijzing => {
         return {
             marktId          : markt.marktId,
             marktDate        : markt.marktDate,
@@ -29,13 +36,19 @@ const Toewijzing = {
         };
     },
 
-    find: (indeling: IMarktindeling, ondernemer: IMarktondernemer) => {
+    find: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ) => {
         return indeling.toewijzingen.find(toewijzing =>
             toewijzing.erkenningsNummer === ondernemer.erkenningsNummer
         );
     },
 
-    remove: (indeling: IMarktindeling, toewijzing: IToewijzing): IMarktindeling => {
+    remove: (
+        indeling: IMarktindeling,
+        toewijzing: IToewijzing
+    ): IMarktindeling => {
         const { marktplaatsen, openPlaatsen, toewijzingen } = indeling;
 
         if (!toewijzingen.includes(toewijzing)) {
@@ -52,7 +65,11 @@ const Toewijzing = {
         };
     },
 
-    replace: (indeling: IMarktindeling, existingToewijzing: IToewijzing, newToewijzing: IToewijzing): IMarktindeling => {
+    replace: (
+        indeling: IMarktindeling,
+        existingToewijzing: IToewijzing,
+        newToewijzing: IToewijzing
+    ): IMarktindeling => {
         if (!existingToewijzing) {
             return Toewijzing.add(indeling, newToewijzing);
         }
@@ -72,7 +89,10 @@ const Toewijzing = {
         return indeling;
     },
 
-    merge: (a: IToewijzing, b: IToewijzing): IToewijzing => {
+    merge: (
+        a: IToewijzing,
+        b: IToewijzing
+    ): IToewijzing => {
         return {
             ...a,
             ...b,
