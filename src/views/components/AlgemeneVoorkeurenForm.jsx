@@ -191,7 +191,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                         </div>
                     ) : null}
 
-                    {vast ? (
+                    {/* {vast ? (
                         <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
                             <h2 className="Fieldset__header">Langdurige afwezigheid</h2>
                             <p className="InputField  InputField--text">
@@ -217,7 +217,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 />
                             </p>
                         </div>
-                    ) : null}
+                    ) : null} */}
                 </div>
 
                 <div className="Fieldset">
