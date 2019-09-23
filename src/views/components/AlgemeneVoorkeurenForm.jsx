@@ -194,14 +194,27 @@ class AlgemeneVoorkeurenForm extends React.Component {
                     {vast ? (
                         <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
                             <h2 className="Fieldset__header">Langdurige afwezigheid</h2>
-                            <p className="InputField InputField--checkbox">
+                            <p className="InputField  InputField--text">
+                                <label className="Label" htmlFor="absentFrom">Ik ben afwezig vanaf: </label>
                                 <input
-                                    id="inactive"
-                                    type="checkbox"
-                                    name="inactive"
-                                    defaultChecked={voorkeur.inactive}
+                                    id="absentFrom"
+                                    type="text"
+                                    name="absentFrom"
+                                    placeholder="25-10-2019"
+                                    className="Input Input--medium"
+                                    defaultChecked={voorkeur.absentFrom}
                                 />
-                                <label htmlFor="inactive">Ik kan voorlopig niet op de markt aanwezig zijn.</label>
+                            </p>
+                            <p className="InputField InputField--text">
+                                <label className="Label" htmlFor="absentUntil">Ik ben afwezig tot:</label>
+                                <input
+                                    id="absentUntil"
+                                    type="text"
+                                    name="absentUntil"
+                                    placeholder="30-10-2019"
+                                    className="Input Input--medium"
+                                    defaultChecked={voorkeur.absentUntil}
+                                />
                             </p>
                         </div>
                     ) : null}
