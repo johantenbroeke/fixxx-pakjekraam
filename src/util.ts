@@ -122,6 +122,13 @@ export const nextWeek = (): string => addDays(Date.now(), DAYS_IN_WEEK);
 
 export const toISODate = (date: Date): string => date.toISOString().replace(/T.+/, '');
 
+export const ddmmyyyyToDate = (dateString: string) => {
+    const day = dateString.split('-')[0];
+    const month = dateString.split('-')[1];
+    const year = dateString.split('-')[2];
+    return new Date(parseInt(year), parseInt(month)-1, parseInt(day), 0, 0, 0);
+};
+
 // Array functions
 // ===============
 

@@ -195,25 +195,25 @@ class AlgemeneVoorkeurenForm extends React.Component {
                         <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
                             <h2 className="Fieldset__header">Langdurige afwezigheid</h2>
                             <p className="InputField  InputField--text">
-                                <label class="Label" htmlFor="absentFrom">Ik ben afwezig vanaf: </label>
+                                <label className="Label" htmlFor="absentFrom">Afwezig vanaf: </label>
                                 <input
                                     id="absentFrom"
                                     type="text"
                                     name="absentFrom"
-                                    placeholder="25-10-2019"
+                                    placeholder="05-05-2020"
                                     className="Input Input--medium"
-                                    defaultChecked={voorkeur.absentFrom}
+                                    value={voorkeur.absentFrom}
                                 />
                             </p>
                             <p className="InputField InputField--text">
-                                <label class="Label" htmlFor="absentUntil">Ik ben afwezig tot:</label>
+                                <label className="Label" htmlFor="absentUntil">Afwezig tot en met:</label>
                                 <input
                                     id="absentUntil"
                                     type="text"
                                     name="absentUntil"
-                                    placeholder="30-10-2019"
+                                    placeholder="10-05-2020"
                                     className="Input Input--medium"
-                                    defaultChecked={voorkeur.absentUntil}
+                                    value={voorkeur.absentUntil}
                                 />
                             </p>
                         </div>

@@ -5,6 +5,7 @@ import models from '../model/index';
 import { internalServerErrorPage, HTTP_CREATED_SUCCESS, getQueryErrors } from '../express-util';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import { getAllBranches, getIndelingVoorkeur } from '../pakjekraam-api';
+import { ddmmyyyyToDate } from '../util';
 
 export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurRow => {
     const { absentFrom, absentUntil, erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
@@ -13,6 +14,9 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
     const anywhere = !!body.anywhere;
     const minimum = typeof body.minimum === 'string' ? parseInt(body.minimum, 10) || null : null;
     const maximum = typeof body.maximum === 'string' ? parseInt(body.maximum, 10) || null : null;
+
+    const absentFromDate = ddmmyyyyToDate(absentFrom);
+    const absentUntilDate = ddmmyyyyToDate(absentUntil);
 
     const voorkeur = {
         erkenningsNummer,
@@ -25,8 +29,8 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
         parentBrancheId: parentBrancheId || null,
         inrichting: inrichting || null,
         inactive,
-        absentFrom,
-        absentUntil,
+        absentFrom: absentFromDate,
+        absentUntil: absentUntilDate,
         monday: !!body.monday,
         tuesday: !!body.tuesday,
         wednesday: !!body.wednesday,
@@ -36,13 +40,11 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
         sunday: !!body.sunday,
     };
 
-    console.log(voorkeur);
-    
-
     return voorkeur;
 };
 
 export const updateMarketPreferences = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
+
     const data = algemeneVoorkeurenFormData(req.body);
 
     const { marktId, marktDate } = data;
@@ -83,6 +85,7 @@ export const marketPreferencesPage = (
         getIndelingVoorkeur(erkenningsNummer, marktId, marktDate),
         getAllBranches(),
     ]).then(([ondernemer, markt, voorkeur, branches]) => {
+
         res.render('AlgemeneVoorkeurenPage', {
             ondernemer,
             markt,
