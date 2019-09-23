@@ -58,21 +58,6 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
 
     // Stap 2: Deel ondernemers met een verkoopinrichting in
     // -----------------------------------------------------
-    const brancheOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
-        Ondernemer.isInBranche(indeling, ondernemer)
-    );
-
-    indeling = brancheOndernemers.reduce((indeling, ondernemer) => {
-        const { branches = [] } = ondernemer.voorkeur || {};
-        const plaatsen = indeling.openPlaatsen.filter(plaats =>
-            intersects(plaats.branches, branches)
-        );
-
-        return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
-    }, indeling);
-
-    // Stap 3: Deel branche ondernemers in
-    // -----------------------------------
     const verkoopinrichtingOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
         count(ondernemer.voorkeur && ondernemer.voorkeur.verkoopinrichting) > 0
     );
@@ -82,6 +67,21 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
             const { verkoopinrichting = [] } = ondernemer.voorkeur || {};
             return intersects(plaats.verkoopinrichting, verkoopinrichting);
         });
+
+        return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
+    }, indeling);
+
+    // Stap 3: Deel branche ondernemers in
+    // -----------------------------------
+    const brancheOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
+        Ondernemer.isInBranche(indeling, ondernemer)
+    );
+
+    indeling = brancheOndernemers.reduce((indeling, ondernemer) => {
+        const { branches = [] } = ondernemer.voorkeur || {};
+        const plaatsen = indeling.openPlaatsen.filter(plaats =>
+            intersects(plaats.branches, branches)
+        );
 
         return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
     }, indeling);
