@@ -228,7 +228,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 />
                             </p>
                         </div>
-                    ) : null}
+                    ) : null} */}
                 </div>
 
                 <div className="Fieldset">
