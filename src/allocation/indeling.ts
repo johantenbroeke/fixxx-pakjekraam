@@ -75,7 +75,7 @@ const Indeling = {
             }
 
             return bestePlaatsen.reduce((indeling, plaats) => {
-                return Indeling._assignPlaats(indeling, ondernemer, plaats);
+                return Toewijzing.add(indeling, ondernemer, plaats);
             }, indeling);
         } catch (errorMessage) {
             return handleRejection === 'reject' ?
@@ -95,7 +95,7 @@ const Indeling = {
 
         if (available.length && available.length >= minimumSize) {
             return available.reduce((indeling, plaats) => {
-                return Indeling._assignPlaats(indeling, ondernemer, plaats);
+                return Toewijzing.add(indeling, ondernemer, plaats);
             }, indeling);
         } else /*if (anywhere)*/ {
             /*const openPlaatsen = indeling.openPlaatsen.filter(plaats =>
@@ -239,7 +239,7 @@ const Indeling = {
                     const [uitbreidingPlaats] = Indeling.findBestePlaatsen(indeling, ondernemer, openAdjacent);
 
                     if (uitbreidingPlaats) {
-                        indeling   = Indeling._assignPlaats(indeling, ondernemer, uitbreidingPlaats);
+                        indeling   = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
                         toewijzing = Toewijzing.find(indeling, ondernemer);
                     }
                 }
@@ -262,28 +262,6 @@ const Indeling = {
                    Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
                    indeling;
         }, indeling);
-    },
-
-    _assignPlaats: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
-        plaats: IMarktplaats
-    ): IMarktindeling => {
-        const existingToewijzing = Toewijzing.find(indeling, ondernemer);
-        let newToewijzing = Toewijzing.create(indeling, plaats, ondernemer);
-
-        if (existingToewijzing) {
-            newToewijzing = Toewijzing.merge(existingToewijzing, newToewijzing);
-        }
-
-        indeling = Toewijzing.replace(indeling, existingToewijzing, newToewijzing);
-
-        return {
-            ...indeling,
-            toewijzingQueue: indeling.toewijzingQueue.filter(({ erkenningsNummer }) =>
-                erkenningsNummer !== ondernemer.erkenningsNummer
-            )
-        };
     },
 
     _getAvailableAdjacentFor: (
@@ -311,26 +289,15 @@ const Indeling = {
         ondernemer: IMarktondernemer,
         reason: IAfwijzingReason
     ): IMarktindeling => {
-        const { erkenningsNummer } = ondernemer;
-        const afwijzingen = indeling.afwijzingen.concat({
-            marktId          : indeling.marktId,
-            marktDate        : indeling.marktDate,
-            erkenningsNummer : ondernemer.erkenningsNummer,
-            reason,
-            ondernemer
-        });
-
-        const toewijzing = Toewijzing.find(indeling, ondernemer);
-        if (toewijzing) {
-            indeling = Toewijzing.remove(indeling, toewijzing);
-        }
-
         return {
-            ...indeling,
-            afwijzingen,
-            toewijzingQueue: indeling.toewijzingQueue.filter(ondernemer =>
-                ondernemer.erkenningsNummer !== erkenningsNummer
-            )
+            ...Toewijzing.remove(indeling, ondernemer),
+            afwijzingen: indeling.afwijzingen.concat({
+                marktId          : indeling.marktId,
+                marktDate        : indeling.marktDate,
+                erkenningsNummer : ondernemer.erkenningsNummer,
+                reason,
+                ondernemer
+            })
         };
     }
 };
