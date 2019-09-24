@@ -1,6 +1,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { formatDate, numberSort, dateToDDMMYYYY, YYYYMMDDtoDDMMYYYY } = require('../../util.ts');
+const { formatDate, numberSort, dateToDDMMYYYY, yyyyMmDdtoDDMMYYYY } = require('../../util.ts');
 const { formatOndernemerName, parseISOMarktDag, isVast } = require('../../domain-knowledge.js');
 const {
     ISO_SUNDAY,
@@ -17,7 +17,6 @@ const OndernemerMarktHeading = require('./OndernemerMarktHeading');
 
 
 class AlgemeneVoorkeurenForm extends React.Component {
-    
     propTypes = {
         marktId: PropTypes.string,
         marktDate: PropTypes.string,
@@ -43,15 +42,15 @@ class AlgemeneVoorkeurenForm extends React.Component {
             inactive: false,
         };
 
-        let voorkeur = this.props.voorkeur || defaultVoorkeur;
+        const voorkeur = this.props.voorkeur || defaultVoorkeur;
 
         if (voorkeur.absentFrom) {
-            voorkeur.absentFrom = YYYYMMDDtoDDMMYYYY(voorkeur.absentFrom);
+            voorkeur.absentFrom = yyyyMmDdtoDDMMYYYY(voorkeur.absentFrom);
         }
 
         if (voorkeur.absentUntil) {
-            voorkeur.absentUntil = YYYYMMDDtoDDMMYYYY(voorkeur.absentUntil);
-        }        
+            voorkeur.absentUntil = yyyyMmDdtoDDMMYYYY(voorkeur.absentUntil);
+        }
 
         let weekDays = [ISO_MONDAY, ISO_TUESDAY, ISO_WEDNESDAY, ISO_THURSDAY, ISO_FRIDAY, ISO_SATURDAY, ISO_SUNDAY];
 
@@ -61,7 +60,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
         }
 
         weekDays.sort(numberSort);
-        
+
         const marktondernemer = 'marktondernemer' || 'marktmeester';
 
         const dayKey = {
@@ -228,7 +227,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 />
                             </p>
                         </div>
-                    ) : null} */}
+                    ) : null }
                 </div>
 
                 <div className="Fieldset">

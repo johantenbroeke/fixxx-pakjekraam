@@ -136,15 +136,12 @@ export const ddmmyyyyToDate = (dateString: string) => {
 //     return `${day}-${month}-${year}`;
 // };
 
-export const YYYYMMDDtoDDMMYYYY = (dateString: string) => {
+export const yyyyMmDdtoDDMMYYYY = (dateString: string) => {
     const year = dateString.split('-')[0];
     const month = dateString.split('-')[1];
     const day = dateString.split('-')[2];
     return `${day}-${month}-${year}`;
 };
-
-
-
 
 // Array functions
 // ===============

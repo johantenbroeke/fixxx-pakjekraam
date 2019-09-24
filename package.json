@@ -18,6 +18,7 @@
     "predev": "npm run build && npm run deploy",
     "dev": "ts-node-dev --ignore-watch node_modules src/index.ts",
     "allocation": "ts-node src/allocation.js",
+    "allocation-env": "( . .env && npm run allocation)",
     "import": "echo 'Import skipped. Temporarily disabled.' && exit 0",
     "tdd": "jest --watch --verbose --rootDir ./src/",
     "test": "jest --verbose --silent --rootDir ./src/",

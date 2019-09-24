@@ -2,6 +2,7 @@ import {
     IMarkt,
     IMarktplaats,
     IObstakelBetween,
+    IPlaatsvoorkeur,
     PlaatsId
 } from '../markt.model';
 
@@ -20,16 +21,21 @@ const Markt = {
     getAdjacentPlaatsen: (
         markt: IMarkt,
         plaatsIds: PlaatsId[],
-        depth: number = 1
+        depth: number = 1,
+        filter?: (plaats: IMarktplaats) => boolean
     ): IMarktplaats[] => {
+        if (!depth) {
+            return [];
+        }
+
         const { rows, obstakels } = markt;
         const row = Markt._findRowForPlaatsen(rows, plaatsIds);
 
         return plaatsIds
         .map(plaatsId => {
             return [].concat(
-                Markt._getAdjacent(row, plaatsId, -1, depth, obstakels),
-                Markt._getAdjacent(row, plaatsId, 1, depth, obstakels)
+                Markt._getAdjacent(row, plaatsId, -1, depth, obstakels, filter),
+                Markt._getAdjacent(row, plaatsId, 1, depth, obstakels, filter)
             );
         })
         .reduce(flatten, [])
@@ -46,6 +52,69 @@ const Markt = {
             }
             return result;
         }, []);
+    },
+
+    // Provided an array in the form `['1', '2', '4', '6', '7']`, will return a
+    // grouped array, where every group is a set of adjacent places grouped by
+    // priority. E.g.: `[['1', '2'], ['4'], ['6', '7']]`.
+    //
+    // It executes recursively, where every run of this functions tries to form
+    // one group of adjacent places, starting with the first place it finds in the
+    // `plaatsen` array. It will continue recursing until all elements in the `plaatsen`
+    // array are spliced out.
+    groupByAdjacent: (
+        markt: IMarkt,
+        plaatsen: IPlaatsvoorkeur[],
+        result: IPlaatsvoorkeur[][] = []
+    ): IPlaatsvoorkeur[][] => {
+        if (!plaatsen || !plaatsen.length) {
+            return result;
+        }
+
+        const { rows, obstakels } = markt;
+        plaatsen                  = plaatsen.slice(0);
+
+        const start = plaatsen.shift();
+        let current = start;
+        let dir     = -1;
+
+        const group = [current];
+        result.push(group);
+
+        while (current) {
+            const currentId                   = current.plaatsId;
+            const row                         = Markt._findRowForPlaatsen(rows, [currentId]);
+            const { plaatsId: nextId = null } = Markt._getAdjacent(row, currentId, dir, 1, obstakels)[0] || {};
+            const nextIndex                   = plaatsen.findIndex(({ plaatsId }) => plaatsId === nextId);
+
+            if (nextIndex === -1) {
+                if (dir === -1) {
+                    // Switch search direction
+                    dir = 1;
+                    current = start;
+                    continue;
+                } else {
+                    // Both directions exhausted — no adjacent place found anymore.
+                    break;
+                }
+            }
+
+            const next = plaatsen.splice(nextIndex, 1)[0];
+            if (dir === -1) {
+                group.unshift(next);
+            } else {
+                group.push(next);
+            }
+            current = next;
+        }
+
+        // A group of places must be resorted, because the loop above
+        // might have messed up the priority order.
+        // group.sort(({ priority: a = 1 }, { priority: b = 1 }) => b - a);
+
+        return plaatsen.length ?
+               Markt.groupByAdjacent(markt, plaatsen, result) :
+               result;
     },
 
     // Helper function for `getAdjacentPlaatsen`. All the `plaatsIds` should
@@ -84,8 +153,9 @@ const Markt = {
         plaatsId: PlaatsId,
         dir: number,
         depth: number = 1,
-        obstacles: IObstakelBetween[] = []
-    ) => {
+        obstacles: IObstakelBetween[] = [],
+        filter?: (plaats: IMarktplaats) => boolean
+    ): IMarktplaats[] => {
         const isCircular = row[0].plaatsId === row[row.length-1].plaatsId;
         // The first and last element are equal, so remove the one at the end.
         row = isCircular ? row.slice(0, -1) : row;
@@ -101,7 +171,11 @@ const Markt = {
                             row[(start + len+(i+1)*dir%len) % len] :
                             row[(start + (i+1)*dir)];
 
-            if (!next || Markt._hasObstacleBetween(obstacles, current.plaatsId, next.plaatsId)) {
+            if (
+                !next ||
+                Markt._hasObstacleBetween(obstacles, current.plaatsId, next.plaatsId) ||
+                filter && !filter(next)
+            ) {
                 break;
             }
 
