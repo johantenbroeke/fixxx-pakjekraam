@@ -19,6 +19,7 @@ import Moving from './allocation/moving';
  */
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
+
     const { marktplaatsen, ondernemers, voorkeuren } = markt;
     const { aanwezigheid, aLijst } = markt;
 

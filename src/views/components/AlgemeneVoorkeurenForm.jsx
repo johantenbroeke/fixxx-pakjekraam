@@ -1,6 +1,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { formatDate, numberSort } = require('../../util.ts');
+const { formatDate, numberSort, dateToDDMMYYYY, YYYYMMDDtoDDMMYYYY } = require('../../util.ts');
 const { formatOndernemerName, parseISOMarktDag, isVast } = require('../../domain-knowledge.js');
 const {
     ISO_SUNDAY,
@@ -15,7 +15,9 @@ const {
 const Button = require('./Button');
 const OndernemerMarktHeading = require('./OndernemerMarktHeading');
 
+
 class AlgemeneVoorkeurenForm extends React.Component {
+    
     propTypes = {
         marktId: PropTypes.string,
         marktDate: PropTypes.string,
@@ -33,7 +35,6 @@ class AlgemeneVoorkeurenForm extends React.Component {
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
         const nextMessage =
             (query && query.next) || '/markt-detail/' + ondernemer.erkenningsnummer + '/' + marktId + '/';
-        const advanced = (query && query.advanced) || false;
         const defaultPlaatsCount = isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1;
         const defaultVoorkeur = {
             minimum: defaultPlaatsCount,
@@ -42,7 +43,15 @@ class AlgemeneVoorkeurenForm extends React.Component {
             inactive: false,
         };
 
-        const voorkeur = this.props.voorkeur || defaultVoorkeur;
+        let voorkeur = this.props.voorkeur || defaultVoorkeur;
+
+        if (voorkeur.absentFrom) {
+            voorkeur.absentFrom = YYYYMMDDtoDDMMYYYY(voorkeur.absentFrom);
+        }
+
+        if (voorkeur.absentUntil) {
+            voorkeur.absentUntil = YYYYMMDDtoDDMMYYYY(voorkeur.absentUntil);
+        }        
 
         let weekDays = [ISO_MONDAY, ISO_TUESDAY, ISO_WEDNESDAY, ISO_THURSDAY, ISO_FRIDAY, ISO_SATURDAY, ISO_SUNDAY];
 
@@ -52,6 +61,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
         }
 
         weekDays.sort(numberSort);
+        
+        const marktondernemer = 'marktondernemer' || 'marktmeester';
 
         const dayKey = {
             [ISO_MONDAY]: 'monday',
@@ -62,6 +73,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
             [ISO_SATURDAY]: 'saturday',
             [ISO_SUNDAY]: 'sunday',
         };
+
 
         /*
          * TODO: `ondernemer` should be our `IMarktondernemer` object,
@@ -134,7 +146,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                             <label htmlFor="inrichting">Ja, ik kom met een eigen verkoopwagen/eigen materiaal.</label>
                         </p>
                     </div>
-                    <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
+                    {/* <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
                         <h2 className="Fieldset__header">Hoeveel plaatsen hebt u echt nodig?</h2>
 
                         <p className="InputField InputField--number">
@@ -150,8 +162,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 width={5}
                             />
                         </p>
-                    </div>
-                    <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
+                    </div> */}
+                    {/* <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
                         <h2 className="Fieldset__header">
                             Als er ruimte is, hoeveel plaatsen zou je graag in totaal willen?
                         </h2>
@@ -169,8 +181,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 width={5}
                             />
                         </p>
-                    </div>
-                    {vast ? (
+                    </div> */}
+                    {/* {vast ? (
                         <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
                             <h2 className="Fieldset__header">Op welke dagen kom je normaal gesproken?</h2>
 
@@ -189,29 +201,28 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 </p>
                             ))}
                         </div>
-                    ) : null}
-
-                    {vast ? (
-                        <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
+                    ) : null} */}
+                    { role == 'marktmeester' ? (
+                        <div className={`Fieldset`}>
                             <h2 className="Fieldset__header">Langdurige afwezigheid</h2>
                             <p className="InputField  InputField--text">
-                                <label className="Label" htmlFor="absentFrom">Afwezig vanaf: </label>
+                                <label className="Label" htmlFor="absentFrom">Afwezig vanaf (dd-mm-yyyy): </label>
                                 <input
                                     id="absentFrom"
                                     type="text"
                                     name="absentFrom"
-                                    placeholder="05-05-2020"
+                                    placeholder="dd-mm-yyyy"
                                     className="Input Input--medium"
                                     value={voorkeur.absentFrom}
                                 />
                             </p>
                             <p className="InputField InputField--text">
-                                <label className="Label" htmlFor="absentUntil">Afwezig tot en met:</label>
+                                <label className="Label" htmlFor="absentUntil">Afwezig tot en met (dd-mm-yyyy):</label>
                                 <input
                                     id="absentUntil"
                                     type="text"
                                     name="absentUntil"
-                                    placeholder="10-05-2020"
+                                    placeholder="dd-mm-yyyy"
                                     className="Input Input--medium"
                                     value={voorkeur.absentUntil}
                                 />

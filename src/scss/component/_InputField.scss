@@ -66,8 +66,12 @@ $radiobutton-left: 0px;
         color:black;
         margin: 10px 0;
         width: 100%;
-        label{
+        font-weight: 600;
+        .Label{
             margin: 10px 0;
+        }
+        .Input{
+            font-weight: 600;
         }
     }
     &--radiobutton {

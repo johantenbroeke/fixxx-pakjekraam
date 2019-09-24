@@ -4,19 +4,48 @@ import { upsert } from '../sequelize-util.js';
 import models from '../model/index';
 import { internalServerErrorPage, HTTP_CREATED_SUCCESS, getQueryErrors } from '../express-util';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-import { getAllBranches, getIndelingVoorkeur } from '../pakjekraam-api';
+import { getAllBranches } from '../pakjekraam-api';
 import { ddmmyyyyToDate } from '../util';
 
+import { getVoorkeur } from '../controllers/voorkeurController';
+
+import moment from 'moment';
+
+export const algemeneVoorkeurenFormCheckForError = (body: any) => {
+    const { absentFrom, absentUntil } = body;
+    let error = null;
+    if (absentUntil !== '' ) {
+        if ( !moment(absentUntil, 'MM-DD-YYYY',true).isValid()) {
+            console.log(' we are absent until, its not valid ');
+            error = 'Datum afwezigheid vanaf heeft niet het juiste format. Gebruik dd-mm-yyyy.';
+        }
+    }
+    if (absentFrom !== '' ) {
+        if ( !moment(absentFrom, 'MM-DD-YYYY',true).isValid()) {
+            error = 'Datum afwezigheid tot en met heeft niet het juiste format. Gebruik dd-mm-yyyy.';
+        }
+    }
+    return error;
+}
+
 export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurRow => {
+
     const { absentFrom, absentUntil, erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
 
-    const inactive = !!body.inactive;
     const anywhere = !!body.anywhere;
     const minimum = typeof body.minimum === 'string' ? parseInt(body.minimum, 10) || null : null;
     const maximum = typeof body.maximum === 'string' ? parseInt(body.maximum, 10) || null : null;
 
-    const absentFromDate = ddmmyyyyToDate(absentFrom);
-    const absentUntilDate = ddmmyyyyToDate(absentUntil);
+    let absentFromDate = null;
+    let absentUntilDate = null;
+
+    if (absentFrom !== '' || null ) {
+        absentFromDate = ddmmyyyyToDate(absentFrom);
+    }
+
+    if (absentUntil !== '' || null ) {
+        absentUntilDate = ddmmyyyyToDate(absentUntil);
+    }
 
     const voorkeur = {
         erkenningsNummer,
@@ -28,32 +57,41 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
         brancheId: brancheId || null,
         parentBrancheId: parentBrancheId || null,
         inrichting: inrichting || null,
-        inactive,
-        absentFrom: absentFromDate,
-        absentUntil: absentUntilDate,
-        monday: !!body.monday,
-        tuesday: !!body.tuesday,
-        wednesday: !!body.wednesday,
-        thursday: !!body.thursday,
-        friday: !!body.friday,
-        saturday: !!body.saturday,
-        sunday: !!body.sunday,
+        absentFrom: absentFromDate || null,
+        absentUntil: absentUntilDate || null,
+        monday: !!body.monday || null,
+        tuesday: !!body.tuesday || null,
+        wednesday: !!body.wednesday || null,
+        thursday: !!body.thursday || null,
+        friday: !!body.friday || null,
+        saturday: !!body.saturday || null,
+        sunday: !!body.sunday || null,
     };
+
     return voorkeur;
 };
 
 export const updateMarketPreferences = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
 
     const data = algemeneVoorkeurenFormData(req.body);
+    const formError = algemeneVoorkeurenFormCheckForError(req.body);
 
-    const { marktId, marktDate } = data;
+    console.log('hallo');
+    
 
+    if (formError !== null) {
+        console.log('hey open up !');
+        console.log(formError);
+        res.redirect(`./?error=${formError}`);
+    }
+
+    const { marktId } = data;
+    
     upsert(
         models.voorkeur,
         {
             erkenningsNummer,
             marktId,
-            marktDate,
         },
         data,
     ).then(
@@ -70,6 +108,7 @@ export const marketPreferencesPage = (
     marktDate: string,
     role: string,
 ) => {
+
     const messages = getQueryErrors(req.query);
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
     const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
@@ -77,11 +116,11 @@ export const marketPreferencesPage = (
     // TODO: Only allow relative URLs in `next`, to prevent redirection to 3rd party phishing sites
     const next = req.query.next;
     const query = req.query;
-
+    
     Promise.all([
         ondernemerPromise,
         marktPromise,
-        getIndelingVoorkeur(erkenningsNummer, marktId, marktDate),
+        getVoorkeur(erkenningsNummer, marktId),
         getAllBranches(),
     ]).then(([ondernemer, markt, voorkeur, branches]) => {
 
@@ -96,5 +135,6 @@ export const marketPreferencesPage = (
             messages,
             role,
         });
+
     }, internalServerErrorPage(res));
 };

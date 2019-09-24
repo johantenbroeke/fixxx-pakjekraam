@@ -368,6 +368,25 @@ export const getMarktondernemers = () =>
         sollictaties.filter(sollictatie => !sollictatie.doorgehaald).map(convertSollicitatie),
     );
 
+export const enrichOndernemersWithVoorkeuren = (ondernemers: IMarktondernemer[], voorkeuren: IMarktondernemerVoorkeur[]) => {
+    return ondernemers.map(ondernemer => {
+
+        console.log(' hoe kan dit ');
+        console.log(voorkeuren);
+        
+        let voorkeurVoorOndernemer = voorkeuren.find(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer);
+
+        if (voorkeurVoorOndernemer == null) {
+            voorkeurVoorOndernemer = new Voorkeur(ondernemer.voorkeur);
+        }
+        
+        return {
+            ...ondernemer,
+            voorkeur: { ...ondernemer.voorkeur, ...voorkeurVoorOndernemer }
+        }
+    })
+};
+
 export const getMarktondernemersByMarkt = (marktId: string) =>
     getMarktondernemersByMarktMM(marktId).then(sollictaties =>
         sollictaties.filter(sollictatie => !sollictatie.doorgehaald).map(convertSollicitatie),
@@ -379,20 +398,17 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
         ondernemers.filter(ondernemer => !ondernemer.doorgehaald).map(convertSollicitatie),
     );
 
-    const voorkeurenPromise = getIndelingVoorkeuren(marktId, marktDate).then(voorkeuren =>
-        voorkeuren.map(convertVoorkeur),
-    );
+    const voorkeurenPromise = Voorkeur.findAll({ where: { marktId }, raw: true})
+        .then( voorkeuren => voorkeuren.map(convertVoorkeur))
+
+    // const voorkeurenPromise = getIndelingVoorkeuren(marktId, marktDate).then(voorkeuren =>
+    //     voorkeuren.map(convertVoorkeur),
+    // );
 
     // Populate the `ondernemer.voorkeur` field
-    const enrichedOndernemers = Promise.all([ondernemersPromise, voorkeurenPromise]).then(([ondernemers, voorkeuren]) =>
-        ondernemers.map(ondernemer => ({
-            ...ondernemer,
-            voorkeur: {
-                ...ondernemer.voorkeur,
-                ...voorkeuren.find(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer),
-            },
-        })),
-    );
+    const enrichedOndernemers = Promise.all([ondernemersPromise, voorkeurenPromise]).then( result => {
+        return enrichOndernemersWithVoorkeuren(...result)
+    })
 
     return Promise.all([
         getMarktProperties(marktId),
@@ -419,6 +435,8 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
             markt,
             aLijst,
         ] = args;
+
+        console.log();
 
         return {
             naam: '?',
@@ -455,8 +473,14 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
 
 export const getIndelingslijst = (marktId: string, date: string) =>
     getIndelingslijstInput(marktId, date).then(data => {
-        const logMessage = `Marktindeling berekenen: ${data.markt.naam}`;
 
+        console.log('data');
+        
+        console.log(data);
+        
+
+        const logMessage = `Marktindeling berekenen: ${data.markt.naam}`;
+        
         console.time(logMessage);
         const indeling = calcToewijzingen(data);
         console.timeEnd(logMessage);

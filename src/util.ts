@@ -129,6 +129,23 @@ export const ddmmyyyyToDate = (dateString: string) => {
     return new Date(parseInt(year), parseInt(month)-1, parseInt(day), 0, 0, 0);
 };
 
+// export const dateToDDMMYYYY = (dateObject: Date) => {
+//     const day = dateObject.getDay();
+//     const month = dateObject.getMonth();
+//     const year = dateObject.getFullYear();
+//     return `${day}-${month}-${year}`;
+// };
+
+export const YYYYMMDDtoDDMMYYYY = (dateString: string) => {
+    const year = dateString.split('-')[0];
+    const month = dateString.split('-')[1];
+    const day = dateString.split('-')[2];
+    return `${day}-${month}-${year}`;
+};
+
+
+
+
 // Array functions
 // ===============
 

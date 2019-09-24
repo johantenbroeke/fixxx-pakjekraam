@@ -178,16 +178,27 @@ const Indeling = {
     },
 
     isAanwezig: (aanwezigheid: IRSVP[], ondernemer: IMarktondernemer) => {
+
+        console.log('enteruepeur');
+        console.log(ondernemer);
+
+        if (ondernemer.voorkeur.absentFrom !== null && ondernemer.voorkeur.absentFrom !== null) {
+            console.log(' absent has been set! ');
+            
+        }
+        
         const rsvp = aanwezigheid.find(aanmelding => aanmelding.erkenningsNummer === ondernemer.erkenningsNummer);
 
         // Vasteplaatshouders die niets hebben laten weten en die hebben bevestigd dat ze
         // komen worden meegeteld als aanwezig. Alleen de expliciete afmeldingen worden
         // niet in overweging genomen in de indeling van kramen.
+
         if (ondernemer.status === 'vpl') {
             return !rsvp || !!rsvp.attending || rsvp.attending === null;
         } else {
             return !!rsvp && !!rsvp.attending;
         }
+        
     },
 
     performExpansion: (indeling: IMarktindeling): IMarktindeling => {

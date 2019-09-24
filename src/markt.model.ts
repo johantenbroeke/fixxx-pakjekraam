@@ -84,7 +84,8 @@ export interface IMarktondernemerVoorkeur {
     krachtStroom?: boolean;
     kraaminrichting?: KraamInrichting;
     anywhere?: boolean;
-    inactive?: boolean;
+    absentFrom?: Date;
+    absentUntil?: Date;
     branches?: BrancheId[];
     verkoopinrichting?: string[];
 }
