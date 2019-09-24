@@ -131,7 +131,7 @@ const Indeling = {
                 // Ondernemer wil niet willekeurig ingedeeld worden en plaats staat niet in voorkeuren.
                 !anywhere && !voorkeurIds.includes(plaatsId) ||
                 // Niet genoeg vrije aansluitende plaatsen om maximum te verzadigen.
-                Indeling._getAvailableAdjacentFor(indeling, ondernemer, [plaatsId], expansionSize).length < expansionSize
+                Indeling._getAvailableAdjacentFor(indeling, [plaatsId], expansionSize).length < expansionSize
             ) {
                 return false;
             } else {
@@ -168,7 +168,7 @@ const Indeling = {
             if (group.length < startSize) {
                 const depth     = startSize - group.length;
                 const plaatsIds = group.map(({ plaatsId }) => plaatsId);
-                const extra     = Indeling._getAvailableAdjacentFor(indeling, ondernemer, plaatsIds, depth);
+                const extra     = Indeling._getAvailableAdjacentFor(indeling, plaatsIds, depth);
                 group = group.concat(<IPlaatsvoorkeur[]> extra);
                 // group = Markt.groupByAdjacent(indeling, group)[0];
             }
@@ -237,7 +237,7 @@ const Indeling = {
                 const { ondernemer } = toewijzing;
 
                 if (Ondernemer.canExpandInIteration(indeling, toewijzing)) {
-                    const openAdjacent        = Indeling._getAvailableAdjacentFor(indeling, ondernemer, toewijzing.plaatsen, 1);
+                    const openAdjacent        = Indeling._getAvailableAdjacentFor(indeling, toewijzing.plaatsen, 1);
                     const [uitbreidingPlaats] = Indeling.findBestePlaatsen(indeling, ondernemer, openAdjacent);
 
                     if (uitbreidingPlaats) {
@@ -268,7 +268,6 @@ const Indeling = {
 
     _getAvailableAdjacentFor: (
         indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
         plaatsIds: PlaatsId[],
         depth: number = 1
     ): IMarktplaats[] => {
