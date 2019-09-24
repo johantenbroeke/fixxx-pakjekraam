@@ -5,6 +5,7 @@ import {
     IMarktondernemer,
     IMarktplaats,
     IPlaatsvoorkeur,
+    IRSVP,
     PlaatsId
 } from '../markt.model';
 
@@ -203,10 +204,10 @@ const Indeling = {
     },
 
     isAanwezig: (
-        indeling: IMarktindeling,
+        aanwezigheid: IRSVP[],
         ondernemer: IMarktondernemer
     ) => {
-        const rsvp = indeling.aanwezigheid.find(aanmelding =>
+        const rsvp = aanwezigheid.find(aanmelding =>
             aanmelding.erkenningsNummer === ondernemer.erkenningsNummer
         );
 
