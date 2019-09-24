@@ -466,7 +466,7 @@ describe('Een VPH die wil verplaatsen', () => {
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
 
-        // VPH met plaatsen 1,2 heeft voorkeur 3,4. Plaats 4 is niet vrij --> verplaatsing naar 4,5.
+        // VPH met plaatsen 1,2 heeft voorkeur 3,4. Plaats 4 is niet vrij --> verplaatsing naar 2,3.
         var { toewijzingen, afwijzingen } = calc(({ ondernemer, plaats, voorkeur }) => ({
             ondernemers: [ondernemer({ sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] })],
             marktplaatsen: [
