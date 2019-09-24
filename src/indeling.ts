@@ -18,19 +18,9 @@ import Ondernemer from './allocation/ondernemer';
  */
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
-    const { marktplaatsen, ondernemers, voorkeuren } = markt;
-    const { aanwezigheid, aLijst } = markt;
-
-    const aanwezigen = ondernemers.filter(ondernemer => Indeling.isAanwezig(aanwezigheid, ondernemer));
-    aanwezigen.sort((a, b) => Ondernemers.compare(a, b, aLijst));
-
-    /*
-     * De bij een herindeling gekozen marktplaats wordt verwerkt als de initiele voorkeur van de ondernemer.
-     * Bij de dagindeling kan een andere voorkeur worden uitgesproken.
-     */
     let indeling: IMarktindeling = {
         ...markt,
-        toewijzingQueue: [...aanwezigen],
+        toewijzingQueue: [],
         expansionQueue: [],
         expansionIteration: 1,
         expansionLimit: Math.min(
@@ -39,10 +29,13 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         ),
         afwijzingen: [],
         toewijzingen: [],
-        openPlaatsen: [...marktplaatsen.filter(plaats => !plaats.inactive)],
-        voorkeuren: [...voorkeuren]
+        openPlaatsen: [...markt.marktplaatsen.filter(plaats => !plaats.inactive)],
+        voorkeuren: [...markt.voorkeuren]
     };
 
+    indeling.toewijzingQueue = indeling.ondernemers
+                              .filter(ondernemer => Indeling.isAanwezig(indeling, ondernemer))
+                              .sort((a, b) => Ondernemers.compare(a, b, indeling.aLijst));
 
     // Stap 1: Deel vasteplaatshouders in
     // ----------------------------------
