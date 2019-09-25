@@ -18,7 +18,6 @@ import Ondernemer from './allocation/ondernemer';
  */
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
-
     let indeling: IMarktindeling = {
         ...markt,
         toewijzingQueue: [],

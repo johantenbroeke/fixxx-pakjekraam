@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { getIndelingslijstInput, getSollicitantenlijstInput, getVoorrangslijstInput, getToewijzingslijst } from '../pakjekraam-api';
 import { internalServerErrorPage, HTTP_INTERNAL_SERVER_ERROR, httpErrorPage } from '../express-util';
-import { Voorkeur } from '../model/voorkeur.model';
+// import { Voorkeur } from '../model/voorkeur.model';
 
+import Indeling from '../allocation/indeling';
 
 export const vasteplaatshoudersPage = (req: Request, res: Response) => {
     const datum = req.params.datum;
@@ -29,58 +30,24 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
     const marktId = req.params.marktId;
 
     const getToewijzingslijstPromise = getToewijzingslijst(marktId, datum);
-    const getVoorkeuren = Voorkeur.findAll({ where: { marktId }, raw: true });
+    // const getVoorkeuren = Voorkeur.findAll({ where: { marktId }, raw: true });
 
     Promise.all([
-        getToewijzingslijstPromise,
-        getVoorkeuren,
+        getToewijzingslijstPromise
     ])
         .then(
-            ([data, voorkeuren]) => {
+            ([data]) => {
 
-                const vasteplaatshouders = data.ondernemers.filter(ondernemer => ondernemer.status === 'vpl');
+                const { ondernemers, aanmeldingen } = data;
 
-                const vasteplaatshoudersByErkenningsNummer = vasteplaatshouders.map(ondernemer => ondernemer.erkenningsNummer);
-                const afmeldingenVastplaatshouders = data.aanmeldingen.filter(aanmelding => {
-                    return aanmelding.attending === false && vasteplaatshoudersByErkenningsNummer.includes(aanmelding.erkenningsNummer);
+                const vasteplaatshouders = ondernemers.filter(ondernemer => ondernemer.status === 'vpl');
+                const vasteplaatshoudersAfwezig = vasteplaatshouders.filter( ondernemer => {
+                    !Indeling.isAanwezig(ondernemer, aanmeldingen, datum);
                 });
-
-                const vasteplaatshoudersAfgemeld =
-                    (afmeldingenVastplaatshouders.length === 0) ? [] : afmeldingenVastplaatshouders.map(afmelding => {
-                        const ondernemer = vasteplaatshouders.find(ondernemer => {
-                            return ondernemer.erkenningsNummer === afmelding.erkenningsNummer;
-                        });
-                        return ondernemer;
-                    });
-
-                const vasteplaatshoudersAfgemeldLangerePeriode = vasteplaatshouders.filter(ondernemer => {
-
-                    const voorkeurOndernemer = voorkeuren.find(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer);
-
-                    if (voorkeurOndernemer !== undefined ) {
-                        if ( Boolean(voorkeurOndernemer.absentFrom) && Boolean(voorkeurOndernemer.absentUntil) ) {
-                            const absentFrom = new Date(voorkeurOndernemer.absentFrom);
-                            const absentUntil = new Date(voorkeurOndernemer.absentUntil);
-                            const marktDate = new Date(datum);
-                            if (marktDate >= absentFrom && marktDate <= absentUntil) {
-                                console.log(`${ondernemer.description} is afwezig`);
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                });
-
-                const alleVastePlaatshoudersAfgemeld = vasteplaatshoudersAfgemeld.concat(vasteplaatshoudersAfgemeldLangerePeriode);
 
                 res.render('AfmeldingenVasteplaatshoudersPage', {
                     data,
-                    vasteplaatshoudersAfgemeld: alleVastePlaatshoudersAfgemeld,
+                    vasteplaatshoudersAfgemeld: vasteplaatshoudersAfwezig,
                     markt: data.markt,
                     datum,
                 });

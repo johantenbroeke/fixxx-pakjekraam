@@ -15,6 +15,7 @@ import {
 const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur): number => {
     const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : 0;
     const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : 0;
+
     return prioB - prioA;
 };
 
@@ -83,12 +84,12 @@ const Ondernemer = {
     getMinimumSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] } = ondernemer;
         const { minimum = 0, maximum = Infinity } = ondernemer.voorkeur || {};
-        return minimum || Math.min(plaatsen.length, maximum);
+        return minimum || Math.min(plaatsen.length, maximum) || 1;
     },
     getStartSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] } = ondernemer;
         const { maximum = plaatsen.length } = ondernemer.voorkeur || {};
-        return Math.min(plaatsen.length || 1, maximum || 1);
+        return Math.min(plaatsen.length, maximum) || 1;
     },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
         const { minimum = 1, maximum = 0 } = ondernemer.voorkeur || {};

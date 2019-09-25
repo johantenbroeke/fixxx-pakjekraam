@@ -8,10 +8,7 @@ const marktData = getMarkten();
 
 const indelingen = marktData.then(markten => {
     markten = markten.filter( markt => markt.id == 20);
-    console.log('markten');
-    console.log(markten);
-    
-    return Promise.all(markten.map(markt => getIndelingslijst(markt.id, marktDate)))   
+    return Promise.all(markten.map(markt => getIndelingslijst(markt.id, marktDate)));
 });
 
 const toewijzingData = indelingen.then(markten =>

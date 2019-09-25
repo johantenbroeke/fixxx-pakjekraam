@@ -6,8 +6,7 @@ import { internalServerErrorPage, HTTP_CREATED_SUCCESS, getQueryErrors } from '.
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import { getAllBranches } from '../pakjekraam-api';
 import { ddmmyyyyToDate } from '../util';
-
-import { getVoorkeur } from '../controllers/voorkeurController';
+import { Voorkeur } from '../model/voorkeur.model';
 
 import moment from 'moment';
 
@@ -26,7 +25,7 @@ export const algemeneVoorkeurenFormCheckForError = (body: any) => {
         }
     }
     return error;
-}
+};
 
 export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurRow => {
 
@@ -76,9 +75,6 @@ export const updateMarketPreferences = (req: Request, res: Response, next: NextF
     const data = algemeneVoorkeurenFormData(req.body);
     const formError = algemeneVoorkeurenFormCheckForError(req.body);
 
-    console.log('hallo');
-    
-
     if (formError !== null) {
         console.log('hey open up !');
         console.log(formError);
@@ -86,7 +82,7 @@ export const updateMarketPreferences = (req: Request, res: Response, next: NextF
     }
 
     const { marktId } = data;
-    
+
     upsert(
         models.voorkeur,
         {
@@ -116,11 +112,14 @@ export const marketPreferencesPage = (
     // TODO: Only allow relative URLs in `next`, to prevent redirection to 3rd party phishing sites
     const next = req.query.next;
     const query = req.query;
-    
+
     Promise.all([
         ondernemerPromise,
         marktPromise,
-        getVoorkeur(erkenningsNummer, marktId),
+        Voorkeur.findOne({
+            where: { erkenningsNummer, marktId },
+            raw: true
+        }),
         getAllBranches(),
     ]).then(([ondernemer, markt, voorkeur, branches]) => {
 

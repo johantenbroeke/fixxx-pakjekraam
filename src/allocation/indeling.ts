@@ -76,7 +76,7 @@ const Indeling = {
             }
 
             return bestePlaatsen.reduce((indeling, plaats) => {
-                return Indeling._assignPlaats(indeling, ondernemer, plaats);
+                return Toewijzing.add(indeling, ondernemer, plaats);
             }, indeling);
         } catch (errorMessage) {
             return handleRejection === 'reject' ?
@@ -96,7 +96,7 @@ const Indeling = {
 
         if (available.length && available.length >= minimumSize) {
             return available.reduce((indeling, plaats) => {
-                return Indeling._assignPlaats(indeling, ondernemer, plaats);
+                return Toewijzing.add(indeling, ondernemer, plaats);
             }, indeling);
         } else /*if (anywhere)*/ {
             /*const openPlaatsen = indeling.openPlaatsen.filter(plaats =>
@@ -131,7 +131,7 @@ const Indeling = {
                 // Ondernemer wil niet willekeurig ingedeeld worden en plaats staat niet in voorkeuren.
                 !anywhere && !voorkeurIds.includes(plaatsId) ||
                 // Niet genoeg vrije aansluitende plaatsen om maximum te verzadigen.
-                Indeling._getAvailableAdjacentFor(indeling, ondernemer, [plaatsId], expansionSize).length < expansionSize
+                Indeling._getAvailableAdjacentFor(indeling, [plaatsId], expansionSize).length < expansionSize
             ) {
                 return false;
             } else {
@@ -168,7 +168,7 @@ const Indeling = {
             if (group.length < startSize) {
                 const depth     = startSize - group.length;
                 const plaatsIds = group.map(({ plaatsId }) => plaatsId);
-                const extra     = Indeling._getAvailableAdjacentFor(indeling, ondernemer, plaatsIds, depth);
+                const extra     = Indeling._getAvailableAdjacentFor(indeling, plaatsIds, depth);
                 group = group.concat(<IPlaatsvoorkeur[]> extra);
                 // group = Markt.groupByAdjacent(indeling, group)[0];
             }
@@ -251,11 +251,11 @@ const Indeling = {
                 const { ondernemer } = toewijzing;
 
                 if (Ondernemer.canExpandInIteration(indeling, toewijzing)) {
-                    const openAdjacent        = Indeling._getAvailableAdjacentFor(indeling, ondernemer, toewijzing.plaatsen, 1);
+                    const openAdjacent        = Indeling._getAvailableAdjacentFor(indeling, toewijzing.plaatsen, 1);
                     const [uitbreidingPlaats] = Indeling.findBestePlaatsen(indeling, ondernemer, openAdjacent);
 
                     if (uitbreidingPlaats) {
-                        indeling   = Indeling._assignPlaats(indeling, ondernemer, uitbreidingPlaats);
+                        indeling   = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
                         toewijzing = Toewijzing.find(indeling, ondernemer);
                     }
                 }
@@ -280,31 +280,8 @@ const Indeling = {
         }, indeling);
     },
 
-    _assignPlaats: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
-        plaats: IMarktplaats
-    ): IMarktindeling => {
-        const existingToewijzing = Toewijzing.find(indeling, ondernemer);
-        let newToewijzing = Toewijzing.create(indeling, plaats, ondernemer);
-
-        if (existingToewijzing) {
-            newToewijzing = Toewijzing.merge(existingToewijzing, newToewijzing);
-        }
-
-        indeling = Toewijzing.replace(indeling, existingToewijzing, newToewijzing);
-
-        return {
-            ...indeling,
-            toewijzingQueue: indeling.toewijzingQueue.filter(({ erkenningsNummer }) =>
-                erkenningsNummer !== ondernemer.erkenningsNummer
-            )
-        };
-    },
-
     _getAvailableAdjacentFor: (
         indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
         plaatsIds: PlaatsId[],
         depth: number = 1
     ): IMarktplaats[] => {
@@ -327,26 +304,15 @@ const Indeling = {
         ondernemer: IMarktondernemer,
         reason: IAfwijzingReason
     ): IMarktindeling => {
-        const { erkenningsNummer } = ondernemer;
-        const afwijzingen = indeling.afwijzingen.concat({
-            marktId          : indeling.marktId,
-            marktDate        : indeling.marktDate,
-            erkenningsNummer : ondernemer.erkenningsNummer,
-            reason,
-            ondernemer
-        });
-
-        const toewijzing = Toewijzing.find(indeling, ondernemer);
-        if (toewijzing) {
-            indeling = Toewijzing.remove(indeling, toewijzing);
-        }
-
         return {
-            ...indeling,
-            afwijzingen,
-            toewijzingQueue: indeling.toewijzingQueue.filter(ondernemer =>
-                ondernemer.erkenningsNummer !== erkenningsNummer
-            )
+            ...Toewijzing.remove(indeling, ondernemer),
+            afwijzingen: indeling.afwijzingen.concat({
+                marktId          : indeling.marktId,
+                marktDate        : indeling.marktDate,
+                erkenningsNummer : ondernemer.erkenningsNummer,
+                reason,
+                ondernemer
+            })
         };
     }
 };
