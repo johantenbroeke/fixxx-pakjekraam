@@ -5,6 +5,7 @@ import {
     IMarktondernemer,
     IMarktplaats,
     IPlaatsvoorkeur,
+    IRSVP,
     PlaatsId
 } from '../markt.model';
 
@@ -203,15 +204,16 @@ const Indeling = {
     },
 
     isAanwezig: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
+        ondernemer: IMarktondernemer,
+        aanmeldingen: IRSVP[],
+        datum: Date
     ) => {
 
-        // Als een ondernemer zijn afwezigheid heeft ingevuld
+        // Als een ondernemer (of marktmeester) zijn afwezigheid heeft ingevuld
         if ( Boolean(ondernemer.voorkeur.absentFrom) && Boolean(ondernemer.voorkeur.absentUntil) ) {
             const absentFrom = new Date(ondernemer.voorkeur.absentFrom);
             const absentUntil = new Date(ondernemer.voorkeur.absentUntil);
-            const marktDate = new Date(indeling.marktDate);
+            const marktDate = new Date(datum);
             // En de marktdatum valt binnen de afwezig vanaf en afwezig tot, geeft de functie false terug
             if (marktDate >= absentFrom && marktDate <= absentUntil) {
                 console.log(`${ondernemer.description} is afwezig`);
@@ -219,7 +221,7 @@ const Indeling = {
             }
         }
 
-        const rsvp = indeling.aanwezigheid.find(aanmelding =>
+        const rsvp = aanmeldingen.find(aanmelding =>
             aanmelding.erkenningsNummer === ondernemer.erkenningsNummer
         );
 
@@ -227,7 +229,7 @@ const Indeling = {
         // komen worden meegeteld als aanwezig. Alleen de expliciete afmeldingen worden
         // niet in overweging genomen in de indeling van kramen.
         if (ondernemer.status === 'vpl') {
-            return !rsvp || !!rsvp.attending;
+            return !rsvp || !!rsvp.attending || rsvp.attending === null;
         } else {
             return !!rsvp && !!rsvp.attending;
         }

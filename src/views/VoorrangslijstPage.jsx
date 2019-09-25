@@ -53,26 +53,27 @@ class VoorrangslijstPage extends React.Component {
 
         ondernemers = Ondernemers.sort(ondernemers, aLijst);
         ondernemers = [
-            ...ondernemers.filter(ondernemer => Indeling.isAanwezig(aanmeldingen, ondernemer)),
-            ...ondernemers.filter(ondernemer => !Indeling.isAanwezig(aanmeldingen, ondernemer)),
+            ...ondernemers.filter(ondernemer => Indeling.isAanwezig(ondernemer, aanmeldingen, datum)),
+            ...ondernemers.filter(ondernemer => !Indeling.isAanwezig(ondernemer, aanmeldingen, datum)),
         ];
         const ondernemersErkenningsNummers = ondernemers.map(ondernemer => ondernemer.erkenningsNummer);
         const ondernemersRest = aLijstErkenningsNummers.filter(nr => !ondernemersErkenningsNummers.includes(nr));
+
 
         const ondernemersGrouped = ondernemers
             .reduce(
                 (total, ondernemer) => {
                     total[
-                        Indeling.isAanwezig(aanmeldingen, ondernemer) &&
+                        Indeling.isAanwezig(ondernemer, aanmeldingen, datum) &&
                         aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? aLijstAangemeld
-                            : Indeling.isAanwezig(aanmeldingen, ondernemer) &&
+                            : Indeling.isAanwezig(ondernemer, aanmeldingen, datum) &&
                               !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? Aangemeld
-                            : !Indeling.isAanwezig(aanmeldingen, ondernemer) &&
+                            : !Indeling.isAanwezig(ondernemer, aanmeldingen, datum) &&
                               aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? aLijstNietAangemeld
-                            : !Indeling.isAanwezig(aanmeldingen, ondernemer) &&
+                            : !Indeling.isAanwezig(ondernemer, aanmeldingen, datum) &&
                               !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
                             ? NietAangemeld
                             : NietAangemeld

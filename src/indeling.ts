@@ -18,6 +18,7 @@ import Ondernemer from './allocation/ondernemer';
  */
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
+
     let indeling: IMarktindeling = {
         ...markt,
         toewijzingQueue: [],
@@ -34,7 +35,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     };
 
     indeling.toewijzingQueue = indeling.ondernemers
-        .filter(ondernemer => Indeling.isAanwezig(indeling, ondernemer))
+        .filter(ondernemer => Indeling.isAanwezig(ondernemer, indeling.aanwezigheid, new Date(indeling.marktDate) ))
         .sort((a, b) => Ondernemers.compare(a, b, indeling.aLijst));
 
     // Stap 1: Deel vasteplaatshouders in

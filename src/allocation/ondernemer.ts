@@ -15,7 +15,6 @@ import {
 const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur): number => {
     const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : 0;
     const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : 0;
-
     return prioB - prioA;
 };
 
