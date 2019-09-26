@@ -13,14 +13,14 @@ import moment from 'moment';
 export const algemeneVoorkeurenFormCheckForError = (body: any) => {
     const { absentFrom, absentUntil } = body;
     let error = null;
+
     if (absentUntil !== '' ) {
-        if ( !moment(absentUntil, 'MM-DD-YYYY',true).isValid()) {
-            console.log(' we are absent until, its not valid ');
+        if ( !moment(absentUntil, 'DD-MM-YYYY',true).isValid()) {
             error = 'Datum afwezigheid vanaf heeft niet het juiste format. Gebruik dd-mm-yyyy.';
         }
     }
     if (absentFrom !== '' ) {
-        if ( !moment(absentFrom, 'MM-DD-YYYY',true).isValid()) {
+        if ( !moment(absentFrom, 'DD-MM-YYYY',true).isValid()) {
             error = 'Datum afwezigheid tot en met heeft niet het juiste format. Gebruik dd-mm-yyyy.';
         }
     }
