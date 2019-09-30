@@ -1,6 +1,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { formatDate, numberSort } = require('../../util.ts');
+const { formatDate, numberSort, dateToDDMMYYYY, yyyyMmDdtoDDMMYYYY } = require('../../util.ts');
 const { formatOndernemerName, parseISOMarktDag, isVast } = require('../../domain-knowledge.js');
 const {
     ISO_SUNDAY,
@@ -14,6 +14,7 @@ const {
 } = require('../../util.ts');
 const Button = require('./Button');
 const OndernemerMarktHeading = require('./OndernemerMarktHeading');
+
 
 class AlgemeneVoorkeurenForm extends React.Component {
     propTypes = {
@@ -33,7 +34,6 @@ class AlgemeneVoorkeurenForm extends React.Component {
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
         const nextMessage =
             (query && query.next) || '/markt-detail/' + ondernemer.erkenningsnummer + '/' + marktId + '/';
-        const advanced = (query && query.advanced) || false;
         const defaultPlaatsCount = isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1;
         const defaultVoorkeur = {
             minimum: defaultPlaatsCount,
@@ -44,6 +44,14 @@ class AlgemeneVoorkeurenForm extends React.Component {
 
         const voorkeur = this.props.voorkeur || defaultVoorkeur;
 
+        if (voorkeur.absentFrom) {
+            voorkeur.absentFrom = yyyyMmDdtoDDMMYYYY(voorkeur.absentFrom);
+        }
+
+        if (voorkeur.absentUntil) {
+            voorkeur.absentUntil = yyyyMmDdtoDDMMYYYY(voorkeur.absentUntil);
+        }
+
         let weekDays = [ISO_MONDAY, ISO_TUESDAY, ISO_WEDNESDAY, ISO_THURSDAY, ISO_FRIDAY, ISO_SATURDAY, ISO_SUNDAY];
 
         // TODO: When `markt` is available, filter `weekDays` to exclude days on which the market is not held.
@@ -52,6 +60,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
         }
 
         weekDays.sort(numberSort);
+
+        const marktondernemer = 'marktondernemer' || 'marktmeester';
 
         const dayKey = {
             [ISO_MONDAY]: 'monday',
@@ -62,6 +72,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
             [ISO_SATURDAY]: 'saturday',
             [ISO_SUNDAY]: 'sunday',
         };
+
 
         /*
          * TODO: `ondernemer` should be our `IMarktondernemer` object,
@@ -134,9 +145,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
                             <label htmlFor="inrichting">Ja, ik kom met een eigen verkoopwagen/eigen materiaal.</label>
                         </p>
                     </div>
-                    <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
+                    <div className="hidden">
                         <h2 className="Fieldset__header">Hoeveel plaatsen hebt u echt nodig?</h2>
-
                         <p className="InputField InputField--number">
                             <label htmlFor="minimum" className="Label">
                                 Minimaal aantal kramen:
@@ -151,11 +161,10 @@ class AlgemeneVoorkeurenForm extends React.Component {
                             />
                         </p>
                     </div>
-                    <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
+                    <div className="hidden">
                         <h2 className="Fieldset__header">
                             Als er ruimte is, hoeveel plaatsen zou je graag in totaal willen?
                         </h2>
-
                         <p className="InputField InputField--number">
                             <label htmlFor="maximum" className="Label">
                                 Maximaal aantal kramen:
@@ -170,7 +179,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                             />
                         </p>
                     </div>
-                    {vast ? (
+                    {/* {vast ? (
                         <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
                             <h2 className="Fieldset__header">Op welke dagen kom je normaal gesproken?</h2>
 
@@ -189,35 +198,34 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 </p>
                             ))}
                         </div>
-                    ) : null}
-
-                    {/* {vast ? (
-                        <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
+                    ) : null} */}
+                    { role == 'marktmeester' ? (
+                        <div className={`Fieldset`}>
                             <h2 className="Fieldset__header">Langdurige afwezigheid</h2>
                             <p className="InputField  InputField--text">
-                                <label className="Label" htmlFor="absentFrom">Ik ben afwezig vanaf: </label>
+                                <label className="Label" htmlFor="absentFrom">Afwezig vanaf (dd-mm-yyyy): </label>
                                 <input
                                     id="absentFrom"
                                     type="text"
                                     name="absentFrom"
-                                    placeholder="25-10-2019"
+                                    placeholder="dd-mm-yyyy"
                                     className="Input Input--medium"
-                                    defaultChecked={voorkeur.absentFrom}
+                                    value={voorkeur.absentFrom}
                                 />
                             </p>
                             <p className="InputField InputField--text">
-                                <label className="Label" htmlFor="absentUntil">Ik ben afwezig tot:</label>
+                                <label className="Label" htmlFor="absentUntil">Afwezig tot en met (dd-mm-yyyy):</label>
                                 <input
                                     id="absentUntil"
                                     type="text"
                                     name="absentUntil"
-                                    placeholder="30-10-2019"
+                                    placeholder="dd-mm-yyyy"
                                     className="Input Input--medium"
-                                    defaultChecked={voorkeur.absentUntil}
+                                    value={voorkeur.absentUntil}
                                 />
                             </p>
                         </div>
-                    ) : null} */}
+                    ) : null }
                 </div>
 
                 <div className="Fieldset">

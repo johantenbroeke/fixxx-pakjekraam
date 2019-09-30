@@ -122,6 +122,27 @@ export const nextWeek = (): string => addDays(Date.now(), DAYS_IN_WEEK);
 
 export const toISODate = (date: Date): string => date.toISOString().replace(/T.+/, '');
 
+export const ddmmyyyyToDate = (dateString: string) => {
+    const day = dateString.split('-')[0];
+    const month = dateString.split('-')[1];
+    const year = dateString.split('-')[2];
+    return new Date(parseInt(year), parseInt(month)-1, parseInt(day), 0, 0, 0);
+};
+
+// export const dateToDDMMYYYY = (dateObject: Date) => {
+//     const day = dateObject.getDay();
+//     const month = dateObject.getMonth();
+//     const year = dateObject.getFullYear();
+//     return `${day}-${month}-${year}`;
+// };
+
+export const yyyyMmDdtoDDMMYYYY = (dateString: string) => {
+    const year = dateString.split('-')[0];
+    const month = dateString.split('-')[1];
+    const day = dateString.split('-')[2];
+    return `${day}-${month}-${year}`;
+};
+
 // Array functions
 // ===============
 
@@ -133,6 +154,7 @@ export const stringSort = (a: string, b: string): number => (a > b ? 1 : a === b
 // ----------------
 // Example usage: [[1], [2]].reduce(methodName, [])
 export const sum = (a: number, b: number): number => a + b;
+export const max = (a: number, b: number): number => Math.max(a, b);
 export const flatten = <T>(a: T[] = [], b: T[] = []): T[] => [...(a || []), ...(b || [])];
 export const unique = <T>(a: T[], b: T): T[] => (a.includes(b) ? a : [...a, b]);
 
@@ -168,12 +190,16 @@ export const groupBy = <T, K extends keyof T>(array: T[], keyField: K): { [index
     }, {});
 };
 
+export const difference = (a: any[] = [], b: any[] = []) => {
+    return a.filter(value => !b.includes(value));
+};
+
 export const intersection = (a: any[] = [], b: any[] = []) => {
     return a.filter(value => b.includes(value));
 };
 
-export const intersects = (a: any[] = [], b: any[] = []) => {
-    return a.some(value => b.includes(value)) || b.some(value => a.includes(value));
+export const intersects = (a: any[] = [], b: any[] = []): boolean => {
+    return !!a.find(value => b.includes(value));
 };
 
 export const isEqualArray = (a: any[], b: any[]): boolean => {

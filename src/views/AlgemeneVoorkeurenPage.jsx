@@ -22,7 +22,6 @@ class AlgemeneVoorkeurenPage extends React.Component {
 
     render() {
         const { ondernemer, messages, role } = this.props;
-
         return (
             <Page messages={messages}>
                 <Header user={ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>

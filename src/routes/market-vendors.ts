@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { getIndelingslijstInput, getSollicitantenlijstInput, getVoorrangslijstInput, getToewijzingslijst } from '../pakjekraam-api';
-import { internalServerErrorPage } from '../express-util';
+import { internalServerErrorPage, HTTP_INTERNAL_SERVER_ERROR, httpErrorPage } from '../express-util';
+// import { Voorkeur } from '../model/voorkeur.model';
+
+import Indeling from '../allocation/indeling';
 
 export const vasteplaatshoudersPage = (req: Request, res: Response) => {
     const datum = req.params.datum;
@@ -21,42 +24,40 @@ export const sollicitantenPage = (req: Request, res: Response) => {
     );
 };
 
-export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, next: NextFunction ) => {
+export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, next: NextFunction) => {
 
     const datum = req.params.datum;
     const marktId = req.params.marktId;
 
-    getToewijzingslijst(marktId, datum)
-        .then( data => {
+    const getToewijzingslijstPromise = getToewijzingslijst(marktId, datum);
+    // const getVoorkeuren = Voorkeur.findAll({ where: { marktId }, raw: true });
 
-            const vasteplaatshouders = data.ondernemers.filter( ondernemer => ondernemer.status === 'vpl');
+    Promise.all([
+        getToewijzingslijstPromise
+    ])
+        .then(
+            ([data]) => {
 
-            const vasteplaatshoudersByErkenningsNummer = vasteplaatshouders.map( ondernemer => ondernemer.erkenningsNummer);
-            const afmeldingenVastplaatshouders = data.aanmeldingen.filter( aanmelding => {
-                return aanmelding.attending === false && vasteplaatshoudersByErkenningsNummer.includes(aanmelding.erkenningsNummer);
-            });
-
-            const vasteplaatshoudersAfgemeld =
-                (afmeldingenVastplaatshouders.length === 0) ? [] : afmeldingenVastplaatshouders.map( afmelding => {
-                    const ondernemer = vasteplaatshouders.find( ondernemer => {
-                        return ondernemer.erkenningsNummer === afmelding.erkenningsNummer;
-                    });
-                    return ondernemer;
+                const { ondernemers, aanmeldingen } = data;
+                const vasteplaatshouders = ondernemers.filter(ondernemer => ondernemer.status === 'vpl');
+                const vasteplaatshoudersAfwezig = vasteplaatshouders.filter( ondernemer => {
+                    return !Indeling.isAanwezig(ondernemer, aanmeldingen, new Date(datum));
                 });
 
-            res.render('AfmeldingenVasteplaatshoudersPage', {
-                data,
-                vasteplaatshoudersAfgemeld,
-                markt: data.markt,
-                datum,
-            });
-        },
-        next,
-    ).catch(next);
+                res.render('AfmeldingenVasteplaatshoudersPage', {
+                    data,
+                    vasteplaatshoudersAfgemeld: vasteplaatshoudersAfwezig,
+                    markt: data.markt,
+                    datum,
+                });
+            },
+            err => httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR)(err),
+        )
+        .catch(next);
 };
 
 
-export const voorrangslijstPage = (req: Request, res: Response, next: NextFunction ) => {
+export const voorrangslijstPage = (req: Request, res: Response, next: NextFunction) => {
     const datum = req.params.datum;
     const type = req.query.type === 'wenperiode' ? 'wenperiode' : 'voorrangslijst';
     getVoorrangslijstInput(req.params.marktId, req.params.datum).then(

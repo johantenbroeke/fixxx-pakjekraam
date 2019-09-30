@@ -5,7 +5,11 @@ const { flatten, tomorrow } = require('./util.ts');
 
 const marktDate = tomorrow();
 const marktData = getMarkten();
-const indelingen = marktData.then(markten => Promise.all(markten.map(markt => getIndelingslijst(markt.id, marktDate))));
+
+const indelingen = marktData.then(markten => {
+    markten = markten.filter( markt => markt.id == 20);
+    return Promise.all(markten.map(markt => getIndelingslijst(markt.id, marktDate)));
+});
 
 const toewijzingData = indelingen.then(markten =>
     markten

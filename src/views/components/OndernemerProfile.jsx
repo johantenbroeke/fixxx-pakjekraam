@@ -39,7 +39,7 @@ class OndernemerProfile extends React.Component {
                                     <strong>plaatsvoorkeuren</strong>
                                 </a>
                                 &nbsp;&nbsp;
-                                <a href={`${vendorURL}algemene-voorkeuren/${sollicitatie.markt.id}/?advanced=true`}>
+                                <a href={`${vendorURL}algemene-voorkeuren/${sollicitatie.markt.id}/`}>
                                     <strong>algemene voorkeuren</strong>
                                 </a>
                             </li>

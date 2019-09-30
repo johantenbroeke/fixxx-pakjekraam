@@ -73,7 +73,6 @@ class PlaatsvoorkeurenForm extends React.Component {
             }, [])
             .reduce((t, p) => {
                 t.push(entriesFiltered.filter(e => e.priority === p));
-
                 return t;
             }, []);
 

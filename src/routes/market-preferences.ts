@@ -4,15 +4,47 @@ import { upsert } from '../sequelize-util.js';
 import models from '../model/index';
 import { internalServerErrorPage, HTTP_CREATED_SUCCESS, getQueryErrors } from '../express-util';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-import { getAllBranches, getIndelingVoorkeur } from '../pakjekraam-api';
+import { getAllBranches } from '../pakjekraam-api';
+import { ddmmyyyyToDate } from '../util';
+import { Voorkeur } from '../model/voorkeur.model';
+
+import moment from 'moment';
+
+export const algemeneVoorkeurenFormCheckForError = (body: any) => {
+    const { absentFrom, absentUntil } = body;
+    let error = null;
+
+    if (absentUntil !== '' ) {
+        if ( !moment(absentUntil, 'DD-MM-YYYY',true).isValid()) {
+            error = 'Datum afwezigheid vanaf heeft niet het juiste format. Gebruik dd-mm-yyyy.';
+        }
+    }
+    if (absentFrom !== '' ) {
+        if ( !moment(absentFrom, 'DD-MM-YYYY',true).isValid()) {
+            error = 'Datum afwezigheid tot en met heeft niet het juiste format. Gebruik dd-mm-yyyy.';
+        }
+    }
+    return error;
+};
 
 export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurRow => {
+
     const { absentFrom, absentUntil, erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
 
-    const inactive = !!body.inactive;
     const anywhere = !!body.anywhere;
     const minimum = typeof body.minimum === 'string' ? parseInt(body.minimum, 10) || null : null;
     const maximum = typeof body.maximum === 'string' ? parseInt(body.maximum, 10) || null : null;
+
+    let absentFromDate = null;
+    let absentUntilDate = null;
+
+    if (absentFrom !== '' || null ) {
+        absentFromDate = ddmmyyyyToDate(absentFrom);
+    }
+
+    if (absentUntil !== '' || null ) {
+        absentUntilDate = ddmmyyyyToDate(absentUntil);
+    }
 
     const voorkeur = {
         erkenningsNummer,
@@ -24,31 +56,38 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
         brancheId: brancheId || null,
         parentBrancheId: parentBrancheId || null,
         inrichting: inrichting || null,
-        inactive,
-        absentFrom,
-        absentUntil,
-        monday: !!body.monday,
-        tuesday: !!body.tuesday,
-        wednesday: !!body.wednesday,
-        thursday: !!body.thursday,
-        friday: !!body.friday,
-        saturday: !!body.saturday,
-        sunday: !!body.sunday,
+        absentFrom: absentFromDate || null,
+        absentUntil: absentUntilDate || null,
+        monday: !!body.monday || null,
+        tuesday: !!body.tuesday || null,
+        wednesday: !!body.wednesday || null,
+        thursday: !!body.thursday || null,
+        friday: !!body.friday || null,
+        saturday: !!body.saturday || null,
+        sunday: !!body.sunday || null,
     };
+
     return voorkeur;
 };
 
 export const updateMarketPreferences = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
-    const data = algemeneVoorkeurenFormData(req.body);
 
-    const { marktId, marktDate } = data;
+    const data = algemeneVoorkeurenFormData(req.body);
+    const formError = algemeneVoorkeurenFormCheckForError(req.body);
+
+    if (formError !== null) {
+        console.log('hey open up !');
+        console.log(formError);
+        res.redirect(`./?error=${formError}`);
+    }
+
+    const { marktId } = data;
 
     upsert(
         models.voorkeur,
         {
             erkenningsNummer,
             marktId,
-            marktDate,
         },
         data,
     ).then(
@@ -65,6 +104,7 @@ export const marketPreferencesPage = (
     marktDate: string,
     role: string,
 ) => {
+
     const messages = getQueryErrors(req.query);
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
     const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
@@ -76,9 +116,13 @@ export const marketPreferencesPage = (
     Promise.all([
         ondernemerPromise,
         marktPromise,
-        getIndelingVoorkeur(erkenningsNummer, marktId, marktDate),
+        Voorkeur.findOne({
+            where: { erkenningsNummer, marktId },
+            raw: true
+        }),
         getAllBranches(),
     ]).then(([ondernemer, markt, voorkeur, branches]) => {
+
         res.render('AlgemeneVoorkeurenPage', {
             ondernemer,
             markt,
@@ -90,5 +134,6 @@ export const marketPreferencesPage = (
             messages,
             role,
         });
+
     }, internalServerErrorPage(res));
 };
