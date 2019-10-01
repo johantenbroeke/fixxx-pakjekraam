@@ -41,7 +41,11 @@ const MINIMUM_UNAVAILABLE: IAfwijzingReason = {
 
 // `voorkeuren` should always be sorted by priority DESC, because we're using its array
 // indices to sort by priority. See `Ondernemer.getPlaatsVoorkeuren()`.
-const plaatsVoorkeurCompare = (plaatsA: IMarktplaats, plaatsB: IMarktplaats, voorkeuren: IPlaatsvoorkeur[]): number => {
+const plaatsVoorkeurCompare = (
+    plaatsA: IMarktplaats,
+    plaatsB: IMarktplaats,
+    voorkeuren: IPlaatsvoorkeur[]
+): number => {
     const max = voorkeuren.length;
     const a   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsA.plaatsId);
     const b   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsB.plaatsId);
@@ -49,7 +53,11 @@ const plaatsVoorkeurCompare = (plaatsA: IMarktplaats, plaatsB: IMarktplaats, voo
     return (~a ? a : max) - (~b ? b : max);
 };
 // Sort DESC on branche overlap with provided `branches` array. The more overlap, the better.
-const brancheCompare = (a: IMarktplaats, b: IMarktplaats, branches: IBranche[]): number => {
+const brancheCompare = (
+    a: IMarktplaats,
+    b: IMarktplaats,
+    branches: IBranche[]
+): number => {
     return intersection(b.branches, branches).length -
            intersection(a.branches, branches).length;
 };
@@ -199,7 +207,6 @@ const Indeling = {
                 const plaatsIds = group.map(({ plaatsId }) => plaatsId);
                 const extra     = Indeling._getAvailableAdjacentFor(indeling, plaatsIds, depth);
                 group = group.concat(<IPlaatsvoorkeur[]> extra);
-                // group = Markt.groupByAdjacent(indeling, group)[0];
             }
 
             if (
@@ -264,7 +271,8 @@ const Indeling = {
         );
 
         while (
-            indeling.openPlaatsen.length && queue.length &&
+            indeling.openPlaatsen.length &&
+            queue.length &&
             indeling.expansionIteration <= indeling.expansionLimit
         ) {
             queue = queue.reduce((newQueue, toewijzing) => {
