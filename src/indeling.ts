@@ -63,7 +63,6 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     // Stap 4: Deel sollicitanten in
     // -----------------------------
     indeling = indeling.toewijzingQueue
-    .filter(ondernemer => !Ondernemer.heeftVastePlaatsen(ondernemer))
     .reduce((indeling, ondernemer) => {
         return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen);
     }, indeling);

@@ -54,8 +54,12 @@ const Toewijzing = {
         ondernemer: IMarktondernemer
     ): IMarktindeling => {
         const toewijzing = Toewijzing.find(indeling, ondernemer);
+        const toewijzingQueue = indeling.toewijzingQueue.filter(({ erkenningsNummer }) =>
+            erkenningsNummer !== ondernemer.erkenningsNummer
+        );
+
         if (!toewijzing) {
-            return indeling;
+            return { ...indeling, toewijzingQueue };
         }
 
         const { marktplaatsen, openPlaatsen, toewijzingen } = indeling;
@@ -65,9 +69,7 @@ const Toewijzing = {
 
         return {
             ...indeling,
-            toewijzingQueue: indeling.toewijzingQueue.filter(({ erkenningsNummer }) =>
-                erkenningsNummer !== ondernemer.erkenningsNummer
-            ),
+            toewijzingQueue,
             toewijzingen: toewijzingen.filter(t => t !== toewijzing),
             openPlaatsen: [...openPlaatsen, ...plaatsen]
         };
