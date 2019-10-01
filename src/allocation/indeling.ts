@@ -113,7 +113,7 @@ const Indeling = {
         ondernemer: IMarktondernemer,
         openPlaatsen: IMarktplaats[],
         maximum: number = 1
-    ) => {
+    ): IMarktplaats[] => {
         const expansionSize        = maximum - 1;
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);

@@ -5,7 +5,6 @@ import {
 } from './markt.model';
 
 import {
-    count,
     intersects
 } from './util';
 
@@ -44,25 +43,27 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     )
     .sort((a, b) => Ondernemers.compare(a, b, indeling.aLijst));
 
-    // Stap 1: Deel vasteplaatshouders in
-    // ----------------------------------
-    const vphZonderVerplaatsing = indeling.toewijzingQueue.filter(ondernemer => {
+    // Stap 1a: Deel vasteplaatshouders in
+    // -----------------------------------
+    indeling = indeling.toewijzingQueue
+    .filter(ondernemer => {
         return Ondernemer.heeftVastePlaatsen(ondernemer) &&
               !Ondernemer.wantsToMove(indeling, ondernemer) &&
               !Indeling.hasToMove(indeling, ondernemer);
-    });
-    indeling = vphZonderVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
+    })
+    .reduce(Indeling.assignVastePlaatsen, indeling);
 
-    const vphMetVerplaatsing = indeling.toewijzingQueue.filter(Ondernemer.heeftVastePlaatsen);
-    indeling = vphMetVerplaatsing.reduce(Indeling.assignVastePlaatsen, indeling);
+    // Stap 1b: Deel VPH in die willen verplaatsen
+    // -------------------------------------------
+    indeling = indeling.toewijzingQueue
+    .filter(Ondernemer.heeftVastePlaatsen)
+    .reduce(Indeling.assignVastePlaatsen, indeling);
 
     // Stap 2: Deel ondernemers met een verkoopinrichting in
     // -----------------------------------------------------
-    const verkoopinrichtingOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
-        count(ondernemer.voorkeur && ondernemer.voorkeur.verkoopinrichting) > 0
-    );
-
-    indeling = verkoopinrichtingOndernemers.reduce((indeling, ondernemer) => {
+    indeling = indeling.toewijzingQueue
+    .filter(Ondernemer.heeftEVI)
+    .reduce((indeling, ondernemer) => {
         const plaatsen = indeling.openPlaatsen.filter(plaats => {
             const { verkoopinrichting = [] } = ondernemer.voorkeur || {};
             return intersects(plaats.verkoopinrichting, verkoopinrichting);
@@ -73,11 +74,9 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
 
     // Stap 3: Deel branche ondernemers in
     // -----------------------------------
-    const brancheOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
-        Ondernemer.isInBranche(indeling, ondernemer)
-    );
-
-    indeling = brancheOndernemers.reduce((indeling, ondernemer) => {
+    indeling = indeling.toewijzingQueue
+    .filter(Ondernemer.heeftBranche)
+    .reduce((indeling, ondernemer) => {
         const { branches = [] } = ondernemer.voorkeur || {};
         const plaatsen = indeling.openPlaatsen.filter(plaats =>
             intersects(plaats.branches, branches)

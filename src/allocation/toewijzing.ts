@@ -28,8 +28,8 @@ const Toewijzing = {
             toewijzingQueue: indeling.toewijzingQueue.filter(({ erkenningsNummer }) =>
                 erkenningsNummer !== ondernemer.erkenningsNummer
             ),
-            openPlaatsen: indeling.openPlaatsen.filter(plaats =>
-                !toewijzing.plaatsen.includes(plaats.plaatsId)
+            openPlaatsen: indeling.openPlaatsen.filter(({ plaatsId }) =>
+                !toewijzing.plaatsen.includes(plaatsId)
             ),
             // Als er al een toewijzing bestond moet die worden vervangen met de nieuwe
             // toewijzing. Anders kan de nieuwe toewijzing simpelweg aan de lijst toegevoegd
