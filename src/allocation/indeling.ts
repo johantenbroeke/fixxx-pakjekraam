@@ -209,7 +209,6 @@ const Indeling = {
         marktDate: Date
     ) => {
         const { absentFrom = null, absentUntil = null } = ondernemer.voorkeur || {};
-
         if (
             absentFrom && absentUntil &&
             marktDate >= new Date(absentFrom) &&
@@ -218,19 +217,14 @@ const Indeling = {
             return false;
         }
 
-        const rsvp = aanmeldingen.find(aanmelding =>
-            aanmelding.erkenningsNummer === ondernemer.erkenningsNummer
+        const rsvp = aanmeldingen.find(({ erkenningsNummer }) =>
+            erkenningsNummer === ondernemer.erkenningsNummer
         );
-
-        // Vasteplaatshouders die niets hebben laten weten en die hebben bevestigd dat ze
-        // komen worden meegeteld als aanwezig. Alleen de expliciete afmeldingen worden
-        // niet in overweging genomen in de indeling van kramen.
-        if (ondernemer.status === 'vpl') {
-            return !rsvp || !!rsvp.attending || rsvp.attending === null;
-        } else {
-            return !!rsvp && !!rsvp.attending;
-        }
-
+        // Bij de indeling van VPHs worden alleen expliciete afmeldingen in beschouwing
+        // genomen. Anders wordt een VPH automatisch als aangemeld beschouwd.
+        return Ondernemer.isVast(ondernemer) ?
+               !rsvp || !!rsvp.attending || rsvp.attending === null :
+               !!rsvp && !!rsvp.attending;
     },
 
     performExpansion: (
