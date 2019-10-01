@@ -1,7 +1,9 @@
 import {
     IAfwijzingReason,
     IBranche,
+    IMarkt,
     IMarktindeling,
+    IMarktindelingSeed,
     IMarktondernemer,
     IMarktplaats,
     IPlaatsvoorkeur,
@@ -17,6 +19,7 @@ import {
 
 import Markt from './markt';
 import Ondernemer from './ondernemer';
+import Ondernemers from './ondernemers';
 import Toewijzing from './toewijzing';
 
 const MARKET_FULL: IAfwijzingReason = {
@@ -52,6 +55,32 @@ const brancheCompare = (a: IMarktplaats, b: IMarktplaats, branches: IBranche[]):
 };
 
 const Indeling = {
+    init: (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
+        const marktDate = new Date(markt.marktDate);
+        if (!+marktDate) {
+            throw Error('Invalid market date');
+        }
+
+        return {
+            ...markt,
+            toewijzingQueue: markt.ondernemers
+                .filter(ondernemer =>
+                    Indeling.isAanwezig(ondernemer, markt.aanwezigheid, new Date(markt.marktDate))
+                )
+                .sort((a, b) => Ondernemers.compare(a, b, markt.aLijst)),
+            expansionQueue: [],
+            expansionIteration: 1,
+            expansionLimit: Math.min(
+                Number.isFinite(markt.expansionLimit) ? markt.expansionLimit : Infinity,
+                markt.marktplaatsen.length
+            ),
+            afwijzingen: [],
+            toewijzingen: [],
+            openPlaatsen: [...markt.marktplaatsen.filter(plaats => !plaats.inactive)],
+            voorkeuren: [...markt.voorkeuren]
+        };
+    },
+
     assignPlaats: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,

@@ -9,7 +9,6 @@ import {
 } from './util';
 
 import Indeling from './allocation/indeling';
-import Ondernemers from './allocation/ondernemers';
 import Ondernemer from './allocation/ondernemer';
 
 /*
@@ -17,31 +16,7 @@ import Ondernemer from './allocation/ondernemer';
  */
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
-    const marktDate = new Date(markt.marktDate);
-    if (!+marktDate) {
-        throw Error('Invalid market date');
-    }
-
-    let indeling: IMarktindeling = {
-        ...markt,
-        toewijzingQueue: [],
-        expansionQueue: [],
-        expansionIteration: 1,
-        expansionLimit: Math.min(
-            Number.isFinite(markt.expansionLimit) ? markt.expansionLimit : Infinity,
-            markt.marktplaatsen.length
-        ),
-        afwijzingen: [],
-        toewijzingen: [],
-        openPlaatsen: [...markt.marktplaatsen.filter(plaats => !plaats.inactive)],
-        voorkeuren: [...markt.voorkeuren]
-    };
-
-    indeling.toewijzingQueue = indeling.ondernemers
-    .filter(ondernemer =>
-        Indeling.isAanwezig(ondernemer, indeling.aanwezigheid, new Date(indeling.marktDate))
-    )
-    .sort((a, b) => Ondernemers.compare(a, b, indeling.aLijst));
+    let indeling = Indeling.init(markt);
 
     // Stap 1a: Deel vasteplaatshouders in
     // -----------------------------------
