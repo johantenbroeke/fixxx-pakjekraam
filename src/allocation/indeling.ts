@@ -161,10 +161,12 @@ const Indeling = {
                                     .filter(({ verplicht = false }) => verplicht)
                                     .map(({ brancheId }) => brancheId);
 
-        const mogelijkePlaatsen = openPlaatsen.filter(({ plaatsId, branches = [] }) => {
+        const mogelijkePlaatsen = openPlaatsen.filter(({ plaatsId, branches = [], verkoopinrichting = null }) => {
             if (
                 // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
                 verplichteBrancheIds.length && !intersects(verplichteBrancheIds, branches) ||
+                // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
+                Ondernemer.heeftEVI(ondernemer) && !verkoopinrichting ||
                 // Ondernemer wil niet willekeurig ingedeeld worden en plaats staat niet in voorkeuren.
                 !anywhere && !voorkeurIds.includes(plaatsId) ||
                 // Niet genoeg vrije aansluitende plaatsen om maximum te verzadigen.
