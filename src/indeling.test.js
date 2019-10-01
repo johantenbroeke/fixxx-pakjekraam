@@ -233,6 +233,26 @@ describe('Een VPH die ingedeeld wil worden', () => {
 });
 
 describe('Een VPH die niet ingedeeld wil worden', () => {
+    it('kan zich afmelden voor een marktdag', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] },
+                { sollicitatieNummer: 2 },
+            ],
+            marktplaatsen: [
+                {}, {}
+            ],
+            aanwezigheid: [
+                { sollicitatieNummer: 1, attending: false },
+                { sollicitatieNummer: 2, attending: true }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+    });
+
     it('kan zijn aanwezigheid voor een bepaalde periode uitschakelen', () => {
         const { toewijzingen, afwijzingen, openPlaatsen } = calc({
             marktDate: '2019-02-01',

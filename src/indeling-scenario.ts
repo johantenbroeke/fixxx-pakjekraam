@@ -26,7 +26,7 @@ const isVast = (status: DeelnemerStatus): boolean =>
     status === DeelnemerStatus.VASTE_PLAATS ||
     status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS;
 
-const ondernemerAanmelding = (
+const createRSVP = (
     ondernemer: IMarktondernemer,
     marktId: string,
     marktDate: string
@@ -36,10 +36,12 @@ const ondernemerAanmelding = (
     erkenningsNummer: ondernemer.erkenningsNummer,
     attending: true
 });
+const isEqualRSVPKey = (a: IRSVP, b: IRSVP): boolean =>
+    a.marktId === b.marktId &&
+    a.marktDate === b.marktDate &&
+    a.erkenningsNummer === b.erkenningsNummer;
 
-/*
- * Assume everyone with a status that requires a high level of attendance will be attending.
- */
+// Genereer RSVPs voor alle VPHs.
 const deFactoAanmeldingen = (
     ondernemers: IMarktondernemer[],
     marktId: string,
@@ -47,16 +49,7 @@ const deFactoAanmeldingen = (
 ): IRSVP[] =>
     ondernemers
     .filter(ondernemer => isVast(ondernemer.status))
-    .map(ondernemer => ondernemerAanmelding(ondernemer, marktId, marktDate));
-
-/*
- * Compare RSVP objects, return `true` when they are about the same RSVP
- * (but don't necessarily have the same content).
- */
-const isEqualRSVPKey = (a: IRSVP, b: IRSVP): boolean =>
-    a.marktId === b.marktId &&
-    a.marktDate === b.marktDate &&
-    a.erkenningsNummer === b.erkenningsNummer;
+    .map(ondernemer => createRSVP(ondernemer, marktId, marktDate));
 
 const findOndernemer = (
     markt: IMarktScenario,
@@ -143,6 +136,15 @@ const marktScenario = (seed: IMarktScenarioStub): IMarktScenario => {
         };
     });
 
+    // Als er voor dit scenario geen `aanwezigheid` array is gedefinieerd worden
+    // alle ondernemers standaard aangemeld.
+    //
+    // Is er wel een `aanwezigheid`, dan wordt deze aangevuld met een standaard
+    // aanmelding voor alle VPHs die niet in de lijst voorkomen (dus als er een
+    // VPH expliciet is afgemeld zal deze niet overschreven worden).
+    //
+    // In dit laatste scenario worden SOLL dus niet meer standaard aangemeld; dat
+    // moet expliciet in `aanwezigheid` gedaan worden.
     if (seed.aanwezigheid) {
         markt.aanwezigheid = seed.aanwezigheid.map((data: IRSVPStub): IRSVP => {
             const ondernemer = findOndernemer(markt, data);
@@ -172,10 +174,8 @@ const marktScenario = (seed: IMarktScenarioStub): IMarktScenario => {
             ...deFacto
         ];
     } else {
-        // When the scenario doesn't go into specifics about who is attending
-        // and who isn't, assume everyone from `ondernemers` will be attending.
         markt.aanwezigheid = markt.ondernemers.map(ondernemer =>
-            ondernemerAanmelding(ondernemer, markt.marktId, markt.marktDate)
+            createRSVP(ondernemer, markt.marktId, markt.marktDate)
         );
     }
 
@@ -204,8 +204,6 @@ const marktScenario = (seed: IMarktScenarioStub): IMarktScenario => {
 
         return ondernemer;
     });
-
-    // console.log(require('util').inspect(markt, {depth: Infinity}));
 
     return markt;
 };
