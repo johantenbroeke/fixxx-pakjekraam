@@ -128,7 +128,6 @@ const Indeling = {
     ): IMarktindeling => {
         const available   = Indeling.findBestePlaatsenForVPH(indeling, ondernemer);
         // const { anywhere  = false } = ondernemer.voorkeur || {};
-        // const startSize   = Ondernemer.getStartSize(ondernemer);
         const minimumSize = Ondernemer.getMinimumSize(ondernemer);
 
         if (available.length && available.length >= minimumSize) {
@@ -136,7 +135,8 @@ const Indeling = {
                 return Toewijzing.add(indeling, ondernemer, plaats);
             }, indeling);
         } else /*if (anywhere)*/ {
-            /*const openPlaatsen = indeling.openPlaatsen.filter(plaats =>
+            /*const startSize    = Ondernemer.getStartSize(ondernemer);
+            const openPlaatsen = indeling.openPlaatsen.filter(plaats =>
                 Indeling._isAvailable(indeling, plaats)
             );
             return Indeling.assignPlaats(indeling, ondernemer, openPlaatsen, 'reject', startSize);
@@ -149,9 +149,9 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
         openPlaatsen: IMarktplaats[],
-        maximum: number = 1
+        minimumSize: number = 1
     ): IMarktplaats[] => {
-        const expansionSize        = maximum - 1;
+        const expansionSize        = minimumSize - 1;
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);
 
@@ -184,7 +184,7 @@ const Indeling = {
             return plaatsVoorkeurCompare(a, b, voorkeuren) ||
                    brancheCompare(a, b, ondernemerBranches);
         })
-        .slice(0, maximum);
+        .slice(0, minimumSize);
     },
 
     findBestePlaatsenForVPH: (

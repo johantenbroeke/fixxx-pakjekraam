@@ -10,6 +10,8 @@ import {
     flatten
 } from '../util';
 
+type FilterFunction = (plaats: IMarktplaats) => boolean;
+
 const Markt = {
     // Get adjacent places for one or multiple `plaatsIds`. The places passed in
     // `plaatsIds` are expected to be adjacent, or this function's behavior is
@@ -22,7 +24,7 @@ const Markt = {
         markt: IMarkt,
         plaatsIds: PlaatsId[],
         depth: number = 1,
-        filter?: (plaats: IMarktplaats) => boolean
+        filter: FilterFunction = null
     ): IMarktplaats[] => {
         if (!depth) {
             return [];
@@ -64,10 +66,10 @@ const Markt = {
     // array are spliced out.
     groupByAdjacent: (
         markt: IMarkt,
-        plaatsen: IPlaatsvoorkeur[],
+        plaatsen: IPlaatsvoorkeur[] = [],
         result: IPlaatsvoorkeur[][] = []
     ): IPlaatsvoorkeur[][] => {
-        if (!plaatsen || !plaatsen.length) {
+        if (!plaatsen.length) {
             return result;
         }
 
@@ -154,7 +156,7 @@ const Markt = {
         dir: number,
         depth: number = 1,
         obstacles: IObstakelBetween[] = [],
-        filter?: (plaats: IMarktplaats) => boolean
+        filter: FilterFunction = null
     ): IMarktplaats[] => {
         const isCircular = row[0].plaatsId === row[row.length-1].plaatsId;
         // The first and last element are equal, so remove the one at the end.
