@@ -191,34 +191,27 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): IMarktplaats[] => {
-        const wantsToMove = Ondernemer.wantsToMove(indeling, ondernemer);
-        const startSize   = Ondernemer.getStartSize(ondernemer);
+        const minimumSize = Ondernemer.getStartSize(ondernemer);
         const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
-        const available   = voorkeuren.filter(plaats =>
+        const grouped     = Markt.groupByAdjacent(indeling, voorkeuren, plaats =>
             Indeling._isAvailable(indeling, plaats)
         );
-        const grouped     = Markt.groupByAdjacent(indeling, available);
 
         return grouped.reduce((result, group) => {
-            if (wantsToMove && result.length) {
-                return result;
-            }
-
-            if (group.length < startSize) {
-                const depth     = startSize - group.length;
+            if (group.length < minimumSize) {
+                const depth     = minimumSize - group.length;
                 const plaatsIds = group.map(({ plaatsId }) => plaatsId);
                 const extra     = Indeling._getAvailableAdjacentFor(indeling, plaatsIds, depth);
                 group = group.concat(<IPlaatsvoorkeur[]> extra);
             }
 
-            if (
-                !wantsToMove && group.length > result.length ||
-                group.length >= startSize
-            ) {
-                // Reduceer het aantal plaatsen tot `startSize`, maar pak de subset
-                // waar de plaats met de hoogste prioriteit in zit.
+            if (group.length >= minimumSize) {
+                // Stop `reduce` loop.
+                grouped.length = 0;
+                // Reduceer het aantal plaatsen tot `minimumSize`..
+                // Pak de subset met de hoogste totale prioriteit.
                 return group.reduce((best, plaats, index) => {
-                    const current = group.slice(index, index+startSize);
+                    const current = group.slice(index, index+minimumSize);
                     const bestSum = best.map(({ priority }) => priority).reduce(sum, 0);
                     const curSum  = current.map(({ priority }) => priority).reduce(sum, 0);
                     return !best.length || curSum > bestSum ? current : best;

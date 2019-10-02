@@ -67,18 +67,21 @@ const Markt = {
     groupByAdjacent: (
         markt: IMarkt,
         plaatsen: IPlaatsvoorkeur[] = [],
+        filter: FilterFunction = null,
         result: IPlaatsvoorkeur[][] = []
     ): IPlaatsvoorkeur[][] => {
+        plaatsen = filter ?
+                   plaatsen.filter(filter) :
+                   plaatsen.slice(0);
+
         if (!plaatsen.length) {
             return result;
         }
 
         const { rows, obstakels } = markt;
-        plaatsen                  = plaatsen.slice(0);
-
-        const start = plaatsen.shift();
-        let current = start;
-        let dir     = -1;
+        const start               = plaatsen.shift();
+        let current               = start;
+        let dir                   = -1;
 
         const group = [current];
         result.push(group);
@@ -86,7 +89,7 @@ const Markt = {
         while (current) {
             const currentId                   = current.plaatsId;
             const row                         = Markt._findRowForPlaatsen(rows, [currentId]);
-            const { plaatsId: nextId = null } = Markt._getAdjacent(row, currentId, dir, 1, obstakels)[0] || {};
+            const { plaatsId: nextId = null } = Markt._getAdjacent(row, currentId, dir, 1, obstakels, filter)[0] || {};
             const nextIndex                   = plaatsen.findIndex(({ plaatsId }) => plaatsId === nextId);
 
             if (nextIndex === -1) {
@@ -115,7 +118,7 @@ const Markt = {
         // group.sort(({ priority: a = 1 }, { priority: b = 1 }) => b - a);
 
         return plaatsen.length ?
-               Markt.groupByAdjacent(markt, plaatsen, result) :
+               Markt.groupByAdjacent(markt, plaatsen, filter, result) :
                result;
     },
 
