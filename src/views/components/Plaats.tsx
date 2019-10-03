@@ -110,8 +110,6 @@ const Plaats = ({
         <tr
             className={`
                 Plaats ${first && 'Plaats--first'} ${tags.join(' ')} ${
-                aanmelding ? ' Plaats--vph-attendance-verified' : ''
-            }${
                 aanmelding && aanmelding.attending !== null && !aanmelding.attending
                     ? ' Plaats--vph-attendance-not-attending'
                     : ''
