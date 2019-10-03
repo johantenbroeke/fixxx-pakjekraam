@@ -1,6 +1,5 @@
 import {
     IAfwijzingReason,
-    IBranche,
     IMarkt,
     IMarktindeling,
     IMarktindelingSeed,
@@ -37,29 +36,6 @@ const ADJACENT_UNAVAILABLE: IAfwijzingReason = {
 const MINIMUM_UNAVAILABLE: IAfwijzingReason = {
     code: 4,
     message: 'Minimum aantal plaatsen niet beschikbaar'
-};
-
-// `voorkeuren` should always be sorted by priority DESC, because we're using its array
-// indices to sort by priority. See `Ondernemer.getPlaatsVoorkeuren()`.
-const plaatsVoorkeurCompare = (
-    plaatsA: IMarktplaats,
-    plaatsB: IMarktplaats,
-    voorkeuren: IPlaatsvoorkeur[]
-): number => {
-    const max = voorkeuren.length;
-    const a   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsA.plaatsId);
-    const b   = voorkeuren.findIndex(({ plaatsId }) => plaatsId === plaatsB.plaatsId);
-    // ~-1 == 0, so we can kick a or b to EOL if it's not found.
-    return (~a ? a : max) - (~b ? b : max);
-};
-// Sort DESC on branche overlap with provided `branches` array. The more overlap, the better.
-const brancheCompare = (
-    a: IMarktplaats,
-    b: IMarktplaats,
-    branches: IBranche[]
-): number => {
-    return intersection(b.branches, branches).length -
-           intersection(a.branches, branches).length;
 };
 
 const Indeling = {
@@ -151,7 +127,6 @@ const Indeling = {
         openPlaatsen: IMarktplaats[],
         minimumSize: number = 1
     ): IMarktplaats[] => {
-        const expansionSize        = minimumSize - 1;
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);
 
@@ -161,30 +136,46 @@ const Indeling = {
                                     .filter(({ verplicht = false }) => verplicht)
                                     .map(({ brancheId }) => brancheId);
 
-        const mogelijkePlaatsen = openPlaatsen.filter(({ plaatsId, branches = [], verkoopinrichting = null }) => {
+        // Hier gebeuren 3 dingen:
+        // 1. Filter ongeschikte plaatsen eruit.
+        // 2. Converteer geschikte plaatsen naar IPlaatsvoorkeur (zodat elke optie
+        //    een `priority` heeft).
+        // 3. Sorteer op branche overlap en `priority`.
+        const plaatsen = <IPlaatsvoorkeur[]> openPlaatsen
+        .reduce((result, plaats) => {
             if (
                 // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
-                verplichteBrancheIds.length && !intersects(verplichteBrancheIds, branches) ||
+                verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
                 // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
-                Ondernemer.heeftEVI(ondernemer) && !verkoopinrichting ||
-                // Ondernemer wil niet willekeurig ingedeeld worden en plaats staat niet in voorkeuren.
-                !anywhere && !voorkeurIds.includes(plaatsId) ||
-                // Niet genoeg vrije aansluitende plaatsen om maximum te verzadigen.
-                Indeling._getAvailableAdjacentFor(indeling, [plaatsId], expansionSize).length < expansionSize
+                Ondernemer.heeftEVI(ondernemer) && !plaats.verkoopinrichting ||
+                // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
+                !anywhere && !voorkeurIds.includes(plaats.plaatsId)
             ) {
-                return false;
-            } else {
-                return true;
+                return result;
             }
-        });
 
-        // Sorteer plaatsen op voorkeursprioriteit, daarna op overlap in ondernemersbranches.
-        return mogelijkePlaatsen
-        .sort((a, b) => {
-            return plaatsVoorkeurCompare(a, b, voorkeuren) ||
-                   brancheCompare(a, b, ondernemerBranches);
-        })
-        .slice(0, minimumSize);
+            const { priority = 0 } = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
+            return result.concat({ ...plaats, priority });
+        }, [])
+        .sort((a, b) =>
+            intersection(b.branches, ondernemerBranches).length -
+            intersection(a.branches, ondernemerBranches).length
+            ||
+            b.priority - a.priority
+        );
+
+        return Indeling._findBestGroup(
+            indeling,
+            ondernemer,
+            Markt.groupByAdjacent(indeling, plaatsen),
+            minimumSize,
+            (best, current) => {
+                // TODO: Kijkt enkel naar `priority`, maar branche overlap is belangrijker.
+                const bestScore = best.map(({ priority }) => priority).reduce(sum, 0);
+                const curScore  = current.map(({ priority }) => priority).reduce(sum, 0);
+                return bestScore - curScore;
+            }
+        );
     },
 
     findBestePlaatsenForVPH: (
@@ -193,28 +184,47 @@ const Indeling = {
     ): IMarktplaats[] => {
         const minimumSize = Ondernemer.getStartSize(ondernemer);
         const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
-        const grouped     = Markt.groupByAdjacent(indeling, voorkeuren, plaats =>
+        const groups      = Markt.groupByAdjacent(indeling, voorkeuren, plaats =>
             Indeling._isAvailable(indeling, plaats)
         );
 
-        return grouped.reduce((result, group) => {
+        return Indeling._findBestGroup(
+            indeling, ondernemer, groups, minimumSize,
+            (best, current) => {
+                const bestScore = best.map(({ priority }) => priority).reduce(sum, 0);
+                const curScore  = current.map(({ priority }) => priority).reduce(sum, 0);
+                return bestScore - curScore;
+            }
+        );
+    },
+
+    _findBestGroup: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer,
+        groups: IPlaatsvoorkeur[][],
+        minimumSize: number = 1,
+        compare?: (best: IPlaatsvoorkeur[], current: IPlaatsvoorkeur[]) => number
+    ): IMarktplaats[] => {
+        return groups.reduce((result, group) => {
             if (group.length < minimumSize) {
                 const depth     = minimumSize - group.length;
                 const plaatsIds = group.map(({ plaatsId }) => plaatsId);
                 const extra     = Indeling._getAvailableAdjacentFor(indeling, plaatsIds, depth);
                 group = group.concat(<IPlaatsvoorkeur[]> extra);
+                // Put the added places in the right order.
+                group = Markt.groupByAdjacent(indeling, group)[0];
             }
 
             if (group.length >= minimumSize) {
                 // Stop `reduce` loop.
-                grouped.length = 0;
+                groups.length = 0;
                 // Reduceer het aantal plaatsen tot `minimumSize`..
                 // Pak de subset met de hoogste totale prioriteit.
                 return group.reduce((best, plaats, index) => {
                     const current = group.slice(index, index+minimumSize);
-                    const bestSum = best.map(({ priority }) => priority).reduce(sum, 0);
-                    const curSum  = current.map(({ priority }) => priority).reduce(sum, 0);
-                    return !best.length || curSum > bestSum ? current : best;
+                    return (!best.length || compare(best, current) < 0) ?
+                           current :
+                           best;
                 }, []);
             } else {
                 return result;
