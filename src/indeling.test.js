@@ -717,6 +717,23 @@ describe('Een ondernemer die wil uitbreiden', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
     });
 
+    it('krijgt aaneensluitende plaatsen', () => {
+       const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 2 } }
+            ],
+            marktplaatsen: [{}, {}, {}],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '1', priority: SECOND_CHOICE },
+                { sollicitatieNummer: 1, plaatsId: '3', priority: FIRST_CHOICE }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
+    });
+
     it('naar meer dan 2 plaatsen moet wachten op iedereen die 2 plaatsen wil', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [

@@ -83,7 +83,7 @@ const Indeling = {
                 throw Error('assignPlaats vereist een set aan open plaatsen');
             }
 
-            const bestePlaatsen = Indeling.findBestePlaatsen(indeling, ondernemer, plaatsen, maximum);
+            const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, maximum);
             if (!bestePlaatsen.length) {
                 throw ADJACENT_UNAVAILABLE;
             }
@@ -102,7 +102,7 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): IMarktindeling => {
-        const available   = Indeling.findBestePlaatsenForVPH(indeling, ondernemer);
+        const available   = Indeling._findBestePlaatsenForVPH(indeling, ondernemer);
         // const { anywhere  = false } = ondernemer.voorkeur || {};
         const minimumSize = Ondernemer.getMinimumSize(ondernemer);
 
@@ -121,7 +121,122 @@ const Indeling = {
         }
     },
 
-    findBestePlaatsen: (
+    // Als niet alle vaste plaatsen van een VPH beschikbaar zijn zal hij
+    // moeten verplaatsen. Voor de berekening beschouwing we deze ondernemer
+    // als iemand die verplaatst.
+    hasToMove: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): boolean => {
+        const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
+        const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats));
+        return beschikbaar.length < vastePlaatsen.length;
+    },
+
+    isAanwezig: (
+        ondernemer: IMarktondernemer,
+        aanmeldingen: IRSVP[],
+        marktDate: Date
+    ) => {
+        const { absentFrom = null, absentUntil = null } = ondernemer.voorkeur || {};
+        if (
+            absentFrom && absentUntil &&
+            marktDate >= new Date(absentFrom) &&
+            marktDate <= new Date(absentUntil)
+        ) {
+            return false;
+        }
+
+        const rsvp = aanmeldingen.find(({ erkenningsNummer }) =>
+            erkenningsNummer === ondernemer.erkenningsNummer
+        );
+        // Bij de indeling van VPHs worden alleen expliciete afmeldingen in beschouwing
+        // genomen. Anders wordt een VPH automatisch als aangemeld beschouwd.
+        return Ondernemer.isVast(ondernemer) ?
+               !rsvp || !!rsvp.attending || rsvp.attending === null :
+               !!rsvp && !!rsvp.attending;
+    },
+
+    performExpansion: (
+        indeling: IMarktindeling
+    ): IMarktindeling => {
+        let queue = indeling.toewijzingen.filter(toewijzing =>
+            Ondernemer.wantsExpansion(toewijzing)
+        );
+
+        while (
+            indeling.openPlaatsen.length &&
+            queue.length &&
+            indeling.expansionIteration <= indeling.expansionLimit
+        ) {
+            queue = queue.reduce((newQueue, toewijzing) => {
+                const { ondernemer } = toewijzing;
+
+                if (Ondernemer.canExpandInIteration(indeling, toewijzing)) {
+                    const openAdjacent        = Indeling._getAvailableAdjacentFor(indeling, toewijzing.plaatsen, 1);
+                    const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent);
+
+                    if (uitbreidingPlaats) {
+                        indeling   = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
+                        toewijzing = Toewijzing.find(indeling, ondernemer);
+                    }
+                }
+
+                if (Ondernemer.wantsExpansion(toewijzing)) {
+                    newQueue.push(toewijzing);
+                }
+
+                return newQueue;
+            }, []);
+
+            indeling.expansionIteration++;
+        }
+
+        // The people still in the queue have fewer places than desired. Check if they
+        // must be rejected because of their `minimum` setting.
+        return queue.reduce((indeling, { ondernemer, plaatsen }) => {
+            const { minimum = 0 } = ondernemer.voorkeur || {};
+            return minimum > plaatsen.length ?
+                   Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
+                   indeling;
+        }, indeling);
+    },
+
+    _findBestGroup: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer,
+        groups: IPlaatsvoorkeur[][],
+        minimumSize: number = 1,
+        compare?: (best: IPlaatsvoorkeur[], current: IPlaatsvoorkeur[]) => number
+    ): IMarktplaats[] => {
+        return groups.reduce((result, group) => {
+            if (group.length < minimumSize) {
+                const depth     = minimumSize - group.length;
+                const plaatsIds = group.map(({ plaatsId }) => plaatsId);
+                const extra     = Indeling._getAvailableAdjacentFor(indeling, plaatsIds, depth);
+                group = group.concat(<IPlaatsvoorkeur[]> extra);
+                // Zet de zojuist toegevoegde plaatsen op de juiste plek.
+                group = Markt.groupByAdjacent(indeling, group)[0];
+            }
+
+            if (group.length >= minimumSize) {
+                // Stop `reduce` loop.
+                groups.length = 0;
+                // Reduceer het aantal plaatsen tot `minimumSize`..
+                // Pak de subset met de hoogste totale prioriteit.
+                return group.reduce((best, plaats, index) => {
+                    const current = group.slice(index, index+minimumSize);
+                    return (!best.length || compare(best, current) < 0) ?
+                           current :
+                           best;
+                }, []);
+            } else {
+                return result;
+            }
+        }, []);
+    },
+
+    _findBestePlaatsen: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
         openPlaatsen: IMarktplaats[],
@@ -178,7 +293,7 @@ const Indeling = {
         );
     },
 
-    findBestePlaatsenForVPH: (
+    _findBestePlaatsenForVPH: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): IMarktplaats[] => {
@@ -196,121 +311,6 @@ const Indeling = {
                 return bestScore - curScore;
             }
         );
-    },
-
-    _findBestGroup: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
-        groups: IPlaatsvoorkeur[][],
-        minimumSize: number = 1,
-        compare?: (best: IPlaatsvoorkeur[], current: IPlaatsvoorkeur[]) => number
-    ): IMarktplaats[] => {
-        return groups.reduce((result, group) => {
-            if (group.length < minimumSize) {
-                const depth     = minimumSize - group.length;
-                const plaatsIds = group.map(({ plaatsId }) => plaatsId);
-                const extra     = Indeling._getAvailableAdjacentFor(indeling, plaatsIds, depth);
-                group = group.concat(<IPlaatsvoorkeur[]> extra);
-                // Put the added places in the right order.
-                group = Markt.groupByAdjacent(indeling, group)[0];
-            }
-
-            if (group.length >= minimumSize) {
-                // Stop `reduce` loop.
-                groups.length = 0;
-                // Reduceer het aantal plaatsen tot `minimumSize`..
-                // Pak de subset met de hoogste totale prioriteit.
-                return group.reduce((best, plaats, index) => {
-                    const current = group.slice(index, index+minimumSize);
-                    return (!best.length || compare(best, current) < 0) ?
-                           current :
-                           best;
-                }, []);
-            } else {
-                return result;
-            }
-        }, []);
-    },
-
-    // Als niet alle vaste plaatsen van een VPH beschikbaar zijn zal hij
-    // moeten verplaatsen. Voor de berekening beschouwing we deze ondernemer
-    // als iemand die verplaatst.
-    hasToMove: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): boolean => {
-        const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
-        const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats));
-        return beschikbaar.length < vastePlaatsen.length;
-    },
-
-    isAanwezig: (
-        ondernemer: IMarktondernemer,
-        aanmeldingen: IRSVP[],
-        marktDate: Date
-    ) => {
-        const { absentFrom = null, absentUntil = null } = ondernemer.voorkeur || {};
-        if (
-            absentFrom && absentUntil &&
-            marktDate >= new Date(absentFrom) &&
-            marktDate <= new Date(absentUntil)
-        ) {
-            return false;
-        }
-
-        const rsvp = aanmeldingen.find(({ erkenningsNummer }) =>
-            erkenningsNummer === ondernemer.erkenningsNummer
-        );
-        // Bij de indeling van VPHs worden alleen expliciete afmeldingen in beschouwing
-        // genomen. Anders wordt een VPH automatisch als aangemeld beschouwd.
-        return Ondernemer.isVast(ondernemer) ?
-               !rsvp || !!rsvp.attending || rsvp.attending === null :
-               !!rsvp && !!rsvp.attending;
-    },
-
-    performExpansion: (
-        indeling: IMarktindeling
-    ): IMarktindeling => {
-        let queue = indeling.toewijzingen.filter(toewijzing =>
-            Ondernemer.wantsExpansion(toewijzing)
-        );
-
-        while (
-            indeling.openPlaatsen.length &&
-            queue.length &&
-            indeling.expansionIteration <= indeling.expansionLimit
-        ) {
-            queue = queue.reduce((newQueue, toewijzing) => {
-                const { ondernemer } = toewijzing;
-
-                if (Ondernemer.canExpandInIteration(indeling, toewijzing)) {
-                    const openAdjacent        = Indeling._getAvailableAdjacentFor(indeling, toewijzing.plaatsen, 1);
-                    const [uitbreidingPlaats] = Indeling.findBestePlaatsen(indeling, ondernemer, openAdjacent);
-
-                    if (uitbreidingPlaats) {
-                        indeling   = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
-                        toewijzing = Toewijzing.find(indeling, ondernemer);
-                    }
-                }
-
-                if (Ondernemer.wantsExpansion(toewijzing)) {
-                    newQueue.push(toewijzing);
-                }
-
-                return newQueue;
-            }, []);
-
-            indeling.expansionIteration++;
-        }
-
-        // The people still in the queue have fewer places than desired. Check if they
-        // must be rejected because of their `minimum` setting.
-        return queue.reduce((indeling, { ondernemer, plaatsen }) => {
-            const { minimum = 0 } = ondernemer.voorkeur || {};
-            return minimum > plaatsen.length ?
-                   Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
-                   indeling;
-        }, indeling);
     },
 
     _getAvailableAdjacentFor: (
