@@ -45,23 +45,29 @@ const Indeling = {
             throw Error('Invalid market date');
         }
 
+        const openPlaatsen    = markt.marktplaatsen.filter(plaats => !plaats.inactive);
+        const toewijzingQueue = markt.ondernemers
+        .filter(ondernemer =>
+            Indeling.isAanwezig(ondernemer, markt.aanwezigheid, new Date(markt.marktDate))
+        )
+        .sort((a, b) => Ondernemers.compare(a, b, markt.aLijst));
+        const expansionLimit  = Math.min(
+            Number.isFinite(markt.expansionLimit) ? markt.expansionLimit : Infinity,
+            markt.marktplaatsen.length
+        );
+
         return {
             ...markt,
-            toewijzingQueue: markt.ondernemers
-                .filter(ondernemer =>
-                    Indeling.isAanwezig(ondernemer, markt.aanwezigheid, new Date(markt.marktDate))
-                )
-                .sort((a, b) => Ondernemers.compare(a, b, markt.aLijst)),
-            expansionQueue: [],
-            expansionIteration: 1,
-            expansionLimit: Math.min(
-                Number.isFinite(markt.expansionLimit) ? markt.expansionLimit : Infinity,
-                markt.marktplaatsen.length
-            ),
-            afwijzingen: [],
-            toewijzingen: [],
-            openPlaatsen: [...markt.marktplaatsen.filter(plaats => !plaats.inactive)],
-            voorkeuren: [...markt.voorkeuren]
+            openPlaatsen,
+
+            expansionQueue     : [],
+            expansionIteration : 1,
+            expansionLimit,
+
+            toewijzingQueue,
+            afwijzingen        : [],
+            toewijzingen       : [],
+            voorkeuren         : [...markt.voorkeuren]
         };
     },
 
