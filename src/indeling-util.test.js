@@ -1,6 +1,11 @@
 /* eslint-disable no-magic-numbers */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* eslint-disable no-redeclare */
 
-const Markt = require('./allocation/markt.ts').default;
+const Markt      = require('./allocation/markt.ts').default;
+const Indeling   = require('./allocation/indeling.ts').default;
+const Ondernemer = require('./allocation/ondernemer.ts').default;
 
 const { calcToewijzingen } = require('./indeling.ts');
 const { marktScenario }    = require('./indeling-scenario.ts');
@@ -172,3 +177,95 @@ describe('Markt.groupByAdjacent', () => {
     });
 });
 
+describe('Indeling.determineStrategy', () => {
+    const determineStrategy = def => {
+        const indeling = Indeling.init(marktScenario(def));
+
+        return brancheId => {
+            let ondernemers, plaatsen;
+            if (brancheId === 'evi') {
+                ondernemers = indeling.toewijzingQueue.filter(Ondernemer.heeftEVI);
+                plaatsen = indeling.openPlaatsen.filter(Markt.heeftEVI);
+            } else if (brancheId) {
+                ondernemers = indeling.toewijzingQueue.filter(ondernemer =>
+                    Ondernemer.heeftBranche(ondernemer, brancheId)
+                );
+                plaatsen = indeling.openPlaatsen.filter(plaats =>
+                    Markt.heeftBranche(plaats, brancheId)
+                );
+            } else {
+                ondernemers = indeling.toewijzingQueue;
+                plaatsen = indeling.openPlaatsen;
+            }
+
+            return Indeling.determineStrategy(ondernemers, plaatsen);
+        };
+    };
+
+    it('is correct when considering the entire market', () => {
+        var strategyFor = determineStrategy({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 3 } },
+                { sollicitatieNummer: 2 },
+            ],
+            marktplaatsen: [
+                {}, {}, {}
+            ]
+        });
+        expect(strategyFor()).toBe('optimistic');
+
+        var strategyFor = determineStrategy({
+            ondernemers: [
+                { sollicitatieNummer: 1 },
+                { sollicitatieNummer: 2 },
+                { sollicitatieNummer: 3 },
+                { sollicitatieNummer: 4 },
+            ],
+            marktplaatsen: [
+                {}, {}, {}
+            ]
+        });
+        expect(strategyFor()).toBe('conservative');
+
+        var strategyFor = determineStrategy({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2', '3'] },
+                { sollicitatieNummer: 2, voorkeur: { maximum: 3 } }
+            ],
+            marktplaatsen: [
+                {}, {}, {}, {}
+            ]
+        });
+        expect(strategyFor()).toBe('conservative');
+
+        var strategyFor = determineStrategy({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2', '3'] },
+                { sollicitatieNummer: 2, voorkeur: { maximum: 3 } }
+            ],
+            marktplaatsen: [
+                {}, {}, {}, {}, {}
+            ]
+        });
+        expect(strategyFor()).toBe('optimistic');
+    });
+
+    it('is correct when considering a specific branche', () => {
+        const strategyFor = determineStrategy({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'], maximum: 1 } },
+                { sollicitatieNummer: 3, voorkeur: { branches: ['brood'], maximum: 2 } },
+                { sollicitatieNummer: 4, voorkeur: { branches: ['fruit'], maximum: 2 } }
+            ],
+            marktplaatsen: [
+                { branches: ['bak', 'brood'] }, { branches: ['brood', 'fruit'] }
+            ]
+        });
+
+        expect(strategyFor()).toBe('conservative');
+        expect(strategyFor('bak')).toBe('optimistic');
+        expect(strategyFor('brood')).toBe('optimistic');
+        expect(strategyFor('fruit')).toBe('conservative');
+    });
+});

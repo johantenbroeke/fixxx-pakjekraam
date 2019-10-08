@@ -20,6 +20,8 @@ import Ondernemer from './ondernemer';
 import Ondernemers from './ondernemers';
 import Toewijzing from './toewijzing';
 
+type AllocationStrategy = 'optimistic' | 'conservative';
+
 const MARKET_FULL: IAfwijzingReason = {
     code: 1,
     message: 'Alle marktplaatsen zijn reeds ingedeeld'
@@ -79,8 +81,11 @@ const Indeling = {
         ondernemer: IMarktondernemer,
         plaatsen: IMarktplaats[],
         handleRejection: 'reject' | 'ignore' = 'reject',
-        minimumSize?: number
+        minimumSize?: number,
+        strategy?: AllocationStrategy
     ): IMarktindeling => {
+        strategy = strategy || Indeling.determineStrategy(indeling.toewijzingQueue, indeling.openPlaatsen);
+
         try {
             if (indeling.openPlaatsen.length === 0) {
                 throw MARKET_FULL;
@@ -93,7 +98,6 @@ const Indeling = {
             }
 
             let bestePlaatsen;
-            const strategy = Indeling.determineStrategy(indeling);
             if ((!minimumSize || minimumSize === 1) && strategy === 'optimistic') {
                 const targetSize = Ondernemer.getTargetSize(ondernemer);
                 const happySize  = Math.min(targetSize, 2);
@@ -119,9 +123,11 @@ const Indeling = {
 
     assignVastePlaatsen: (
         indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
+        ondernemer: IMarktondernemer,
+        strategy?: AllocationStrategy
     ): IMarktindeling => {
-        const strategy   = Indeling.determineStrategy(indeling);
+        strategy = strategy || Indeling.determineStrategy(indeling.toewijzingQueue, indeling.openPlaatsen);
+
         const startSize  = Ondernemer.getStartSize(ondernemer);
         const { anywhere = false } = /*ondernemer.voorkeur ||*/ {};
 
@@ -142,7 +148,7 @@ const Indeling = {
         } else if (anywhere) {
             // TODO: Momenteel onbereikbare code — nog onbekend wat er moet gebeuren met
             //       flexibel indelen voor VPH.
-            return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen, 'reject', startSize);
+            return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen, 'reject', startSize, strategy);
         } else {
             return Indeling._rejectOndernemer(indeling, ondernemer, ADJACENT_UNAVAILABLE);
         }
@@ -174,11 +180,15 @@ const Indeling = {
     },
 
     determineStrategy: (
-        indeling: IMarktindeling
-    ): 'optimistic' | 'conservative' => {
-        const minRequired = indeling.toewijzingQueue.reduce((sum, ondernemer) => {
+        ondernemers: IMarktondernemer[],
+        plaatsen: IMarktplaats[]
+    ): AllocationStrategy => {
+        const minRequired = ondernemers.reduce((sum, ondernemer) => {
             const startSize  = Ondernemer.getStartSize(ondernemer);
             const targetSize = Ondernemer.getTargetSize(ondernemer);
+            // TODO: This might be error-prone — are all VPH places branche places?
+            //       If not, these places are unnecessarily counted as occupied
+            //       branche places.
             const happySize  = Ondernemer.isVast(ondernemer) && startSize >= 2 ?
                                startSize :
                                Math.min(targetSize, 2);
@@ -186,7 +196,7 @@ const Indeling = {
             return sum + happySize;
         }, 0);
 
-        return indeling.openPlaatsen.length >= minRequired ?
+        return plaatsen.length >= minRequired ?
                'optimistic' :
                'conservative';
     },
