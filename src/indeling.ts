@@ -71,5 +71,17 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     // --------------------------------------
     indeling = Indeling.performExpansion(indeling);
 
+    // Stap 6: Probeer afwijzingen opnieuw
+    // -----------------------------------
+    // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
+    // eerder afgewezen ondernemers opnieuw in te delen omdat deze mogelijk passen op
+    // de vrijgekomen plaatsen.
+    /*indeling = indeling.afwijzingen
+    .reduce((indeling, afwijzing) => {
+        const { ondernemer } = afwijzing;
+        return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen);
+    }, indeling);
+    indeling = Indeling.performExpansion(indeling);*/
+
     return indeling;
 };
