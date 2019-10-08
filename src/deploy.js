@@ -4,7 +4,6 @@ const models = require('./model/index.ts');
 // models.sequelize.sync({ force: true})
 // models.sequelize.sync({ alter: true})
 
-
 // Ensure the database tables have been created, particularly the session storage.
 models.sequelize.sync().then(
     () => console.log('Database tables successfully initialized'),

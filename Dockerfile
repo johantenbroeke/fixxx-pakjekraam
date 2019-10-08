@@ -16,6 +16,8 @@ USER node
 
 WORKDIR /srv/
 
+COPY deploy /deploy/
+
 ADD ./package.json ./package-lock.json /srv/
 
 # Add `NPM_TOKEN` right before the first `npm install`
