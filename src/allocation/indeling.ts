@@ -44,13 +44,17 @@ const Indeling = {
             throw Error('Invalid market date');
         }
 
-        const openPlaatsen    = markt.marktplaatsen.filter(plaats => !plaats.inactive);
+        const openPlaatsen = markt.marktplaatsen.filter(plaats => !plaats.inactive);
+        // We willen enkel de aanwezige ondernemers, gesorteerd op prioriteit.
+        // De sortering die hier plaatsvindt is van groot belang voor alle hierop
+        // volgende code.
         const toewijzingQueue = markt.ondernemers
         .filter(ondernemer =>
-            Indeling.isAanwezig(ondernemer, markt.aanwezigheid, new Date(markt.marktDate))
+            Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate)
         )
         .sort((a, b) => Ondernemers.compare(a, b, markt.aLijst));
-        const expansionLimit  = Math.min(
+
+        const expansionLimit = Math.min(
             Number.isFinite(markt.expansionLimit) ? markt.expansionLimit : Infinity,
             markt.marktplaatsen.length
         );
@@ -119,8 +123,7 @@ const Indeling = {
     ): IMarktindeling => {
         const strategy   = Indeling.determineStrategy(indeling);
         const startSize  = Ondernemer.getStartSize(ondernemer);
-        // const { anywhere = false } = ondernemer.voorkeur || {};
-        const anywhere   = false;
+        const { anywhere = false } = /*ondernemer.voorkeur ||*/ {};
 
         let bestePlaatsen;
         if (startSize === 1 && strategy === 'optimistic') {
@@ -338,6 +341,7 @@ const Indeling = {
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)
         const groups = Markt.groupByAdjacent(indeling, plaatsen, plaatsFilter);
+
         // 4. Geef de meest geschikte groep terug.
         return Indeling._findBestGroup(
             indeling,
