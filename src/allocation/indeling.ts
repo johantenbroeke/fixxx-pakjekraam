@@ -128,7 +128,7 @@ const Indeling = {
             const happySize  = Math.min(targetSize, 2);
             bestePlaatsen = Indeling._findBestePlaatsenForVPH(indeling, ondernemer, happySize);
         }
-        if( !bestePlaatsen || !bestePlaatsen.length ) {
+        if (!bestePlaatsen || !bestePlaatsen.length) {
             bestePlaatsen = Indeling._findBestePlaatsenForVPH(indeling, ondernemer, startSize);
         }
 
@@ -231,6 +231,8 @@ const Indeling = {
             Ondernemer.wantsExpansion(toewijzing)
         );
 
+        indeling = { ...indeling, expansionIteration: 1 };
+
         while (
             indeling.openPlaatsen.length &&
             queue.length &&
@@ -243,7 +245,7 @@ const Indeling = {
                     const plaatsFilter = (plaats: IMarktplaats): boolean => {
                         return Indeling.canBeAssignedTo(indeling, ondernemer, plaats);
                     };
-                    const openAdjacent        = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1, plaatsFilter);
+                    const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1, plaatsFilter);
                     const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent);
 
                     if (uitbreidingPlaats) {
@@ -391,16 +393,22 @@ const Indeling = {
         ondernemer: IMarktondernemer,
         reason: IAfwijzingReason
     ): IMarktindeling => {
-        return {
-            ...Toewijzing.remove(indeling, ondernemer),
-            afwijzingen: indeling.afwijzingen.concat({
+        indeling = Toewijzing.remove(indeling, ondernemer);
+
+        const afwijzing = indeling.afwijzingen.find(({ erkenningsNummer }) =>
+            erkenningsNummer === ondernemer.erkenningsNummer
+        );
+        if( !afwijzing ) {
+            indeling.afwijzingen = indeling.afwijzingen.concat({
                 marktId          : indeling.marktId,
                 marktDate        : indeling.marktDate,
                 erkenningsNummer : ondernemer.erkenningsNummer,
                 reason,
                 ondernemer
-            })
-        };
+            });
+        }
+
+        return indeling;
     }
 };
 

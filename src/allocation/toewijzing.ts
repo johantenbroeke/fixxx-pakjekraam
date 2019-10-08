@@ -36,7 +36,14 @@ const Toewijzing = {
             // worden.
             toewijzingen: ~index ?
                           [...toewijzingen.slice(0, index), toewijzing, ...toewijzingen.slice(index+1)] :
-                          toewijzingen.concat(toewijzing)
+                          toewijzingen.concat(toewijzing),
+            // In de laatste stap van de berekening wordt geprobeerd afgewezen ondernemers
+            // opnieuw in te delen (omdat sommigen met een te hoog `minimum` wellicht zijn
+            // afgewezen waardoor er ruimte vrij is gekomen). Als zo'n afgewezen ondernemer
+            // dan alsnog wordt toegewezen moet zijn afwijzing verwijderd worden.
+            afwijzingen: indeling.afwijzingen.filter(({ erkenningsNummer }) =>
+                erkenningsNummer !== ondernemer.erkenningsNummer
+            )
         };
     },
 
