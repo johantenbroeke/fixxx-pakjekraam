@@ -10,6 +10,39 @@ services:
       - POSTGRES_DB
     networks:
       - bridge
+
+  migrate:
+    build:
+      args:
+        - NODE_ENV=development
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: /deploy/docker-migrate.sh
+    environment:
+      - API_MMAPPKEY
+      - API_READONLY_PASS
+      - API_READONLY_USER
+      - API_URL
+      - APP_SECRET
+      - DATABASE_URL
+      - IAM_ADMIN_PASS
+      - IAM_ADMIN_USER
+      - IAM_CLIENT_ID
+      - IAM_CLIENT_SECRET
+      - IAM_REALM
+      - IAM_URL
+      - MAILER_FROM
+      - MAILER_URL
+      - NODE_ENV
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - ./:/srv
+      - /srv/node_modules
+    networks:
+      - bridge
+
   web:
     build:
       args:

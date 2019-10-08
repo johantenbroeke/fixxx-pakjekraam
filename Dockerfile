@@ -1,7 +1,7 @@
 
 FROM mhart/alpine-node:12.0.0
 
-RUN mkdir -p /srv \
+RUN mkdir -p /srv /deploy \
     && addgroup -g 1000 node \
     && adduser \
         -D \
@@ -10,13 +10,16 @@ RUN mkdir -p /srv \
         -s /bin/sh \
         -u 1000 \
         node \
-    && chown -R node:node /srv
+    && chown -R node:node /srv \
+    && chown -R node:node /deploy
+
+ADD ./deploy/docker-migrate.sh /deploy/
+
+RUN chown node:node /deploy/docker-migrate.sh && chmod +x /deploy/docker-migrate.sh
 
 USER node
 
 WORKDIR /srv/
-
-COPY deploy /deploy/
 
 ADD ./package.json ./package-lock.json /srv/
 
