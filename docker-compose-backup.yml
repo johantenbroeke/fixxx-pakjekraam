@@ -1,0 +1,55 @@
+version: "3.0"
+services:
+  database:
+    image: postgres:9.5.11-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_DB
+  web:
+    build:
+      args:
+        - NODE_ENV=development
+      context: .
+      dockerfile: Dockerfile
+    command: dev
+    environment:
+      - API_MMAPPKEY
+      - API_READONLY_PASS
+      - API_READONLY_USER
+      - API_URL
+      - APP_SECRET
+      - DATABASE_URL
+      - IAM_ADMIN_PASS
+      - IAM_ADMIN_USER
+      - IAM_CLIENT_ID
+      - IAM_CLIENT_SECRET
+      - IAM_REALM
+      - IAM_URL
+      - MAILER_FROM
+      - MAILER_URL
+      - NODE_ENV
+    links:
+      - database
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - ./:/srv
+      - /srv/node_modules
+  keycloak:
+    image: jboss/keycloak:6.0.1
+    environment:
+      - DB_ADDR
+      - DB_DATABASE
+      - DB_PASSWORD
+      - DB_USER
+      - DB_VENDOR
+      - KEYCLOAK_PASSWORD
+      - KEYCLOAK_USER
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./keycloak-add-user.json:/opt/jboss/keycloak/standalone/configuration/keycloak-add-user.json
