@@ -1,4 +1,5 @@
 import {
+    BrancheId,
     IBranche,
     IMarkt,
     IMarktindeling,
@@ -98,9 +99,14 @@ const Ondernemer = {
         }));
     },
 
-    heeftBranche: (ondernemer: IMarktondernemer): boolean => {
+    heeftBranche: (
+        ondernemer: IMarktondernemer,
+        brancheId?: BrancheId
+    ): boolean => {
         const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
-        return !!brancheIds.length;
+        return brancheId ?
+               brancheIds.includes(brancheId) :
+               !!brancheIds.length;
     },
 
     heeftEVI: (ondernemer: IMarktondernemer): boolean => {
