@@ -74,7 +74,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
     });
 
-    it.skip('komt op de plek van een afgewezen ondernemer, nadat hij was afgewezen wegens te weinig ruimte', () => {
+    it.skip('komt op de plek van een afgewezen ondernemer, na een afwijzing wegens te weinig ruimte', () => {
         const indeling = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { minimum: 3 } },
