@@ -189,7 +189,7 @@ describe('Een VPH die ingedeeld wil worden', () => {
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'soll' },
-                { sollicitatieNummer: 2, status: 'vpl' }
+                { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['1'] }
             ],
             marktplaatsen: [{}]
         });
@@ -201,7 +201,7 @@ describe('Een VPH die ingedeeld wil worden', () => {
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'soll' },
-                { sollicitatieNummer: 2, status: 'vkk' }
+                { sollicitatieNummer: 2, status: 'vkk', plaatsen: ['1'] }
             ],
             marktplaatsen: [{}]
         });
@@ -792,7 +792,7 @@ describe('Een sollicitant die ingedeeld wil worden', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2', '3']);
     });
 });
 
