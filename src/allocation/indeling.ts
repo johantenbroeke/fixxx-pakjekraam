@@ -142,15 +142,16 @@ const Indeling = {
                                     .filter(({ verplicht = false }) => verplicht)
                                     .map(({ brancheId }) => brancheId);
 
-        return !(
-            // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
-            verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
-            // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
-            Ondernemer.heeftEVI(ondernemer) && !plaats.verkoopinrichting ||
-            // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
-            !anywhere && !voorkeurIds.includes(plaats.plaatsId) ||
-            // Marktplaats is niet beschikbaar
-            !Indeling._isAvailable(indeling, plaats)
+        return Indeling._isAvailable(indeling, plaats) && (
+            // Als de plaats is toegekend zijn verdere controles onnodig.
+            Ondernemer.heeftVastePlaats(ondernemer, plaats) || !(
+                // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
+                verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
+                // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
+                Ondernemer.heeftEVI(ondernemer) && !plaats.verkoopinrichting ||
+                // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
+                !anywhere && !voorkeurIds.includes(plaats.plaatsId)
+            )
         );
     },
 

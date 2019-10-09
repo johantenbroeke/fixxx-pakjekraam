@@ -215,16 +215,25 @@ describe('Een VPH die ingedeeld wil worden', () => {
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] },
-                { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2', '3', '4'] }
+                { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2', '3', '4'] },
+                // Van deze ondernemer voldoet slechts 1 plaats aan de branch eis, maar aangezien
+                // de andere plaats is toegekend moeten zij daar toch worden ingedeeld.
+                { sollicitatieNummer: 3, status: 'vpl', plaatsen: ['5', '6'], voorkeur: { branches: ['x'] } }
             ],
             marktplaatsen: [
-                {}, {}, {}, {}
+                {},
+                {}, {}, {},
+                { branches: ['x'] }, {}
+            ],
+            branches: [
+                { brancheId: 'x', verplicht: true }
             ]
         });
 
-        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2', '3', '4']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['5', '6']);
 
         // Ondernemers 1 en 2 mogen eerder kiezen, maar krijgen niet de
         // plaatsen van ondernemers 3 en 4.
@@ -244,6 +253,8 @@ describe('Een VPH die ingedeeld wil worden', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3, 4]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['4']);
         expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['2']);
         expect(findPlaatsen(toewijzingen, 4)).toStrictEqual(['1']);
     });
@@ -777,6 +788,9 @@ describe('Een sollicitant die ingedeeld wil worden', () => {
     });
 
     it('kan kiezen niet te worden ingedeeld op willekeurige plaatsen', () => {
+        // Bij `anywhere === false`: Uitbreiden naar willekeurige plaatsen is toegestaan
+        // indien de ondernemer op ten minsten één voorkeursplaats staat, maar indelen
+        // op enkel willekeurige plaatsen is niet toegestaan.
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { anywhere: false, maximum: 3 } },
