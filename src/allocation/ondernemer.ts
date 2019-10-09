@@ -34,12 +34,16 @@ const Ondernemer = {
                !Ondernemer.isInMaxedOutBranche(indeling, ondernemer);
     },
 
+    getBrancheIds: (ondernemer: IMarktondernemer): BrancheId[] => {
+        const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
+        return brancheIds;
+    },
+
     getBranches: (
         markt: IMarkt,
         ondernemer: IMarktondernemer
     ): IBranche[] => {
-        const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
-
+        const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheIds.reduce((branches, brancheId) => {
             const branche = markt.branches.find(b => b.brancheId === brancheId);
             if (branche) {
@@ -103,7 +107,7 @@ const Ondernemer = {
         ondernemer: IMarktondernemer,
         brancheId?: BrancheId
     ): boolean => {
-        const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
+        const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheId ?
                brancheIds.includes(brancheId) :
                !!brancheIds.length;
@@ -134,7 +138,7 @@ const Ondernemer = {
         ondernemer: IMarktondernemer,
         branche: IBranche
     ): boolean => {
-        const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
+        const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheIds.includes(branche.brancheId);
     },
 
