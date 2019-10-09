@@ -28,7 +28,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
               !Indeling.hasToMove(indeling, ondernemer);
     })
     .reduce((indeling, ondernemer) => {
-        return Indeling.assignVastePlaatsen(indeling, ondernemer);
+        return Indeling.assignPlaatsen(indeling, ondernemer);
     }, indeling);
 
     // Stap 2: Deel ondernemers in die willen bakken
@@ -42,7 +42,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     const bakStrategy = Indeling.determineStrategy(bakOndernemers, bakPlaatsen);
 
     indeling = bakOndernemers.reduce((indeling, ondernemer) =>
-        Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen, 'reject', undefined, bakStrategy)
+        Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen, 'reject', undefined, bakStrategy)
     , indeling);
 
     // Stap 3: Deel ondernemers met een verkoopinrichting in
@@ -52,7 +52,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     const eviStrategy = Indeling.determineStrategy(eviOndernemers, eviPlaatsen);
 
     indeling = eviOndernemers.reduce((indeling, ondernemer) =>
-        Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen, 'reject', undefined, eviStrategy)
+        Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen, 'reject', undefined, eviStrategy)
     , indeling);
 
     // Stap 4: Deel VPHs in die willen verplaatsen
@@ -60,7 +60,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     indeling = indeling.toewijzingQueue
     .filter(Ondernemer.heeftVastePlaatsen)
     .reduce((indeling, ondernemer) => {
-        return Indeling.assignVastePlaatsen(indeling, ondernemer);
+        return Indeling.assignPlaatsen(indeling, ondernemer);
     }, indeling);
 
     // Stap 5: Deel branche ondernemers in
@@ -73,14 +73,14 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
             intersects(plaats.branches, branches)
         );
 
-        return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
+        return Indeling.assignPlaatsen(indeling, ondernemer, plaatsen, 'ignore');
     }, indeling);
 
     // Stap 6: Deel sollicitanten in
     // -----------------------------
     indeling = indeling.toewijzingQueue
     .reduce((indeling, ondernemer) => {
-        return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen);
+        return Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen);
     }, indeling);
 
     // Stap 7: Verwerk uitbreidingsvoorkeuren
@@ -96,7 +96,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     .reduce((indeling, afwijzing) => {
         const { ondernemer } = afwijzing;
         return !Ondernemer.isVast(ondernemer) ?
-               Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen) :
+               Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen) :
                indeling;
     }, indeling);
 
