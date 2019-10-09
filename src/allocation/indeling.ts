@@ -20,7 +20,17 @@ import Ondernemer from './ondernemer';
 import Ondernemers from './ondernemers';
 import Toewijzing from './toewijzing';
 
+// Zie `determineStrategy`.
 type AllocationStrategy = 'optimistic' | 'conservative';
+
+// Wordt gebruikt in `_findBestePlaatsen` om `IMarktplaats` object om te vormen
+// tot `IPlaatsvoorkeur` objecten met een berekend `brancheIntersectCount` getal.
+//
+// Hierdoor kunnen `priority` en `brancheIntersectCount` gebruikt worden om in
+// `_findBestGroup` de meest geschikte set plaatsen te vinden.
+interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
+    brancheIntersectCount: number;
+}
 
 const MARKET_FULL: IAfwijzingReason = {
     code: 1,
@@ -312,7 +322,7 @@ const Indeling = {
                 // Pak de subset met de hoogste totale prioriteit.
                 return group.reduce((best, plaats, index) => {
                     const current = group.slice(index, index+size);
-                    return (!best.length || compare(best, current) < 0) ?
+                    return (!best.length || compare(current, best) < 0) ?
                            current :
                            best;
                 }, []);
@@ -329,7 +339,7 @@ const Indeling = {
         size: number = 1
     ): IMarktplaats[] => {
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
-        const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);
+        const ondernemerBrancheIds = Ondernemer.getBrancheIds(ondernemer);
 
         const plaatsFilter = (plaats: IMarktplaats): boolean => {
             return Indeling.canBeAssignedTo(indeling, ondernemer, plaats);
@@ -338,15 +348,19 @@ const Indeling = {
         // 1. Converteer geschikte plaatsen naar IPlaatsvoorkeur (zodat elke optie
         //    een `priority` heeft).
         // 2. Sorteer op branche overlap en `priority`.
-        const plaatsen = <IPlaatsvoorkeur[]> openPlaatsen
+        const plaatsen = <IPlaatsvoorkeurPlus[]> openPlaatsen
         .map(plaats => {
             const { priority = 0 } = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
-            return { ...plaats, priority };
+            const brancheIntersectCount = intersection(plaats.branches, ondernemerBrancheIds).length;
+
+            return {
+                ...plaats,
+                priority,
+                brancheIntersectCount
+            };
         })
         .sort((a, b) =>
-            intersection(b.branches, ondernemerBranches).length -
-            intersection(a.branches, ondernemerBranches).length
-            ||
+            b.brancheIntersectCount - a.brancheIntersectCount ||
             b.priority - a.priority
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)
@@ -359,11 +373,17 @@ const Indeling = {
             groups,
             size,
             plaatsFilter,
-            (best, current) => {
-                // TODO: Kijkt enkel naar `priority`, maar branche overlap is belangrijker.
-                const bestScore = best.map(({ priority }) => priority).reduce(sum, 0);
-                const curScore  = current.map(({ priority }) => priority).reduce(sum, 0);
-                return bestScore - curScore;
+            (a: IPlaatsvoorkeurPlus[], b: IPlaatsvoorkeurPlus[]) => {
+                // Kijk eerst of er een betere branche overlap is...
+                let aScore = a.map(pl => pl.brancheIntersectCount).reduce(sum, 0);
+                let bScore = b.map(pl => pl.brancheIntersectCount).reduce(sum, 0);
+                if (bScore - aScore) {
+                    return bScore - aScore;
+                }
+                // ... en sorteer anders op prioriteit.
+                aScore = a.map(pl => pl.priority).reduce(sum, 0);
+                bScore = b.map(pl => pl.priority).reduce(sum, 0);
+                return bScore - aScore;
             }
         );
     },
@@ -385,10 +405,10 @@ const Indeling = {
             groups,
             size,
             plaatsFilter,
-            (best, current) => {
-                const bestScore = best.map(({ priority }) => priority).reduce(sum, 0);
-                const curScore  = current.map(({ priority }) => priority).reduce(sum, 0);
-                return bestScore - curScore;
+            (a, b) => {
+                const aScore = a.map(({ priority }) => priority).reduce(sum, 0);
+                const bScore  = b.map(({ priority }) => priority).reduce(sum, 0);
+                return bScore - aScore;
             }
         );
     },
