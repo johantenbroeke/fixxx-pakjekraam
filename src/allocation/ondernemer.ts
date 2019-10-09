@@ -125,7 +125,7 @@ const Ondernemer = {
         if (!ondernemer.plaatsen) {
             return false;
         }
-        return !!ondernemer.plaatsen.find(plaatsId => plaatsId === plaats.plaatsId);
+        return !!ondernemer.plaatsen.includes(plaats.plaatsId);
     },
 
     heeftVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
