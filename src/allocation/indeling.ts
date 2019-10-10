@@ -231,10 +231,7 @@ const Indeling = {
                 const { ondernemer } = toewijzing;
 
                 if (Ondernemer.canExpandInIteration(indeling, toewijzing)) {
-                    const plaatsFilter = (plaats: IMarktplaats): boolean => {
-                        return Indeling.canBeAssignedTo(indeling, ondernemer, plaats, true);
-                    };
-                    const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1, plaatsFilter);
+                    const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1);
                     const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent, 1, true);
 
                     if (uitbreidingPlaats) {
