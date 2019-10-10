@@ -44,6 +44,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     indeling = bakOndernemers.reduce((indeling, ondernemer) =>
         Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen, 'reject', undefined, bakStrategy)
     , indeling);
+    indeling = Indeling.performExpansion(indeling, 'bak');
 
     // Stap 3: Deel ondernemers met een verkoopinrichting in
     // -----------------------------------------------------
@@ -54,6 +55,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     indeling = eviOndernemers.reduce((indeling, ondernemer) =>
         Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen, 'reject', undefined, eviStrategy)
     , indeling);
+    indeling = Indeling.performExpansion(indeling, 'evi');
 
     // Stap 4: Deel VPHs in die willen verplaatsen
     // --------------------------------------------

@@ -448,6 +448,31 @@ describe('Een ondernemer die wil bakken', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
     });
+
+    it('krijgt voorrang boven niet bakkende sollicitanten', () => {
+        // Altijd eerst bakplaatsen proberen vullen met bakkende ondernemers.
+        // Ook indien `strategy === 'conservative'`.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { branches: ['bak'], maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'], maximum: 2 } },
+                { sollicitatieNummer: 3 }
+            ],
+            marktplaatsen: [
+                { branches: ['bak'] }, { branches: ['bak'] }, { branches: ['bak'] },
+                {}
+            ],
+            branches: [
+                { brancheId: 'bak', verplicht: true }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2', '3']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['4']);
+    });
 });
 
 describe('Een ondernemer met een EVI', () => {
@@ -532,6 +557,30 @@ describe('Een ondernemer met een EVI', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
+    });
+
+    it('krijgt voorrang boven sollicitanten zonder EVI', () => {
+        // Altijd eerst EVI plaatsen proberen vullen met EVI ondernemers.
+        // Ook indien `strategy === 'conservative'`.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { verkoopinrichting: ['eigen-materieel'], maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { verkoopinrichting: ['eigen-materieel'], maximum: 2 } },
+                { sollicitatieNummer: 3 }
+            ],
+            marktplaatsen: [
+                { verkoopinrichting: ['eigen-materieel'] },
+                { verkoopinrichting: ['eigen-materieel'] },
+                { verkoopinrichting: ['eigen-materieel'] },
+                {}
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2', '3']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['4']);
     });
 });
 
