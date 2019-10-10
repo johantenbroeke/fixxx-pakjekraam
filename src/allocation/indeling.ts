@@ -1,5 +1,6 @@
 import {
     AllocationStrategy,
+    BrancheId,
     IAfwijzingReason,
     IMarkt,
     IMarktindeling,
@@ -214,9 +215,15 @@ const Indeling = {
     },
 
     performExpansion: (
-        indeling: IMarktindeling
+        indeling: IMarktindeling,
+        brancheId?: BrancheId
     ): IMarktindeling => {
         let queue = indeling.toewijzingen.filter(toewijzing =>
+            (
+                !brancheId ||
+                (brancheId === 'evi' && Ondernemer.heeftEVI(toewijzing.ondernemer)) ||
+                Ondernemer.heeftBranche(toewijzing.ondernemer, brancheId)
+            ) &&
             Ondernemer.wantsExpansion(toewijzing)
         );
 
