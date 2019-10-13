@@ -23,12 +23,13 @@ const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeu
 const Ondernemer = {
     canExpandInIteration: (
         indeling: IMarktindeling,
+        iteration: number,
         toewijzing: IToewijzing
     ): boolean => {
         const { ondernemer, plaatsen } = toewijzing;
         const currentSize = plaatsen.length;
         const targetSize  = Ondernemer.getTargetSize(ondernemer);
-        const maxSize     = Math.min(targetSize, indeling.expansionIteration);
+        const maxSize     = Math.min(targetSize, iteration);
 
         return currentSize < maxSize &&
                !Ondernemer.isInMaxedOutBranche(indeling, ondernemer);

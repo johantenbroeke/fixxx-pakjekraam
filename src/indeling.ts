@@ -101,7 +101,6 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
                Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen) :
                indeling;
     }, indeling);
-
     indeling = Indeling.performExpansion(indeling);
 
     return indeling;

@@ -74,15 +74,12 @@ const Indeling = {
             ...markt,
             openPlaatsen,
             strategy,
-
-            expansionQueue     : [],
-            expansionIteration : 1,
             expansionLimit,
 
             toewijzingQueue,
-            afwijzingen        : [],
-            toewijzingen       : [],
-            voorkeuren         : [...markt.voorkeuren]
+            afwijzingen    : [],
+            toewijzingen   : [],
+            voorkeuren     : [...markt.voorkeuren]
         };
     },
 
@@ -216,55 +213,50 @@ const Indeling = {
 
     performExpansion: (
         indeling: IMarktindeling,
-        brancheId?: BrancheId
+        brancheId: BrancheId = undefined,
+        iteration: number = 1
     ): IMarktindeling => {
-        let queue = indeling.toewijzingen.filter(toewijzing =>
-            (
+        const queue = indeling.toewijzingen.filter(toewijzing =>
+            Ondernemer.wantsExpansion(toewijzing) && (
                 !brancheId ||
                 (brancheId === 'evi' && Ondernemer.heeftEVI(toewijzing.ondernemer)) ||
                 Ondernemer.heeftBranche(toewijzing.ondernemer, brancheId)
-            ) &&
-            Ondernemer.wantsExpansion(toewijzing)
+            )
         );
 
-        indeling = { ...indeling, expansionIteration: 1 };
-
-        while (
-            indeling.openPlaatsen.length &&
-            queue.length &&
-            indeling.expansionIteration <= indeling.expansionLimit
+        if(
+            !indeling.openPlaatsen.length ||
+            !queue.length ||
+            iteration > indeling.expansionLimit
         ) {
-            queue = queue.reduce((newQueue, toewijzing) => {
-                const { ondernemer } = toewijzing;
+            // The people still in the queue have fewer places than desired. Check if they
+            // must be rejected because of their `minimum` setting.
+            return queue.reduce((indeling, toewijzing) => {
+                const { ondernemer, plaatsen } = toewijzing;
+                const { minimum = 0 } = ondernemer.voorkeur || {};
 
-                if (Ondernemer.canExpandInIteration(indeling, toewijzing)) {
-                    const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1);
-                    const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent, 1, true);
-
-                    if (uitbreidingPlaats) {
-                        indeling   = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
-                        toewijzing = Toewijzing.find(indeling, ondernemer);
-                    }
-                }
-
-                if (Ondernemer.wantsExpansion(toewijzing)) {
-                    newQueue.push(toewijzing);
-                }
-
-                return newQueue;
-            }, []);
-
-            indeling.expansionIteration++;
+                return minimum > plaatsen.length ?
+                       Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
+                       indeling;
+            }, indeling);
         }
 
-        // The people still in the queue have fewer places than desired. Check if they
-        // must be rejected because of their `minimum` setting.
-        return queue.reduce((indeling, { ondernemer, plaatsen }) => {
-            const { minimum = 0 } = ondernemer.voorkeur || {};
-            return minimum > plaatsen.length ?
-                   Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
+        indeling = queue.reduce((indeling, toewijzing) => {
+            const { ondernemer } = toewijzing;
+
+            if (!Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
+                return indeling;
+            }
+
+            const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1);
+            const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent, 1, true);
+
+            return uitbreidingPlaats ?
+                   Toewijzing.add(indeling, ondernemer, uitbreidingPlaats) :
                    indeling;
         }, indeling);
+
+        return Indeling.performExpansion(indeling, brancheId, ++iteration);
     },
 
     _findBestGroup: (
@@ -376,6 +368,7 @@ const Indeling = {
         const afwijzing = indeling.afwijzingen.find(({ erkenningsNummer }) =>
             erkenningsNummer === ondernemer.erkenningsNummer
         );
+
         if( !afwijzing ) {
             indeling.afwijzingen = indeling.afwijzingen.concat({
                 marktId          : indeling.marktId,
