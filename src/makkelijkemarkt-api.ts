@@ -129,10 +129,8 @@ export const checkActivationCode = (username: string, code: string): Promise<any
                 // This method of activation only works for people with a `pasUid`
                 throw new Error('Incorrect username/password');
             } else {
-                return {
-                    isValid: typeof code === 'string' && code.length > 0 && code === ondernemer.pasUid,
-                    erkenningsNummer: ondernemer.erkenningsnummer,
-                };
+                // Return Boolean please
+                return typeof code === 'string' && code.length > 0 && code === ondernemer.pasUid;
             }
         },
         (err: Error) => {

@@ -38,13 +38,12 @@ import {
 import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
 import { vendorDashboardPage } from './routes/vendor-dashboard';
 import { marketLocationPage, updateMarketLocation } from './routes/market-location';
-import { marketAllocationPage } from './routes/market-allocation';
 import { preferencesMailPage } from './routes/mail-preferences';
 import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
 import { vasteplaatshoudersPage, sollicitantenPage, voorrangslijstPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
-import { indelingslijstPage } from './routes/market-allocation';
+import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
 import { KeycloakRoles } from './permissions';
 const Pool = require('pg-pool');
 
@@ -86,7 +85,6 @@ const isMarktmeester = (req: GrantedRequest) => {
 
 const getErkenningsNummer = (req: GrantedRequest) => {
     const tokenContent = req.kauth.grant.access_token.content as TokenContent & any;
-
     return isMarktondernemer(req) && tokenContent.preferred_username.replace(/\./g, '');
 };
 
@@ -224,6 +222,12 @@ app.get(
     '/markt/:marktId/:marktDate/indelingslijst/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     marketAllocationPage,
+);
+
+app.get(
+    '/markt/:marktId/:marktDate/indeling/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    indelingPage,
 );
 
 app.get(
@@ -587,7 +591,7 @@ app.post(
     ['/algemene-voorkeuren/', '/algemene-voorkeuren/:marktId/', '/algemene-voorkeuren/:marktId/:marktDate/'],
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        updateMarketPreferences(req, res, next, getErkenningsNummer(req)),
+        updateMarketPreferences(req, res, next, getErkenningsNummer(req), KeycloakRoles.MARKTONDERNEMER),
 );
 
 app.post(
@@ -598,7 +602,7 @@ app.post(
     ],
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: Request, res: Response, next: NextFunction) =>
-        updateMarketPreferences(req, res, next, req.params.erkenningsNummer),
+        updateMarketPreferences(req, res, next, req.params.erkenningsNummer, KeycloakRoles.MARKTMEESTER),
 );
 
 app.get(

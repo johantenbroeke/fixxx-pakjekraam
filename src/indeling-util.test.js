@@ -2,19 +2,24 @@
 
 const Markt = require('./allocation/markt.ts').default;
 
+const { calcToewijzingen } = require('./indeling.ts');
+const { marktScenario }    = require('./indeling-scenario.ts');
+
+describe('calcToewijzingen', () => {
+    it('requires a valid marktDate', () => {
+        const markt  = marktScenario({ marktDate: null });
+        const markt2 = marktScenario({ marktDate: 'invalid' });
+        const markt3 = marktScenario({ marktDate: '2019-01-01' });
+
+        expect(calcToewijzingen.bind(null, markt)).toThrow();
+        expect(calcToewijzingen.bind(null, markt2)).toThrow();
+        expect(calcToewijzingen.bind(null, markt3)).not.toThrow();
+    });
+});
+
 describe('Markt.getAdjacentPlaatsen', () => {
-    const getAdjacent = (marketDef, placeIds, depth=1, obstakels, filter) => {
-        const markt = {
-            rows          : marketDef.map(ids => ids.map(plaatsId => ({ plaatsId }))),
-            obstakels,
-            marktId       : '0',
-            marktDate     : 'unused',
-            naam          : 'unused',
-            branches      : [],
-            marktplaatsen : [],
-            voorkeuren    : [],
-            ondernemers   : []
-        };
+    const getAdjacent = (rows, placeIds, depth=1, obstakels, filter) => {
+        const markt = marktScenario({ rows, obstakels });
 
         return Markt.getAdjacentPlaatsen(markt, placeIds, depth, filter)
         .map(({ plaatsId }) => plaatsId)
@@ -139,24 +144,12 @@ describe('Markt.getAdjacentPlaatsen', () => {
 });
 
 describe('Markt.groupByAdjacent', () => {
-    const groupByAdjacent = (rowDefs, placeIds, obstakels) => {
-        const markt = {
-            rows          : rowDefs.map(ids => ids.map(plaatsId => ({ plaatsId }))),
-            obstakels,
-            marktId       : '0',
-            marktDate     : 'unused',
-            naam          : 'unused',
-            branches      : [],
-            marktplaatsen : [],
-            voorkeuren    : [],
-            ondernemers   : []
-        };
-        const plaatsen = placeIds.map(id => ({ plaatsId: id }));
+    const groupByAdjacent = (rows, placeIds, obstakels) => {
+        const markt    = marktScenario({ rows, obstakels });
+        const plaatsen = placeIds.map(plaatsId => ({ plaatsId }));
 
         return Markt.groupByAdjacent(markt, plaatsen)
-        .map(group => {
-            return group.map(({ plaatsId }) => plaatsId);
-        });
+        .map(group => group.map(({ plaatsId }) => plaatsId));
     };
 
     it('works', () => {
@@ -178,3 +171,4 @@ describe('Markt.groupByAdjacent', () => {
         );
     });
 });
+

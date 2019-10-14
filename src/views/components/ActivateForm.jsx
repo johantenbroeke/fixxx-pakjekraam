@@ -16,11 +16,13 @@ class ActivateForm extends React.Component {
                         <label className="Label" htmlFor="username">
                             Registratienummer:
                         </label>
+                        <span className="Fieldset__sub-header">Hier vult u uw registratienummer in <b>zonder punt</b>.</span>
                         <input
                             className="Input Input--text"
                             id="username"
                             name="username"
                             autoComplete="username"
+                            required
                             defaultValue={this.props.username}
                         />
                     </p>
@@ -33,6 +35,7 @@ class ActivateForm extends React.Component {
                             id="code"
                             name="code"
                             type="code"
+                            required
                             defaultValue={this.props.code}
                         />
                     </p>

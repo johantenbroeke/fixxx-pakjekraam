@@ -156,7 +156,7 @@ export const stringSort = (a: string, b: string): number => (a > b ? 1 : a === b
 export const sum = (a: number, b: number): number => a + b;
 export const max = (a: number, b: number): number => Math.max(a, b);
 export const flatten = <T>(a: T[] = [], b: T[] = []): T[] => [...(a || []), ...(b || [])];
-export const unique = <T>(a: T[], b: T): T[] => (a.includes(b) ? a : [...a, b]);
+export const unique = <T>(a: T[], b: T): T[] => a.includes(b) ? a : [...a, b];
 
 // General
 // -------
@@ -166,6 +166,12 @@ export const arrayToObject = <T, K extends keyof T>(array: T[], keyField: K): { 
 
         return obj;
     }, {});
+};
+
+export const pluck = <T>(array: T[], key: string): any[] => {
+    return array.reduce((result: any[], el: { [index: string]: any }): any => {
+        return key in el ? result.concat(el[key]) : result;
+    }, []);
 };
 
 export const count = <T>(arrayMaybe: T | T[]): number => {

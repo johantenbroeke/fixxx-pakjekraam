@@ -10,20 +10,24 @@ import { Voorkeur } from '../model/voorkeur.model';
 
 import moment from 'moment';
 
-export const algemeneVoorkeurenFormCheckForError = (body: any) => {
-    const { absentFrom, absentUntil } = body;
+export const algemeneVoorkeurenFormCheckForError = (body: any, role: string) => {
+
     let error = null;
 
-    if (absentUntil !== '' ) {
-        if ( !moment(absentUntil, 'DD-MM-YYYY',true).isValid()) {
-            error = 'Datum afwezigheid vanaf heeft niet het juiste format. Gebruik dd-mm-yyyy.';
+    if (role === 'marktmeester') {
+        const { absentFrom, absentUntil } = body;
+        if (absentUntil) {
+            if ( !moment(absentUntil, 'DD-MM-YYYY', true).isValid()) {
+                error = 'Datum afwezigheid vanaf heeft niet het juiste format. Gebruik dd-mm-yyyy.';
+            }
+        }
+        if (absentFrom) {
+            if ( !moment(absentFrom, 'DD-MM-YYYY',true).isValid()) {
+                error = 'Datum afwezigheid tot en met heeft niet het juiste format. Gebruik dd-mm-yyyy.';
+            }
         }
     }
-    if (absentFrom !== '' ) {
-        if ( !moment(absentFrom, 'DD-MM-YYYY',true).isValid()) {
-            error = 'Datum afwezigheid tot en met heeft niet het juiste format. Gebruik dd-mm-yyyy.';
-        }
-    }
+
     return error;
 };
 
@@ -38,11 +42,11 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
     let absentFromDate = null;
     let absentUntilDate = null;
 
-    if (absentFrom !== '' || null ) {
+    if (absentFrom) {
         absentFromDate = ddmmyyyyToDate(absentFrom);
     }
 
-    if (absentUntil !== '' || null ) {
+    if (absentUntil) {
         absentUntilDate = ddmmyyyyToDate(absentUntil);
     }
 
@@ -58,27 +62,18 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
         inrichting: inrichting || null,
         absentFrom: absentFromDate || null,
         absentUntil: absentUntilDate || null,
-        monday: !!body.monday || null,
-        tuesday: !!body.tuesday || null,
-        wednesday: !!body.wednesday || null,
-        thursday: !!body.thursday || null,
-        friday: !!body.friday || null,
-        saturday: !!body.saturday || null,
-        sunday: !!body.sunday || null,
     };
 
     return voorkeur;
 };
 
-export const updateMarketPreferences = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
+export const updateMarketPreferences = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string, role: string) => {
 
     const data = algemeneVoorkeurenFormData(req.body);
-    const formError = algemeneVoorkeurenFormCheckForError(req.body);
 
+    const formError = algemeneVoorkeurenFormCheckForError(req.body, role);
     if (formError !== null) {
-        console.log('hey open up !');
-        console.log(formError);
-        res.redirect(`./?error=${formError}`);
+        return res.redirect(`./?error=${formError}`);
     }
 
     const { marktId } = data;

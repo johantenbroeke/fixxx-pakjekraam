@@ -4,6 +4,14 @@ const AlertLine = require('./AlertLine');
 const { formatDate } = require('../../util.ts');
 
 const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen }) => {
+    function plaatsenDuiding(plaatsen) {
+        if (plaatsen.length == 1) {
+            return `Plaats: ${plaatsen.join(', ')}`;
+        } else {
+            return `Plaatsen: ${plaatsen.join(', ')}`;
+        }
+    }
+
     return (
         <div>
             {time.getHours() > 21 && time.getHours() < 24 ? (
@@ -11,15 +19,9 @@ const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Morgen ({formatDate(tomorrow)})
                         {aanmeldingMorgen.attending ? (
-                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--aangemeld">
-                                {' '}
-                                aangemeld
-                            </span>
+                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--aangemeld">aangemeld</span>
                         ) : (
-                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--niet-aangemeld">
-                                {' '}
-                                niet aangemeld
-                            </span>
+                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--niet-aangemeld">niet aangemeld</span>
                         )}
                     </h4>
                     {!toewijzingMorgen && eggie ? (
@@ -27,7 +29,7 @@ const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                             type="success"
                             title="Ingedeeld"
                             titleSmall={true}
-                            message={`Jouw plekken: ${toewijzingMorgen.plaatsen.join(', ')}`}
+                            message={plaatsenDuiding(toewijzingMorgen.plaatsen)}
                             inline={true}
                         />
                     ) : eggie ? (
@@ -56,7 +58,7 @@ const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                             type="success"
                             title="Ingedeeld"
                             titleSmall={true}
-                            message={`Jouw plekken: ${toewijzingVandaag.plaatsen.join(', ')}`}
+                            message={ plaatsenDuiding(toewijzingVandaag.plaatsen) }
                             inline={true}
                         />
                     ) : eggie ? (
