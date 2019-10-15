@@ -74,9 +74,7 @@ const Indeling = {
         // De sortering die hier plaatsvindt is van groot belang voor alle hierop
         // volgende code.
         indeling.toewijzingQueue = markt.ondernemers
-        .filter(ondernemer =>
-            Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate)
-        )
+        .filter(ondernemer => Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate))
         .sort((a, b) => Indeling._compareOndernemers(indeling, a, b));
 
         return indeling;
@@ -136,7 +134,7 @@ const Indeling = {
 
             const totalSpots  = plaatsen.length;
             const minRequired = ondernemers.reduce((sum, ondernemer) => {
-                // This assumes that all this VPH's places exist in the `plaatsen` argument.
+                // We gaan er vanuit dat alle plaatsen van deze VPH in de `plaatsen` array zitten.
                 const startSize = Ondernemer.isVast(ondernemer) ?
                                   Ondernemer.getStartSize(ondernemer) :
                                   1;
@@ -150,7 +148,6 @@ const Indeling = {
                                                     0;
 
             const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
-            // console.log(ondernemer.sollicitatieNummer, size, bestePlaatsen);
             plaatsen = plaatsen.filter(plaats =>
                 !bestePlaatsen.find(({ plaatsId }) => plaatsId === plaats.plaatsId)
             );
@@ -357,7 +354,7 @@ const Indeling = {
                 if (bScore - aScore) {
                     return bScore - aScore;
                 }
-                // ... en sorteer anders op prioriteit.
+                // ... en kijk anders naar de prioriteit.
                 aScore = a.map(pl => pl.priority).reduce(sum, 0);
                 bScore = b.map(pl => pl.priority).reduce(sum, 0);
                 return bScore - aScore;
