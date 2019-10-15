@@ -130,7 +130,8 @@ const Indeling = {
 
         while (ondernemers.length) {
             const ondernemer  = ondernemers[0];
-            const { anywhere = !Ondernemer.isVast(ondernemer) } = ondernemer.voorkeur || {};
+            const isVast      = Ondernemer.isVast(ondernemer);
+            const { anywhere = !isVast } = ondernemer.voorkeur || {};
 
             const totalSpots  = plaatsen.length;
             const minRequired = ondernemers.reduce((sum, ondernemer) => {
@@ -140,12 +141,13 @@ const Indeling = {
                                   1;
                 return sum + startSize;
             }, 0);
-            const startSize = Ondernemer.isVast(ondernemer) ?
-                              Ondernemer.getStartSize(ondernemer) :
-                              1;
-            const size = totalSpots > minRequired ? Math.min(Ondernemer.getTargetSize(ondernemer), 2) :
-                         totalSpots > 0           ? startSize :
-                                                    0;
+            const startSize = isVast ? Ondernemer.getStartSize(ondernemer) : 1;
+            const happySize = startSize === 1 ?
+                              Math.min(Ondernemer.getTargetSize(ondernemer), 2) :
+                              startSize;
+            const size      = totalSpots > minRequired ? happySize:
+                              totalSpots > 0           ? startSize :
+                                                         0;
 
             const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
             plaatsen = plaatsen.filter(plaats =>
