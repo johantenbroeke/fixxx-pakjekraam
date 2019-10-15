@@ -22,11 +22,11 @@ class DeleteUserPage extends React.Component {
                         action="/verwijder-ondernemer"
                         encType="application/x-www-form-urlencoded"
                     >
-                        <h1>Verwijder ondernemer</h1>
+                        <h1>Verwijder ondernemerdata</h1>
                         <div className="Fieldset">
                             {/* <h2 className="Fieldset__header">Als er ruimte is, hoeveel plaatsen zou je graag in totaal willen?</h2> */}
                             <p className="InputField InputField--number">
-                                <label htmlFor="erkenningsNummer" className="Label">Erkenningsnummer:</label>
+                                <label htmlFor="erkenningsNummer" className="Label">Registratienummer:</label>
                                 <input
                                     name="erkenningsNummer"
                                     id="erkenningsNummer"
@@ -38,7 +38,7 @@ class DeleteUserPage extends React.Component {
                             className="Button Button--secondary"
                             type="submit"
                             name="Verwijder"
-                        >Verwijder ondernemer</button>
+                        >Verwijder ondernemerdata</button>
                     </form>
                     { result ? (
                         <Alert type="success" inline={true}>
