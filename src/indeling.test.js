@@ -469,8 +469,8 @@ describe('Een ondernemer die wil bakken', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2', '3']);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
         expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['4']);
     });
 });
@@ -578,8 +578,8 @@ describe('Een ondernemer met een EVI', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2', '3']);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
         expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['4']);
     });
 });
@@ -1187,8 +1187,8 @@ describe('Een ondernemer die wil uitbreiden', () => {
             expansionLimit: 2
         });
 
-        expect(toewijzingen.length).toBe(1);
-        expect(afwijzingen.length).toBe(1);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2', '3']);
     });
 
