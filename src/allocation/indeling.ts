@@ -1,5 +1,4 @@
 import {
-    AllocationStrategy,
     BrancheId,
     IAfwijzingReason,
     IMarkt,
@@ -19,10 +18,11 @@ import {
 
 import Markt from './markt';
 import Ondernemer from './ondernemer';
-import Ondernemers from './ondernemers';
 import Toewijzing from './toewijzing';
 
 type RejectionStrategy = 'reject' | 'ignore';
+
+type SizeFunction = (ondernemer: IMarktondernemer) => number;
 
 // Wordt gebruikt in `_findBestePlaatsen` om `IMarktplaats` object om te vormen
 // tot `IPlaatsvoorkeur` objecten met een berekend `brancheIntersectCount` getal.
@@ -54,33 +54,32 @@ const Indeling = {
         }
 
         const openPlaatsen = markt.marktplaatsen.filter(plaats => !plaats.inactive);
-        // We willen enkel de aanwezige ondernemers, gesorteerd op prioriteit.
-        // De sortering die hier plaatsvindt is van groot belang voor alle hierop
-        // volgende code.
-        const toewijzingQueue = markt.ondernemers
-        .filter(ondernemer =>
-            Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate)
-        )
-        .sort((a, b) => Ondernemers.compare(a, b, markt.aLijst));
-
         const expansionLimit = Math.min(
             Number.isFinite(markt.expansionLimit) ? markt.expansionLimit : Infinity,
             markt.marktplaatsen.length
         );
 
-        const strategy = Indeling.determineStrategy(toewijzingQueue, openPlaatsen);
-
-        return {
+        const indeling = <IMarktindeling> {
             ...markt,
             openPlaatsen,
-            strategy,
             expansionLimit,
 
-            toewijzingQueue,
-            afwijzingen    : [],
-            toewijzingen   : [],
-            voorkeuren     : [...markt.voorkeuren]
+            toewijzingQueue : undefined,
+            afwijzingen     : [],
+            toewijzingen    : [],
+            voorkeuren      : [...markt.voorkeuren]
         };
+
+        // We willen enkel de aanwezige ondernemers, gesorteerd op prioriteit.
+        // De sortering die hier plaatsvindt is van groot belang voor alle hierop
+        // volgende code.
+        indeling.toewijzingQueue = markt.ondernemers
+        .filter(ondernemer =>
+            Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate)
+        )
+        .sort((a, b) => Indeling._compareOndernemers(indeling, a, b));
+
+        return indeling;
     },
 
     assignPlaatsen: (
@@ -88,8 +87,7 @@ const Indeling = {
         ondernemer: IMarktondernemer,
         plaatsen: IMarktplaats[]           = indeling.openPlaatsen,
         handleRejection: RejectionStrategy = 'reject',
-        minimumSize: number                = Ondernemer.getStartSize(ondernemer),
-        strategy: AllocationStrategy       = indeling.strategy
+        calcSize?: SizeFunction
     ): IMarktindeling => {
         try {
             if (!plaatsen.length) {
@@ -101,17 +99,13 @@ const Indeling = {
                 throw BRANCHE_FULL;
             }
 
-            const { anywhere = !Ondernemer.isVast(ondernemer) } = ondernemer.voorkeur || {};
+            if (!calcSize ) {
+                calcSize = Indeling.createSizeFunction(indeling, plaatsen, indeling.toewijzingQueue);
+            }
 
-            let bestePlaatsen;
-            if (minimumSize === 1 && strategy === 'optimistic') {
-                const targetSize = Ondernemer.getTargetSize(ondernemer);
-                const happySize  = Math.min(targetSize, 2);
-                bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, happySize, anywhere);
-            }
-            if( !bestePlaatsen || !bestePlaatsen.length ) {
-                bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, minimumSize, anywhere);
-            }
+            const { anywhere = !Ondernemer.isVast(ondernemer) } = ondernemer.voorkeur || {};
+            const size          = calcSize(ondernemer);
+            const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
 
             if (!bestePlaatsen.length) {
                 throw ADJACENT_UNAVAILABLE;
@@ -125,6 +119,48 @@ const Indeling = {
                    Indeling._rejectOndernemer(indeling, ondernemer, errorMessage) :
                    indeling;
         }
+    },
+
+    createSizeFunction: (
+        indeling: IMarktindeling,
+        plaatsen: IMarktplaats[],
+        ondernemers: IMarktondernemer[]
+    ): SizeFunction => {
+        plaatsen    = plaatsen.slice();
+        ondernemers = ondernemers.slice();
+        const sizes = new Map();
+
+        while (ondernemers.length) {
+            const ondernemer  = ondernemers[0];
+            const { anywhere = !Ondernemer.isVast(ondernemer) } = ondernemer.voorkeur || {};
+
+            const totalSpots  = plaatsen.length;
+            const minRequired = ondernemers.reduce((sum, ondernemer) => {
+                // This assumes that all this VPH's places exist in the `plaatsen` argument.
+                const startSize = Ondernemer.isVast(ondernemer) ?
+                                  Ondernemer.getStartSize(ondernemer) :
+                                  1;
+                return sum + startSize;
+            }, 0);
+            const startSize = Ondernemer.isVast(ondernemer) ?
+                              Ondernemer.getStartSize(ondernemer) :
+                              1;
+            const size = totalSpots > minRequired ? Math.min(Ondernemer.getTargetSize(ondernemer), 2) :
+                         totalSpots > 0           ? startSize :
+                                                    0;
+
+            const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
+            // console.log(ondernemer.sollicitatieNummer, size, bestePlaatsen);
+            plaatsen = plaatsen.filter(plaats =>
+                !bestePlaatsen.find(({ plaatsId }) => plaatsId === plaats.plaatsId)
+            );
+
+            sizes.set(ondernemer, bestePlaatsen.length);
+
+            ondernemers.shift();
+        }
+
+        return (ondernemer) => sizes.get(ondernemer);
     },
 
     canBeAssignedTo: (
@@ -151,28 +187,6 @@ const Indeling = {
                 !anywhere && !voorkeurIds.includes(plaats.plaatsId)
             )
         );
-    },
-
-    determineStrategy: (
-        ondernemers: IMarktondernemer[],
-        plaatsen: IMarktplaats[]
-    ): AllocationStrategy => {
-        const minRequired = ondernemers.reduce((sum, ondernemer) => {
-            const startSize  = Ondernemer.getStartSize(ondernemer);
-            const targetSize = Ondernemer.getTargetSize(ondernemer);
-            // TODO: This might be error-prone — are all VPH places branche places?
-            //       If not, these places are unnecessarily counted as occupied
-            //       branche places.
-            const happySize  = Ondernemer.isVast(ondernemer) && startSize >= 2 ?
-                               startSize :
-                               Math.min(targetSize, 2);
-
-            return sum + happySize;
-        }, 0);
-
-        return plaatsen.length >= minRequired ?
-               'optimistic' :
-               'conservative';
     },
 
     // Als niet alle vaste plaatsen van een VPH beschikbaar zijn zal hij
@@ -382,6 +396,43 @@ const Indeling = {
         }
 
         return indeling;
+    },
+
+    _compareOndernemers: (
+        indeling: IMarktindeling,
+        a: IMarktondernemer,
+        b: IMarktondernemer
+    ): number => {
+        // Sorteer eerst op aanwezigheid in de A-lijst...
+        const sort1 = Number(indeling.aLijst.includes(b)) -
+                      Number(indeling.aLijst.includes(a));
+        // ... dan op status...
+        const sort2 = Indeling._getStatusGroup(indeling, a) -
+                      Indeling._getStatusGroup(indeling, b);
+        // ... dan op anciënniteitsnummer
+        const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
+
+        return sort1 || sort2 || sort3;
+    },
+    _getStatusGroup: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): number => {
+        if (Ondernemer.heeftVastePlaatsen(ondernemer)) {
+            if (
+                !Ondernemer.wantsToMove(indeling, ondernemer) &&
+                !Indeling.hasToMove(indeling, ondernemer)
+            ) {
+                return 0;
+            } else {
+                return 3;
+            }
+        }
+
+        return Ondernemer.heeftBranche(ondernemer, 'bak') ? 1 :
+               Ondernemer.heeftEVI(ondernemer)            ? 2 :
+               Ondernemer.heeftBranche(ondernemer)        ? 4 :
+                                                            5;
     }
 };
 

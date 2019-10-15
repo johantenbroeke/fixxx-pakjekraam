@@ -177,7 +177,7 @@ describe('Markt.groupByAdjacent', () => {
     });
 });
 
-describe('Indeling.determineStrategy', () => {
+describe.skip('Indeling.determineStrategy', () => {
     const determineStrategy = def => {
         const indeling = Indeling.init(marktScenario(def));
 

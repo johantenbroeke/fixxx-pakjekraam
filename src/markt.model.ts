@@ -4,8 +4,6 @@ export type ErkenningsNummer = string;
 
 export type BrancheId = string;
 
-export type AllocationStrategy = 'optimistic' | 'conservative';
-
 export enum KraamInrichting {
     EIGEN_MATERIEEL = 'eigen-materieel'
 }
@@ -55,7 +53,6 @@ export interface IMarktindelingSeed {
 }
 
 export interface IMarktindeling extends IMarkt, IMarktindelingSeed {
-    strategy: AllocationStrategy;
     toewijzingQueue: IMarktondernemer[];
     openPlaatsen: IMarktplaats[];
 

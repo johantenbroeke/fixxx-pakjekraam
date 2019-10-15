@@ -31,6 +31,8 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         return Indeling.assignPlaatsen(indeling, ondernemer);
     }, indeling);
 
+    // console.log(indeling.toewijzingen);
+
     // Stap 2: Deel ondernemers in die willen bakken
     // ---------------------------------------------
     const bakOndernemers = indeling.toewijzingQueue.filter(ondernemer =>
@@ -39,23 +41,21 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     const bakPlaatsen = indeling.openPlaatsen.filter(plaats =>
         Markt.heeftBranche(plaats, 'bak')
     );
-    const bakStrategy = Indeling.determineStrategy(bakOndernemers, bakPlaatsen);
+    const bakSizeFunction = Indeling.createSizeFunction(indeling, bakPlaatsen, bakOndernemers);
 
     indeling = bakOndernemers.reduce((indeling, ondernemer) =>
-        Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen, 'reject', undefined, bakStrategy)
+        Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen, 'reject', bakSizeFunction)
     , indeling);
-    indeling = Indeling.performExpansion(indeling, 'bak');
 
     // Stap 3: Deel ondernemers met een verkoopinrichting in
     // -----------------------------------------------------
     const eviOndernemers = indeling.toewijzingQueue.filter(Ondernemer.heeftEVI);
     const eviPlaatsen = indeling.openPlaatsen.filter(Markt.heeftEVI);
-    const eviStrategy = Indeling.determineStrategy(eviOndernemers, eviPlaatsen);
+    const eviSizeFunction = Indeling.createSizeFunction(indeling, eviPlaatsen, eviOndernemers);
 
     indeling = eviOndernemers.reduce((indeling, ondernemer) =>
-        Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen, 'reject', undefined, eviStrategy)
+        Indeling.assignPlaatsen(indeling, ondernemer, indeling.openPlaatsen, 'reject', eviSizeFunction)
     , indeling);
-    indeling = Indeling.performExpansion(indeling, 'evi');
 
     // Stap 4: Deel VPHs in die willen verplaatsen
     // --------------------------------------------
