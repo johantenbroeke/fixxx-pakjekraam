@@ -267,6 +267,8 @@ const Indeling = {
         filter?: (plaats: IMarktplaats) => boolean,
         compare?: (best: IPlaatsvoorkeur[], current: IPlaatsvoorkeur[]) => number
     ): IMarktplaats[] => {
+        const minimumSize = Math.min(size, Ondernemer.getStartSize(ondernemer));
+
         return groups.reduce((result, group) => {
             if (group.length < size) {
                 const depth     = size - group.length;
@@ -277,7 +279,7 @@ const Indeling = {
                 group = Markt.groupByAdjacent(indeling, group)[0];
             }
 
-            if (group.length >= size) {
+            if (group.length >= minimumSize) {
                 // Stop `reduce` loop.
                 groups.length = 0;
                 // Reduceer het aantal plaatsen tot `size`.
