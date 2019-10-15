@@ -20,9 +20,8 @@ function findPlaatsen(toewijzingen, sollicitatieNummer) {
     const ond = toewijzingen.find(({ ondernemer }) =>
         ondernemer.sollicitatieNummer === sollicitatieNummer
     );
-    return ond ?
-           ond.plaatsen.sort((a, b) => Number(a) - Number(b)) :
-           ['Ondernemer niet gevonden in toewijzingen'];
+    return ond ? ond.plaatsen.sort((a, b) => Number(a) - Number(b)) :
+                ['Ondernemer niet gevonden in toewijzingen'];
 }
 function findOndernemers(wijzingen) {
     return wijzingen.map(({ ondernemer }) => ondernemer.sollicitatieNummer).sort();

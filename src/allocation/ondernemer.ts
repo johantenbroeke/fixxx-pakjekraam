@@ -9,17 +9,6 @@ import {
     IToewijzing
 } from '../markt.model';
 
-import {
-    sum
-} from '../util';
-
-const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur): number => {
-    const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : 0;
-    const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : 0;
-
-    return prioB - prioA;
-};
-
 const Ondernemer = {
     canExpandInIteration: (
         indeling: IMarktindeling,
@@ -61,17 +50,20 @@ const Ondernemer = {
     ): IPlaatsvoorkeur[] => {
         // Merge de vaste plaatsen van deze ondernemer...
         const vastePlaatsen = Ondernemer.getVastePlaatsen(markt, ondernemer);
-        // ...samen met hun verplaatsingsvoorkeuren. Sorteer aflopend op prioriteit...
+        // ...met hun verplaatsingsvoorkeuren. Sorteer aflopend op prioriteit...
         const voorkeuren = [
             ...(includeVastePlaatsen ? vastePlaatsen : []),
             ...markt.voorkeuren.filter(({ erkenningsNummer }) => erkenningsNummer === ondernemer.erkenningsNummer)
-        ].sort(priorityCompare);
-        // ...en elimineer duplicaten na sortering.
+        ].sort((a, b) =>
+            (b.priority || 0) - (a.priority || 0)
+        );
+        // ...en elimineer duplicaten na sortering. Als `includeVastePlaatsen === false`
+        // dan worden ook de vaste plaatsen uit de voorkeuren gehaald.
         return voorkeuren.reduce((unique, voorkeur) => {
             if (
-                !~unique.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId) && (
+                !unique.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId) && (
                     includeVastePlaatsen ||
-                    !~vastePlaatsen.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId)
+                    !vastePlaatsen.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId)
                 )
             ) {
                 unique.push(voorkeur);
@@ -158,8 +150,7 @@ const Ondernemer = {
                 Ondernemer.isInBranche(ondernemer, branche)
             );
             const branchePlaatsen = brancheToewijzingen
-                                    .map(toewijzing => toewijzing.plaatsen.length)
-                                    .reduce(sum, 0);
+                                    .reduce((sum, toewijzing) => sum + toewijzing.plaatsen.length, 0);
 
             return maximumToewijzingen && brancheToewijzingen.length >= maximumToewijzingen ||
                    maximumPlaatsen     && branchePlaatsen >= maximumPlaatsen;
