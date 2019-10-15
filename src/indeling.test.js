@@ -244,6 +244,23 @@ describe('Een VPH die ingedeeld wil worden', () => {
     });
 
     it('wordt toegewezen aan zijn vaste plaats(en)', () => {
+        // Dit scenario laat expres 1 plaats vrij om een regression bug
+        // in `createSizeFunction` te voorkomen (`size` werd daar verkeerd
+        // berekend als er meer dan genoeg plaatsen waren).
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2', '3'] },
+                { sollicitatieNummer: 2 }
+            ],
+            marktplaatsen: [
+                {}, {}, {}, {}, {}
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2', '3']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['4']);
+
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] },
