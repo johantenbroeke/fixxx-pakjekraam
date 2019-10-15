@@ -476,7 +476,7 @@ describe('Een ondernemer die wil bakken', () => {
             ],
             marktplaatsen: [
                 { branches: ['bak'] }, { branches: ['bak'] }, { branches: ['bak'] },
-                {}
+                {}, {}
             ],
             branches: [
                 { brancheId: 'bak', verplicht: true }
