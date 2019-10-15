@@ -177,44 +177,19 @@ describe('Markt.groupByAdjacent', () => {
     });
 });
 
-describe.skip('Indeling.determineStrategy', () => {
-    const determineStrategy = def => {
-        const indeling = Indeling.init(marktScenario(def));
+describe('Indeling.createSizeFunction', () => {
+    const calcSizes = markt => {
+        const indeling = Indeling.init(markt);
+        const calcSize = Indeling.createSizeFunction(indeling);
 
-        return brancheId => {
-            let ondernemers, plaatsen;
-            if (brancheId === 'evi') {
-                ondernemers = indeling.toewijzingQueue.filter(Ondernemer.heeftEVI);
-                plaatsen = indeling.openPlaatsen.filter(Markt.heeftEVI);
-            } else if (brancheId) {
-                ondernemers = indeling.toewijzingQueue.filter(ondernemer =>
-                    Ondernemer.heeftBranche(ondernemer, brancheId)
-                );
-                plaatsen = indeling.openPlaatsen.filter(plaats =>
-                    Markt.heeftBranche(plaats, brancheId)
-                );
-            } else {
-                ondernemers = indeling.toewijzingQueue;
-                plaatsen = indeling.openPlaatsen;
-            }
-
-            return Indeling.determineStrategy(ondernemers, plaatsen);
-        };
+        return indeling.toewijzingQueue.reduce((result, ondernemer) => {
+            result[ondernemer.sollicitatieNummer] = calcSize(ondernemer);
+            return result;
+        }, {});
     };
 
-    it('is correct when considering the entire market', () => {
-        var strategyFor = determineStrategy({
-            ondernemers: [
-                { sollicitatieNummer: 1, voorkeur: { maximum: 3 } },
-                { sollicitatieNummer: 2 },
-            ],
-            marktplaatsen: [
-                {}, {}, {}
-            ]
-        });
-        expect(strategyFor()).toBe('optimistic');
-
-        var strategyFor = determineStrategy({
+    it('works', () => {
+        var markt = marktScenario({
             ondernemers: [
                 { sollicitatieNummer: 1 },
                 { sollicitatieNummer: 2 },
@@ -225,20 +200,32 @@ describe.skip('Indeling.determineStrategy', () => {
                 {}, {}, {}
             ]
         });
-        expect(strategyFor()).toBe('conservative');
+        expect(calcSizes(markt)).toStrictEqual({ 1:1, 2:1, 3:1, 4:0 });
 
-        var strategyFor = determineStrategy({
+        var markt = marktScenario({
             ondernemers: [
-                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2', '3'] },
-                { sollicitatieNummer: 2, voorkeur: { maximum: 3 } }
+                { sollicitatieNummer: 1, voorkeur: { maximum: 3 } },
+                { sollicitatieNummer: 2 },
+            ],
+            marktplaatsen: [
+                {}, {}, {}
+            ]
+        });
+        expect(calcSizes(markt)).toStrictEqual({ 1:2, 2:1 });
+
+        var markt = marktScenario({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 3 }
             ],
             marktplaatsen: [
                 {}, {}, {}, {}
             ]
         });
-        expect(strategyFor()).toBe('conservative');
+        expect(calcSizes(markt)).toStrictEqual({ 1:2, 2:1, 3:1 });
 
-        var strategyFor = determineStrategy({
+        var markt = marktScenario({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2', '3'] },
                 { sollicitatieNummer: 2, voorkeur: { maximum: 3 } }
@@ -247,11 +234,9 @@ describe.skip('Indeling.determineStrategy', () => {
                 {}, {}, {}, {}, {}
             ]
         });
-        expect(strategyFor()).toBe('optimistic');
-    });
+        expect(calcSizes(markt)).toStrictEqual({ 1:3, 2:2 });
 
-    it('is correct when considering a specific branche', () => {
-        const strategyFor = determineStrategy({
+        var markt = marktScenario({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
                 { sollicitatieNummer: 2, voorkeur: { branches: ['bak'], maximum: 1 } },
@@ -262,10 +247,6 @@ describe.skip('Indeling.determineStrategy', () => {
                 { branches: ['bak', 'brood'] }, { branches: ['brood', 'fruit'] }
             ]
         });
-
-        expect(strategyFor()).toBe('conservative');
-        expect(strategyFor('bak')).toBe('optimistic');
-        expect(strategyFor('brood')).toBe('optimistic');
-        expect(strategyFor('fruit')).toBe('conservative');
+        expect(calcSizes(markt)).toStrictEqual({ 1:0, 2:1, 3:1, 4:0 });
     });
 });

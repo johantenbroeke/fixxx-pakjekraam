@@ -166,14 +166,6 @@ const Ondernemer = {
         const targetSize               = Ondernemer.getTargetSize(ondernemer);
         const currentSize              = plaatsen.length;
         return currentSize < targetSize;
-    } ,
-
-    wantsToMove: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): boolean => {
-        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
-        return !!voorkeuren.length;
     }
 };
 
