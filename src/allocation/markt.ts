@@ -1,4 +1,5 @@
 import {
+    BrancheId,
     IMarkt,
     IMarktplaats,
     IObstakelBetween,
@@ -120,6 +121,20 @@ const Markt = {
         return plaatsen.length ?
                Markt.groupByAdjacent(markt, plaatsen, filter, result) :
                result;
+    },
+
+    heeftBranche: (
+        plaats: IMarktplaats,
+        brancheId?: BrancheId
+    ): boolean => {
+        const { branches: brancheIds = [] } = plaats;
+        return brancheId ?
+               brancheIds.includes(brancheId) :
+               !!brancheIds.length;
+    },
+
+    heeftEVI: (plaats: IMarktplaats): boolean => {
+        return !!(plaats.verkoopinrichting && plaats.verkoopinrichting.length);
     },
 
     // Helper function for `getAdjacentPlaatsen`. All the `plaatsIds` should
