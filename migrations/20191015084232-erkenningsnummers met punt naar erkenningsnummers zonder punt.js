@@ -17,11 +17,11 @@ module.exports = {
           }, {
             id: voorkeur.id
           }, { transaction });
-        })
+        });
       })
       .catch(e => {
         console.log(e);
-      })
+      });
     }
     
     try {

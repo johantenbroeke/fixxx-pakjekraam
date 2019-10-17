@@ -6,7 +6,7 @@ export const initVoorkeur = (sequelize: Sequelize) => {
         erkenningsNummer: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: 'key',
+            // unique: 'key',
         },
         marktId: {
             type: DataTypes.INTEGER,
