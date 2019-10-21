@@ -126,6 +126,109 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
     });
 });
 
+describe('Een sollicitant op de A-lijst', () => {
+    it('krijgt voorrang over andere gelijkwaardige sollicitanten', () => {
+        // Gewone sollicitant
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1 },
+                { sollicitatieNummer: 2 }
+            ],
+            marktplaatsen: [{}, {}],
+            aLijst: [
+                { sollicitatieNummer: 2 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+
+        // Sollicitant die wil bakken
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { branches: ['bak'] } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'] } }
+            ],
+            marktplaatsen: [
+                { branches: ['bak'] }, {}
+            ],
+            branches: [
+                { brancheId: 'bak', verplicht: true }
+            ],
+            aLijst: [
+                { sollicitatieNummer: 2 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+
+        // EVI sollicitant
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { verkoopinrichting: ['eigen-materieel'] } },
+                { sollicitatieNummer: 2, voorkeur: { verkoopinrichting: ['eigen-materieel'] } }
+            ],
+            marktplaatsen: [
+                { verkoopinrichting: ['eigen-materieel'] }, {}
+            ],
+            aLijst: [
+                { sollicitatieNummer: 2 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+    });
+
+    it('krijgt GEEN voorrang over VPHs', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] },
+                { sollicitatieNummer: 2 }
+            ],
+            marktplaatsen: [{}, {}],
+            aLijst: [
+                { sollicitatieNummer: 2 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
+    });
+
+    it('krijgt GEEN voorrang over sollicitanten in een hogere status groep', () => {
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1 },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'] } },
+                { sollicitatieNummer: 3, voorkeur: { verkoopinrichting: ['eigen-materieel'] } }
+            ],
+            marktplaatsen: [
+                { branches: ['bak'] }, { verkoopinrichting: ['eigen-materieel'] }, {}
+            ],
+            branches: [
+                { brancheId: 'bak', verplicht: true }
+            ],
+            aLijst: [
+                { sollicitatieNummer: 1 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['2']);
+    });
+});
+
 describe('Een ondernemer wordt afgewezen', () => {
     it('als de markt vol is', () => {
         const { toewijzingen, afwijzingen } = calc({

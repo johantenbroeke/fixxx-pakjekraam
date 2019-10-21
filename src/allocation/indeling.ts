@@ -387,6 +387,18 @@ const Indeling = {
                Ondernemer.heeftBranche(ondernemer)           ? 4 :
                                                                5;
     },
+    // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt:
+    // 0. Ondernemer is VPH.
+    // 1. Ondernemer die voorkomt in de A-lijst.
+    // 2. Ondernemer die niet voorkomt in de A-lijst.
+    _getListGroup: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): number => {
+        return Ondernemer.heeftVastePlaatsen(ondernemer) ? 0 :
+               indeling.aLijst.includes(ondernemer)      ? 1 :
+                                                           2;
+    },
 
     _isAvailable: (
         indeling: IMarktindeling,
@@ -426,13 +438,13 @@ const Indeling = {
         a: IMarktondernemer,
         b: IMarktondernemer
     ): number => {
-        // Sorteer eerst op aanwezigheid in de A-lijst...
-        const sort1 = Number(indeling.aLijst.includes(b)) -
-                      Number(indeling.aLijst.includes(a));
-        // ... dan op status...
-        const sort2 = Indeling._getStatusGroup(indeling, a) -
+        // Sorteer eerst op status groep...
+        const sort1 = Indeling._getStatusGroup(indeling, a) -
                       Indeling._getStatusGroup(indeling, b);
-        // ... dan op anciënniteitsnummer
+        // ... dan op aanwezigheid in de A-lijst...
+        const sort2 = Indeling._getListGroup(indeling, a) -
+                      Indeling._getListGroup(indeling, b);
+        // ... dan op anciënniteitsnummer.
         const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
 
         return sort1 || sort2 || sort3;
