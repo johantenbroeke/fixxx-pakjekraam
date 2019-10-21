@@ -28,7 +28,7 @@ class ActivateForm extends React.Component {
                     </p>
                     <p className="InputField">
                         <label className="Label" htmlFor="code">
-                            Activatie-code:
+                            Activatiecode:
                         </label>
                         <input
                             className="Input Input--code"
