@@ -28,7 +28,7 @@ type SizeFunction = (ondernemer: IMarktondernemer) => number;
 // Hierdoor kunnen `priority` en `brancheIntersectCount` gebruikt worden om in
 // `_findBestGroup` de meest geschikte set plaatsen te vinden.
 interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
-    brancheIntersectCount: number;
+    brancheScore: number;
 }
 
 const BRANCHE_FULL: IAfwijzingReason = {
@@ -318,24 +318,35 @@ const Indeling = {
         // 2. Sorteer op branche overlap en `priority`.
         const plaatsen = <IPlaatsvoorkeurPlus[]> openPlaatsen
         .map(plaats => {
-            const { priority = 0 } = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
-            const brancheIntersectCount = intersection(plaats.branches, ondernemerBrancheIds).length;
-
+            const { priority = 0 }  = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
+            const { branches = [] } = plaats;
+            // De branche score vertegenwoordigd een ranking in manier van overlap in
+            // ondernemers branches vs. plaats branches:
+            // 0. Geen overlap
+            // 1. Gedeeltelijke overlap:          ondernemer['x']      vs plaats['x', 'y']
+            // 2. Gedeeltelijk de andere kant op: ondernemer['x', 'y'] vs plaats['x']
+            // 3. Volledige overlap:              ondernemer['x', 'y'] vs plaats['x', 'y']
+            const plaatsBrancheCount     = branches.length;
+            const ondernemerBrancheCount = ondernemerBrancheIds.length;
+            const intersectCount         = intersection(branches, ondernemerBrancheIds).length;
+            const brancheScore           = !intersectCount                             ? 0 :
+                                           intersectCount - plaatsBrancheCount < 0     ? 1 :
+                                           ondernemerBrancheCount > plaatsBrancheCount ? 2 :
+                                                                                         3;
             return {
                 ...plaats,
                 priority,
-                brancheIntersectCount
+                brancheScore
             };
         })
         .sort((a, b) =>
-            b.brancheIntersectCount - a.brancheIntersectCount ||
+            b.brancheScore - a.brancheScore ||
             b.priority - a.priority
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)
         const groups = Markt.groupByAdjacent(indeling, plaatsen, plaats =>
             Indeling.canBeAssignedTo(indeling, ondernemer, plaats, anywhere)
         );
-
         // 4. Geef de meest geschikte groep terug.
         return Indeling._findBestGroup(
             indeling,
@@ -345,8 +356,8 @@ const Indeling = {
             plaats => Indeling.canBeAssignedTo(indeling, ondernemer, plaats, true),
             (a: IPlaatsvoorkeurPlus[], b: IPlaatsvoorkeurPlus[]) => {
                 // Kijk eerst of er een betere branche overlap is...
-                let aScore = a.map(pl => pl.brancheIntersectCount).reduce(sum, 0);
-                let bScore = b.map(pl => pl.brancheIntersectCount).reduce(sum, 0);
+                let aScore = a.map(pl => pl.brancheScore).reduce(sum, 0);
+                let bScore = b.map(pl => pl.brancheScore).reduce(sum, 0);
                 if (bScore - aScore) {
                     return bScore - aScore;
                 }

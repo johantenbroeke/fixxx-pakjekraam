@@ -386,7 +386,7 @@ describe('Een ondernemer die wil bakken', () => {
 
     it('komt op de meest geschikte bakplaats te staan', () => {
         // Branche overlap is hier belangrijker dan de prioritering van de ondernemer.
-       const { toewijzingen, afwijzingen } = calc({
+       var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { branches: ['bak', 'x'] } },
             ],
@@ -404,6 +404,25 @@ describe('Een ondernemer die wil bakken', () => {
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
+
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { branches: ['bak'] } },
+            ],
+            marktplaatsen: [
+                { branches: ['bak'] }, { branches: ['bak', 'x'] }
+            ],
+            branches: [
+                { brancheId: 'bak', verplicht: true }
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '2' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
     });
 
     it('kan niet uitbreiden naar een niet-bak plaats', () => {
