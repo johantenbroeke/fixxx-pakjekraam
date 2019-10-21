@@ -32,13 +32,13 @@ const humanReadableMessage = {
     [publicErrors.PLAATSVOORKEUREN_SAVED]: 'Uw plaatsvoorkeuren zijn bewaard',
     [publicErrors.ALGEMENE_VOORKEUREN_SAVED]: 'Uw marktprofiel is bewaard',
     [publicErrors.ACTIVATION_FAILED]:
-        'De ingevoerde activatie-code klopt niet of is verlopen. Controleer de ingevulde gegevens.',
-    [publicErrors.ACTIVATION_CODE_NOT_SET]: 'U hebt geen activatie-code ingevoerd.',
+        'De ingevoerde activatiecode klopt niet of is verlopen. Controleer de ingevulde gegevens.',
+    [publicErrors.ACTIVATION_CODE_NOT_SET]: 'U hebt geen activatiecode ingevoerd.',
     [publicErrors.NON_MATCHING_PASSWORDS]: `De ingevoerde wachtwoorden komen niet overeen.
         Let op dat u geen fout maakt bij het kiezen van een wachtwoord.`,
     [publicErrors.ACCOUNT_EXISTS_ALREADY]:
         'Er bestaat al een account met dit registratienummer.',
-    [publicErrors.ACTIVATION_CODE_INCORRECT]: 'De ingevoerde activatie-code is onjuist.',
+    [publicErrors.ACTIVATION_CODE_INCORRECT]: 'De ingevoerde activatiecode is onjuist.',
     [publicErrors.USERNAME_CONTAINS_DOT]: 'Het ingevoerde registratienummer mag geen punt bevatten.',
 };
 

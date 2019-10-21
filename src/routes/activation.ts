@@ -20,7 +20,7 @@ export const handleActivation = (req: Request, res: Response) => {
     }
 
     if (!code) {
-        console.log('Activatie-code is not set');
+        console.log('Activatiecode is not set');
         return redirectWithParams(res, { error:publicErrors.ACTIVATION_CODE_NOT_SET, username, code });
     }
 
