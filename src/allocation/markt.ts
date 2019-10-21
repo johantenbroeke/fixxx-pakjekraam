@@ -35,12 +35,10 @@ const Markt = {
         const row = Markt._findRowForPlaatsen(rows, plaatsIds);
 
         return plaatsIds
-        .map(plaatsId => {
-            return [].concat(
-                Markt._getAdjacent(row, plaatsId, -1, depth, obstakels, filter),
-                Markt._getAdjacent(row, plaatsId, 1, depth, obstakels, filter)
-            );
-        })
+        .map(plaatsId => [
+            ...Markt._getAdjacent(row, plaatsId, -1, depth, obstakels, filter),
+            ...Markt._getAdjacent(row, plaatsId, 1, depth, obstakels, filter)
+        ])
         .reduce(flatten, [])
         // We need to filter out duplicates, and places that are included
         // in the `plaatsIds` argument. This occurs when multiple IDs are

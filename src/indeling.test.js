@@ -81,9 +81,9 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
             marktplaatsen: [
                 { branches: ['bak'] }
             ],
-            branches: [{
-                brancheId: 'bak', verplicht: true
-            }]
+            branches: [
+                { brancheId: 'bak', verplicht: true }
+            ]
         });
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
@@ -486,7 +486,6 @@ describe('Een ondernemer die wil bakken', () => {
 
     it('krijgt voorrang boven niet bakkende sollicitanten', () => {
         // Altijd eerst bakplaatsen proberen vullen met bakkende ondernemers.
-        // Ook indien `strategy === 'conservative'`.
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { branches: ['bak'], maximum: 2 } },

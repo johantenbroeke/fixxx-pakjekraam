@@ -142,12 +142,11 @@ const Indeling = {
                                                          0;
 
             const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
+            sizes.set(ondernemer, bestePlaatsen.length);
+
             plaatsen = plaatsen.filter(plaats =>
                 !bestePlaatsen.find(({ plaatsId }) => plaatsId === plaats.plaatsId)
             );
-
-            sizes.set(ondernemer, bestePlaatsen.length);
-
             ondernemers.shift();
         }
 
@@ -369,10 +368,10 @@ const Indeling = {
         );
     },
 
-    // Bepaald samen met `_compareOndernemers` de volgorde van indeling:
+    // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
     // 0. VPHs die niet willen verplaatsen.
     // 1. Ondernemers die willen bakken (kan ook een VPH zijn die wil verplaatsen).
-    // 2. Ondernemers met een EVI.
+    // 2. Ondernemers met een EVI (kan ook een VPH zijn die wil verplaatsen).
     // 3. VPHs die willen/moeten verplaatsen.
     // 4. Sollicitanten in een branche.
     // 5. Sollicitanten zonder branche (in principe niet de bedoeling).

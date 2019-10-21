@@ -30,8 +30,8 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
 
     // Voer uitbreidingen uit
     // ----------------------
-    // Dit gaat met iteraties: iedereen die een 3de plaats wil krijgt deze aangeboden alvorens
-    // iedereen die een 4de plaats hier de kans toe krijgt.
+    // Dit gaat in iteraties: iedereen die een 3de plaats wil krijgt deze aangeboden alvorens
+    // iedereen die een 4de plaats wil hiertoe de kans krijgt.
     indeling = Indeling.performExpansion(indeling);
 
     // Probeer afwijzingen opnieuw
