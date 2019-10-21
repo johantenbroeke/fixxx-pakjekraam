@@ -20,7 +20,7 @@ import Markt from './markt';
 import Ondernemer from './ondernemer';
 import Toewijzing from './toewijzing';
 
-type SizeFunction = (ondernemer: IMarktondernemer) => number;
+type SizeMap = Map<IMarktondernemer, number>;
 
 // Wordt gebruikt in `_findBestePlaatsen` om `IMarktplaats` object om te vormen
 // tot `IPlaatsvoorkeur` objecten met een berekend `brancheIntersectCount` getal.
@@ -28,7 +28,7 @@ type SizeFunction = (ondernemer: IMarktondernemer) => number;
 // Hierdoor kunnen `priority` en `brancheIntersectCount` gebruikt worden om in
 // `_findBestGroup` de meest geschikte set plaatsen te vinden.
 interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
-    brancheIntersectCount: number;
+    brancheScore: number;
 }
 
 const BRANCHE_FULL: IAfwijzingReason = {
@@ -81,7 +81,7 @@ const Indeling = {
     assignPlaatsen: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
-        calcSize?: SizeFunction
+        sizes?: SizeMap
     ): IMarktindeling => {
         try {
             const plaatsen = indeling.openPlaatsen;
@@ -95,12 +95,12 @@ const Indeling = {
                 throw BRANCHE_FULL;
             }
 
-            if (!calcSize ) {
-                calcSize = Indeling.createSizeFunction(indeling);
+            if (!sizes ) {
+                sizes = Indeling.calcSizes(indeling);
             }
 
             const { anywhere = !Ondernemer.isVast(ondernemer) } = ondernemer.voorkeur || {};
-            const size          = calcSize(ondernemer);
+            const size          = sizes.get(ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
 
             if (!bestePlaatsen.length) {
@@ -115,10 +115,14 @@ const Indeling = {
         }
     },
 
-    createSizeFunction: (indeling: IMarktindeling): SizeFunction => {
-        let plaatsen      = indeling.openPlaatsen.slice();
-        const ondernemers = indeling.toewijzingQueue.slice();
-        const sizes       = new Map();
+    calcSizes: (
+        indeling: IMarktindeling,
+        plaatsen: IMarktplaats[] = indeling.openPlaatsen,
+        ondernemers: IMarktondernemer[] = indeling.toewijzingQueue
+    ): SizeMap => {
+        plaatsen    = plaatsen.slice();
+        ondernemers = ondernemers.slice();
+        const sizes = new Map();
 
         while (ondernemers.length) {
             const ondernemer  = ondernemers[0];
@@ -142,18 +146,23 @@ const Indeling = {
                                                          0;
 
             const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
+            sizes.set(ondernemer, bestePlaatsen.length);
+
             plaatsen = plaatsen.filter(plaats =>
                 !bestePlaatsen.find(({ plaatsId }) => plaatsId === plaats.plaatsId)
             );
-
-            sizes.set(ondernemer, bestePlaatsen.length);
-
             ondernemers.shift();
         }
 
-        return (ondernemer) => sizes.get(ondernemer);
+        return sizes;
     },
 
+    // `anywhere` wordt als argument meegegeven i.p.v. uit de ondernemers-
+    // voorkeuren gehaald, omdat deze functie ook gebruikt wordt in
+    // `_findBestePlaatsen` om een set voorkeuren uit te breiden naar het
+    // gewenste aantal plaatsen. Voor deze uitbreiding staat `anywhere` altijd
+    // op true omdat de gewenste plaatsen al bemachtigd is, maar het er nog niet
+    // genoeg zijn om de minimum wens te verzadigen.
     canBeAssignedTo: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
@@ -318,24 +327,35 @@ const Indeling = {
         // 2. Sorteer op branche overlap en `priority`.
         const plaatsen = <IPlaatsvoorkeurPlus[]> openPlaatsen
         .map(plaats => {
-            const { priority = 0 } = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
-            const brancheIntersectCount = intersection(plaats.branches, ondernemerBrancheIds).length;
-
+            const { priority = 0 }  = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
+            const { branches = [] } = plaats;
+            // De branche score vertegenwoordigd een ranking in manier van overlap in
+            // ondernemers branches vs. plaats branches:
+            // 0. Geen overlap
+            // 1. Gedeeltelijke overlap:          ondernemer['x']      vs plaats['x', 'y']
+            // 2. Gedeeltelijk de andere kant op: ondernemer['x', 'y'] vs plaats['x']
+            // 3. Volledige overlap:              ondernemer['x', 'y'] vs plaats['x', 'y']
+            const plaatsBrancheCount     = branches.length;
+            const ondernemerBrancheCount = ondernemerBrancheIds.length;
+            const intersectCount         = intersection(branches, ondernemerBrancheIds).length;
+            const brancheScore           = !intersectCount                             ? 0 :
+                                           intersectCount - plaatsBrancheCount < 0     ? 1 :
+                                           ondernemerBrancheCount > plaatsBrancheCount ? 2 :
+                                                                                         3;
             return {
                 ...plaats,
                 priority,
-                brancheIntersectCount
+                brancheScore
             };
         })
         .sort((a, b) =>
-            b.brancheIntersectCount - a.brancheIntersectCount ||
+            b.brancheScore - a.brancheScore ||
             b.priority - a.priority
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)
         const groups = Markt.groupByAdjacent(indeling, plaatsen, plaats =>
             Indeling.canBeAssignedTo(indeling, ondernemer, plaats, anywhere)
         );
-
         // 4. Geef de meest geschikte groep terug.
         return Indeling._findBestGroup(
             indeling,
@@ -345,8 +365,8 @@ const Indeling = {
             plaats => Indeling.canBeAssignedTo(indeling, ondernemer, plaats, true),
             (a: IPlaatsvoorkeurPlus[], b: IPlaatsvoorkeurPlus[]) => {
                 // Kijk eerst of er een betere branche overlap is...
-                let aScore = a.map(pl => pl.brancheIntersectCount).reduce(sum, 0);
-                let bScore = b.map(pl => pl.brancheIntersectCount).reduce(sum, 0);
+                let aScore = a.map(pl => pl.brancheScore).reduce(sum, 0);
+                let bScore = b.map(pl => pl.brancheScore).reduce(sum, 0);
                 if (bScore - aScore) {
                     return bScore - aScore;
                 }
@@ -358,10 +378,10 @@ const Indeling = {
         );
     },
 
-    // Bepaald samen met `_compareOndernemers` de volgorde van indeling:
+    // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
     // 0. VPHs die niet willen verplaatsen.
     // 1. Ondernemers die willen bakken (kan ook een VPH zijn die wil verplaatsen).
-    // 2. Ondernemers met een EVI.
+    // 2. Ondernemers met een EVI (kan ook een VPH zijn die wil verplaatsen).
     // 3. VPHs die willen/moeten verplaatsen.
     // 4. Sollicitanten in een branche.
     // 5. Sollicitanten zonder branche (in principe niet de bedoeling).
@@ -376,6 +396,18 @@ const Indeling = {
                Ondernemer.heeftVastePlaatsen(ondernemer)     ? 3 :
                Ondernemer.heeftBranche(ondernemer)           ? 4 :
                                                                5;
+    },
+    // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt:
+    // 0. Ondernemer is VPH.
+    // 1. Ondernemer die voorkomt in de A-lijst.
+    // 2. Ondernemer die niet voorkomt in de A-lijst.
+    _getListGroup: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): number => {
+        return Ondernemer.heeftVastePlaatsen(ondernemer) ? 0 :
+               indeling.aLijst.includes(ondernemer)      ? 1 :
+                                                           2;
     },
 
     _isAvailable: (
@@ -416,13 +448,13 @@ const Indeling = {
         a: IMarktondernemer,
         b: IMarktondernemer
     ): number => {
-        // Sorteer eerst op aanwezigheid in de A-lijst...
-        const sort1 = Number(indeling.aLijst.includes(b)) -
-                      Number(indeling.aLijst.includes(a));
-        // ... dan op status...
-        const sort2 = Indeling._getStatusGroup(indeling, a) -
+        // Sorteer eerst op status groep...
+        const sort1 = Indeling._getStatusGroup(indeling, a) -
                       Indeling._getStatusGroup(indeling, b);
-        // ... dan op anciënniteitsnummer
+        // ... dan op aanwezigheid in de A-lijst...
+        const sort2 = Indeling._getListGroup(indeling, a) -
+                      Indeling._getListGroup(indeling, b);
+        // ... dan op anciënniteitsnummer.
         const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
 
         return sort1 || sort2 || sort3;

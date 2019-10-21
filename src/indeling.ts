@@ -12,8 +12,7 @@ import Ondernemer from './allocation/ondernemer';
  */
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
-    let indeling   = Indeling.init(markt);
-    const calcSize = Indeling.createSizeFunction(indeling);
+    let indeling = Indeling.init(markt);
 
     // Deel ondernemers in
     // -------------------
@@ -23,15 +22,16 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     //
     // Voor de prioritering van indelen, zie `Indeling._compareOndernemers` die in
     // `Indeling.init` wordt gebruikt om alle aanwezige ondernemers te sorteren.
+    const sizes = Indeling.calcSizes(indeling);
     indeling = indeling.toewijzingQueue
     .reduce((indeling, ondernemer) => {
-        return Indeling.assignPlaatsen(indeling, ondernemer, calcSize);
+        return Indeling.assignPlaatsen(indeling, ondernemer, sizes);
     }, indeling);
 
     // Voer uitbreidingen uit
     // ----------------------
-    // Dit gaat met iteraties: iedereen die een 3de plaats wil krijgt deze aangeboden alvorens
-    // iedereen die een 4de plaats hier de kans toe krijgt.
+    // Dit gaat in iteraties: iedereen die een 3de plaats wil krijgt deze aangeboden alvorens
+    // iedereen die een 4de plaats wil hiertoe de kans krijgt.
     indeling = Indeling.performExpansion(indeling);
 
     // Probeer afwijzingen opnieuw
@@ -40,8 +40,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
     // eerder afgewezen sollictanten opnieuw in te delen omdat deze mogelijk passen op
     // de vrijgekomen plaatsen.
     indeling = indeling.afwijzingen
-    .reduce((indeling, afwijzing) => {
-        const { ondernemer } = afwijzing;
+    .reduce((indeling, { ondernemer }) => {
         return !Ondernemer.isVast(ondernemer) ?
                Indeling.assignPlaatsen(indeling, ondernemer) :
                indeling;
