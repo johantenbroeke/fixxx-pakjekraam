@@ -13,6 +13,7 @@ __MACOSX
 
 # Docker
 .env
+.env-acc
 .env-old
 .env-acc
 docker-compose.override.yml
