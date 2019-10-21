@@ -20,7 +20,7 @@ import Markt from './markt';
 import Ondernemer from './ondernemer';
 import Toewijzing from './toewijzing';
 
-type SizeFunction = (ondernemer: IMarktondernemer) => number;
+type SizeMap = Map<IMarktondernemer, number>;
 
 // Wordt gebruikt in `_findBestePlaatsen` om `IMarktplaats` object om te vormen
 // tot `IPlaatsvoorkeur` objecten met een berekend `brancheIntersectCount` getal.
@@ -81,7 +81,7 @@ const Indeling = {
     assignPlaatsen: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
-        calcSize?: SizeFunction
+        sizes?: SizeMap
     ): IMarktindeling => {
         try {
             const plaatsen = indeling.openPlaatsen;
@@ -95,12 +95,12 @@ const Indeling = {
                 throw BRANCHE_FULL;
             }
 
-            if (!calcSize ) {
-                calcSize = Indeling.createSizeFunction(indeling);
+            if (!sizes ) {
+                sizes = Indeling.calcSizes(indeling);
             }
 
             const { anywhere = !Ondernemer.isVast(ondernemer) } = ondernemer.voorkeur || {};
-            const size          = calcSize(ondernemer);
+            const size          = sizes.get(ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
 
             if (!bestePlaatsen.length) {
@@ -115,10 +115,14 @@ const Indeling = {
         }
     },
 
-    createSizeFunction: (indeling: IMarktindeling): SizeFunction => {
-        let plaatsen      = indeling.openPlaatsen.slice();
-        const ondernemers = indeling.toewijzingQueue.slice();
-        const sizes       = new Map();
+    calcSizes: (
+        indeling: IMarktindeling,
+        plaatsen: IMarktplaats[] = indeling.openPlaatsen,
+        ondernemers: IMarktondernemer[] = indeling.toewijzingQueue
+    ): SizeMap => {
+        plaatsen    = plaatsen.slice();
+        ondernemers = ondernemers.slice();
+        const sizes = new Map();
 
         while (ondernemers.length) {
             const ondernemer  = ondernemers[0];
@@ -150,9 +154,15 @@ const Indeling = {
             ondernemers.shift();
         }
 
-        return (ondernemer) => sizes.get(ondernemer);
+        return sizes;
     },
 
+    // `anywhere` wordt als argument meegegeven i.p.v. uit de ondernemers-
+    // voorkeuren gehaald, omdat deze functie ook gebruikt wordt in
+    // `_findBestePlaatsen` om een set voorkeuren uit te breiden naar het
+    // gewenste aantal plaatsen. Voor deze uitbreiding staat `anywhere` altijd
+    // op true omdat de gewenste plaatsen al bemachtigd is, maar het er nog niet
+    // genoeg zijn om de minimum wens te verzadigen.
     canBeAssignedTo: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,

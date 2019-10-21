@@ -177,13 +177,13 @@ describe('Markt.groupByAdjacent', () => {
     });
 });
 
-describe('Indeling.createSizeFunction', () => {
+describe('Indeling.calcSizes', () => {
     const calcSizes = markt => {
         const indeling = Indeling.init(markt);
-        const calcSize = Indeling.createSizeFunction(indeling);
+        const sizes    = Indeling.calcSizes(indeling);
 
         return indeling.toewijzingQueue.reduce((result, ondernemer) => {
-            result[ondernemer.sollicitatieNummer] = calcSize(ondernemer);
+            result[ondernemer.sollicitatieNummer] = sizes.get(ondernemer);
             return result;
         }, {});
     };

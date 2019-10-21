@@ -348,7 +348,7 @@ describe('Een VPH die ingedeeld wil worden', () => {
 
     it('wordt toegewezen aan zijn vaste plaats(en)', () => {
         // Dit scenario laat expres 1 plaats vrij om een regression bug
-        // in `createSizeFunction` te voorkomen (`size` werd daar verkeerd
+        // in `calcSizes` te voorkomen (`size` werd daar verkeerd
         // berekend als er meer dan genoeg plaatsen waren).
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
