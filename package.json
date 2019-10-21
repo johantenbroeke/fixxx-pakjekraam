@@ -19,6 +19,8 @@
     "dev": "ts-node-dev --ignore-watch node_modules src/index.ts",
     "allocation": "ts-node src/allocation.js",
     "allocation-env": "( . .env && npm run allocation)",
+    "migrate": "( . .env && npx sequelize-cli db:migrate)",
+    "migrate:undo": "( . .env && npx sequelize-cli db:migrate:undo)",
     "import": "echo 'Import skipped. Temporarily disabled.' && exit 0",
     "tdd": "jest --watch --verbose --rootDir ./src/",
     "test": "jest --verbose --silent --rootDir ./src/",
