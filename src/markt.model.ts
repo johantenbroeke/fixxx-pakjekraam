@@ -138,7 +138,6 @@ export interface IToewijzing {
     marktDate: string;
     plaatsen: PlaatsId[];
     erkenningsNummer: ErkenningsNummer;
-
     ondernemer?: IMarktondernemer;
 }
 

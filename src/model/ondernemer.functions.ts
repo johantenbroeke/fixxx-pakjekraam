@@ -42,7 +42,7 @@ export const ondernemerIsAfgemeldPeriode = (ondernemer: IMarktondernemer, marktD
 
 export const vphIsGewisseld = (ondernemer: IMarktondernemer, toewijzingen: IToewijzing[]): Boolean => {
 
-    const toewijzingVph = toewijzingen.find( toewijzing => toewijzing.ondernemer.erkenningsNummer === ondernemer.erkenningsNummer );
+    const toewijzingVph = toewijzingen.find( toewijzing => toewijzing.erkenningsNummer === ondernemer.erkenningsNummer );
 
     if (!toewijzingVph) {
         return false;
