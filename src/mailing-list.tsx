@@ -3,7 +3,7 @@ import { EmailIndeling } from './views/EmailIndeling';
 import { defer } from 'rxjs';
 import { shareReplay, tap, combineLatest } from 'rxjs/operators';
 import { mail } from './mail.js';
-import { requireEnv, tomorrow, yyyyMmDdtoDDMMYYYY } from './util';
+import { requireEnv, tomorrow, today, yyyyMmDdtoDDMMYYYY } from './util';
 import {
     getAanmeldingen,
     getAllBranches,
@@ -24,7 +24,8 @@ import { MMMarkt } from 'makkelijkemarkt.model';
 
 requireEnv('MAILER_FROM');
 
-const marktDate = tomorrow();
+let marktDate = tomorrow();
+marktDate = today();
 
 const users$ = defer(() => getAllUsers()).pipe(
     tap(() => console.log('Keycloak OK!'), (e) => console.log(`Unable to connect to Keycloak: ${e}`)),
