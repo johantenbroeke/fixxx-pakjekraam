@@ -3,7 +3,7 @@ import { EmailIndeling } from './views/EmailIndeling';
 import { defer } from 'rxjs';
 import { shareReplay, tap, combineLatest } from 'rxjs/operators';
 import { mail } from './mail.js';
-import { requireEnv, tomorrow, today, yyyyMmDdtoDDMMYYYY } from './util';
+import { requireEnv, today, yyyyMmDdtoDDMMYYYY } from './util';
 import {
     getAanmeldingen,
     getAllBranches,
@@ -21,11 +21,10 @@ import { getMarktInfo } from './pakjekraam-api';
 import { IMarktplaats, IPlaatsvoorkeur, IRSVP, IBranche, IMarktInfo } from 'markt.model';
 import { MMMarkt } from 'makkelijkemarkt.model';
 
-
 requireEnv('MAILER_FROM');
 
-let marktDate = tomorrow();
-marktDate = today();
+// let marktDate = tomorrow();
+const marktDate = today();
 
 const users$ = defer(() => getAllUsers()).pipe(
     tap(() => console.log('Keycloak OK!'), (e) => console.log(`Unable to connect to Keycloak: ${e}`)),
