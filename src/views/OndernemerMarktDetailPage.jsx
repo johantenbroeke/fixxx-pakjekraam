@@ -31,6 +31,7 @@ class OndernemerMarktDetailPage extends React.Component {
         endDate: PropTypes.string.isRequired,
         user: PropTypes.object,
         eggie: PropTypes.boolean,
+        mededelingen: PropTypes.object,
     };
 
     render() {
@@ -45,6 +46,7 @@ class OndernemerMarktDetailPage extends React.Component {
             branches,
             toewijzingen,
             eggie,
+            mededelingen
         } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 

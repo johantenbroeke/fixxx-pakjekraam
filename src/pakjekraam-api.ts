@@ -304,6 +304,9 @@ export const getMarktGeografie = (marktId: string): Promise<{ obstakels: IObstak
 
 export const getMarktInfo = (marktId: string): Promise<IMarktInfo> =>
     loadJSON(`./data/${slugifyMarkt(marktId)}/info.json`);
+
+export const getMededelingen = (): Promise<any> =>
+    loadJSON('./data/mededelingen.json', {});
 /*
  * Convert an object from Makkelijke Markt to our own type of `IMarktondernemer` object
  */
