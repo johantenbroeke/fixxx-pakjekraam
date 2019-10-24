@@ -40,9 +40,7 @@ const mailToewijzingen = (
     aanmeldingen: IRSVP[],
     branches: IBranche[],
     marktInfoJSON: IMarktInfo,
-    ) => {
-
-    let first = true;
+) => {
 
     toewijzingen
         .map(({ ondernemer, user, toewijzing }) => {
@@ -58,36 +56,31 @@ const mailToewijzingen = (
                 telefoonnummer: marktInfoJSON.telefoonnummer
             };
 
-            // console.log(
-            //     `Stuur e-mail naar ${user.email}! Ondernemer is ingedeeld op plaats ${
-            //     toewijzing.plaatsen
-            //     }`,
-            // );
+            console.log(
+                `Stuur e-mail naar ${user.email}! Ondernemer is ingedeeld op plaats ${
+                toewijzing.plaatsen
+                }`,
+            );
 
-            if (first) {
-
-                const formattedMarkDate = yyyyMmDdtoDDMMYYYY(marktDate);
-                const testEmail = {
-                    from: process.env.MAILER_FROM,
-                    // to: user.email,
-                    to: 'tomootes@gmail.com',
-                    subject: `Toewijzing ${formattedMarkDate} ${markt.naam}`,
-                    react: <EmailIndeling {...props} />,
-                };
-                mail(testEmail).then(
-                    () => {
-                        console.log(`E-mail is verstuurd naar ${user.email}.`);
-                        process.exit(0);
-                    },
-                    (err: Error) => {
-                        console.error('E-mail sturen mislukt.', err);
-                        process.exit(1);
-                    },
-                );
-
-            }
-
-            first = false;
+            const formattedMarkDate = yyyyMmDdtoDDMMYYYY(marktDate);
+            const testEmail = {
+                from: process.env.MAILER_FROM,
+                to: user.email,
+                subject: `Toewijzing ${formattedMarkDate} ${markt.naam}`,
+                react: <EmailIndeling {...props} />,
+            };
+            mail(testEmail).then(
+                () => {
+                    console.log(`E-mail is verstuurd naar ${user.email}.`);
+                    process.exit(0);
+                },
+                (err: Error) => {
+                    console.error('E-mail sturen mislukt.', err);
+                    process.exit(1);
+                },
+            ).catch((e: any) => {
+                console.log(e);
+            });
 
         });
 };
@@ -100,9 +93,7 @@ const mailAfwijzingen = (
     aanmeldingen: IRSVP[],
     branches: IBranche[],
     marktInfoJSON: IMarktInfo,
-    ) => {
-
-    let first = true;
+) => {
 
     afwijzingen
         .map(({ ondernemer, user, toewijzing }) => {
@@ -118,33 +109,26 @@ const mailAfwijzingen = (
                 telefoonnummer: marktInfoJSON.telefoonnummer
             };
 
-            if (first) {
+            const formattedMarkDate = yyyyMmDdtoDDMMYYYY(marktDate);
+            const testEmail = {
+                from: process.env.MAILER_FROM,
+                to: user.email,
+                subject: `Indeling ${process.env.NODE_ENV} ${formattedMarkDate} ${markt.naam}`,
+                react: <EmailIndeling {...props} />,
+            };
 
-                const formattedMarkDate = yyyyMmDdtoDDMMYYYY(marktDate);
-                const testEmail = {
-                    from: process.env.MAILER_FROM,
-                    // to: user.email,
-                    to: 'tomootes@gmail.com',
-                    subject: `Indeling ${process.env.NODE_ENV} ${formattedMarkDate} ${markt.naam}`,
-                    react: <EmailIndeling {...props} />,
-                };
-                mail(testEmail).then(
-                    () => {
-                        console.log(`E-mail is verstuurd naar ${user.email}.`);
-                        process.exit(0);
-                    },
-                    (err: Error) => {
-                        console.error('E-mail sturen mislukt.', err);
-                        process.exit(1);
-                    },
-                );
-
-            }
-
-            first = false;
+            mail(testEmail).then(
+                () => {
+                    console.log(`E-mail is verstuurd naar ${user.email}.`);
+                    process.exit(0);
+                },
+                (err: Error) => {
+                    console.error('E-mail sturen mislukt.', err);
+                    process.exit(1);
+                },
+            );
 
         });
-
 };
 
 const makkelijkeMarkt$ = defer(() => checkLogin()).pipe(
@@ -219,19 +203,6 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
 
                     mailToewijzingen(toewijzingenFiltered, markt, marktplaatsen, plaatsvoorkeuren, aanmeldingen, branches, marktInfoJSON);
                     mailAfwijzingen(afwijzingenFiltered, markt, marktplaatsen, plaatsvoorkeuren, aanmeldingen, branches, marktInfoJSON);
-
-
-                    // const registeredUsers = users
-                    //     .filter(({ username }) =>
-                    //         ondernemers.some(({ erkenningsNummer }) => erkenningsNummer.replace('.', '') === username.replace('.', '')),
-
-                    //     )
-                    //     .filter(user => !!user.email);
-
-                    // console.log(
-                    //     'Geregistreerde marktondernemers met e-mail',
-                    //     registeredUsers ? registeredUsers.length : 0,
-                    // );
 
                 }),
             ),
