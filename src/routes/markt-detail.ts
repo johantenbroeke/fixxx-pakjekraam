@@ -2,13 +2,13 @@ import { NextFunction, Request, Response } from 'express';
 
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 
-
 import {
     getAllBranches,
     getIndelingVoorkeur,
     getAanmeldingenByOndernemer,
     getToewijzingenByOndernemerEnMarkt,
     getOndernemerVoorkeuren,
+    getMededelingen,
 } from '../pakjekraam-api';
 
 import { HTTP_INTERNAL_SERVER_ERROR, httpErrorPage, getQueryErrors } from '../express-util';
@@ -37,14 +37,11 @@ export const marktDetailController = (
         marktPromise,
         getIndelingVoorkeur(erkenningsNummer, req.params.marktId),
         getAllBranches(),
+        getMededelingen(),
         getToewijzingenByOndernemerEnMarkt(marktId, erkenningsNummer)
     ])
         .then(
-            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, voorkeur, branches, toewijzingen]) => {
-                // console.log(Object.keys(req));
-                // console.log(req.session);
-                // console.log('welke');
-                // console.log(toewijzingen);
+            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, voorkeur, branches, mededelingen, toewijzingen]) => {
                 res.render('OndernemerMarktDetailPage', {
                     ondernemer,
                     plaatsvoorkeuren,
@@ -57,6 +54,7 @@ export const marktDetailController = (
                     query,
                     messages,
                     toewijzingen,
+                    mededelingen,
                     eggie: req.query.eggie || false,
                 });
             },
