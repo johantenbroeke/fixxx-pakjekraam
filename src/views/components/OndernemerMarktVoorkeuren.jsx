@@ -5,7 +5,7 @@ const Button = require('./Button');
 const HeaderTitleButton = require('./HeaderTitleButton');
 const { isVast } = require('../../domain-knowledge.js');
 
-const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, ondernemer, query, sollicitatie, voorkeur }) => {
+const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, mededelingen, sollicitatie, voorkeur }) => {
     const blockUrl = `../../voorkeuren/${markt.id}/`;
     const entriesFiltered = plaatsvoorkeuren.filter(entry => entry.marktId === markt.id);
     const defaultPlaatsCount = isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1;
@@ -33,9 +33,9 @@ const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, ondernemer, query,
             <a href={blockUrl} className="background-link" />
             <HeaderTitleButton title="Plaatsvoorkeuren" url={blockUrl} />
             <div className="well">
-                <p>
-                    <strong>Tijdens de wenperiode worden de &apos;Plaatsvoorkeuren&apos; niet gebruikt.</strong>
-                </p>
+                { markt.fase ? (
+                    <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetailPlaatsvoorkeuren[markt.fase] }} />
+                ) : null}
                 {isVast(sollicitatie.status) ? (
                     <div className="margin-bottom">
                         <strong className="h5">Uw vaste plaatsen</strong>
@@ -91,9 +91,8 @@ OndernemerMarktVoorkeuren.propTypes = {
     plaatsvoorkeuren: PropTypes.array.isRequired,
     voorkeur: PropTypes.object.isRequired,
     markt: PropTypes.object.isRequired,
-    ondernemer: PropTypes.object.isRequired,
     sollicitatie: PropTypes.object.isRequired,
-    query: PropTypes.string,
+    mededelingen: PropTypes.object.isRequired,
 };
 
 module.exports = OndernemerMarktVoorkeuren;

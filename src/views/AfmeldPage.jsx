@@ -11,6 +11,7 @@ class AfmeldPage extends React.Component {
         aanmeldingen: PropTypes.array,
         date: PropTypes.string.isRequired,
         markten: PropTypes.array,
+        markt: PropTypes.object.isRequired,
         ondernemer: PropTypes.object.isRequired,
         messages: PropTypes.array,
         startDate: PropTypes.string.isRequired,
@@ -18,11 +19,11 @@ class AfmeldPage extends React.Component {
         currentMarktId: PropTypes.string,
         query: PropTypes.string,
         role: PropTypes.string,
+        mededelingen: PropTypes.object.isRequired,
     };
 
     render() {
-        const { ondernemer, messages, role } = this.props;
-
+        const { ondernemer, messages, role, markt, mededelingen } = this.props;
         return (
             <Page messages={messages}>
                 <Header user={this.props.ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
@@ -32,6 +33,10 @@ class AfmeldPage extends React.Component {
                     <OndernemerProfileHeader user={this.props.ondernemer} />
                 </Header>
                 <Content>
+                    <h1 className="Heading">Aanwezigheid wijzigen</h1>
+                    { markt.fase ? (
+                        <p className="Paragraph Paragraph--first" dangerouslySetInnerHTML={{ __html: mededelingen.afmelden[markt.fase] }} />
+                    ) : null}
                     <AfmeldForm
                         aanmeldingen={this.props.aanmeldingen}
                         date={this.props.date}

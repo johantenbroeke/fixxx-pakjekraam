@@ -3,7 +3,7 @@ const React = require('react');
 const AlertLine = require('./AlertLine');
 const { formatDate } = require('../../util.ts');
 
-const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen }) => {
+const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen }) => {
     function plaatsenDuiding(plaatsen) {
         if (plaatsen.length == 1) {
             return `Plaats: ${plaatsen.join(', ')}`;
@@ -24,7 +24,7 @@ const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                             <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--niet-aangemeld">niet aangemeld</span>
                         )}
                     </h4>
-                    {!toewijzingMorgen && eggie ? (
+                    {!toewijzingMorgen && markt.fase === 'live' ? (
                         <AlertLine
                             type="success"
                             title="Ingedeeld"
@@ -32,7 +32,7 @@ const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                             message={plaatsenDuiding(toewijzingMorgen.plaatsen)}
                             inline={true}
                         />
-                    ) : eggie ? (
+                    ) : markt.fase === 'live' ? (
                         <span> geen toewijzing </span>
                     ) : null}
                 </div>
@@ -53,7 +53,7 @@ const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                             </span>
                         )}
                     </h4>
-                    {toewijzingVandaag && eggie ? (
+                    {toewijzingVandaag && markt.fase === 'live' ? (
                         <AlertLine
                             type="success"
                             title="Ingedeeld"
@@ -61,7 +61,7 @@ const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                             message={ plaatsenDuiding(toewijzingVandaag.plaatsen) }
                             inline={true}
                         />
-                    ) : eggie ? (
+                    ) : markt.fase === 'live' ? (
                         <span>Geen toewijzing </span>
                     ) : null}
                 </div>
@@ -72,9 +72,9 @@ const Content = ({ time, eggie, today, tomorrow, aanmeldingVandaag, aanmeldingMo
 
 Content.propTypes = {
     time: PropTypes.instanceOf(Date),
-    eggie: PropTypes.bool,
     today: PropTypes.string,
     tomorrow: PropTypes.string,
+    markt: PropTypes.object,
     aanmeldingVandaag: PropTypes.object,
     aanmeldingMorgen: PropTypes.object,
     toewijzingVandaag: PropTypes.object,

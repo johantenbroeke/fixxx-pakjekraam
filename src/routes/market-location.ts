@@ -3,13 +3,13 @@ import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import {
     getIndelingVoorkeur,
     getMarktplaatsen,
-    getMarktPaginas,
-    getMarktProperties,
     getOndernemerVoorkeuren,
+    getMededelingen,
 } from '../pakjekraam-api';
 import { getQueryErrors, internalServerErrorPage, HTTP_CREATED_SUCCESS } from '../express-util';
 import { upsert } from '../sequelize-util.js';
 import { IPlaatsvoorkeurRow } from '../markt.model';
+import { getMarktEnriched } from '../model/markt.functions';
 import models from '../model/index';
 
 export const marketLocationPage = (
@@ -46,25 +46,28 @@ export const marketLocationPage = (
         ondernemerPromise,
         marktenPromise,
         getOndernemerVoorkeuren(erkenningsNummer),
-        getMarktPaginas(currentMarktId),
-        getMarktProperties(currentMarktId),
-        getMarktplaatsen(currentMarktId),
+        // getMarktPaginas(currentMarktId),
+        // getMarktProperties(currentMarktId),
+        // getMarktplaatsen(currentMarktId),
         getIndelingVoorkeur(erkenningsNummer, currentMarktId),
+        getMarktEnriched(currentMarktId),
+        getMededelingen(),
     ]).then(
-        ([ondernemer, markten, plaatsvoorkeuren, marktPaginas, marktProperties, marktPlaatsen, indelingVoorkeur]) => {
-
+        ([ondernemer, markten, plaatsvoorkeuren, indelingVoorkeur, markt, mededelingen]) => {
+            const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
             res.render('VoorkeurenPage', {
                 ondernemer,
                 markten,
                 plaatsvoorkeuren,
-                marktPaginas,
-                marktProperties,
-                marktPlaatsen,
+                marktPaginas: markt.paginas,
+                marktPlaatsen: markt.plaatsen,
                 indelingVoorkeur,
                 query,
-                // user: req.user,
                 messages,
                 role,
+                markt,
+                sollicitatie,
+                mededeling: mededelingen.plaatsVoorkeuren,
             });
         },
         err => internalServerErrorPage(res)(err),

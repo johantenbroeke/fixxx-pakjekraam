@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-
+import { getMarktondernemer } from '../makkelijkemarkt-api';
+import { getMarktEnriched } from '../model/markt.functions';
 import {
     getAllBranches,
     getIndelingVoorkeur,
@@ -27,14 +27,14 @@ export const marktDetailController = (
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
     const ondernemerVoorkeurenPromise = getOndernemerVoorkeuren(erkenningsNummer);
 
-    const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
+    // const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
 
 
     Promise.all([
         ondernemerPromise,
         ondernemerVoorkeurenPromise,
         getAanmeldingenByOndernemer(erkenningsNummer),
-        marktPromise,
+        getMarktEnriched(marktId),
         getIndelingVoorkeur(erkenningsNummer, req.params.marktId),
         getAllBranches(),
         getMededelingen(),
