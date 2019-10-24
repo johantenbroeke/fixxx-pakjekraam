@@ -1,6 +1,11 @@
 /* eslint-disable no-magic-numbers */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* eslint-disable no-redeclare */
 
-const Markt = require('./allocation/markt.ts').default;
+const Markt      = require('./allocation/markt.ts').default;
+const Indeling   = require('./allocation/indeling.ts').default;
+const Ondernemer = require('./allocation/ondernemer.ts').default;
 
 const { calcToewijzingen } = require('./indeling.ts');
 const { marktScenario }    = require('./indeling-scenario.ts');
@@ -172,3 +177,76 @@ describe('Markt.groupByAdjacent', () => {
     });
 });
 
+describe('Indeling.calcSizes', () => {
+    const calcSizes = markt => {
+        const indeling = Indeling.init(markt);
+        const sizes    = Indeling.calcSizes(indeling);
+
+        return indeling.toewijzingQueue.reduce((result, ondernemer) => {
+            result[ondernemer.sollicitatieNummer] = sizes.get(ondernemer);
+            return result;
+        }, {});
+    };
+
+    it('works', () => {
+        var markt = marktScenario({
+            ondernemers: [
+                { sollicitatieNummer: 1 },
+                { sollicitatieNummer: 2 },
+                { sollicitatieNummer: 3 },
+                { sollicitatieNummer: 4 },
+            ],
+            marktplaatsen: [
+                {}, {}, {}
+            ]
+        });
+        expect(calcSizes(markt)).toStrictEqual({ 1:1, 2:1, 3:1, 4:0 });
+
+        var markt = marktScenario({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 3 } },
+                { sollicitatieNummer: 2 },
+            ],
+            marktplaatsen: [
+                {}, {}, {}
+            ]
+        });
+        expect(calcSizes(markt)).toStrictEqual({ 1:2, 2:1 });
+
+        var markt = marktScenario({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 3 }
+            ],
+            marktplaatsen: [
+                {}, {}, {}, {}
+            ]
+        });
+        expect(calcSizes(markt)).toStrictEqual({ 1:2, 2:1, 3:1 });
+
+        var markt = marktScenario({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2', '3'] },
+                { sollicitatieNummer: 2, voorkeur: { maximum: 3 } }
+            ],
+            marktplaatsen: [
+                {}, {}, {}, {}, {}
+            ]
+        });
+        expect(calcSizes(markt)).toStrictEqual({ 1:3, 2:2 });
+
+        var markt = marktScenario({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'], maximum: 1 } },
+                { sollicitatieNummer: 3, voorkeur: { branches: ['brood'], maximum: 2 } },
+                { sollicitatieNummer: 4, voorkeur: { branches: ['fruit'], maximum: 2 } }
+            ],
+            marktplaatsen: [
+                { branches: ['bak', 'brood'] }, { branches: ['brood', 'fruit'] }
+            ]
+        });
+        expect(calcSizes(markt)).toStrictEqual({ 1:0, 2:1, 3:1, 4:0 });
+    });
+});

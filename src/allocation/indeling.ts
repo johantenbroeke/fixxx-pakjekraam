@@ -1,4 +1,5 @@
 import {
+    BrancheId,
     IAfwijzingReason,
     IMarkt,
     IMarktindeling,
@@ -17,23 +18,29 @@ import {
 
 import Markt from './markt';
 import Ondernemer from './ondernemer';
-import Ondernemers from './ondernemers';
 import Toewijzing from './toewijzing';
 
-const MARKET_FULL: IAfwijzingReason = {
-    code: 1,
-    message: 'Alle marktplaatsen zijn reeds ingedeeld'
-};
+type SizeMap = Map<IMarktondernemer, number>;
+
+// Wordt gebruikt in `_findBestePlaatsen` om `IMarktplaats` object om te vormen
+// tot `IPlaatsvoorkeur` objecten met een berekend `brancheIntersectCount` getal.
+//
+// Hierdoor kunnen `priority` en `brancheIntersectCount` gebruikt worden om in
+// `_findBestGroup` de meest geschikte set plaatsen te vinden.
+interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
+    brancheScore: number;
+}
+
 const BRANCHE_FULL: IAfwijzingReason = {
-    code: 2,
+    code: 1,
     message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld'
 };
 const ADJACENT_UNAVAILABLE: IAfwijzingReason = {
-    code: 3,
+    code: 2,
     message: 'Geen geschikte plaats(en) gevonden'
 };
 const MINIMUM_UNAVAILABLE: IAfwijzingReason = {
-    code: 4,
+    code: 3,
     message: 'Minimum aantal plaatsen niet beschikbaar'
 };
 
@@ -44,60 +51,57 @@ const Indeling = {
             throw Error('Invalid market date');
         }
 
-        const openPlaatsen    = markt.marktplaatsen.filter(plaats => !plaats.inactive);
-        const toewijzingQueue = markt.ondernemers
-        .filter(ondernemer =>
-            Indeling.isAanwezig(ondernemer, markt.aanwezigheid, new Date(markt.marktDate))
-        )
-        .sort((a, b) => Ondernemers.compare(a, b, markt.aLijst));
-        const expansionLimit  = Math.min(
+        const openPlaatsen = markt.marktplaatsen.filter(plaats => !plaats.inactive);
+        const expansionLimit = Math.min(
             Number.isFinite(markt.expansionLimit) ? markt.expansionLimit : Infinity,
             markt.marktplaatsen.length
         );
 
-        return {
+        const indeling = <IMarktindeling> {
             ...markt,
             openPlaatsen,
-
-            expansionQueue     : [],
-            expansionIteration : 1,
             expansionLimit,
 
-            toewijzingQueue,
-            afwijzingen        : [],
-            toewijzingen       : [],
-            voorkeuren         : [...markt.voorkeuren]
+            toewijzingQueue : undefined,
+            afwijzingen     : [],
+            toewijzingen    : [],
+            voorkeuren      : [...markt.voorkeuren]
         };
+
+        // We willen enkel de aanwezige ondernemers, gesorteerd op prioriteit.
+        // De sortering die hier plaatsvindt is van groot belang voor alle hierop
+        // volgende code.
+        indeling.toewijzingQueue = markt.ondernemers
+        .filter(ondernemer => Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate))
+        .sort((a, b) => Indeling._compareOndernemers(indeling, a, b));
+
+        return indeling;
     },
 
-    assignPlaats: (
+    assignPlaatsen: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
-        plaatsen: IMarktplaats[],
-        handleRejection: 'reject' | 'ignore' = 'reject',
-        minimumSize?: number
+        sizes?: SizeMap
     ): IMarktindeling => {
         try {
-            if (indeling.openPlaatsen.length === 0) {
-                throw MARKET_FULL;
-            } else if (Ondernemer.isInMaxedOutBranche(indeling, ondernemer)) {
+            const plaatsen = indeling.openPlaatsen;
+
+            if (!plaatsen.length) {
+                throw ADJACENT_UNAVAILABLE;
+            } else if (
+                !Ondernemer.isVast(ondernemer) &&
+                Ondernemer.isInMaxedOutBranche(indeling, ondernemer)
+            ) {
                 throw BRANCHE_FULL;
             }
 
-            if (!plaatsen || !plaatsen.length) {
-                throw Error('assignPlaats vereist een set aan open plaatsen');
+            if (!sizes ) {
+                sizes = Indeling.calcSizes(indeling);
             }
 
-            let bestePlaatsen;
-            const strategy = Indeling.determineStrategy(indeling);
-            if ((!minimumSize || minimumSize === 1) && strategy === 'optimistic') {
-                const targetSize = Ondernemer.getTargetSize(ondernemer);
-                const happySize  = Math.min(targetSize, 2);
-                bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, happySize);
-            }
-            if( !bestePlaatsen || !bestePlaatsen.length ) {
-                bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, minimumSize);
-            }
+            const { anywhere = !Ondernemer.isVast(ondernemer) } = ondernemer.voorkeur || {};
+            const size          = sizes.get(ondernemer);
+            const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
 
             if (!bestePlaatsen.length) {
                 throw ADJACENT_UNAVAILABLE;
@@ -107,50 +111,64 @@ const Indeling = {
                 return Toewijzing.add(indeling, ondernemer, plaats);
             }, indeling);
         } catch (errorMessage) {
-            return handleRejection === 'reject' ?
-                   Indeling._rejectOndernemer(indeling, ondernemer, errorMessage) :
-                   indeling;
+            return Indeling._rejectOndernemer(indeling, ondernemer, errorMessage);
         }
     },
 
-    assignVastePlaatsen: (
+    calcSizes: (
         indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): IMarktindeling => {
-        const strategy   = Indeling.determineStrategy(indeling);
-        const startSize  = Ondernemer.getStartSize(ondernemer);
-        // const { anywhere = false } = ondernemer.voorkeur || {};
-        const anywhere   = false;
+        plaatsen: IMarktplaats[] = indeling.openPlaatsen,
+        ondernemers: IMarktondernemer[] = indeling.toewijzingQueue
+    ): SizeMap => {
+        plaatsen    = plaatsen.slice();
+        ondernemers = ondernemers.slice();
+        const sizes = new Map();
 
-        let bestePlaatsen;
-        if (startSize === 1 && strategy === 'optimistic') {
-            const targetSize = Ondernemer.getTargetSize(ondernemer);
-            const happySize  = Math.min(targetSize, 2);
-            bestePlaatsen = Indeling._findBestePlaatsenForVPH(indeling, ondernemer, happySize);
-        }
-        if (!bestePlaatsen || !bestePlaatsen.length) {
-            bestePlaatsen = Indeling._findBestePlaatsenForVPH(indeling, ondernemer, startSize);
+        while (ondernemers.length) {
+            const ondernemer  = ondernemers[0];
+            const isVast      = Ondernemer.isVast(ondernemer);
+            const { anywhere = !isVast } = ondernemer.voorkeur || {};
+
+            const totalSpots  = plaatsen.length;
+            const minRequired = ondernemers.reduce((sum, ondernemer) => {
+                // We gaan er vanuit dat alle plaatsen van deze VPH in de `plaatsen` array zitten.
+                const startSize = Ondernemer.isVast(ondernemer) ?
+                                  Ondernemer.getStartSize(ondernemer) :
+                                  1;
+                return sum + startSize;
+            }, 0);
+            const startSize = isVast ? Ondernemer.getStartSize(ondernemer) : 1;
+            const happySize = startSize === 1 ?
+                              Math.min(Ondernemer.getTargetSize(ondernemer), 2) :
+                              startSize;
+            const size      = totalSpots > minRequired ? happySize:
+                              totalSpots > 0           ? startSize :
+                                                         0;
+
+            const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
+            sizes.set(ondernemer, bestePlaatsen.length);
+
+            plaatsen = plaatsen.filter(plaats =>
+                !bestePlaatsen.find(({ plaatsId }) => plaatsId === plaats.plaatsId)
+            );
+            ondernemers.shift();
         }
 
-        if (bestePlaatsen.length) {
-            return bestePlaatsen.reduce((indeling, plaats) => {
-                return Toewijzing.add(indeling, ondernemer, plaats);
-            }, indeling);
-        } else if (anywhere) {
-            // TODO: Momenteel onbereikbare code — nog onbekend wat er moet gebeuren met
-            //       flexibel indelen voor VPH.
-            return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen, 'reject', startSize);
-        } else {
-            return Indeling._rejectOndernemer(indeling, ondernemer, ADJACENT_UNAVAILABLE);
-        }
+        return sizes;
     },
 
+    // `anywhere` wordt als argument meegegeven i.p.v. uit de ondernemers-
+    // voorkeuren gehaald, omdat deze functie ook gebruikt wordt in
+    // `_findBestePlaatsen` om een set voorkeuren uit te breiden naar het
+    // gewenste aantal plaatsen. Voor deze uitbreiding staat `anywhere` altijd
+    // op true omdat de gewenste plaatsen al bemachtigd is, maar het er nog niet
+    // genoeg zijn om de minimum wens te verzadigen.
     canBeAssignedTo: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
-        plaats: IMarktplaats
+        plaats: IMarktplaats,
+        anywhere: boolean
     ): boolean => {
-        const { anywhere = true }  = ondernemer.voorkeur || {};
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const voorkeurIds          = voorkeuren.map(({ plaatsId }) => plaatsId);
         const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);
@@ -158,46 +176,31 @@ const Indeling = {
                                     .filter(({ verplicht = false }) => verplicht)
                                     .map(({ brancheId }) => brancheId);
 
-        return !(
-            // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
-            verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
-            // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
-            Ondernemer.heeftEVI(ondernemer) && !plaats.verkoopinrichting ||
-            // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
-            !anywhere && !voorkeurIds.includes(plaats.plaatsId) ||
-            // Marktplaats is niet beschikbaar
-            !Indeling._isAvailable(indeling, plaats)
+        return Indeling._isAvailable(indeling, plaats) && (
+            // Als de plaats is toegekend zijn verdere controles onnodig.
+            Ondernemer.heeftVastePlaats(ondernemer, plaats) || !(
+                // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
+                verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
+                // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
+                Ondernemer.heeftEVI(ondernemer) && !plaats.verkoopinrichting ||
+                // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
+                !anywhere && !voorkeurIds.includes(plaats.plaatsId)
+            )
         );
     },
 
-    determineStrategy: (
-        indeling: IMarktindeling
-    ): 'optimistic' | 'conservative' => {
-        const minRequired = indeling.toewijzingQueue.reduce((sum, ondernemer) => {
-            const startSize  = Ondernemer.getStartSize(ondernemer);
-            const targetSize = Ondernemer.getTargetSize(ondernemer);
-            const happySize  = Ondernemer.isVast(ondernemer) && startSize >= 2 ?
-                               startSize :
-                               Math.min(targetSize, 2);
-
-            return sum + happySize;
-        }, 0);
-
-        return indeling.openPlaatsen.length >= minRequired ?
-               'optimistic' :
-               'conservative';
-    },
-
-    // Als niet alle vaste plaatsen van een VPH beschikbaar zijn zal hij
-    // moeten verplaatsen. Voor de berekening beschouwing we deze ondernemer
-    // als iemand die verplaatst.
-    hasToMove: (
+    // Als een VPH voorkeuren heeft opgegeven, dan geven zij daarmee aan dat ze
+    // willen verplaatsen. We beschouwen een VPH eveneens als een verplaatser
+    // als niet al hun vaste plaatsen beschikbaar zijn.
+    willMove: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): boolean => {
         const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
         const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats));
-        return beschikbaar.length < vastePlaatsen.length;
+        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+
+        return beschikbaar.length < vastePlaatsen.length || !!voorkeuren.length;
     },
 
     isAanwezig: (
@@ -225,53 +228,51 @@ const Indeling = {
     },
 
     performExpansion: (
-        indeling: IMarktindeling
+        indeling: IMarktindeling,
+        brancheId: BrancheId = undefined,
+        iteration: number = 1
     ): IMarktindeling => {
-        let queue = indeling.toewijzingen.filter(toewijzing =>
-            Ondernemer.wantsExpansion(toewijzing)
+        const queue = indeling.toewijzingen.filter(toewijzing =>
+            Ondernemer.wantsExpansion(toewijzing) && (
+                !brancheId ||
+                (brancheId === 'evi' && Ondernemer.heeftEVI(toewijzing.ondernemer)) ||
+                Ondernemer.heeftBranche(toewijzing.ondernemer, brancheId)
+            )
         );
 
-        indeling = { ...indeling, expansionIteration: 1 };
-
-        while (
-            indeling.openPlaatsen.length &&
-            queue.length &&
-            indeling.expansionIteration <= indeling.expansionLimit
+        if(
+            !indeling.openPlaatsen.length ||
+            !queue.length ||
+            iteration > indeling.expansionLimit
         ) {
-            queue = queue.reduce((newQueue, toewijzing) => {
-                const { ondernemer } = toewijzing;
+            // The people still in the queue have fewer places than desired. Check if they
+            // must be rejected because of their `minimum` setting.
+            return queue.reduce((indeling, toewijzing) => {
+                const { ondernemer, plaatsen } = toewijzing;
+                const { minimum = 0 } = ondernemer.voorkeur || {};
 
-                if (Ondernemer.canExpandInIteration(indeling, toewijzing)) {
-                    const plaatsFilter = (plaats: IMarktplaats): boolean => {
-                        return Indeling.canBeAssignedTo(indeling, ondernemer, plaats);
-                    };
-                    const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1, plaatsFilter);
-                    const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent);
-
-                    if (uitbreidingPlaats) {
-                        indeling   = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
-                        toewijzing = Toewijzing.find(indeling, ondernemer);
-                    }
-                }
-
-                if (Ondernemer.wantsExpansion(toewijzing)) {
-                    newQueue.push(toewijzing);
-                }
-
-                return newQueue;
-            }, []);
-
-            indeling.expansionIteration++;
+                return minimum > plaatsen.length ?
+                       Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
+                       indeling;
+            }, indeling);
         }
 
-        // The people still in the queue have fewer places than desired. Check if they
-        // must be rejected because of their `minimum` setting.
-        return queue.reduce((indeling, { ondernemer, plaatsen }) => {
-            const { minimum = 0 } = ondernemer.voorkeur || {};
-            return minimum > plaatsen.length ?
-                   Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
+        indeling = queue.reduce((indeling, toewijzing) => {
+            const { ondernemer } = toewijzing;
+
+            if (!Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
+                return indeling;
+            }
+
+            const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1);
+            const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent, 1, true);
+
+            return uitbreidingPlaats ?
+                   Toewijzing.add(indeling, ondernemer, uitbreidingPlaats) :
                    indeling;
         }, indeling);
+
+        return Indeling.performExpansion(indeling, brancheId, ++iteration);
     },
 
     _findBestGroup: (
@@ -282,6 +283,8 @@ const Indeling = {
         filter?: (plaats: IMarktplaats) => boolean,
         compare?: (best: IPlaatsvoorkeur[], current: IPlaatsvoorkeur[]) => number
     ): IMarktplaats[] => {
+        const minimumSize = Math.min(size, Ondernemer.getStartSize(ondernemer));
+
         return groups.reduce((result, group) => {
             if (group.length < size) {
                 const depth     = size - group.length;
@@ -292,14 +295,14 @@ const Indeling = {
                 group = Markt.groupByAdjacent(indeling, group)[0];
             }
 
-            if (group.length >= size) {
+            if (group.length >= minimumSize) {
                 // Stop `reduce` loop.
                 groups.length = 0;
                 // Reduceer het aantal plaatsen tot `size`.
                 // Pak de subset met de hoogste totale prioriteit.
                 return group.reduce((best, plaats, index) => {
                     const current = group.slice(index, index+size);
-                    return (!best.length || compare(best, current) < 0) ?
+                    return (!best.length || compare(current, best) < 0) ?
                            current :
                            best;
                 }, []);
@@ -313,70 +316,98 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
         openPlaatsen: IMarktplaats[],
-        size: number = 1
+        size: number = 1,
+        anywhere: boolean = false
     ): IMarktplaats[] => {
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
-        const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);
-
-        const plaatsFilter = (plaats: IMarktplaats): boolean => {
-            return Indeling.canBeAssignedTo(indeling, ondernemer, plaats);
-        };
+        const ondernemerBrancheIds = Ondernemer.getBrancheIds(ondernemer);
 
         // 1. Converteer geschikte plaatsen naar IPlaatsvoorkeur (zodat elke optie
         //    een `priority` heeft).
         // 2. Sorteer op branche overlap en `priority`.
-        const plaatsen = <IPlaatsvoorkeur[]> openPlaatsen
+        const plaatsen = <IPlaatsvoorkeurPlus[]> openPlaatsen
         .map(plaats => {
-            const { priority = 0 } = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
-            return { ...plaats, priority };
+            const { priority = 0 }  = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
+            const { branches = [] } = plaats;
+            // De branche score vertegenwoordigd een ranking in manier van overlap in
+            // ondernemers branches vs. plaats branches:
+            // 0. Geen overlap
+            // 1. Gedeeltelijke overlap:          ondernemer['x']      vs plaats['x', 'y']
+            // 2. Gedeeltelijk de andere kant op: ondernemer['x', 'y'] vs plaats['x']
+            // 3. Volledige overlap:              ondernemer['x', 'y'] vs plaats['x', 'y']
+            const plaatsBrancheCount     = branches.length;
+            const ondernemerBrancheCount = ondernemerBrancheIds.length;
+            const intersectCount         = intersection(branches, ondernemerBrancheIds).length;
+            const brancheScore           = !intersectCount                             ? 0 :
+                                           intersectCount - plaatsBrancheCount < 0     ? 1 :
+                                           ondernemerBrancheCount > plaatsBrancheCount ? 2 :
+                                                                                         3;
+            return {
+                ...plaats,
+                priority,
+                brancheScore
+            };
         })
         .sort((a, b) =>
-            intersection(b.branches, ondernemerBranches).length -
-            intersection(a.branches, ondernemerBranches).length
-            ||
+            b.brancheScore - a.brancheScore ||
             b.priority - a.priority
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)
-        const groups = Markt.groupByAdjacent(indeling, plaatsen, plaatsFilter);
+        const groups = Markt.groupByAdjacent(indeling, plaatsen, plaats =>
+            Indeling.canBeAssignedTo(indeling, ondernemer, plaats, anywhere)
+        );
         // 4. Geef de meest geschikte groep terug.
         return Indeling._findBestGroup(
             indeling,
             ondernemer,
             groups,
             size,
-            plaatsFilter,
-            (best, current) => {
-                // TODO: Kijkt enkel naar `priority`, maar branche overlap is belangrijker.
-                const bestScore = best.map(({ priority }) => priority).reduce(sum, 0);
-                const curScore  = current.map(({ priority }) => priority).reduce(sum, 0);
-                return bestScore - curScore;
+            plaats => Indeling.canBeAssignedTo(indeling, ondernemer, plaats, true),
+            (a: IPlaatsvoorkeurPlus[], b: IPlaatsvoorkeurPlus[]) => {
+                // Kijk eerst of er een betere branche overlap is...
+                let aScore = a.map(pl => pl.brancheScore).reduce(sum, 0);
+                let bScore = b.map(pl => pl.brancheScore).reduce(sum, 0);
+                if (bScore - aScore) {
+                    return bScore - aScore;
+                }
+                // ... en kijk anders naar de prioriteit.
+                aScore = a.map(pl => pl.priority).reduce(sum, 0);
+                bScore = b.map(pl => pl.priority).reduce(sum, 0);
+                return bScore - aScore;
             }
         );
     },
 
-    _findBestePlaatsenForVPH: (
+    // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
+    // 0. VPHs die niet willen verplaatsen.
+    // 1. Ondernemers die willen bakken (kan ook een VPH zijn die wil verplaatsen).
+    // 2. Ondernemers met een EVI (kan ook een VPH zijn die wil verplaatsen).
+    // 3. VPHs die willen/moeten verplaatsen.
+    // 4. Sollicitanten in een branche.
+    // 5. Sollicitanten zonder branche (in principe niet de bedoeling).
+    _getStatusGroup: (
         indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
-        size: number = 1
-    ): IMarktplaats[] => {
-        const plaatsFilter = (plaats: IMarktplaats): boolean => {
-            return Indeling.canBeAssignedTo(indeling, ondernemer, plaats);
-        };
-        const voorkeuren   = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
-        const groups       = Markt.groupByAdjacent(indeling, voorkeuren, plaatsFilter);
-
-        return Indeling._findBestGroup(
-            indeling,
-            ondernemer,
-            groups,
-            size,
-            plaatsFilter,
-            (best, current) => {
-                const bestScore = best.map(({ priority }) => priority).reduce(sum, 0);
-                const curScore  = current.map(({ priority }) => priority).reduce(sum, 0);
-                return bestScore - curScore;
-            }
-        );
+        ondernemer: IMarktondernemer
+    ): number => {
+        return Ondernemer.heeftVastePlaatsen(ondernemer) &&
+               !Indeling.willMove(indeling, ondernemer)      ? 0 :
+               Ondernemer.heeftBranche(ondernemer, 'bak')    ? 1 :
+               Ondernemer.heeftEVI(ondernemer)               ? 2 :
+               Ondernemer.heeftVastePlaatsen(ondernemer)     ? 3 :
+               Ondernemer.heeftBranche(ondernemer)           ? 4 :
+                                                               5;
+    },
+    // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt:
+    // 0. Ondernemer is VPH.
+    // 1. Ondernemer die voorkomt in de A-lijst.
+    // 2. Ondernemer die niet voorkomt in de A-lijst.
+    _getListGroup: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): number => {
+        return Ondernemer.heeftVastePlaatsen(ondernemer) ? 0 :
+               indeling.aLijst.includes(ondernemer)      ? 1 :
+                                                           2;
     },
 
     _isAvailable: (
@@ -398,6 +429,7 @@ const Indeling = {
         const afwijzing = indeling.afwijzingen.find(({ erkenningsNummer }) =>
             erkenningsNummer === ondernemer.erkenningsNummer
         );
+
         if( !afwijzing ) {
             indeling.afwijzingen = indeling.afwijzingen.concat({
                 marktId          : indeling.marktId,
@@ -409,6 +441,23 @@ const Indeling = {
         }
 
         return indeling;
+    },
+
+    _compareOndernemers: (
+        indeling: IMarktindeling,
+        a: IMarktondernemer,
+        b: IMarktondernemer
+    ): number => {
+        // Sorteer eerst op status groep...
+        const sort1 = Indeling._getStatusGroup(indeling, a) -
+                      Indeling._getStatusGroup(indeling, b);
+        // ... dan op aanwezigheid in de A-lijst...
+        const sort2 = Indeling._getListGroup(indeling, a) -
+                      Indeling._getListGroup(indeling, b);
+        // ... dan op anciënniteitsnummer.
+        const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
+
+        return sort1 || sort2 || sort3;
     }
 };
 

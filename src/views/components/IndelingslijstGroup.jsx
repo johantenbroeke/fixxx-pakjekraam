@@ -3,6 +3,7 @@ const Plaats = require('./Plaats.tsx').default;
 const PlaatsVPH = require('./PlaatsVPH');
 const PropTypes = require('prop-types');
 const React = require('react');
+const { ondernemerIsAfgemeld, ondernemerIsAfgemeldPeriode, vphIsGewisseld } = require('../../model/ondernemer.functions');
 
 const IndelingslijstGroup = ({
     page,
@@ -19,9 +20,10 @@ const IndelingslijstGroup = ({
 }) => {
     let first = true;
 
-    const renderPlaats = props => {
-        return type === 'vasteplaatshouders' ? <PlaatsVPH {...props} /> : <Plaats {...props} />;
-    };
+    // const renderPlaats = props => {
+    //     return type === 'vasteplaatshouders' ? <Plaats {...props} /> : <Plaats {...props} />;
+    // };
+
     const classes = page.class.split(' ').map(cl => {
         return 'IndelingslijstGroup--markt-' + markt.id + ' IndelingslijstGroup--' + cl.trim();
     });
@@ -55,26 +57,28 @@ const IndelingslijstGroup = ({
                 </thead>
                 <tbody className="IndelingslijstGroup__wrapper">
                     {page.plaatsList.map((plaatsNr, i) => {
-                        const vasteOndernemer = vphl[plaatsNr];
+                        const vph = vphl[plaatsNr];
 
-                        const aanmelding =
-                            vasteOndernemer &&
-                            aanmeldingen.find(rsvp => rsvp.erkenningsNummer === vasteOndernemer.erkenningsNummer);
+                        const aanmeldingVph = vph ? aanmeldingen.find(rsvp => rsvp.erkenningsNummer === vph.erkenningsNummer) : null;
 
                         const toewijzing = (toewijzingen || []).find(({ plaatsen }) => plaatsen.includes(plaatsNr));
+
+                        const ondernemer = toewijzing ? ondernemers.find(
+                            ({ erkenningsNummer }) => erkenningsNummer === toewijzing.erkenningsNummer,
+                        ) : null;
 
                         const plaatsProps = {
                             first,
                             key: plaatsNr,
-                            vph: vphl[plaatsNr],
                             plaats: plaatsList[plaatsNr],
                             obstakels: obstakelList,
-                            ondernemer: toewijzing
-                                ? ondernemers.find(
-                                      ({ erkenningsNummer }) => erkenningsNummer === toewijzing.erkenningsNummer,
-                                  )
-                                : null,
-                            aanmelding,
+                            ondernemer,
+                            ondernemerIsGewisseld: ondernemer && ondernemer.status === 'vpl' ? vphIsGewisseld(ondernemer, toewijzingen) : false,
+                            vph,
+                            vphIsGewisseld: vph ? vphIsGewisseld(vph, toewijzingen) : false,
+                            vphIsAfgemeld: aanmeldingVph ? ondernemerIsAfgemeld(vph, [aanmeldingVph], datum) : false,
+                            vphIsAfgemeldPeriode: vph ? ondernemerIsAfgemeldPeriode(vph, datum) : false,
+                            aanmelding: aanmeldingVph,
                             markt,
                             datum,
                             type,
@@ -86,7 +90,7 @@ const IndelingslijstGroup = ({
                             if (obstakelList[plaatsNr] && obstakelList[plaatsNr].length > 0) {
                                 return (
                                     <React.Fragment key={plaatsNr}>
-                                        {renderPlaats(plaatsProps)}
+                                        <Plaats {...plaatsProps} />
                                         <ObstakelList obstakelList={obstakelList[plaatsNr]} />
                                         {(first = true)}
                                     </React.Fragment>
@@ -94,7 +98,7 @@ const IndelingslijstGroup = ({
                             } else {
                                 return (
                                     <React.Fragment key={plaatsNr}>
-                                        {renderPlaats(plaatsProps)}
+                                        <Plaats {...plaatsProps} />
                                         {(first = false)}
                                     </React.Fragment>
                                 );

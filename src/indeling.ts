@@ -4,10 +4,6 @@ import {
     IMarktindelingSeed
 } from './markt.model';
 
-import {
-    intersects
-} from './util';
-
 import Indeling from './allocation/indeling';
 import Ondernemer from './allocation/ondernemer';
 
@@ -18,70 +14,38 @@ import Ondernemer from './allocation/ondernemer';
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
     let indeling = Indeling.init(markt);
 
-    // Stap 1a: Deel vasteplaatshouders in
-    // -----------------------------------
-    indeling = indeling.toewijzingQueue
-    .filter(ondernemer => {
-        return Ondernemer.heeftVastePlaatsen(ondernemer) &&
-              !Ondernemer.wantsToMove(indeling, ondernemer) &&
-              !Indeling.hasToMove(indeling, ondernemer);
-    })
-    .reduce(Indeling.assignVastePlaatsen, indeling);
-
-    // Stap 1b: Deel VPH in die willen verplaatsen
-    // -------------------------------------------
-    indeling = indeling.toewijzingQueue
-    .filter(Ondernemer.heeftVastePlaatsen)
-    .reduce(Indeling.assignVastePlaatsen, indeling);
-
-    // Stap 2: Deel ondernemers met een verkoopinrichting in
-    // -----------------------------------------------------
-    indeling = indeling.toewijzingQueue
-    .filter(Ondernemer.heeftEVI)
-    .reduce((indeling, ondernemer) => {
-        const plaatsen = indeling.openPlaatsen.filter(plaats => {
-            const { verkoopinrichting = [] } = ondernemer.voorkeur || {};
-            return intersects(plaats.verkoopinrichting, verkoopinrichting);
-        });
-
-        return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
-    }, indeling);
-
-    // Stap 3: Deel branche ondernemers in
-    // -----------------------------------
-    indeling = indeling.toewijzingQueue
-    .filter(Ondernemer.heeftBranche)
-    .reduce((indeling, ondernemer) => {
-        const { branches = [] } = ondernemer.voorkeur || {};
-        const plaatsen = indeling.openPlaatsen.filter(plaats =>
-            intersects(plaats.branches, branches)
-        );
-
-        return Indeling.assignPlaats(indeling, ondernemer, plaatsen, 'ignore');
-    }, indeling);
-
-    // Stap 4: Deel sollicitanten in
-    // -----------------------------
+    // Deel ondernemers in
+    // -------------------
+    // - VPHs met meer dan 1 plaats krijgen deze toegewezen.
+    // - VPHs met 1 plaats en sollicitanten krijgen maximaal 2 plaatsen (afhankelijk van hun
+    //   voorkeuren, en de hoeveelheid beschikbare ruimte op de markt).
+    //
+    // Voor de prioritering van indelen, zie `Indeling._compareOndernemers` die in
+    // `Indeling.init` wordt gebruikt om alle aanwezige ondernemers te sorteren.
+    const sizes = Indeling.calcSizes(indeling);
     indeling = indeling.toewijzingQueue
     .reduce((indeling, ondernemer) => {
-        return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen);
+        return Indeling.assignPlaatsen(indeling, ondernemer, sizes);
     }, indeling);
 
-    // Stap 5: Verwerk uitbreidingsvoorkeuren
-    // --------------------------------------
+    // Voer uitbreidingen uit
+    // ----------------------
+    // Dit gaat in iteraties: iedereen die een 3de plaats wil krijgt deze aangeboden alvorens
+    // iedereen die een 4de plaats wil hiertoe de kans krijgt.
     indeling = Indeling.performExpansion(indeling);
 
-    // Stap 6: Probeer afwijzingen opnieuw
-    // -----------------------------------
+    // Probeer afwijzingen opnieuw
+    // ---------------------------
     // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
-    // eerder afgewezen ondernemers opnieuw in te delen omdat deze mogelijk passen op
+    // eerder afgewezen sollictanten opnieuw in te delen omdat deze mogelijk passen op
     // de vrijgekomen plaatsen.
-    /*indeling = indeling.afwijzingen
-    .reduce((indeling, afwijzing) => {
-        const { ondernemer } = afwijzing;
-        return Indeling.assignPlaats(indeling, ondernemer, indeling.openPlaatsen);
+    indeling = indeling.afwijzingen
+    .reduce((indeling, { ondernemer }) => {
+        return !Ondernemer.isVast(ondernemer) ?
+               Indeling.assignPlaatsen(indeling, ondernemer) :
+               indeling;
     }, indeling);
-    indeling = Indeling.performExpansion(indeling);*/
+    indeling = Indeling.performExpansion(indeling);
 
     return indeling;
 };

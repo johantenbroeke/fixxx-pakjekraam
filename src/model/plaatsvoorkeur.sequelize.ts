@@ -9,7 +9,7 @@ export const initPlaatsvoorkeur = (sequelize: Sequelize) => {
         },
         erkenningsNummer: {
             type: DataTypes.STRING,
-            unique: 'key',
+            // unique: 'key',
         },
         plaatsId: {
             type: DataTypes.STRING,

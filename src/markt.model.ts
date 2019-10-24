@@ -55,9 +55,6 @@ export interface IMarktindelingSeed {
 export interface IMarktindeling extends IMarkt, IMarktindelingSeed {
     toewijzingQueue: IMarktondernemer[];
     openPlaatsen: IMarktplaats[];
-    expansionQueue: IToewijzing[];
-    expansionIteration: number;
-
     afwijzingen: IAfwijzing[];
     toewijzingen: IToewijzing[];
 }
@@ -140,7 +137,6 @@ export interface IToewijzing {
     marktDate: string;
     plaatsen: PlaatsId[];
     erkenningsNummer: ErkenningsNummer;
-
     ondernemer?: IMarktondernemer;
 }
 

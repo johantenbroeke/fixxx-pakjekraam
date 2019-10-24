@@ -1,4 +1,5 @@
 import {
+    BrancheId,
     IMarkt,
     IMarktplaats,
     IObstakelBetween,
@@ -34,12 +35,10 @@ const Markt = {
         const row = Markt._findRowForPlaatsen(rows, plaatsIds);
 
         return plaatsIds
-        .map(plaatsId => {
-            return [].concat(
-                Markt._getAdjacent(row, plaatsId, -1, depth, obstakels, filter),
-                Markt._getAdjacent(row, plaatsId, 1, depth, obstakels, filter)
-            );
-        })
+        .map(plaatsId => [
+            ...Markt._getAdjacent(row, plaatsId, -1, depth, obstakels, filter),
+            ...Markt._getAdjacent(row, plaatsId, 1, depth, obstakels, filter)
+        ])
         .reduce(flatten, [])
         // We need to filter out duplicates, and places that are included
         // in the `plaatsIds` argument. This occurs when multiple IDs are
@@ -120,6 +119,20 @@ const Markt = {
         return plaatsen.length ?
                Markt.groupByAdjacent(markt, plaatsen, filter, result) :
                result;
+    },
+
+    heeftBranche: (
+        plaats: IMarktplaats,
+        brancheId?: BrancheId
+    ): boolean => {
+        const { branches: brancheIds = [] } = plaats;
+        return brancheId ?
+               brancheIds.includes(brancheId) :
+               !!brancheIds.length;
+    },
+
+    heeftEVI: (plaats: IMarktplaats): boolean => {
+        return !!(plaats.verkoopinrichting && plaats.verkoopinrichting.length);
     },
 
     // Helper function for `getAdjacentPlaatsen`. All the `plaatsIds` should

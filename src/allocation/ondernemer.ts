@@ -1,4 +1,5 @@
 import {
+    BrancheId,
     IBranche,
     IMarkt,
     IMarktindeling,
@@ -8,37 +9,31 @@ import {
     IToewijzing
 } from '../markt.model';
 
-import {
-    sum
-} from '../util';
-
-const priorityCompare = (voorkeurA?: IPlaatsvoorkeur, voorkeurB?: IPlaatsvoorkeur): number => {
-    const prioA = voorkeurA && typeof voorkeurA.priority === 'number' ? voorkeurA.priority : 0;
-    const prioB = voorkeurB && typeof voorkeurB.priority === 'number' ? voorkeurB.priority : 0;
-
-    return prioB - prioA;
-};
-
 const Ondernemer = {
     canExpandInIteration: (
         indeling: IMarktindeling,
+        iteration: number,
         toewijzing: IToewijzing
     ): boolean => {
         const { ondernemer, plaatsen } = toewijzing;
         const currentSize = plaatsen.length;
         const targetSize  = Ondernemer.getTargetSize(ondernemer);
-        const maxSize     = Math.min(targetSize, indeling.expansionIteration);
+        const maxSize     = Math.min(targetSize, iteration);
 
         return currentSize < maxSize &&
                !Ondernemer.isInMaxedOutBranche(indeling, ondernemer);
+    },
+
+    getBrancheIds: (ondernemer: IMarktondernemer): BrancheId[] => {
+        const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
+        return brancheIds;
     },
 
     getBranches: (
         markt: IMarkt,
         ondernemer: IMarktondernemer
     ): IBranche[] => {
-        const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
-
+        const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheIds.reduce((branches, brancheId) => {
             const branche = markt.branches.find(b => b.brancheId === brancheId);
             if (branche) {
@@ -55,17 +50,20 @@ const Ondernemer = {
     ): IPlaatsvoorkeur[] => {
         // Merge de vaste plaatsen van deze ondernemer...
         const vastePlaatsen = Ondernemer.getVastePlaatsen(markt, ondernemer);
-        // ...samen met hun verplaatsingsvoorkeuren. Sorteer aflopend op prioriteit...
+        // ...met hun verplaatsingsvoorkeuren. Sorteer aflopend op prioriteit...
         const voorkeuren = [
             ...(includeVastePlaatsen ? vastePlaatsen : []),
             ...markt.voorkeuren.filter(({ erkenningsNummer }) => erkenningsNummer === ondernemer.erkenningsNummer)
-        ].sort(priorityCompare);
-        // ...en elimineer duplicaten na sortering.
+        ].sort((a, b) =>
+            (b.priority || 0) - (a.priority || 0)
+        );
+        // ...en elimineer duplicaten na sortering. Als `includeVastePlaatsen === false`
+        // dan worden ook de vaste plaatsen uit de voorkeuren gehaald.
         return voorkeuren.reduce((unique, voorkeur) => {
             if (
-                !~unique.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId) && (
+                !unique.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId) && (
                     includeVastePlaatsen ||
-                    !~vastePlaatsen.findIndex(({ plaatsId }) => plaatsId === voorkeur.plaatsId)
+                    !vastePlaatsen.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId)
                 )
             ) {
                 unique.push(voorkeur);
@@ -98,9 +96,14 @@ const Ondernemer = {
         }));
     },
 
-    heeftBranche: (ondernemer: IMarktondernemer): boolean => {
-        const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
-        return !!brancheIds.length;
+    heeftBranche: (
+        ondernemer: IMarktondernemer,
+        brancheId?: BrancheId
+    ): boolean => {
+        const brancheIds = Ondernemer.getBrancheIds(ondernemer);
+        return brancheId ?
+               brancheIds.includes(brancheId) :
+               !!brancheIds.length;
     },
 
     heeftEVI: (ondernemer: IMarktondernemer): boolean => {
@@ -115,7 +118,7 @@ const Ondernemer = {
         if (!ondernemer.plaatsen) {
             return false;
         }
-        return !!ondernemer.plaatsen.find(plaatsId => plaatsId === plaats.plaatsId);
+        return !!ondernemer.plaatsen.includes(plaats.plaatsId);
     },
 
     heeftVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
@@ -128,7 +131,7 @@ const Ondernemer = {
         ondernemer: IMarktondernemer,
         branche: IBranche
     ): boolean => {
-        const { branches: brancheIds = [] } = ondernemer.voorkeur || {};
+        const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheIds.includes(branche.brancheId);
     },
 
@@ -147,8 +150,7 @@ const Ondernemer = {
                 Ondernemer.isInBranche(ondernemer, branche)
             );
             const branchePlaatsen = brancheToewijzingen
-                                    .map(toewijzing => toewijzing.plaatsen.length)
-                                    .reduce(sum, 0);
+                                    .reduce((sum, toewijzing) => sum + toewijzing.plaatsen.length, 0);
 
             return maximumToewijzingen && brancheToewijzingen.length >= maximumToewijzingen ||
                    maximumPlaatsen     && branchePlaatsen >= maximumPlaatsen;
@@ -164,14 +166,6 @@ const Ondernemer = {
         const targetSize               = Ondernemer.getTargetSize(ondernemer);
         const currentSize              = plaatsen.length;
         return currentSize < targetSize;
-    } ,
-
-    wantsToMove: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): boolean => {
-        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
-        return !!voorkeuren.length;
     }
 };
 
