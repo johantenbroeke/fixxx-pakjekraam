@@ -7,7 +7,7 @@ import {
     getIndelingVoorkeur,
     getAanmeldingenByOndernemer,
     getToewijzingenByOndernemerEnMarkt,
-    getOndernemerVoorkeuren,
+    getPlaatsvoorkeurenOndernemer,
     getMededelingen,
 } from '../pakjekraam-api';
 
@@ -25,7 +25,7 @@ export const marktDetailController = (
 
     const messages = getQueryErrors(req.query);
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
-    const ondernemerVoorkeurenPromise = getOndernemerVoorkeuren(erkenningsNummer);
+    const ondernemerVoorkeurenPromise = getPlaatsvoorkeurenOndernemer(erkenningsNummer);
 
     // const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
 

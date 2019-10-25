@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { getMarktondernemer } from '../makkelijkemarkt-api';
 import {
     getMarkten,
-    getOndernemerVoorkeuren,
+    getPlaatsvoorkeurenOndernemer,
     getAanmeldingenByOndernemer,
     getToewijzingenByOndernemer,
 } from '../pakjekraam-api';
@@ -17,7 +17,7 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
 
     const messages = getQueryErrors(req.query);
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
-    const ondernemerVoorkeurenPromise = getOndernemerVoorkeuren(erkenningsNummer);
+    const ondernemerVoorkeurenPromise = getPlaatsvoorkeurenOndernemer(erkenningsNummer);
 
     const marktenPromise = getMarkten()
         .then(markten => {

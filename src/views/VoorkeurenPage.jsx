@@ -33,6 +33,7 @@ class VoorkeurenPage extends React.Component {
             marktDate,
             user,
             role,
+            plaatsvoorkeuren,
             ondernemer,
             markt,
             sollicitatie,
@@ -50,6 +51,8 @@ class VoorkeurenPage extends React.Component {
         ).map(row =>
             row.map(plaatsId => marktPlaatsen.find(plaats => plaats.plaatsId === plaatsId)).map(plaats => plaats),
         );
+
+        console.log(plaatsvoorkeuren);
 
         return (
             <Page messages={this.props.messages}>
@@ -70,7 +73,7 @@ class VoorkeurenPage extends React.Component {
                         <p dangerouslySetInnerHTML={{ __html: mededeling[markt.fase] }} />
                     ) : null}
                     <PlaatsvoorkeurenForm
-                        plaatsvoorkeuren={this.props.plaatsvoorkeuren}
+                        plaatsvoorkeuren={plaatsvoorkeuren}
                         ondernemer={this.props.ondernemer}
                         markt={this.props.markten[0]}
                         indelingVoorkeur={indelingVoorkeur}

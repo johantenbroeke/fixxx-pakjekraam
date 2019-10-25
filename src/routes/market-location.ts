@@ -3,7 +3,7 @@ import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import {
     getIndelingVoorkeur,
     getMarktplaatsen,
-    getOndernemerVoorkeuren,
+    getPlaatsvoorkeurenOndernemer,
     getMededelingen,
 } from '../pakjekraam-api';
 import { getQueryErrors, internalServerErrorPage, HTTP_CREATED_SUCCESS } from '../express-util';
@@ -20,6 +20,7 @@ export const marketLocationPage = (
     currentMarktId: string,
     role: string,
 ) => {
+
     const messages = getQueryErrors(req.query);
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
     const marktenPromise = ondernemerPromise
@@ -45,15 +46,13 @@ export const marketLocationPage = (
     Promise.all([
         ondernemerPromise,
         marktenPromise,
-        getOndernemerVoorkeuren(erkenningsNummer),
-        // getMarktPaginas(currentMarktId),
-        // getMarktProperties(currentMarktId),
-        // getMarktplaatsen(currentMarktId),
+        getPlaatsvoorkeurenOndernemer(erkenningsNummer),
         getIndelingVoorkeur(erkenningsNummer, currentMarktId),
         getMarktEnriched(currentMarktId),
-        getMededelingen(),
+        getMededelingen(),76
     ]).then(
         ([ondernemer, markten, plaatsvoorkeuren, indelingVoorkeur, markt, mededelingen]) => {
+            console.log(plaatsvoorkeuren);
             const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
             res.render('VoorkeurenPage', {
                 ondernemer,

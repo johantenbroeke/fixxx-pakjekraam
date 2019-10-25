@@ -280,7 +280,7 @@ export const getIndelingVoorkeuren = (
         );
 };
 
-export const getOndernemerVoorkeuren = (erkenningsNummer: string): Promise<IPlaatsvoorkeur[]> =>
+export const getPlaatsvoorkeurenOndernemer = (erkenningsNummer: string): Promise<IPlaatsvoorkeur[]> =>
     plaatsvoorkeur.findAll<Plaatsvoorkeur>({
         where: { erkenningsNummer },
     });
