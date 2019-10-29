@@ -52,7 +52,6 @@ export class EmailSollPlaatsConfirm extends React.Component {
                 </p>
 
                 <EmailTable data={tableData} />
-
                 <EmailContent>
                     <p style={fontGray}>
                         Als u onverwachts toch niet kunt komen verzoeken wij u dit uiterlijk 08.45 uur aan de

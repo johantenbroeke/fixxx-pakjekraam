@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Request, Response } from 'express';
 import { getMailContext, getMarktInfo } from '../pakjekraam-api';
-import { EmailIndeling } from '../views/EmailIndeling';
+import { EmailIndeling } from '../views/components/email/EmailIndeling';
 import { internalServerErrorPage } from '../express-util';
 import { mail } from '../mail.js';
 import { formatDate } from '../util';

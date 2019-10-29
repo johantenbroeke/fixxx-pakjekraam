@@ -11,6 +11,7 @@ const OndernemerMarktTile = ({
     toewijzingVandaag,
     toewijzingMorgen,
     today,
+    ondernemer,
     tomorrow,
 }) => {
     return (
@@ -18,12 +19,13 @@ const OndernemerMarktTile = ({
             <h2>{markt.naam}</h2>
             <a className="background-link" href={`/markt-detail/${markt.id}`} />
             <Button label={`Ga naar ${markt.naam}`} href={`/markt-detail/${markt.id}`} />
-            <Uitslag time={new Date()} today={today} markt={markt} tomorrow={tomorrow} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
+            <Uitslag time={new Date()} today={today} ondernemer={ondernemer} markt={markt} tomorrow={tomorrow} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
         </div>
     );
 };
 OndernemerMarktTile.propTypes = {
     markt: PropTypes.object.isRequired,
+    ondernemer: PropTypes.object.isRequired,
     aanmeldingVandaag: PropTypes.object,
     aanmeldingMorgen: PropTypes.object,
     toewijzingVandaag: PropTypes.object,

@@ -53,11 +53,6 @@ class OndernemerDashboard extends React.Component {
             return markt;
         });
 
-        // const marktenPlusGeopend = marktenPlusToewijzing.map(markt => {
-        //     markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
-        //     return markt;
-        // });
-
         return (
             <Page messages={messages}>
                 <Header user={ondernemer} logoUrl="/dashboard/">
@@ -80,7 +75,7 @@ class OndernemerDashboard extends React.Component {
                             <div key={markt.id} className="col-1-2">
                                 <OndernemerMarktTile
                                     markt={markt}
-                                    // geopend={markt.geopend}
+                                    ondernemer={ondernemer}
                                     aanmeldingVandaag={markt.aanmeldingVandaag}
                                     aanmeldingMorgen={markt.aanmeldingMorgen}
                                     toewijzingVandaag={markt.toewijzingVandaag}

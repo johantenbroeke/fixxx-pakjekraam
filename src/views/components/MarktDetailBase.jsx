@@ -8,7 +8,7 @@ const MarktDayLink = require('./MarktDayLink');
 const MarktDetailHeader = require('./MarktDetailHeader');
 const PrintButton = require('./PrintButton');
 
-const MarktDetailBase = ({ children, bodyClass, title, markt, type, datum, buttonLabel, showDate }) => {
+const MarktDetailBase = ({ children, bodyClass, title, markt, type, datum, buttonLabel, showDate, fase }) => {
     const relativeDatum = d => {
         return formatDayOfWeek(d) + ', ' + new Date(d).getDate() + ' ' + formatMonth(d);
     };
@@ -26,8 +26,9 @@ const MarktDetailBase = ({ children, bodyClass, title, markt, type, datum, butto
                 )}
                 <div className="MarktDetailHeader__title-wrapper">
                     <h1 className="MarktDetailHeader__title">
-                        {markt.naam}
-                        {title ? ': ' + title : ''}
+                        { markt.naam }
+                        { title ? ': ' + title : '' }
+                        { fase ? ' fase: ' + fase : '' }
                         {showDate && <span className="MarktDetailHeader__title-sub">{relativeDatum(datum)}</span>}
                     </h1>
                     {type && <PrintButton title={`Print ${buttonLabel ? buttonLabel : type}`} />}
@@ -46,6 +47,7 @@ MarktDetailBase.propTypes = {
     bodyClass: PropTypes.string,
     markt: PropTypes.object,
     title: PropTypes.string,
+    fase: PropTypes.string,
     datum: PropTypes.string,
     type: PropTypes.string,
     buttonLabel: PropTypes.string,

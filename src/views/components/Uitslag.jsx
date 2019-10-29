@@ -1,9 +1,9 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 const AlertLine = require('./AlertLine');
-const { formatDate } = require('../../util.ts');
+const { formatDate, getMaDiWoDoOfToday } = require('../../util.ts');
 
-const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen }) => {
+const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen, ondernemer }) => {
     function plaatsenDuiding(plaatsen) {
         if (plaatsen.length == 1) {
             return `Plaats: ${plaatsen.join(', ')}`;
@@ -12,19 +12,27 @@ const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMo
         }
     }
 
+    const sollicitatie = ondernemer.sollicitaties.find(sollicitatieOndernemer => {
+        return sollicitatieOndernemer.markt.id == markt.id && !sollicitatieOndernemer.doorgehaald;
+    });
+
+    markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
+
     return (
         <div>
-            {time.getHours() > 21 && time.getHours() < 24 ? (
+            {time.getHours() > 21 && time.getHours() < 24 || !markt.geopend ? (
+
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Morgen ({formatDate(tomorrow)})
-                        {aanmeldingMorgen.attending ? (
-                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--aangemeld">aangemeld</span>
+                        { (aanmeldingMorgen && aanmeldingMorgen.attending && sollicitatie.status == 'soll') ||
+                        ((!aanmeldingMorgen || aanmeldingMorgen.attending) && sollicitatie.status == 'vpl') ? (
+                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--aangemeld"> aangemeld</span>
                         ) : (
-                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--niet-aangemeld">niet aangemeld</span>
+                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--niet-aangemeld"> niet aangemeld</span>
                         )}
                     </h4>
-                    {!toewijzingMorgen && markt.fase === 'live' ? (
+                    { toewijzingMorgen && markt.fase === 'live' ? (
                         <AlertLine
                             type="success"
                             title="Ingedeeld"
@@ -36,12 +44,13 @@ const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                         <span> geen toewijzing </span>
                     ) : null}
                 </div>
-            ) : null}
-            {time.getHours() >= 0 && time.getHours() < 18 && aanmeldingVandaag ? (
+            ) : null }
+            {time.getHours() >= 0 && time.getHours() < 18 && markt.geopend ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Vandaag ({formatDate(today)})
-                        {aanmeldingVandaag.attending ? (
+                        { (aanmeldingVandaag && aanmeldingVandaag.attending && sollicitatie.status == 'soll') ||
+                        ((!aanmeldingVandaag || aanmeldingVandaag.attending) && sollicitatie.status == 'vpl') ? (
                             <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--aangemeld">
                                 {' '}
                                 aangemeld
@@ -63,7 +72,7 @@ const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                         />
                     ) : markt.fase === 'live' ? (
                         <span>Geen toewijzing </span>
-                    ) : null}
+                    ) : null }
                 </div>
             ) : null}
         </div>
@@ -75,6 +84,7 @@ Content.propTypes = {
     today: PropTypes.string,
     tomorrow: PropTypes.string,
     markt: PropTypes.object,
+    ondernemer: PropTypes.object,
     aanmeldingVandaag: PropTypes.object,
     aanmeldingMorgen: PropTypes.object,
     toewijzingVandaag: PropTypes.object,

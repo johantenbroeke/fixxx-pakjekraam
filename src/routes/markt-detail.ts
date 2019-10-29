@@ -27,9 +27,6 @@ export const marktDetailController = (
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
     const ondernemerVoorkeurenPromise = getPlaatsvoorkeurenOndernemer(erkenningsNummer);
 
-    // const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
-
-
     Promise.all([
         ondernemerPromise,
         ondernemerVoorkeurenPromise,
@@ -55,7 +52,6 @@ export const marktDetailController = (
                     messages,
                     toewijzingen,
                     mededelingen,
-                    eggie: req.query.eggie || false,
                 });
             },
             err => httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR)(err),

@@ -70,9 +70,7 @@ class OndernemerMarktDetailPage extends React.Component {
         return (
             <Page messages={messages}>
                 <Header user={ondernemer} logoUrl="../../dashboard/">
-                    <a className="Header__nav-item" href="../../dashboard/">
-                        Mijn markten
-                    </a>
+                    <a className="Header__nav-item" href="../../dashboard/">Mijn markten</a>
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
@@ -87,9 +85,9 @@ class OndernemerMarktDetailPage extends React.Component {
                                 <a href={`/algemene-voorkeuren/${markt.id}/`}>marktprofiel</a>.
                             </span>
                         </Alert>
-                    ) : null}
+                    ) : null }
 
-                    <Uitslag time={new Date()} today={today()} tomorrow={tomorrow()} markt={markt} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
+                    <Uitslag time={new Date()} ondernemer={ondernemer} today={today()} tomorrow={tomorrow()} markt={markt} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
 
                     <div className="row row--responsive">
                         <div className="col-1-2">
