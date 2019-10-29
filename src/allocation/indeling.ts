@@ -327,8 +327,13 @@ const Indeling = {
         // 2. Sorteer op branche overlap en `priority`.
         const plaatsen = <IPlaatsvoorkeurPlus[]> openPlaatsen
         .map(plaats => {
-            const { priority = 0 }  = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId) || {};
-            const { branches = [] } = plaats;
+            const voorkeur = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId);
+            // De vaste plaatsen hebben geen prioriteit, maar moeten wel boven gewone plaatsen
+            // komen in de sortering. Een priority -1 verstoort de sortering, dus doen we `+1`
+            // voor alle voorkeursplaatsen, maken we de vaste plaatsen `1`, en krijgen gewone
+            // plaatsen priority `0`.
+            const priority = voorkeur ? voorkeur.priority+1 || 1 : 0;
+            const branches = plaats.branches || [];
             // De branche score vertegenwoordigd een ranking in manier van overlap in
             // ondernemers branches vs. plaats branches:
             // 0. Geen overlap
@@ -371,8 +376,8 @@ const Indeling = {
                     return bScore - aScore;
                 }
                 // ... en kijk anders naar de prioriteit.
-                aScore = a.map(pl => pl.priority).reduce(sum, 0);
-                bScore = b.map(pl => pl.priority).reduce(sum, 0);
+                aScore = a.map(pl => pl.priority || 0).reduce(sum, 0);
+                bScore = b.map(pl => pl.priority || 0).reduce(sum, 0);
                 return bScore - aScore;
             }
         );

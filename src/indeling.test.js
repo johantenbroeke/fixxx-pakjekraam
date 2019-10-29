@@ -1458,3 +1458,24 @@ describe('Een ondernemer die is afgewezen', () => {
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 });
+
+describe('Bugfix voor', () => {
+    it('issue #508', () => {
+        // VPHs zonder voorkeuren maar met `anywhere: true` werden op de eerste
+        // willekeurige vrije plaatsen neergezet, ook al waren hun eigen plaatsen
+        // beschikbaar.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers : [
+                { sollicitatieNummer : 1, status : 'vpl', plaatsen : ['4', '5', '6'], voorkeur : { anywhere : true } }
+            ],
+            marktplaatsen: [
+                {}, {}, {},
+                {}, {}, {}
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5', '6']);
+    });
+});
