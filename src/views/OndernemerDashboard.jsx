@@ -19,11 +19,10 @@ class OndernemerDashboard extends React.Component {
         endDate: PropTypes.string.isRequired,
         toewijzingen: PropTypes.array,
         user: PropTypes.object,
-        eggie: PropTypes.bool,
     };
 
     render() {
-        const { ondernemer, messages, plaatsvoorkeuren, markten, user, aanmeldingen, toewijzingen, eggie } = this.props;
+        const { ondernemer, messages, plaatsvoorkeuren, markten, user, aanmeldingen, toewijzingen } = this.props;
 
         const marktenEnabled = markten.filter(m => m.enabled);
 
@@ -54,11 +53,6 @@ class OndernemerDashboard extends React.Component {
             return markt;
         });
 
-        const marktenPlusGeopend = marktenPlusToewijzing.map(markt => {
-            markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
-            return markt;
-        });
-
         return (
             <Page messages={messages}>
                 <Header user={ondernemer} logoUrl="/dashboard/">
@@ -77,16 +71,15 @@ class OndernemerDashboard extends React.Component {
 
                     <h1 className="h1">Mijn markten</h1>
                     <div className="row row--responsive">
-                        {marktenPlusGeopend.map(markt => (
+                        {marktenPlusToewijzing.map(markt => (
                             <div key={markt.id} className="col-1-2">
                                 <OndernemerMarktTile
                                     markt={markt}
-                                    geopend={markt.geopend}
+                                    ondernemer={ondernemer}
                                     aanmeldingVandaag={markt.aanmeldingVandaag}
                                     aanmeldingMorgen={markt.aanmeldingMorgen}
                                     toewijzingVandaag={markt.toewijzingVandaag}
                                     toewijzingMorgen={markt.toewijzingMorgen}
-                                    eggie={eggie}
                                     today={ today() }
                                     tomorrow={ tomorrow() }
                                 />

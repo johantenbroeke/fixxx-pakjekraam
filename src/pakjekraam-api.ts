@@ -280,7 +280,7 @@ export const getIndelingVoorkeuren = (
         );
 };
 
-export const getOndernemerVoorkeuren = (erkenningsNummer: string): Promise<IPlaatsvoorkeur[]> =>
+export const getPlaatsvoorkeurenOndernemer = (erkenningsNummer: string): Promise<IPlaatsvoorkeur[]> =>
     plaatsvoorkeur.findAll<Plaatsvoorkeur>({
         where: { erkenningsNummer },
     });
@@ -506,14 +506,12 @@ export const getSollicitantenlijstInput = (marktId: string, date: string) =>
         getMarkt(marktId),
     ]).then(args => {
         const [ondernemers, aanmeldingen, voorkeuren, markt] = args;
-
         return {
             ondernemers,
             aanmeldingen,
             voorkeuren,
             markt,
         };
-
     });
 
 export const getAfmeldingenVasteplaatshoudersInput = (marktId: string, marktDate: string) =>

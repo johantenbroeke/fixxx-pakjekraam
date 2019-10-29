@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-
+import { getMarktondernemer } from '../makkelijkemarkt-api';
+import { getMarktEnriched } from '../model/markt.functions';
 import {
     getAllBranches,
     getIndelingVoorkeur,
     getAanmeldingenByOndernemer,
     getToewijzingenByOndernemerEnMarkt,
-    getOndernemerVoorkeuren,
+    getPlaatsvoorkeurenOndernemer,
     getMededelingen,
 } from '../pakjekraam-api';
 
@@ -25,16 +25,13 @@ export const marktDetailController = (
 
     const messages = getQueryErrors(req.query);
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
-    const ondernemerVoorkeurenPromise = getOndernemerVoorkeuren(erkenningsNummer);
-
-    const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
-
+    const ondernemerVoorkeurenPromise = getPlaatsvoorkeurenOndernemer(erkenningsNummer);
 
     Promise.all([
         ondernemerPromise,
         ondernemerVoorkeurenPromise,
         getAanmeldingenByOndernemer(erkenningsNummer),
-        marktPromise,
+        getMarktEnriched(marktId),
         getIndelingVoorkeur(erkenningsNummer, req.params.marktId),
         getAllBranches(),
         getMededelingen(),
@@ -55,7 +52,6 @@ export const marktDetailController = (
                     messages,
                     toewijzingen,
                     mededelingen,
-                    eggie: req.query.eggie || false,
                 });
             },
             err => httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR)(err),

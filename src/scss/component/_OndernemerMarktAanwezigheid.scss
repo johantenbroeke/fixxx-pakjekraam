@@ -44,7 +44,7 @@ $itemMinWidth: 265px;
     &__divider {
         @include fontBold;
         display: inline-block;
-        margin: $vm4 0 $vm1 0;
+        margin: $vm3 0 $vm1 0;
         white-space: nowrap;
     }
 }

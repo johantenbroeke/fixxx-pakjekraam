@@ -26,11 +26,10 @@ const MarktDayLink = ({ type, markt, offsetDate, direction = 1 }) => {
 
     let typeLink = null;
     if (type == 'wenperiode') {
-        typeLink = 'indelingslijst/?type=wenperiode';
+        typeLink = 'indelingslijst/';
     } else {
         typeLink = type;
     }
-
 
     return (
         <a

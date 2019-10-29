@@ -30,7 +30,6 @@ class OndernemerMarktDetailPage extends React.Component {
         startDate: PropTypes.string.isRequired,
         endDate: PropTypes.string.isRequired,
         user: PropTypes.object,
-        eggie: PropTypes.boolean,
         mededelingen: PropTypes.object,
     };
 
@@ -45,7 +44,6 @@ class OndernemerMarktDetailPage extends React.Component {
             voorkeur,
             branches,
             toewijzingen,
-            eggie,
             mededelingen
         } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
@@ -67,21 +65,18 @@ class OndernemerMarktDetailPage extends React.Component {
         const toewijzingMorgen = toewijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
         const time = new Date();
 
+        console.log(markt);
+
         return (
             <Page messages={messages}>
                 <Header user={ondernemer} logoUrl="../../dashboard/">
-                    <a className="Header__nav-item" href="../../dashboard/">
-                        Mijn markten
-                    </a>
+                    <a className="Header__nav-item" href="../../dashboard/">Mijn markten</a>
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
-                    <p>Vanaf donderdag 1 augustus start de eerste fase van digitaal indelen.</p>
-                    <p>
-                        <strong>Let op:</strong> Ondernemers die zich digitaal hebben aangemeld, krijgen tijdens de
-                        loting op de markt voorrang op ondernemers die zich niet digitaal hebben aangemeld.
-                    </p>
-                    <p>De loting en de indeling verloopt verder zoals u gewend bent.</p>
+                    { markt.fase ? (
+                        <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.fase] }} />
+                    ) : null}
                     <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
                     {!voorkeur || !voorkeur.brancheId ? (
                         <Alert type="warning" inline={true}>
@@ -90,9 +85,9 @@ class OndernemerMarktDetailPage extends React.Component {
                                 <a href={`/algemene-voorkeuren/${markt.id}/`}>marktprofiel</a>.
                             </span>
                         </Alert>
-                    ) : null}
+                    ) : null }
 
-                    <Uitslag time={new Date()} today={today()} tomorrow={tomorrow()} eggie={eggie} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
+                    <Uitslag time={new Date()} ondernemer={ondernemer} today={today()} tomorrow={tomorrow()} markt={markt} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
 
                     <div className="row row--responsive">
                         <div className="col-1-2">
@@ -115,6 +110,7 @@ class OndernemerMarktDetailPage extends React.Component {
                             <OndernemerMarktVoorkeuren
                                 ondernemer={ondernemer}
                                 markt={markt}
+                                mededelingen={mededelingen}
                                 plaatsvoorkeuren={plaatsvoorkeuren}
                                 voorkeur={voorkeur}
                                 sollicitatie={sollicitatie}

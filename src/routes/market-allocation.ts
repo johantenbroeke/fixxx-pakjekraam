@@ -59,10 +59,8 @@ export const indelingslijstPage = (req: Request, res: Response) => {
 export const marketAllocationPage = (req: Request, res: Response) => {
 
     const { marktDate } = req.params;
-    const type = req.query.type === 'wenperiode' ? 'wenperiode' : 'indelingslijst';
-
     getIndelingslijstData(req.params.marktId, marktDate).then(data => {
-        res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type });
+        res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type:'wenperiode' });
     }, internalServerErrorPage(res));
 
 };
@@ -71,8 +69,6 @@ export const marketAllocationPage = (req: Request, res: Response) => {
 export const indelingPage = (req: Request, res: Response) => {
 
     const { marktDate } = req.params;
-
-    // getIndelingslijstData(req.params.marktId, marktDate)
     getIndelingslijstData(req.params.marktId, marktDate)
         .then(data => {
             res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type: 'indeling' });

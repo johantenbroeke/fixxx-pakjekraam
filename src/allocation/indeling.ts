@@ -31,15 +31,15 @@ interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
     brancheScore: number;
 }
 
-const BRANCHE_FULL: IAfwijzingReason = {
+export const BRANCHE_FULL: IAfwijzingReason = {
     code: 1,
     message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld'
 };
-const ADJACENT_UNAVAILABLE: IAfwijzingReason = {
+export const ADJACENT_UNAVAILABLE: IAfwijzingReason = {
     code: 2,
     message: 'Geen geschikte plaats(en) gevonden'
 };
-const MINIMUM_UNAVAILABLE: IAfwijzingReason = {
+export const MINIMUM_UNAVAILABLE: IAfwijzingReason = {
     code: 3,
     message: 'Minimum aantal plaatsen niet beschikbaar'
 };

@@ -12,6 +12,7 @@ import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makk
 import { requireEnv, today, tomorrow } from './util';
 import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors } from './express-util';
 import { marktDetailController } from './routes/markt-detail';
+import { getMarktEnriched } from './model/markt.functions';
 
 import {
     getIndelingslijst,
@@ -207,8 +208,8 @@ app.get(
     '/markt/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: Request, res: Response, next: NextFunction) => {
-        getMarkt(req.params.marktId)
-            .then(markt => res.render('MarktDetailPage', { markt }))
+        getMarktEnriched(req.params.marktId)
+            .then((markt: any) => res.render('MarktDetailPage', { markt }))
             .catch(next);
     },
 );
