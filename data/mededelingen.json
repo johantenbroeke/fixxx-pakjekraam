@@ -15,8 +15,8 @@
         "live":""
     },
     "plaatsVoorkeuren":{
-        "activatie":"Tijdens de wenperiode worden de 'Plaatsvoorkeuren' nog niet gebruikt.",
-        "wenperiode":"Tijdens de wenperiode worden de 'Plaatsvoorkeuren' nog niet gebruikt.",
+        "activatie":"Tijdens de wenperiode worden de plaatsvoorkeuren nog niet gebruikt.",
+        "wenperiode":"Tijdens de wenperiode worden de plaatsvoorkeuren nog niet gebruikt.",
         "live":""
     }
 }
