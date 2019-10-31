@@ -36,7 +36,7 @@ const slugs = {
     [TUSSEN_MEER_ID]: 'tussen-meer',
 };
 
-import moment from 'moment';
+const moment = require('moment');
 
 const slugifyMarkt = marktId => slugs[marktId] || String(marktId);
 
