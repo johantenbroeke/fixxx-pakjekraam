@@ -12,7 +12,7 @@ import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makk
 import { requireEnv, today, tomorrow } from './util';
 import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors } from './express-util';
 import { marktDetailController } from './routes/markt-detail';
-import { getMarktEnriched } from './model/markt.functions';
+import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
 
 import {
     getIndelingslijst,
@@ -43,7 +43,7 @@ import { preferencesMailPage } from './routes/mail-preferences';
 import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
-import { deleteUserPage, deleteUser } from './routes/users';
+import { deleteUserPage, deleteUser, publicProfilePage } from './routes/ondernemer';
 import { vasteplaatshoudersPage, sollicitantenPage, voorrangslijstPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
 import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
 import { KeycloakRoles } from './permissions';
@@ -189,7 +189,7 @@ app.get(
 );
 
 app.get('/markt/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
-    getMarkten().then(markten => res.render('MarktenPage', { markten }));
+    getMarktenEnabled().then((markten: any) => res.render('MarktenPage', { markten }));
 });
 
 // For debug purposes:
@@ -744,16 +744,9 @@ app.get('/profile/', keycloak.protect(KeycloakRoles.MARKTONDERNEMER), (req: Gran
     });
 });
 
-app.get('/profile/:erkenningsNummer', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
-    const messages = getQueryErrors(req.query);
-
-    getMarktondernemer(req.params.erkenningsNummer).then(
-        ondernemer => {
-            res.render('PublicProfilePage', { ondernemer, messages });
-        },
-        error => res.status(HTTP_INTERNAL_SERVER_ERROR).end(String(error)),
-    );
-});
+app.get('/profile/:erkenningsNummer', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) =>
+    publicProfilePage(req, res, req.params.erkenningsNummer)
+);
 
 app.get(
     '/markt/:marktId/:marktDate/markt.json',
