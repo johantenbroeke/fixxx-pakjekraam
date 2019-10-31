@@ -44,6 +44,7 @@ async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
     await models.allocation.bulkCreate(result[0], { validate: true }, transaction);
     await models.afwijzing.bulkCreate(result[1], { validate: true }, transaction);
     await transaction.commit();
+    process.exit();
 }
 
 getMarkten()
