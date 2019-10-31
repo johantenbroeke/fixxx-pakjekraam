@@ -57,6 +57,9 @@ getMarkten()
     .then( (result: any) => {
         return destroyAndCreateToewijzingenAfwijzingen(result);
     })
+    .then( (result: any) => {
+        process.exit();
+    })
     .catch( (e: any) => {
         console.log(e);
     });
