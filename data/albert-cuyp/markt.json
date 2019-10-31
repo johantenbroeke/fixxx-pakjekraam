@@ -1,4 +1,6 @@
 {
+  "enabled": false,
+  "fase":"voorbereiding",
   "expansionLimit": 2,
   "rows": [
     [
