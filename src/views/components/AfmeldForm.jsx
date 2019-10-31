@@ -41,8 +41,8 @@ class AfmeldForm extends React.Component {
 
         // To simulate 21:00 as 24:00 we add 3 hours.
         // To pick only market dates 1 day from now we add one day.
-        let now = moment(newDate).add(3, 'h').add(1, 'days');
-        now = moment(now).add(12, 'h');
+        const now = moment(newDate).add(3, 'h').add(1, 'days');
+        // now = moment(now).add(12, 'h');
         const dateForRsvp = now.toDate();
 
         const rsvpEntries = filterRsvpList(
@@ -84,7 +84,6 @@ class AfmeldForm extends React.Component {
                     defaultValue={ondernemer.erkenningsnummer}
                     type="hidden"
                 />
-                <h1>{ now.format("YYYY-MM-DD HH:mm:ss") }</h1>
                 <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />
                 {isVast(sollicitatie.status) ? (
                     <span className="Fieldset__subtitle">
