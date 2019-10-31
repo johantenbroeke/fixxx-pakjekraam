@@ -2,8 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { getMarktondernemer } from '../makkelijkemarkt-api';
 import {
     getMarkten,
-    getMarktProperties,
-    getOndernemerVoorkeuren,
+    getPlaatsvoorkeurenOndernemer,
     getAanmeldingenByOndernemer,
     getToewijzingenByOndernemer,
 } from '../pakjekraam-api';
@@ -12,19 +11,18 @@ import { tomorrow, nextWeek } from '../util';
 // import { parse } from '@babel/core';
 // import { promises } from 'fs';
 
+import { getMarktEnriched } from '../model/markt.functions';
+
 export const vendorDashboardPage = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
 
     const messages = getQueryErrors(req.query);
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
-    const ondernemerVoorkeurenPromise = getOndernemerVoorkeuren(erkenningsNummer);
+    const ondernemerVoorkeurenPromise = getPlaatsvoorkeurenOndernemer(erkenningsNummer);
 
     const marktenPromise = getMarkten()
         .then(markten => {
             const marktenMetProperties = markten.map(markt => {
-                return getMarktProperties(String(markt.id)).then(props => ({
-                    ...markt,
-                    ...props,
-                }));
+                return getMarktEnriched(String(markt.id)).then(props => (props));
             });
             return Promise.all(marktenMetProperties);
         });
@@ -38,7 +36,6 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
     ])
         .then(
             ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen ]) => {
-
                 res.render('OndernemerDashboard', {
                     ondernemer,
                     aanmeldingen,
@@ -48,7 +45,6 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
                     endDate: nextWeek(),
                     messages,
                     toewijzingen,
-                    eggie: req.query.eggie ? JSON.parse(req.query.eggie) : false,
                 });
             },
             err => errorPage(res, err),

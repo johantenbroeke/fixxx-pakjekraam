@@ -5,6 +5,7 @@ const PlaatsvoorkeurenForm = require('./components/PlaatsvoorkeurenForm.jsx');
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
+const OndernemerMarktHeading = require('./components/OndernemerMarktHeading');
 
 class VoorkeurenPage extends React.Component {
     propTypes = {
@@ -12,7 +13,6 @@ class VoorkeurenPage extends React.Component {
         markten: PropTypes.array.isRequired,
         ondernemer: PropTypes.object.isRequired,
         marktPaginas: PropTypes.object,
-        marktProperties: PropTypes.object,
         marktPlaatsen: PropTypes.object,
         indelingVoorkeur: PropTypes.object,
         marktDate: PropTypes.string,
@@ -20,21 +20,27 @@ class VoorkeurenPage extends React.Component {
         query: PropTypes.string,
         user: PropTypes.object,
         role: PropTypes.object,
+        markt: PropTypes.object,
+        sollicitatie: PropTypes.object,
+        mededeling: PropTypes.object,
     };
 
     render() {
         const {
-            marktProperties,
             marktPaginas,
             marktPlaatsen,
             indelingVoorkeur,
             marktDate,
             user,
             role,
+            plaatsvoorkeuren,
             ondernemer,
+            markt,
+            sollicitatie,
+            mededeling,
         } = this.props;
         const rows = (
-            marktProperties.rows ||
+            markt.rows ||
             marktPaginas.reduce(
                 (list, pagina) => [
                     ...list,
@@ -46,6 +52,8 @@ class VoorkeurenPage extends React.Component {
             row.map(plaatsId => marktPlaatsen.find(plaats => plaats.plaatsId === plaatsId)).map(plaats => plaats),
         );
 
+        console.log(plaatsvoorkeuren);
+
         return (
             <Page messages={this.props.messages}>
                 <Header user={ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
@@ -55,8 +63,17 @@ class VoorkeurenPage extends React.Component {
                     <OndernemerProfileHeader user={this.props.ondernemer} />
                 </Header>
                 <Content>
+                    <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />
+                    <p>
+                        U kunt de plaatsvoorkeuren voor morgen tot 21.00 uur wijzigen.
+                    <br />
+                        Wijzigt u de plaatsvoorkeuren na 21.00 uur? Dan gelden de wijzigingen voor de dagen na morgen.
+                    </p>
+                    { markt.fase ? (
+                        <p dangerouslySetInnerHTML={{ __html: mededeling[markt.fase] }} />
+                    ) : null}
                     <PlaatsvoorkeurenForm
-                        plaatsvoorkeuren={this.props.plaatsvoorkeuren}
+                        plaatsvoorkeuren={plaatsvoorkeuren}
                         ondernemer={this.props.ondernemer}
                         markt={this.props.markten[0]}
                         indelingVoorkeur={indelingVoorkeur}
@@ -64,6 +81,7 @@ class VoorkeurenPage extends React.Component {
                         rows={rows}
                         role={role}
                         query={this.props.query}
+                        sollicitatie={sollicitatie}
                     />
                 </Content>
             </Page>

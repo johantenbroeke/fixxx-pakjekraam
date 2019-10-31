@@ -4,7 +4,7 @@ const { formatOndernemerName, plaatsSort, isVast } = require('../../domain-knowl
 const { flatten } = require('../../util.ts');
 const MarktplaatsSelect = require('./MarktplaatsSelect');
 const Button = require('./Button');
-const OndernemerMarktHeading = require('./OndernemerMarktHeading');
+
 
 class PlaatsvoorkeurenForm extends React.Component {
     propTypes = {
@@ -16,11 +16,12 @@ class PlaatsvoorkeurenForm extends React.Component {
         rows: PropTypes.array.isRequired,
         role: PropTypes.string,
         query: PropTypes.string,
+        sollicitatie: PropTypes.object.isRequired,
     };
 
     render() {
-        const { markt, ondernemer, plaatsvoorkeuren, query, rows, indelingVoorkeur, marktDate, role } = this.props;
-        const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
+        const { markt, ondernemer, plaatsvoorkeuren, query, rows, indelingVoorkeur, marktDate, role, sollicitatie } = this.props;
+
         const defaultPlaatsCount = isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1;
         const defaultVoorkeur = {
             minimum: defaultPlaatsCount,
@@ -118,12 +119,6 @@ class PlaatsvoorkeurenForm extends React.Component {
                     name="erkenningsNummer"
                     defaultValue={ondernemer.erkenningsnummer}
                 />
-                <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />
-                <p>
-                    U kunt de plaatsvoorkeuren voor morgen tot 21.00 uur wijzigen.
-                    <br />
-                    Wijzigt u de plaatsvoorkeuren na 21.00 uur? Dan gelden de wijzigingen voor de dagen na morgen.
-                </p>
 
                 <div className="PlaatsvoorkeurenForm__markt" data-markt-id={markt.id}>
                     <script dangerouslySetInnerHTML={marktRowsJSOM()} />

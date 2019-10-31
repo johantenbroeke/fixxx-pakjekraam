@@ -64,6 +64,7 @@ export const getMaDiWoDoOfToday = () => {
     return dayOfWeek.substring(0,2);
 };
 
+
 export const formatDate = (date: string): string =>
     `${new Date(date).getDate()} ${formatMonth(date).slice(0, shortMonthCharCount)} '${String(
         new Date(date).getFullYear(),

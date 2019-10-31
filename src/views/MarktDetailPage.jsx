@@ -43,11 +43,14 @@ class MarktDetailPage extends React.Component {
         );
         const nextVrijday = new Date(addDays(today(), DAYS_IN_WEEK - new Date().getDay()));
 
+        let fase = null;
+        markt.fase == 'live' ? fase = null : fase = ` ${markt.fase}`;
+
         return (
-            <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt}>
+            <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase}>
                 <div className="row row--responsive">
                     <div className="col-1-2">
-                        <h2>Aan- en afmeldingen wenperiode</h2>
+                        <h2>Lijsten per dag</h2>
                     </div>
                 </div>
                 <div className="row row--responsive margin-bottom">
@@ -68,17 +71,17 @@ class MarktDetailPage extends React.Component {
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/indelingslijst/?type=wenperiode`} className="Link">
+                                            <a href={`./${date}/indelingslijst/`} className="Link">
                                                 Originele positie vasteplaatshouders
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/concept-indelingslijst/?type=wenperiode`} className="Link">
+                                            <a href={`./${date}/concept-indelingslijst/`} className="Link">
                                                 Concept indelingslijst
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/voorrangslijst/?type=wenperiode`} className="Link">
+                                            <a href={`./${date}/voorrangslijst/`} className="Link">
                                                 {!A_LIJST_DAYS.includes(weekDayInt)
                                                     ? `Aanmeldingen sollicitanten`
                                                     : `A- en B lijst aanmeldingen sollicitanten`}
@@ -105,12 +108,12 @@ class MarktDetailPage extends React.Component {
                                     </strong>
                                     <ul className="LinkList">
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/indelingslijst/?type=wenperiode`} className="Link">
+                                            <a href={`./${date}/indelingslijst/`} className="Link">
                                                 Afmeldingen vasteplaatshouders
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/voorrangslijst/?type=wenperiode`} className="Link">
+                                            <a href={`./${date}/voorrangslijst/`} className="Link">
                                                 {!A_LIJST_DAYS.includes(weekDayInt)
                                                     ? `Aanmeldingen sollicitanten`
                                                     : `A- en B lijst aanmeldingen sollicitanten`}
@@ -122,106 +125,6 @@ class MarktDetailPage extends React.Component {
                     </div>
                 </div>
 
-                {/*
-                <div className="row row--responsive margin-bottom">
-                    <div className="col-1-2">
-                        <h4>Vandaag</h4>
-                        <ul className="LinkList">
-                            <li className="LinkList__item">
-                                <a href={`./${today()}/indelingslijst/?type=wenperiode`} className="Link">
-                                    Afmeldingen vasteplaatshouders
-                                </a>
-                            </li>
-                            <li className="LinkList__item">
-                                <a href={`./${today()}/voorrangslijst/?type=wenperiode`} className="Link">
-                                    Aanmeldingen sollicitanten
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="col-1-2">
-                        <h4>Morgen</h4>
-                        <ul className="LinkList">
-                            <li className="LinkList__item">
-                                <a href={`./${addDays(today(), 1)}/indelingslijst/?type=wenperiode`} className="Link">
-                                    Afmeldingen vasteplaatshouders
-                                </a>
-                            </li>
-                            <li className="LinkList__item">
-                                <a href={`./${addDays(today(), 1)}/voorrangslijst/?type=wenperiode`} className="Link">
-                                    Aanmeldingen sollicitanten
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="row row--responsive">
-                    <div className="col-1-2">
-                        <h2>Indelingslijsten</h2>
-                        <ul className="LinkList">
-                            <li className="LinkList__item">
-                                <a className={`Link`} href={`./${today()}/indelingslijst/`}>
-                                    <strong>Vandaag</strong>,{formatDayOfWeek(new Date(today()))}{' '}
-                                    {new Date(today()).getDate()} {formatMonth(today())}
-                                </a>
-                            </li>
-                            <li className="LinkList__item">
-                                <a className={`Link`} href={`./${addDays(today(), 1)}/indelingslijst/`}>
-                                    <strong>Morgen</strong>,{formatDayOfWeek(new Date(addDays(today(), 1)))}{' '}
-                                    {new Date(addDays(today(), 1)).getDate()} {formatMonth(addDays(today(), 1))}
-                                </a>
-                            </li>
-                        </ul>
-                        <p>Concept-indelingslijsten:</p>
-                        <ul className="LinkList">
-                            {dates.map(({ date, day, month, weekDay, relativeDay }) => (
-                                <li key={date} className="LinkList__item">
-                                    <a className={`Link`} href={`./${date}/concept-indelingslijst/`}>
-                                        <strong>{relativeDay !== '' && capitalize(relativeDay) + ', '}</strong>
-                                        {relativeDay !== '' ? weekDay : capitalize(weekDay)} {day} {month}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div className="col-1-2">
-                        <h2>Ondernemers</h2>
-                        <ul className="LinkList">
-                            <li className="LinkList__item">
-                                <a href={`./${today()}/vasteplaatshouders/`} className="Link">
-                                    Vasteplaatshouder
-                                </a>
-                            </li>
-                        </ul>
-                        <h2>Aanwezigheid vandaag</h2>
-                        <ul className="LinkList">
-                            <li className="LinkList__item">
-                                <a href={`./${today()}/sollicitanten/`} className="Link">
-                                    Sollicitanten, VKK en TVPL
-                                </a>
-                            </li>
-                            <li className="LinkList__item">
-                                <a href={`./${today()}/voorrangslijst/`} className="Link">
-                                    Voorrangslijst
-                                </a>
-                            </li>
-                        </ul>
-                        <h2>Aanwezigheid morgen</h2>
-                        <ul className="LinkList">
-                            <li className="LinkList__item">
-                                <a href={`./${addDays(today(), 1)}/sollicitanten/`} className="Link">
-                                    Sollicitanten, VKK en TVPL
-                                </a>
-                            </li>
-                            <li className="LinkList__item">
-                                <a href={`./${addDays(today(), 1)}/voorrangslijst/`} className="Link">
-                                    Voorrangslijst
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                    */}
             </MarktDetailBase>
         );
     }

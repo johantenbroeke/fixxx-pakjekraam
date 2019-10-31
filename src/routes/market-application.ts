@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-import { getAanmeldingenByOndernemer, getConflictingApplications } from '../pakjekraam-api';
+import { getAanmeldingenByOndernemer, getConflictingApplications, getMededelingen } from '../pakjekraam-api';
 import { httpErrorPage, internalServerErrorPage, HTTP_CREATED_SUCCESS, HTTP_FORBIDDEN_ERROR } from '../express-util';
 import models from '../model/index';
 import { flatten, nextWeek, LF, tomorrow } from '../util';
 import { IRSVP } from '../markt.model';
 import { upsert } from '../sequelize-util.js';
+import { getMarktEnriched } from '../model/markt.functions';
 
 export const marketApplicationPage = (
     res: Response,
@@ -70,6 +71,7 @@ export const attendancePage = (
     query: any,
     role: string,
 ) => {
+
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
     const marktenPromise = ondernemerPromise.then(ondernemer =>
         Promise.all(
@@ -79,17 +81,25 @@ export const attendancePage = (
         ),
     );
 
-    return Promise.all([ondernemerPromise, marktenPromise, getAanmeldingenByOndernemer(erkenningsNummer)]).then(
-        ([ondernemer, markten, aanmeldingen]) => {
+    return Promise.all([
+        ondernemerPromise,
+        marktenPromise,
+        getAanmeldingenByOndernemer(erkenningsNummer),
+        getMarktEnriched(currentMarktId),
+        getMededelingen()
+    ]).then(
+        ([ondernemer, markten, aanmeldingen, markt, mededelingen]) => {
             res.render('AfmeldPage', {
                 ondernemer,
                 aanmeldingen,
                 markten,
+                markt,
                 startDate: tomorrow(),
                 endDate: nextWeek(),
                 currentMarktId,
                 query,
                 role,
+                mededelingen,
             });
         },
         err => internalServerErrorPage(res)(err),

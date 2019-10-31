@@ -1,15 +1,15 @@
 import PropTypes, { ValidationMap } from 'prop-types';
 import * as React from 'react';
-import EmailBase from './components/EmailBase.jsx';
-import EmailContent from './components/EmailContent.jsx';
-import { isVast } from '../domain-knowledge.js';
-import { EmailVplVoorkeurConfirm } from './components/email/EmailVplVoorkeurConfirm';
-import { EmailSollNoPlaatsConfirm } from './components/email/EmailSollNoPlaatsConfirm';
-import { EmailSollPlaatsConfirm } from './components/email/EmailSollPlaatsConfirm';
+import EmailBase from '../EmailBase.jsx';
+import EmailContent from '../EmailContent.jsx';
+import { isVast } from '../../../domain-knowledge.js';
+import { EmailVplVoorkeurConfirm } from './EmailVplVoorkeurConfirm';
+import { EmailSollNoPlaatsConfirm } from './EmailSollNoPlaatsConfirm';
+import { EmailSollPlaatsConfirm } from './EmailSollPlaatsConfirm';
 // import { EmailSollRandomPlaatsConfirm } from './components/email/EmailSollRandomPlaatsConfirm';
-import { EmailSollVoorkeurConfirm } from './components/email/EmailSollVoorkeurConfirm';
-import { EmailVplPlaatsConfirm } from './components/email/EmailVplPlaatsConfirm';
-import { EmailVplDefault } from './components/email/EmailVplDefault';
+import { EmailSollVoorkeurConfirm } from './EmailSollVoorkeurConfirm';
+import { EmailVplPlaatsConfirm } from './EmailVplPlaatsConfirm';
+import { EmailVplDefault } from './EmailVplDefault';
 import {
     IAfwijzing,
     IBranche,
@@ -19,7 +19,7 @@ import {
     IPlaatsvoorkeur,
     IRSVP,
     IToewijzing,
-} from '../markt.model';
+} from '../../../markt.model';
 
 export type EmailIndelingProps = {
     markt: IMarkt;
