@@ -64,6 +64,10 @@ export const getMaDiWoDoOfToday = () => {
     return dayOfWeek.substring(0,2);
 };
 
+export const getMaDiWoDo = (date: Date) => {
+    const dayOfWeek = WEEK_DAYS[date.getDay()];
+    return dayOfWeek.substring(0,2);
+};
 
 export const formatDate = (date: string): string =>
     `${new Date(date).getDate()} ${formatMonth(date).slice(0, shortMonthCharCount)} '${String(
@@ -116,7 +120,7 @@ export const yesterday = (): string => addDays(Date.now(), -1);
 export const endOfWeek = (): string => {
     const date = new Date();
 
-    return addDays(date.getTime(), DAYS_IN_WEEK - 1 - date.getDay());
+    return addDays(date.getTime(), DAYS_IN_WEEK - date.getDay());
 };
 
 export const nextWeek = (): string => addDays(Date.now(), DAYS_IN_WEEK);
