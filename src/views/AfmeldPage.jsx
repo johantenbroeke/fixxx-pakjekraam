@@ -33,10 +33,9 @@ class AfmeldPage extends React.Component {
                     <OndernemerProfileHeader user={this.props.ondernemer} />
                 </Header>
                 <Content>
-                    <h1 className="Heading">Aanwezigheid wijzigen</h1>
                     { markt.fase ? (
-                        <p className="Paragraph Paragraph--first" dangerouslySetInnerHTML={{ __html: mededelingen.afmelden[markt.fase] }} />
-                    ) : null}
+                        <p className="Paragraph Paragraph--first" dangerouslySetInnerHTML={{ __html: mededelingen.aanwezigheid[markt.fase] }} />
+                    ) : null }
                     <AfmeldForm
                         aanmeldingen={this.props.aanmeldingen}
                         date={this.props.date}

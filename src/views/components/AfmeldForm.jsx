@@ -1,5 +1,6 @@
 const OndernemerMarktHeading = require('./OndernemerMarktHeading');
 const React = require('react');
+import moment from 'moment';
 const PropTypes = require('prop-types');
 const {
     formatDayOfWeek,
@@ -13,6 +14,7 @@ const {
     addDays,
 } = require('../../util.ts');
 const { filterRsvpList, isVast } = require('../../domain-knowledge.js');
+
 
 class AfmeldForm extends React.Component {
     propTypes = {
@@ -32,18 +34,23 @@ class AfmeldForm extends React.Component {
             soll => !soll.doorgehaald && String(soll.markt.id) === currentMarktId,
         );
         const markt = markten.find(m => String(m.id) === currentMarktId);
-        const OFFSET = 4; // from 24:00 to 21:00
-        const now = addMinutes(new Date(), MINUTES_IN_HOUR * OFFSET);
+        // const OFFSET = 4; // from 24:00 to 21:00
+        // let now = addMinutes(new Date(), MINUTES_IN_HOUR * 4);
 
-        console.log(new Date());
+        const newDate = new Date();
+
+        // To simulate 21:00 as 24:00 we add 3 hours.
+        // To pick only market dates 1 day from now we add one day.
+        let now = moment(newDate).add(3, 'h').add(1, 'days');
+        now = moment(now).add(12, 'h');
+        const dateForRsvp = now.toDate();
 
         const rsvpEntries = filterRsvpList(
             aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id),
             markt,
-            now,
+            dateForRsvp,
             // role === 'marktmeester' ? now : addDays(now, 1),
         );
-
 
         const weekAanmeldingen = rsvpEntries.reduce(
             (t, { date, rsvp, index }, i) => {
@@ -77,6 +84,7 @@ class AfmeldForm extends React.Component {
                     defaultValue={ondernemer.erkenningsnummer}
                     type="hidden"
                 />
+                <h1>{ now.format("YYYY-MM-DD HH:mm:ss") }</h1>
                 <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />
                 {isVast(sollicitatie.status) ? (
                     <span className="Fieldset__subtitle">

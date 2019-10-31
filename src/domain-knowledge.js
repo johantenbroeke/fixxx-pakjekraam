@@ -116,6 +116,7 @@ const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
         endDate ? endDate : addDays(endOfWeek(), DAYS_IN_WEEK),
         (markt.marktDagen || []).map(parseMarktDag),
     );
+
     const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
     // TODO: Replace non-pure `rsvpIndex` with grouping by `markt.id` afterwards
     const rsvpList = dates.map(date => ({

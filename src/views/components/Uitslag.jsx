@@ -20,8 +20,7 @@ const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMo
 
     return (
         <div>
-            {time.getHours() > 21 && time.getHours() < 24 || !markt.geopend ? (
-
+            {time.getHours() > 21 && time.getHours() < 24 || !markt.geopend && ( markt.fase === 'wenperiode' || markt.fase === 'live' ) ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Morgen ({formatDate(tomorrow)})
@@ -45,7 +44,7 @@ const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMo
                     ) : null}
                 </div>
             ) : null }
-            {time.getHours() >= 0 && time.getHours() < 18 && markt.geopend ? (
+            {time.getHours() >= 0 && time.getHours() < 18 && markt.geopend && ( markt.fase === 'wenperiode' || markt.fase === 'live' ) ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Vandaag ({formatDate(today)})
