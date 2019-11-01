@@ -13,7 +13,7 @@ const {
     endOfWeek,
     addDays,
 } = require('../../util.ts');
-const { filterRsvpListOndernemer, isVast } = require('../../domain-knowledge.js');
+const { filterRsvpList, isVast } = require('../../domain-knowledge.js');
 
 
 class AfmeldForm extends React.Component {
@@ -36,10 +36,14 @@ class AfmeldForm extends React.Component {
 
         const markt = markten.find(m => String(m.id) === currentMarktId);
 
-        const rsvpEntries = filterRsvpListOndernemer(
+        const OFFSET = 4; // from 24:00 to 21:00 + 1 uur wintertijd
+        const now = addMinutes(new Date(), MINUTES_IN_HOUR * OFFSET);
+        const tomorrow = addDays(now, 1);
+
+        const rsvpEntries = filterRsvpList(
             aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id),
             markt,
-            new Date()
+            tomorrow
         );
 
         const weekAanmeldingen = rsvpEntries.reduce(

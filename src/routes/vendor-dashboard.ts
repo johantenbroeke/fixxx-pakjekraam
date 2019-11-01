@@ -25,7 +25,8 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
                 return getMarktEnriched(String(markt.id)).then(props => (props));
             });
             return Promise.all(marktenMetProperties);
-        });
+        })
+        .then( (markten: any) => markten.filter( (markt: any) => markt.fase !== 'voorbereiding'));
 
     Promise.all([
         ondernemerPromise,

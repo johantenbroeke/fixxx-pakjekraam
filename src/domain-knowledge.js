@@ -17,7 +17,8 @@ const {
     nextWeek,
     endOfWeek,
     stringSort,
-    getMaDiWoDo
+    getMaDiWoDo,
+    dateToYYYYMMDD,
 } = require('./util.ts');
 
 const DAPPERMARKT_ID = 16;
@@ -135,21 +136,26 @@ const filterRsvpListOndernemer = (aanmeldingen, markt, startDate) => {
 
     const start = moment(startDate).add(3, 'h').add(1, 'days').toDate();
 
-    const dates = getMarktDaysOndernemer(
+    let dates = getMarktDaysOndernemer(
         start,
         addDays(endOfWeek(), DAYS_IN_WEEK),
         markt.marktDagen,
     );
 
-    console.log(dates);
+    dates = dates.map(date => dateToYYYYMMDD(new Date(date)));
+
 
     const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
+
+
     // TODO: Replace non-pure `rsvpIndex` with grouping by `markt.id` afterwards
-    const rsvpList = dates.map(date => ({
-        date,
-        rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date),
-        index: rsvpIndex++,
-    }));
+    const rsvpList = dates.map( date => {
+        return {
+            date,
+            rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date),
+            index: rsvpIndex++
+        };
+    });
 
     return rsvpList;
 };
