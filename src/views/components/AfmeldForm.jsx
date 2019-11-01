@@ -33,23 +33,17 @@ class AfmeldForm extends React.Component {
         const sollicitatie = ondernemer.sollicitaties.find(
             soll => !soll.doorgehaald && String(soll.markt.id) === currentMarktId,
         );
+
         const markt = markten.find(m => String(m.id) === currentMarktId);
-        // const OFFSET = 4; // from 24:00 to 21:00
-        // let now = addMinutes(new Date(), MINUTES_IN_HOUR * 4);
 
-        const newDate = new Date();
-
-        // To simulate 21:00 as 24:00 we add 3 hours.
-        // To pick only market dates 1 day from now we add one day.
-        const now = moment(newDate).add(3, 'h').add(1, 'days');
-        // now = moment(now).add(12, 'h');
-        const dateForRsvp = now.toDate();
+        const OFFSET = 4; // from 24:00 to 21:00 + 1 uur wintertijd
+        const now = addMinutes(new Date(), MINUTES_IN_HOUR * OFFSET);
+        const tomorrow = addDays(now, 1);
 
         const rsvpEntries = filterRsvpList(
             aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id),
             markt,
-            dateForRsvp,
-            // role === 'marktmeester' ? now : addDays(now, 1),
+            tomorrow
         );
 
         const weekAanmeldingen = rsvpEntries.reduce(

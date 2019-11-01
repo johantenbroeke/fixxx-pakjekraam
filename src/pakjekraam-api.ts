@@ -555,7 +555,7 @@ export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
 export const getMarkten = () =>
     getMakkelijkeMarkten()
         // Only show markten for which JSON data with location info exists
-        .then(markten => markten.filter(markt => fs.existsSync(`data/${slugifyMarkt(markt.id)}/locaties.json`)));
+        .then(markten => markten.filter(markt => fs.existsSync(`data/${slugifyMarkt(markt.id)}/markt.json`)));
 
 export const getMarktenByDate = (marktDate: string) => {
     const day = new Date(marktDate).getDay();

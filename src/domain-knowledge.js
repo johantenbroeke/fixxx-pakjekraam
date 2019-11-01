@@ -17,6 +17,8 @@ const {
     nextWeek,
     endOfWeek,
     stringSort,
+    getMaDiWoDo,
+    dateToYYYYMMDD,
 } = require('./util.ts');
 
 const DAPPERMARKT_ID = 16;
@@ -34,6 +36,8 @@ const slugs = {
     [REIGERSBOS_ID]: 'reigersbos',
     [TUSSEN_MEER_ID]: 'tussen-meer',
 };
+
+const moment = require('moment');
 
 const slugifyMarkt = marktId => slugs[marktId] || String(marktId);
 
@@ -64,6 +68,25 @@ const A_LIJST_DAYS = [FRIDAY, SATURDAY, SUNDAY];
 const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDagen[dag] : -1);
 
 const isVast = status => status === 'vpl' || status === 'vkk';
+
+const getMarktDaysOndernemer = (startDate, endDate, marktdagen) => {
+    const start = Date.parse(startDate);
+    const end = Date.parse(endDate);
+
+    const days = Math.max(0, (end - start) / MILLISECONDS_IN_DAY);
+
+    let dates = [];
+
+    for (let i = 0, l = days; i <= l; i++) {
+        const date = new Date(start);
+        date.setDate(date.getDate() + i);
+        dates.push(date);
+    }
+
+    dates = dates.filter(day => marktdagen.includes(getMaDiWoDo(day)));
+    return dates;
+};
+
 
 const getMarktDays = (startDate, endDate, daysOfWeek) => {
     const start = Date.parse(startDate);
@@ -107,6 +130,35 @@ const obstakelsToLocatieKeyValue = array =>
 
         return total;
     }, {});
+
+const filterRsvpListOndernemer = (aanmeldingen, markt, startDate) => {
+    let rsvpIndex = 0;
+
+    const start = moment(startDate).add(3, 'h').add(1, 'days').toDate();
+
+    let dates = getMarktDaysOndernemer(
+        start,
+        addDays(endOfWeek(), DAYS_IN_WEEK),
+        markt.marktDagen,
+    );
+
+    dates = dates.map(date => dateToYYYYMMDD(new Date(date)));
+
+
+    const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
+
+
+    // TODO: Replace non-pure `rsvpIndex` with grouping by `markt.id` afterwards
+    const rsvpList = dates.map( date => {
+        return {
+            date,
+            rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date),
+            index: rsvpIndex++
+        };
+    });
+
+    return rsvpList;
+};
 
 const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
     let rsvpIndex = 0;
@@ -166,10 +218,12 @@ module.exports = {
     parseISOMarktDag,
     isVast,
     getMarktDays,
+    getMarktDaysOndernemer,
     getUpcomingMarktDays,
     ondernemersToLocatieKeyValue,
     obstakelsToLocatieKeyValue,
     filterRsvpList,
+    filterRsvpListOndernemer,
     plaatsSort,
     isErkenningsnummer,
 };
