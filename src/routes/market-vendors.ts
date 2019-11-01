@@ -58,13 +58,18 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
 
 
 export const voorrangslijstPage = (req: Request, res: Response, next: NextFunction) => {
+
     const datum = req.params.datum;
-    const type = req.query.type === 'wenperiode' ? 'wenperiode' : 'voorrangslijst';
-    getVoorrangslijstInput(req.params.marktId, req.params.datum).then(
-        ({ ondernemers, aanmeldingen, voorkeuren, markt, toewijzingen, aLijst, algemenevoorkeuren }) => {
-            const ondernemersFiltered =
-                type === 'wenperiode' ? ondernemers.filter(ondernemer => ondernemer.status !== 'vpl') : ondernemers;
-            const toewijzingenOptional = type === 'wenperiode' ? [] : toewijzingen;
+
+    getVoorrangslijstInput(req.params.marktId, req.params.datum).then( result => {
+
+            const { ondernemers, aanmeldingen, voorkeuren, markt, toewijzingen, aLijst, algemenevoorkeuren } = result;
+
+            const ondernemersFiltered = markt.fase === 'wenperiode' ? ondernemers.filter(ondernemer => ondernemer.status !== 'vpl') : ondernemers;
+            const toewijzingenOptional = markt.fase === 'wenperiode' ? [] : toewijzingen;
+
+            const type = markt.fase;
+
             res.render('VoorrangslijstPage', {
                 ondernemers: ondernemersFiltered,
                 aanmeldingen,

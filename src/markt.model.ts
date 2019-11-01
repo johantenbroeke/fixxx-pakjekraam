@@ -29,6 +29,7 @@ export enum DeelnemerStatus {
 export interface IMarktProperties {
     marktId?: string;
     marktDate?: string;
+    fase?: string;
     naam?: string;
     expansionLimit?: number;
     rows?: string[][];

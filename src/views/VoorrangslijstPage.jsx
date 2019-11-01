@@ -111,7 +111,7 @@ class VoorrangslijstPage extends React.Component {
                 markt={markt}
                 datum={datum}
                 type={type}
-                buttonLabel={type === 'wenperiode' ? 'sollicitanten' : type}
+                buttonLabel={ type === 'wenperiode' ? 'sollicitanten' : type }
                 showDate={false}
             >
                 {ondernemersGrouped.map((group, i) =>

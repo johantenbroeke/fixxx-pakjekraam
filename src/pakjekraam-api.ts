@@ -36,6 +36,7 @@ import { convertSollicitatieToOndernemer as convertSollicitatie } from './model/
 import { MMOndernemerStandalone } from './makkelijkemarkt.model';
 
 import * as fs from 'fs';
+import { getMarktEnriched } from './model/markt.functions';
 
 const loadJSON = <T>(path: string, defaultValue: T = null): Promise<T> =>
     new Promise((resolve, reject) => {
@@ -538,7 +539,7 @@ export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
         getMarktondernemersByMarkt(marktId),
         getAanmeldingen(marktId, marktDate),
         getPlaatsvoorkeuren(marktId),
-        getMarkt(marktId),
+        getMarktEnriched(marktId),
         getALijst(marktId, marktDate),
         getToewijzingen(marktId, marktDate),
         getIndelingVoorkeuren(marktId),

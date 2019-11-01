@@ -38,12 +38,12 @@ class AfmeldForm extends React.Component {
 
         const OFFSET = 4; // from 24:00 to 21:00 + 1 uur wintertijd
         const now = addMinutes(new Date(), MINUTES_IN_HOUR * OFFSET);
-        const tomorrow = addDays(now, 1);
+        // const tomorrow = addDays(now, 1);
 
         const rsvpEntries = filterRsvpList(
             aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id),
             markt,
-            tomorrow
+            role === 'marktmeester' ? now : addDays(now, 1),
         );
 
         const weekAanmeldingen = rsvpEntries.reduce(
