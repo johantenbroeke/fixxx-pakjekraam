@@ -36,7 +36,6 @@ const mail = options => {
             html: ReactDOMServer.renderToStaticMarkup(options.react),
         };
     }
-
     return transport.sendMail(options);
 };
 

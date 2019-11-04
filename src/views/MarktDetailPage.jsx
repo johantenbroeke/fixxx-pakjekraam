@@ -83,14 +83,14 @@ class MarktDetailPage extends React.Component {
                                         <li className="LinkList__item">
                                             <a href={`./${date}/voorrangslijst/`} className="Link">
                                                 {!A_LIJST_DAYS.includes(weekDayInt)
-                                                    ? `Aanmeldingen sollicitanten`
+                                                    ? `Ondernemers niet ingedeeld`
                                                     : `A- en B lijst aanmeldingen sollicitanten`}
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
                                             <a href={`./${date}/voorrangslijst-volledig/`} className="Link">
                                                 {!A_LIJST_DAYS.includes(weekDayInt)
-                                                    ? `Alle aanmeldingen sollicitanten`
+                                                    ? `Alle sollicitanten`
                                                     : `A- en B lijst alle aanmeldingen sollicitanten`}
                                             </a>
                                         </li>
