@@ -22,10 +22,10 @@ const OndernemerList = ({
                 {ondernemers.map(ondernemer => {
                     const aanmelding =
                         ondernemer && aanmeldingen.find(rsvp => rsvp.erkenningsNummer === ondernemer.erkenningsNummer);
-                    const plaatsIds = plaatsvoorkeuren[ondernemer.erkenningsNummer] ?
-                        plaatsvoorkeuren[ondernemer.erkenningsNummer].sort((a: any, b: any) =>
-                            b.priority - a.priority).map((plaatsvoorkeur: any) =>
-                            plaatsvoorkeur.plaatsId) : [];
+                    // const plaatsIds = plaatsvoorkeuren[ondernemer.erkenningsNummer] ?
+                    //     plaatsvoorkeuren[ondernemer.erkenningsNummer].sort((a: any, b: any) =>
+                    //         b.priority - a.priority).map((plaatsvoorkeur: any) =>
+                    //         plaatsvoorkeur.plaatsId) : [];
                     const algemenevoorkeur = algemenevoorkeuren[ondernemer.erkenningsNummer];
 
                     return (
@@ -47,7 +47,7 @@ const OndernemerList = ({
                             <td>
                                 {algemenevoorkeur ?
                                 <strong>({algemenevoorkeur.minimum}, {algemenevoorkeur.maximum - algemenevoorkeur.minimum}) </strong>
-                                 : ''}{plaatsIds.join(', ')}
+                                 : ''}
                             </td>
 
                         </tr>
