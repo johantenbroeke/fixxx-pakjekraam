@@ -85,3 +85,32 @@ export const voorrangslijstPage = (req: Request, res: Response, next: NextFuncti
         next,
     ).catch(next);
 };
+
+export const voorrangslijstVolledigPage = (req: Request, res: Response, next: NextFunction) => {
+
+    const datum = req.params.datum;
+
+    getVoorrangslijstInput(req.params.marktId, req.params.datum).then( result => {
+
+            const { ondernemers, aanmeldingen, voorkeuren, markt, aLijst, algemenevoorkeuren } = result;
+
+            const ondernemersFiltered = ondernemers.filter(ondernemer => ondernemer.status !== 'vpl');
+            // const toewijzingenOptional = markt.fase === 'wenperiode' ? [] : toewijzingen;
+
+            const type = 'wenperiode';
+
+            res.render('VoorrangslijstPage', {
+                ondernemers: ondernemersFiltered,
+                aanmeldingen,
+                voorkeuren,
+                aLijst,
+                markt,
+                datum,
+                type,
+                toewijzingen: [],
+                algemenevoorkeuren,
+            });
+        },
+        next,
+    ).catch(next);
+};
