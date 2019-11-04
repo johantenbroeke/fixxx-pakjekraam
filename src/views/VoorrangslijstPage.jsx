@@ -84,7 +84,7 @@ class VoorrangslijstPage extends React.Component {
                 [[], [], [], []],
             )
             .map(group => paginate(paginate(group, itemsOnPage), 2));
-        const titleBase = type === 'wenperiode' ? 'Sollicitanten' : 'Voorrangslijst';
+        const titleBase = type === 'wenperiode' ? 'Alle sollicitanten' : 'Ondernemers niet ingedeeld';
         const titles = [
             `${titleBase} ${aLijstDay ? ', A lijst' : ''} aangemeld: ${markt.naam}`,
             `${titleBase} ${aLijstDay ? ', A lijst' : ''} niet aangemeld: ${markt.naam}`,

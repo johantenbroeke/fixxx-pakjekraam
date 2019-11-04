@@ -44,7 +44,7 @@ import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
 import { deleteUserPage, deleteUser, publicProfilePage } from './routes/ondernemer';
-import { vasteplaatshoudersPage, sollicitantenPage, voorrangslijstPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
+import { vasteplaatshoudersPage, sollicitantenPage, voorrangslijstPage, voorrangslijstVolledigPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
 import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
 import { KeycloakRoles } from './permissions';
 const Pool = require('pg-pool');
@@ -244,6 +244,8 @@ app.get(
 app.get('/markt/:marktId/:datum/sollicitanten/', keycloak.protect(KeycloakRoles.MARKTMEESTER), sollicitantenPage);
 
 app.get('/markt/:marktId/:datum/voorrangslijst/', keycloak.protect(KeycloakRoles.MARKTMEESTER), voorrangslijstPage);
+
+app.get('/markt/:marktId/:datum/voorrangslijst-volledig/', keycloak.protect(KeycloakRoles.MARKTMEESTER), voorrangslijstVolledigPage);
 
 app.get(
     '/markt/:marktId/:datum/afmeldingen-vasteplaatshouders/',

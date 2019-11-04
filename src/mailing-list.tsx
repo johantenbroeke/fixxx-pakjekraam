@@ -128,7 +128,7 @@ const mailAfwijzingen = (
                     mailTemplate = <EmailAfwijzing
                         subject={subject}
                         ondernemer={ondernemer}
-                        telefoonnummer={marktEnriched.marktEnriched}
+                        telefoonnummer={marktEnriched.telefoonnummer}
                         afwijzing={afwijzing}
                         markt={markt}
                     />;
@@ -214,6 +214,7 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
                             const ondernemer = ondernemers.find(
                                 ({ erkenningsNummer }) => erkenningsNummer === afwijzing.erkenningsNummer,
                             );
+
                             const user = users.find(
                                 ({ username }) => username === afwijzing.erkenningsNummer
                             );
@@ -225,10 +226,13 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
                         })
                         .filter(({ user }) => !!user && !!user.email);
 
-                    mailToewijzingen([toewijzingenFiltered[0]], markt, marktEnriched);
-                    mailAfwijzingen([afwijzingenFiltered[0]], markt, marktEnriched);
+                        toewijzingenFiltered.length > 0 ? mailToewijzingen(toewijzingenFiltered, markt, marktEnriched) : null;
+                        afwijzingenFiltered.length > 0 ? mailAfwijzingen(afwijzingenFiltered, markt, marktEnriched): null;
 
-                }),
+                })
+                .catch(e => {
+                    console.log(e);
+                })
             );
     });
 });
