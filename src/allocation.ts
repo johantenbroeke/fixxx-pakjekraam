@@ -1,11 +1,12 @@
 const models = require('./model/index.ts');
-const { getMarkten, getIndelingslijst } = require('./pakjekraam-api.ts');
+import { getIndelingslijst } from './pakjekraam-api';
 
-const { flatten, tomorrow } = require('./util.ts');
+import { flatten, tomorrow, getMaDiWoDo } from './util';
 import { convertToewijzingForDB } from './model/allocation.functions';
 import { convertAfwijzingForDB } from './model/afwijzing.functions';
 import { MMMarkt } from './makkelijkemarkt.model';
-import { IMarkt } from './markt.model';
+import { IMarkt, IMarktEnriched } from './markt.model';
+import { getMarktenEnabled, getMarktEnriched } from './model/markt.functions';
 
 import { sequelize } from './model/index';
 
@@ -31,10 +32,10 @@ const mapMarktenToToewijzingen = (markten: any) => {
 
 const mapMarktenToAfwijzingen = (markten: any) => {
     return markten
-    .map((markt: any) =>
-        markt.afwijzingen.map( (afwijzing: any) => convertAfwijzingForDB(afwijzing, markt, marktDate)),
-    )
-    .reduce(flatten, []);
+        .map((markt: any) =>
+            markt.afwijzingen.map( (afwijzing: any) => convertAfwijzingForDB(afwijzing, markt, marktDate)),
+        )
+        .reduce(flatten, []);
 };
 
 async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
@@ -47,10 +48,18 @@ async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
     process.exit();
 }
 
-getMarkten()
+getMarktenEnabled()
     .then((markten: MMMarkt[]) => {
-        markten = markten.filter( markt => markt.id === 20);
-        return Promise.all(markten.map(markt => getIndelingslijst(markt.id, marktDate)));
+        return Promise.all(markten.map(markt => getMarktEnriched(String(markt.id))));
+    })
+    .then((markten: IMarktEnriched[]) => {
+        markten = markten.filter( markt => markt.fase === 'live' || markt.fase === 'wenperiode');
+        // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const maDiWoDo = getMaDiWoDo(tomorrow);
+        markten = markten.filter( markt => markt.marktDagen.includes(maDiWoDo));
+        return Promise.all(markten.map(markt => getIndelingslijst(String(markt.id), marktDate)));
     })
     .then( (marktenEnriched: IMarkt[] ) => {
         return Promise.all( [ mapMarktenToToewijzingen(marktenEnriched), mapMarktenToAfwijzingen(marktenEnriched) ] );

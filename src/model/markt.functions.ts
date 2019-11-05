@@ -1,26 +1,25 @@
 import {
-    getMarkt,
-    // getMarkten as getMakkelijkeMarkten,
+    getMarkt as getMakkelijkeMarkt,
 } from '../makkelijkemarkt-api';
 import { getMarktProperties, getMarktPaginas, getMarktplaatsen, getMarktInfo, getMarkten } from '../pakjekraam-api';
-// import { MMMarkt } from '../makkelijkemarkt.model';
+import { IMarktEnriched } from '../markt.model';
 
-export const getMarktEnriched = (marktId: string) => {
+export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
 
     return Promise.all([
-        getMarkt(marktId),
+        getMakkelijkeMarkt(marktId),
         getMarktProperties(marktId),
         getMarktplaatsen(marktId),
         getMarktPaginas(marktId),
         getMarktInfo(marktId),
     ]).then(result => {
-        const [ markt, marktProperties, plaatsen, paginas, info ] = result;
+        const [ mmarkt, marktProperties, plaatsen, paginas, info ] = result;
         return {
-            ...markt,
+            ...mmarkt,
             ...marktProperties,
             plaatsen,
             paginas,
-            ...info,
+            ...info
         };
     });
 
