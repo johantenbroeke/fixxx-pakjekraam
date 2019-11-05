@@ -1,11 +1,11 @@
 const models = require('./model/index.ts');
-import { getIndelingslijst } from './pakjekraam-api';
+import { getIndelingslijst, getDaysClosed } from './pakjekraam-api';
 
-import { flatten, tomorrow, getMaDiWoDo } from './util';
+import { flatten, tomorrow, getMaDiWoDo, toISODate } from './util';
 import { convertToewijzingForDB } from './model/allocation.functions';
 import { convertAfwijzingForDB } from './model/afwijzing.functions';
-import { MMMarkt } from './makkelijkemarkt.model';
-import { IMarkt, IMarktEnriched } from './markt.model';
+// import { MMMarkt } from './makkelijkemarkt.model';
+// import { IMarkt, IMarktEnriched } from './markt.model';
 import { getMarktenEnabled, getMarktEnriched } from './model/markt.functions';
 
 import { sequelize } from './model/index';
@@ -48,28 +48,51 @@ async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
     process.exit();
 }
 
-getMarktenEnabled()
-    .then((markten: MMMarkt[]) => {
-        return Promise.all(markten.map(markt => getMarktEnriched(String(markt.id))));
-    })
-    .then((markten: IMarktEnriched[]) => {
-        markten = markten.filter( markt => markt.fase === 'live' || markt.fase === 'wenperiode');
-        // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
+async function allocation() {
+
+    try {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        const maDiWoDo = getMaDiWoDo(tomorrow);
-        markten = markten.filter( markt => markt.marktDagen.includes(maDiWoDo));
-        return Promise.all(markten.map(markt => getIndelingslijst(String(markt.id), marktDate)));
-    })
-    .then( (marktenEnriched: IMarkt[] ) => {
-        return Promise.all( [ mapMarktenToToewijzingen(marktenEnriched), mapMarktenToAfwijzingen(marktenEnriched) ] );
-    })
-    .then( (result: any) => {
-        return destroyAndCreateToewijzingenAfwijzingen(result);
-    })
-    .then( (result: any) => {
-        process.exit();
-    })
-    .catch( (e: any) => {
+        const tomorrowString = toISODate(tomorrow);
+        const daysClosed = await getDaysClosed();
+        console.log(daysClosed);
+        console.log(tomorrowString);
+        daysClosed.includes(tomorrowString) ? console.log(`Indeling wordt niet gedraaid, ${tomorrowString} gevonden in daysClosed.json`) : runAllocation();
+    } catch(e) {
         console.log(e);
-    });
+    }
+
+}
+
+async function runAllocation() {
+
+    try {
+
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const markten = await getMarktenEnabled();
+        let marktenEnriched = await Promise.all(markten.map(markt => getMarktEnriched(String(markt.id))));
+
+        marktenEnriched = marktenEnriched.filter( markt => markt.fase === 'live' || markt.fase === 'wenperiode');
+            // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
+
+        const maDiWoDo = getMaDiWoDo(tomorrow);
+        marktenEnriched = marktenEnriched.filter( markt => markt.marktDagen.includes(maDiWoDo));
+
+        const indelingen = await Promise.all(markten.map(markt => getIndelingslijst(String(markt.id), marktDate)));
+
+        const toewijzingen = await mapMarktenToToewijzingen(indelingen);
+        const afwijzingen = await mapMarktenToAfwijzingen(indelingen);
+
+        await destroyAndCreateToewijzingenAfwijzingen([toewijzingen, afwijzingen]);
+
+    }   catch(e) {
+
+        console.log(e);
+
+    }
+
+}
+
+allocation();

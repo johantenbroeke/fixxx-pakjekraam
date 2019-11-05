@@ -144,7 +144,6 @@ const filterRsvpListOndernemer = (aanmeldingen, markt, startDate) => {
 
     dates = dates.map(date => dateToYYYYMMDD(new Date(date)));
 
-
     const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
 
 

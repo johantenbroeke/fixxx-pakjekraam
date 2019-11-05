@@ -308,9 +308,9 @@ export const getMarktInfo = (marktId: string): Promise<IMarktInfo> =>
 
 export const getMededelingen = (): Promise<any> =>
     loadJSON('./data/mededelingen.json', {});
-/*
- * Convert an object from Makkelijke Markt to our own type of `IMarktondernemer` object
- */
+
+export const getDaysClosed = (): Promise<any> =>
+    loadJSON('./data/daysClosed.json', {});
 
 
 /*
