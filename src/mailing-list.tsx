@@ -73,9 +73,12 @@ const mailToewijzingen = (
 
             if (mailTemplate) {
 
+                console.log(process);
+
                 const mailObj = {
                     from: process.env.MAILER_FROM,
-                    to: user.email,
+                    // to: user.email,
+                    to: 'tomootes@gmail.com',
                     subject,
                     react: mailTemplate,
                 };
@@ -141,7 +144,8 @@ const mailAfwijzingen = (
 
                 const mailObj = {
                     from: process.env.MAILER_FROM,
-                    to: user.email,
+                    // to: user.email,
+                    to: 'tomootes@gmail.com',
                     subject,
                     react: mailTemplate,
                 };
@@ -226,8 +230,8 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
                         })
                         .filter(({ user }) => !!user && !!user.email);
 
-                        toewijzingenFiltered.length > 0 ? mailToewijzingen(toewijzingenFiltered, markt, marktEnriched) : null;
-                        afwijzingenFiltered.length > 0 ? mailAfwijzingen(afwijzingenFiltered, markt, marktEnriched): null;
+                        toewijzingenFiltered.length > 0 ? mailToewijzingen([toewijzingenFiltered[0]], markt, marktEnriched) : null;
+                        afwijzingenFiltered.length > 0 ? mailAfwijzingen([afwijzingenFiltered[0]], markt, marktEnriched): null;
 
                 })
                 .catch(e => {

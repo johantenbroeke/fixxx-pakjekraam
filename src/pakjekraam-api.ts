@@ -105,7 +105,7 @@ export const getAanmeldingen = (marktId: string, marktDate: string): Promise<IRS
         })
         .then(aanmeldingen => aanmeldingen);
 
-export const getAanmeldingenMarktOndern = (marktId: string, erkenningsNummer: string): Promise<IRSVP[]> =>
+export const getAanmeldingenByOndernemerEnMarkt = (marktId: string, erkenningsNummer: string): Promise<IRSVP[]> =>
     rsvp
         .findAll<RSVP>({
             where: { marktId, erkenningsNummer },
@@ -457,7 +457,7 @@ export const getMailContext = (marktId: string, erkenningsNr: string, marktDate:
     Promise.all([
         getToewijzingslijst(marktId, marktDate),
         getVoorkeurenMarktOndern(marktId, erkenningsNr),
-        getAanmeldingenMarktOndern(marktId, erkenningsNr),
+        getAanmeldingenByOndernemerEnMarkt(marktId, erkenningsNr),
         getAllBranches(),
     ]).then(([markt, voorkeuren, aanmeldingen, branches]) => {
         const ondernemer = markt.ondernemers.find(({ erkenningsNummer }) => erkenningsNummer === erkenningsNr);

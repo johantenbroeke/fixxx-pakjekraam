@@ -88,9 +88,7 @@ async function runAllocation() {
         await destroyAndCreateToewijzingenAfwijzingen([toewijzingen, afwijzingen]);
 
     }   catch(e) {
-
         console.log(e);
-
     }
 
 }
