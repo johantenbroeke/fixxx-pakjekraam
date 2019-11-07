@@ -1,5 +1,8 @@
+import moment from 'moment';
+
 // String function
 // ===============
+
 
 export const capitalize = (s: string) => {
     return typeof s === 'string' ?
@@ -112,6 +115,12 @@ export const addMinutes = (offsetDate: string | number, minutes: number): string
     const date = new Date(offsetDate);
 
     return new Date(date.getTime() + minutes * 60000).toISOString().replace(/T.+/, '');
+};
+
+export const getTimezoneTime = (): Date => {
+    const now = new Date();
+    const offset = moment().utcOffset();
+    return moment(now).add(offset, 'm').toDate();
 };
 
 export const tomorrow = (): string => addDays(Date.now(), 1);

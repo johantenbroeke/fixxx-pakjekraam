@@ -63,9 +63,6 @@ class OndernemerMarktDetailPage extends React.Component {
         const aanmeldingMorgen = aanmeldingen.find(aanmelding => aanmelding.marktDate == tomorrow());
         const toewijzingVandaag = toewijzingen.find(aanmelding => aanmelding.marktDate == today());
         const toewijzingMorgen = toewijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
-        const time = new Date();
-
-        console.log(markt);
 
         return (
             <Page messages={messages}>
@@ -87,7 +84,7 @@ class OndernemerMarktDetailPage extends React.Component {
                         </Alert>
                     ) : null }
 
-                    <Uitslag time={new Date()} ondernemer={ondernemer} today={today()} tomorrow={tomorrow()} markt={markt} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
+                    <Uitslag ondernemer={ondernemer} today={today()} tomorrow={tomorrow()} markt={markt} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
 
                     <div className="row row--responsive">
                         <div className="col-1-2">

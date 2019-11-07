@@ -1,9 +1,10 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 const AlertLine = require('./AlertLine');
-const { formatDate, getMaDiWoDoOfToday } = require('../../util.ts');
+const { formatDate, getMaDiWoDoOfToday, getCurrentTime, getTimezoneTime } = require('../../util.ts');
 
-const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen, ondernemer }) => {
+
+const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen, ondernemer }) => {
     function plaatsenDuiding(plaatsen) {
         if (plaatsen.length == 1) {
             return `Plaats: ${plaatsen.join(', ')}`;
@@ -16,6 +17,8 @@ const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMo
         return sollicitatieOndernemer.markt.id == markt.id && !sollicitatieOndernemer.doorgehaald;
     });
 
+    // let time = getTimezoneTime();
+    const time = new Date();
     markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
 
     return (
@@ -79,7 +82,6 @@ const Content = ({ time, markt, today, tomorrow, aanmeldingVandaag, aanmeldingMo
 };
 
 Content.propTypes = {
-    time: PropTypes.instanceOf(Date),
     today: PropTypes.string,
     tomorrow: PropTypes.string,
     markt: PropTypes.object,
