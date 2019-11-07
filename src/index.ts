@@ -27,7 +27,7 @@ import {
     getSollicitantenlijstInput,
 } from './pakjekraam-api';
 
-import { serverHealth, databaseHealth, keycloakHealth, makkelijkeMarktHealth } from './routes/status';
+import { serverHealth, serverTime, databaseHealth, keycloakHealth, makkelijkeMarktHealth } from './routes/status';
 import { activationPage, handleActivation } from './routes/activation';
 import { registrationPage, handleRegistration } from './routes/registration';
 import {
@@ -106,6 +106,7 @@ app.use(morgan(morgan.compile(':date[iso] :method :status :url :response-time ms
 
 // The `/status/health` endpoint is required for Docker deployments
 app.get('/status/health', serverHealth);
+app.get('/status/time', serverTime);
 app.get('/status/database', databaseHealth);
 app.get('/status/keycloak', keycloakHealth);
 app.get('/status/makkelijkemarkt', makkelijkeMarktHealth);

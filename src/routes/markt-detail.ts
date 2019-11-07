@@ -5,8 +5,8 @@ import { getMarktEnriched } from '../model/markt.functions';
 import {
     getAllBranches,
     getIndelingVoorkeur,
-    getAanmeldingenByOndernemer,
     getToewijzingenByOndernemerEnMarkt,
+    getAanmeldingenByOndernemerEnMarkt,
     getPlaatsvoorkeurenOndernemer,
     getMededelingen,
 } from '../pakjekraam-api';
@@ -24,13 +24,11 @@ export const marktDetailController = (
     const query = req.query;
 
     const messages = getQueryErrors(req.query);
-    const ondernemerPromise = getMarktondernemer(erkenningsNummer);
-    const ondernemerVoorkeurenPromise = getPlaatsvoorkeurenOndernemer(erkenningsNummer);
 
     Promise.all([
-        ondernemerPromise,
-        ondernemerVoorkeurenPromise,
-        getAanmeldingenByOndernemer(erkenningsNummer),
+        getMarktondernemer(erkenningsNummer),
+        getPlaatsvoorkeurenOndernemer(erkenningsNummer),
+        getAanmeldingenByOndernemerEnMarkt(marktId, erkenningsNummer),
         getMarktEnriched(marktId),
         getIndelingVoorkeur(erkenningsNummer, req.params.marktId),
         getAllBranches(),

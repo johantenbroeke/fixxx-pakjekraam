@@ -1,3 +1,5 @@
+import { MMMarkt } from './makkelijkemarkt.model';
+
 export type PlaatsId = string;
 
 export type ErkenningsNummer = string;
@@ -30,7 +32,6 @@ export interface IMarktProperties {
     marktId?: string;
     marktDate?: string;
     fase?: string;
-    naam?: string;
     expansionLimit?: number;
     rows?: string[][];
 }
@@ -183,4 +184,8 @@ export interface IMarktInfo {
     erkenningsNummer: ErkenningsNummer;
     marktdagen: string;
     indelingstijdstip: string;
+    plaatsen?: IMarktplaats[];
+    paginas: any[];
 }
+
+export interface IMarktEnriched extends IMarktInfo, MMMarkt, IMarktProperties {}
