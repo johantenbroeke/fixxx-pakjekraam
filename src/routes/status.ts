@@ -9,6 +9,12 @@ export const serverHealth = (req: Request, res: Response) => {
     res.end('OK!');
 };
 
+// This health check page is required for Docker deployments
+export const serverTime = (req: Request, res: Response) => {
+    const now = new Date();
+    res.end(String(now.getHours()));
+};
+
 export const databaseHealth = (req: Request, res: Response) => {
     sequelize
         .authenticate()

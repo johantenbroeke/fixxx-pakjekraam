@@ -3,14 +3,14 @@ import { Request, Response } from 'express';
 import EmailWijzigingAanmeldingen from '../views/EmailWijzigingAanmeldingen.jsx';
 import { internalServerErrorPage } from '../express-util';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-import { getAanmeldingenMarktOndern } from '../pakjekraam-api';
+import { getAanmeldingenByOndernemerEnMarkt } from '../pakjekraam-api';
 import { filterRsvpList, isVast } from '../domain-knowledge.js';
 import { mail } from '../mail.js';
 
 export const applicationMailPage = (req: Request, res: Response) => {
     const ondernemerPromise = getMarktondernemer(req.params.erkenningsNummer);
     const marktPromise = getMarkt(req.params.marktId);
-    const aanmeldingenPromise = getAanmeldingenMarktOndern(req.params.marktId, req.params.erkenningsNummer);
+    const aanmeldingenPromise = getAanmeldingenByOndernemerEnMarkt(req.params.marktId, req.params.erkenningsNummer);
     Promise.all([ondernemerPromise, marktPromise, aanmeldingenPromise]).then(([ondernemer, markt, aanmeldingen]) => {
         const marktDate = new Date(req.params.marktDate);
         const aanmeldingenFiltered = filterRsvpList(aanmeldingen, markt, marktDate);

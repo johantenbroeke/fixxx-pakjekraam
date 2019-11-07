@@ -19,7 +19,7 @@ const OndernemerMarktTile = ({
             <h2>{markt.naam}</h2>
             <a className="background-link" href={`/markt-detail/${markt.id}`} />
             <Button label={`Ga naar ${markt.naam}`} href={`/markt-detail/${markt.id}`} />
-            <Uitslag time={new Date()} today={today} ondernemer={ondernemer} markt={markt} tomorrow={tomorrow} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
+            <Uitslag today={today} ondernemer={ondernemer} markt={markt} tomorrow={tomorrow} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
         </div>
     );
 };
