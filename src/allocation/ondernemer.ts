@@ -73,9 +73,12 @@ const Ondernemer = {
     },
 
     getStartSize: (ondernemer: IMarktondernemer): number => {
-        const { plaatsen = [] } = ondernemer;
-        const { minimum = Infinity, maximum = Infinity } = ondernemer.voorkeur || {};
-        return Math.min(plaatsen.length, minimum, maximum) || 1;
+        const { plaatsen = [] }          = ondernemer;
+        let { minimum = 0, maximum = 0 } = ondernemer.voorkeur || {};
+
+        minimum  = minimum || Math.max(plaatsen.length, 1);
+        maximum  = maximum || minimum;
+        return Math.min(minimum, maximum);
     },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] } = ondernemer;
