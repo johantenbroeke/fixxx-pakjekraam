@@ -3,10 +3,16 @@ import { sequelize } from '../model/index';
 import { getKeycloakAdmin } from '../keycloak-api';
 import { checkLogin } from '../makkelijkemarkt-api';
 import { internalServerErrorPage } from '../express-util';
+import { getTimezoneTime } from '../util';
 
 // This health check page is required for Docker deployments
 export const serverHealth = (req: Request, res: Response) => {
     res.end('OK!');
+};
+
+// This health check page is required for Docker deployments
+export const serverTime = (req: Request, res: Response) => {
+    res.end( String(getTimezoneTime()) );
 };
 
 export const databaseHealth = (req: Request, res: Response) => {

@@ -1478,4 +1478,30 @@ describe('Bugfix voor', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5', '6']);
     });
+
+    it('issue #532', () => {
+        // `Ondernemer.getStartSize` gaf onterecht een waarde van 1 terug, waar een SOLL
+        // had aangegeven minimaal 2 plaatsen te willen. In `Indeling.performExpansion`
+        // werd dit minimum vervolgens wel gerespecteerd. Op dit punt was echter al bepaald
+        // wat de meest geschikte plaats voor deze ondernemer was (o.b.v. voorkeuren). Dit kon
+        // betekenen dat uitbreiden niet meer mogelijk was omdat aangelegen plaatsen niet
+        // beschikbaar meer waren.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers : [
+                { sollicitatieNummer : 1, status : 'soll', voorkeur : { minimum: 2, maximum: 2, anywhere : true } }
+            ],
+            marktplaatsen: [
+                {}, { inactive: true }, {}, {}
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '1', priority: 3 },
+                { sollicitatieNummer: 1, plaatsId: '3', priority: 2 },
+                { sollicitatieNummer: 1, plaatsId: '4', priority: 1 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3', '4']);
+    });
 });

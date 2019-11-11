@@ -1,14 +1,12 @@
-// String function
-// ===============
+// import moment from 'moment';
+const moment = require('moment-timezone');
+
 
 export const capitalize = (s: string) => {
     return typeof s === 'string' ?
            s.charAt(0).toUpperCase() + s.slice(1) :
            '';
 };
-
-// Date functions
-// ==============
 
 export const DAYS_IN_WEEK = 7;
 export const MILLISECONDS_IN_SECOND = 1000;
@@ -110,8 +108,15 @@ export const addDays = (offsetDate: string | number, days: number): string => {
 
 export const addMinutes = (offsetDate: string | number, minutes: number): string => {
     const date = new Date(offsetDate);
-
     return new Date(date.getTime() + minutes * 60000).toISOString().replace(/T.+/, '');
+};
+
+export const getTimezoneTime = (): Date => {
+    return moment().tz('Europe/Amsterdam').format();
+};
+
+export const getTimezoneHours = (): String => {
+    return moment( getTimezoneTime() ).format('H');
 };
 
 export const tomorrow = (): string => addDays(Date.now(), 1);
@@ -136,7 +141,7 @@ export const ddmmyyyyToDate = (dateString: string) => {
 
 export const dateToYYYYMMDD = (dateObject: Date) => {
     const day = dateObject.getDay();
-    const month = dateObject.getMonth();
+    const month = dateObject.getMonth()+1;
     const year = dateObject.getFullYear();
     return `${year}-${month}-${day}`;
 };

@@ -1,11 +1,12 @@
 const models = require('./model/index.ts');
-const { getMarkten, getIndelingslijst } = require('./pakjekraam-api.ts');
+import { getIndelingslijst, getDaysClosed } from './pakjekraam-api';
 
-const { flatten, tomorrow } = require('./util.ts');
+import { flatten, tomorrow, getMaDiWoDo, toISODate } from './util';
 import { convertToewijzingForDB } from './model/allocation.functions';
 import { convertAfwijzingForDB } from './model/afwijzing.functions';
-import { MMMarkt } from './makkelijkemarkt.model';
-import { IMarkt } from './markt.model';
+// import { MMMarkt } from './makkelijkemarkt.model';
+// import { IMarkt, IMarktEnriched } from './markt.model';
+import { getMarktenEnabled, getMarktEnriched } from './model/markt.functions';
 
 import { sequelize } from './model/index';
 
@@ -31,10 +32,10 @@ const mapMarktenToToewijzingen = (markten: any) => {
 
 const mapMarktenToAfwijzingen = (markten: any) => {
     return markten
-    .map((markt: any) =>
-        markt.afwijzingen.map( (afwijzing: any) => convertAfwijzingForDB(afwijzing, markt, marktDate)),
-    )
-    .reduce(flatten, []);
+        .map((markt: any) =>
+            markt.afwijzingen.map( (afwijzing: any) => convertAfwijzingForDB(afwijzing, markt, marktDate)),
+        )
+        .reduce(flatten, []);
 };
 
 async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
@@ -47,20 +48,49 @@ async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
     process.exit();
 }
 
-getMarkten()
-    .then((markten: MMMarkt[]) => {
-        markten = markten.filter( markt => markt.id === 20);
-        return Promise.all(markten.map(markt => getIndelingslijst(markt.id, marktDate)));
-    })
-    .then( (marktenEnriched: IMarkt[] ) => {
-        return Promise.all( [ mapMarktenToToewijzingen(marktenEnriched), mapMarktenToAfwijzingen(marktenEnriched) ] );
-    })
-    .then( (result: any) => {
-        return destroyAndCreateToewijzingenAfwijzingen(result);
-    })
-    .then( (result: any) => {
-        process.exit();
-    })
-    .catch( (e: any) => {
+async function allocation() {
+
+    try {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowString = toISODate(tomorrow);
+        const daysClosed = await getDaysClosed();
+        console.log(daysClosed);
+        console.log(tomorrowString);
+        daysClosed.includes(tomorrowString) ? console.log(`Indeling wordt niet gedraaid, ${tomorrowString} gevonden in daysClosed.json`) : runAllocation();
+    } catch(e) {
         console.log(e);
-    });
+    }
+
+}
+
+async function runAllocation() {
+
+    try {
+
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const markten = await getMarktenEnabled();
+        let marktenEnriched = await Promise.all(markten.map(markt => getMarktEnriched(String(markt.id))));
+
+        marktenEnriched = marktenEnriched.filter( markt => markt.fase === 'live' || markt.fase === 'wenperiode');
+            // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
+
+        const maDiWoDo = getMaDiWoDo(tomorrow);
+        marktenEnriched = marktenEnriched.filter( markt => markt.marktDagen.includes(maDiWoDo));
+
+        const indelingen = await Promise.all(markten.map(markt => getIndelingslijst(String(markt.id), marktDate)));
+
+        const toewijzingen = await mapMarktenToToewijzingen(indelingen);
+        const afwijzingen = await mapMarktenToAfwijzingen(indelingen);
+
+        await destroyAndCreateToewijzingenAfwijzingen([toewijzingen, afwijzingen]);
+
+    }   catch(e) {
+        console.log(e);
+    }
+
+}
+
+allocation();
