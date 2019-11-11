@@ -15,7 +15,7 @@ class Page extends React.Component {
             <html lang="nl">
                 <head>
                     <meta charSet="UTF-8" />
-                    <title>{this.props.title || 'Kies je kraam (ACC)'}</title>
+                    <title>{this.props.title || 'Kies je kraam'}</title>
                     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
                     <link rel="stylesheet" type="text/css" href="/style/screen.css" />
                     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
