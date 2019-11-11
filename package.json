@@ -1,6 +1,6 @@
 {
   "name": "@fixxx/pakjekraam",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "repository": "https://github.com/Amsterdam/fixxx-pakjekraam.git",
   "main": "src/index.ts",
@@ -93,6 +93,7 @@
     "keycloak-admin": "1.12.0",
     "keycloak-connect": "6.0.1",
     "moment": "2.24.0",
+    "moment-timezone": "0.5.27",
     "morgan": "1.9.1",
     "nodemailer": "6.2.1",
     "nodemailer-sendgrid-transport": "0.2.0",
