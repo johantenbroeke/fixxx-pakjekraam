@@ -3,6 +3,7 @@ import { sequelize } from '../model/index';
 import { getKeycloakAdmin } from '../keycloak-api';
 import { checkLogin } from '../makkelijkemarkt-api';
 import { internalServerErrorPage } from '../express-util';
+import { getTimezoneTime } from '../util';
 
 // This health check page is required for Docker deployments
 export const serverHealth = (req: Request, res: Response) => {
@@ -11,8 +12,7 @@ export const serverHealth = (req: Request, res: Response) => {
 
 // This health check page is required for Docker deployments
 export const serverTime = (req: Request, res: Response) => {
-    const now = new Date();
-    res.end(String(now.getHours()));
+    res.end( String(getTimezoneTime()) );
 };
 
 export const databaseHealth = (req: Request, res: Response) => {

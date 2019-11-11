@@ -115,7 +115,7 @@ class MarktDetailPage extends React.Component {
                                     </strong>
                                     <ul className="LinkList">
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/indelingslijst/`} className="Link">
+                                            <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
                                                 Afmeldingen vasteplaatshouders
                                             </a>
                                         </li>

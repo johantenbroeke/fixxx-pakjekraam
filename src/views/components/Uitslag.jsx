@@ -1,7 +1,7 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 const AlertLine = require('./AlertLine');
-const { formatDate, getMaDiWoDoOfToday, getCurrentTime, getTimezoneTime } = require('../../util.ts');
+const { formatDate, getMaDiWoDoOfToday, getCurrentTime, getTimezoneTime, getTimezoneHours } = require('../../util.ts');
 
 
 const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen, ondernemer }) => {
@@ -17,13 +17,12 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
         return sollicitatieOndernemer.markt.id == markt.id && !sollicitatieOndernemer.doorgehaald;
     });
 
-    // let time = getTimezoneTime();
-    const time = new Date();
+    const timeInHours = getTimezoneHours();
     markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
 
     return (
         <div>
-            {time.getHours() > 21 && time.getHours() < 24 || !markt.geopend && ( markt.fase === 'wenperiode' || markt.fase === 'live' ) ? (
+            {timeInHours > 21 && timeInHours < 24 || !markt.geopend && ( markt.fase === 'wenperiode' || markt.fase === 'live' ) ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Morgen ({formatDate(tomorrow)})
@@ -47,7 +46,7 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
                     ) : null}
                 </div>
             ) : null }
-            {time.getHours() >= 0 && time.getHours() < 18 && markt.geopend && ( markt.fase === 'wenperiode' || markt.fase === 'live' ) ? (
+            {timeInHours >= 0 && timeInHours < 18 && markt.geopend && ( markt.fase === 'wenperiode' || markt.fase === 'live' ) ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Vandaag ({formatDate(today)})
