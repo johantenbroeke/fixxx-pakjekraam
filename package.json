@@ -18,7 +18,7 @@
     "predev": "npm run build && npm run deploy",
     "dev": "ts-node-dev --ignore-watch node_modules src/index.ts",
     "allocation": "ts-node src/allocation.js",
-    "allocation-ts": "ts-node src/allocation.ts",
+    "allocation-ts": "ts-node-dev src/allocation.ts --debug",
     "allocation-env": "( . .env && npm run allocation-ts)",
     "allocation-ts-env": "( . .env && npm run allocation)",
     "migrate": "( . .env && npx sequelize-cli db:migrate)",
