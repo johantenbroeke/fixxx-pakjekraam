@@ -125,6 +125,10 @@
         input:checked + label {
             outline: 2px solid $support-focus;
         }
+        input:disabled + label {
+            outline: none;
+            cursor: auto;
+        }
         &.extra {
             *:nth-child(2) {
                 background-color: transparent;

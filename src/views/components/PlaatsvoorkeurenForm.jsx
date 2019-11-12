@@ -22,24 +22,15 @@ class PlaatsvoorkeurenForm extends React.Component {
     render() {
         const { markt, ondernemer, plaatsvoorkeuren, query, rows, indelingVoorkeur, marktDate, role, sollicitatie } = this.props;
 
-        const defaultPlaatsCount = isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1;
         const defaultVoorkeur = {
-            minimum: defaultPlaatsCount,
-            maximum: defaultPlaatsCount,
+            minimum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
+            maximum: 0,
             anywhere: !isVast(sollicitatie.status),
             inactive: false,
         };
 
         const voorkeur = indelingVoorkeur || defaultVoorkeur;
-        voorkeur.minimum = !voorkeur.minimum ? 1 : parseInt(voorkeur.minimum, 10);
-        voorkeur.maximum = !voorkeur.maximum ? 1 : parseInt(voorkeur.maximum, 10);
-        voorkeur.minimum = voorkeur.maximum < voorkeur.minimum ? voorkeur.maximum : voorkeur.minimum;
 
-        const hasVoorkeur = (marktId, plaatsId) =>
-            plaatsvoorkeuren.some(voork => voork.marktId === marktId && voork.plaatsId === plaatsId) ||
-            ondernemer.sollicitaties.some(
-                soll => soll.markt.id === parseInt(marktId, 10) && soll.vastePlaatsen.includes(plaatsId),
-            );
         const voorkeurEntries = plaatsvoorkeuren.map((voork, index) => {
             return {
                 marktId: voork.marktId,
@@ -58,18 +49,57 @@ class PlaatsvoorkeurenForm extends React.Component {
 
         const next = query.next ? query.next : `./`;
 
-        const maxCountUitbreidingenMarkt = 2;
+        let minimumCount = null;
 
-        const newPlaatsvoorkeurCount =
+        if (role === 'marktmeester') {
+            minimumCount =
             sollicitatie.vastePlaatsen.length > 0
-                ? sollicitatie.vastePlaatsen.length + maxCountUitbreidingenMarkt
-                : 1 + maxCountUitbreidingenMarkt;
+                ? sollicitatie.vastePlaatsen.length + 2
+                : 3;
+        } else {
+            minimumCount =
+            sollicitatie.vastePlaatsen.length > 0
+                ? sollicitatie.vastePlaatsen.length
+                : 3;
+        }
+
+        const minimumDisabled = sollicitatie.status === 'vpl' && role !== 'marktmeester';
+
+        const minimumChecked = i => {
+            if ( isVast(sollicitatie.status) && role !== 'marktmeester' ) {
+                if (sollicitatie.vastePlaatsen.length === i + 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (voorkeur.minimum === i + 1) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        const defaultCheckedMax = i => {
+            if ( ( voorkeur.maximum - voorkeur.minimum ) === i ) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        const plaatsenDuiding = plaatsen => {
+            return plaatsen.length > 1 ? 'plaatsen' : 'plaats';
+        };
+
+        const plaatsNummerDuiding = plaatsen => {
+            return plaatsen.length > 1 ? 'plaatsnummers' : 'plaatsnummer';
+        };
+
         const entriesFiltered = allEntries.filter(entry => entry.marktId === markt.id);
         const entriesSplit = entriesFiltered
             .sort((a, b) => b.priority - a.priority)
             .reduce((t, e) => {
                 !t.includes(e.priority) && t.push(e.priority);
-
                 return t;
             }, [])
             .reduce((t, p) => {
@@ -124,13 +154,23 @@ class PlaatsvoorkeurenForm extends React.Component {
                     <script dangerouslySetInnerHTML={marktRowsJSOM()} />
                     <script dangerouslySetInnerHTML={plaatsSetsJSON()} />
                     <input name="maximum" id="maximum" type="hidden" defaultValue={voorkeur.maximum} />
+                    { isVast(sollicitatie.status) ?
+                        <input name="minimum" id="minimum" type="hidden" defaultValue={sollicitatie.vastePlaatsen.length} />
+                        : null
+                    }
                     <div className="Fieldset PlaatsvoorkeurenForm__plaats-count">
-                        <h2 className="Fieldset__header">Aantal plaatsen</h2>
+                        <h2 className="Fieldset__header">
+                        { isVast(sollicitatie.status) ? `Uw vaste ${plaatsenDuiding(sollicitatie.vastePlaatsen)}` : 'Aantal plaatsen' }
+                        </h2>
                         <span className="Fieldset__sub-header">
-                            Hoeveel plaatsen hebt u <strong>echt nodig</strong>?
+                            { isVast(sollicitatie.status)
+                                ?`${plaatsNummerDuiding(sollicitatie.vastePlaatsen)}: ${sollicitatie.vastePlaatsen.join(', ')}`
+                                : <span>Hoeveel plaatsen hebt u <strong>echt nodig</strong>?</span>
+                            }
                         </span>
+
                         <div className="PlaatsvoorkeurenForm__plaats-count__wrapper">
-                            {Array.from(new Array(newPlaatsvoorkeurCount)).map((r, i) => (
+                            {Array.from(new Array(minimumCount)).map((r, i) => (
                                 <React.Fragment key={i}>
                                     <input
                                         type="radio"
@@ -138,12 +178,14 @@ class PlaatsvoorkeurenForm extends React.Component {
                                         value={`${i + 1}`}
                                         data-val={`${i + 1}`}
                                         name="minimum"
-                                        {...{ defaultChecked: voorkeur.minimum === i + 1 }}
+                                        disabled={minimumDisabled}
+                                        {...{ defaultChecked: minimumChecked(i) }}
                                     />
                                     <label htmlFor={`default-count-${i + 1}`}>{i + 1}</label>
                                 </React.Fragment>
                             ))}
                         </div>
+
                     </div>
 
                     <div className="Fieldset PlaatsvoorkeurenForm__plaats-count extra">
@@ -159,7 +201,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                                         id={`extra-count-${i}`}
                                         value={`${i}`}
                                         name="extra-count"
-                                        {...{ defaultChecked: i === 0 }}
+                                        {...{ defaultChecked: defaultCheckedMax(i) }}
                                     />
                                     <label htmlFor={`extra-count-${i}`}>
                                         {i !== 0 ? '+' : ''}
@@ -270,7 +312,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         </div>
                         <div
                             className="PlaatsvoorkeurenForm__prototype"
-                            data-plaatsvoorkeur-count={newPlaatsvoorkeurCount}
+                            data-plaatsvoorkeur-count={plaatsvoorkeurenCount}
                             data-markt-id={markt.id}
                             // data-decorator="plaatsvoorkeur-prototype"
                             data-used-plaatsen={`p=${entriesFiltered.map(entry => entry.plaatsId).join('&p=')}`}
