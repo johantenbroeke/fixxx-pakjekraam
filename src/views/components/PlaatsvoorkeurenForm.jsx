@@ -312,7 +312,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         </div>
                         <div
                             className="PlaatsvoorkeurenForm__prototype"
-                            data-plaatsvoorkeur-count={plaatsvoorkeurenCount}
+                            data-plaatsvoorkeur-count={minimumCount}
                             data-markt-id={markt.id}
                             // data-decorator="plaatsvoorkeur-prototype"
                             data-used-plaatsen={`p=${entriesFiltered.map(entry => entry.plaatsId).join('&p=')}`}
