@@ -295,9 +295,12 @@ const Indeling = {
                 group = Markt.groupByAdjacent(indeling, group)[0];
             }
 
-            if (group.length >= minimumSize) {
-                // Stop `reduce` loop.
-                groups.length = 0;
+            if (
+                group.length >= minimumSize &&
+                // Zolang we het maximaal aantal gewenste aantal plaatsen nog niet hebben
+                // bereikt blijven we doorzoeken.
+                Math.min(size, group.length) > result.length
+            ) {
                 // Reduceer het aantal plaatsen tot `size`.
                 // Pak de subset met de hoogste totale prioriteit.
                 return group.reduce((best, plaats, index) => {

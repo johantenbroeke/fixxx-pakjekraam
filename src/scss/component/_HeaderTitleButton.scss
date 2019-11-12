@@ -1,6 +1,10 @@
 .HeaderTitleButton {
-    margin-top: $vm5;
+    // margin-top: $gutter;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 0 0 $gutter-sm;
+    &__title{
+        margin: 0;
+    }
 }
