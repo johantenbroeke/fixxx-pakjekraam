@@ -5,7 +5,7 @@ const Button = require('./Button');
 const HeaderTitleButton = ({ title, url, label }) => {
     return (
         <div className="HeaderTitleButton">
-            <h3>{title}</h3>
+            <h3 className="HeaderTitleButton__title">{title}</h3>
             <Button label={label || 'Wijzig'} href={url} type={`secondary`} />
         </div>
     );
