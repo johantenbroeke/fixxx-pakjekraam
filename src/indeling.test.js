@@ -8,9 +8,9 @@ const { marktScenario } = require('./indeling-scenario.ts');
 
 const { pluck } = require('./util.ts');
 
-const FIRST_CHOICE = Number.MAX_SAFE_INTEGER;
-const SECOND_CHOICE = FIRST_CHOICE - 1;
-const THIRD_CHOICE = FIRST_CHOICE - 2;
+const FIRST_CHOICE = Number.MAX_SAFE_INTEGER - 1;
+const SECOND_CHOICE = FIRST_CHOICE - 2;
+const THIRD_CHOICE = FIRST_CHOICE - 3;
 
 function calc(def) {
     const markt = marktScenario(def);
@@ -1492,6 +1492,33 @@ describe('Bugfix voor', () => {
             ],
             marktplaatsen: [
                 {}, { inactive: true }, {}, {}
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '1', priority: 3 },
+                { sollicitatieNummer: 1, plaatsId: '3', priority: 2 },
+                { sollicitatieNummer: 1, plaatsId: '4', priority: 1 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3', '4']);
+    });
+
+    it('issue #534', () => {
+        // `Indeling._findBestGroup` vond een hogere prioriteit belangrijker dan een
+        // zo groot mogelijk aantal plaatsen toekennen; dit leverde situaties op die
+        // als oneerlijk werden ervaren.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers : [
+                { sollicitatieNummer : 1, status : 'soll', voorkeur : { minimum: 1, maximum: 2, anywhere : true } }
+            ],
+            marktplaatsen: [
+                {}, { inactive: true }, {}, {},
+                // Deze rij plaatsen is relevant om te controleren dat `_findBestGroup` niet
+                // te gretig is met het vinden van zoveel mogelijk plaatsen. Er mogen dan
+                // 3 vrije plaatsen zijn, de ondernemer wil er maar 2.
+                { inactive: true }, {}, {}, {}
             ],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '1', priority: 3 },
