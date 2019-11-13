@@ -6,7 +6,7 @@ import { arrayToObject } from '../util';
 import IndelingslijstGroup from './components/IndelingslijstGroup';
 import PrintPage from './components/PrintPage';
 import Street from './components/Street';
-import { IRSVP, IMarktplaats, IMarktondernemer, IToewijzing, IMarkt, IObstakelBetween } from '../markt.model';
+import { IRSVP, IMarktplaats, IMarktondernemer, IToewijzing, IMarkt, IObstakelBetween, IMarktondernemerVoorkeur } from '../markt.model';
 import { IAllocationPrintout } from '../model/printout.model';
 
 export type IndelingslijstenPageState = {
@@ -17,7 +17,8 @@ export type IndelingslijstenPageState = {
     paginas: IAllocationPrintout;
     toewijzingen: IToewijzing[];
     markt: IMarkt;
-    voorkeuren: any[];
+    plaatsvoorkeuren: any[];
+    voorkeuren: IMarktondernemerVoorkeur[];
     marktId: string;
     datum: string;
     type: string;
@@ -32,6 +33,7 @@ export default class IndelingslijstenPage extends React.Component {
         paginas: PropTypes.array,
         toewijzingen: PropTypes.array,
         markt: PropTypes.any,
+        plaatsvoorkeuren: PropTypes.array,
         voorkeuren: PropTypes.array,
         marktId: PropTypes.string,
         datum: PropTypes.string,
@@ -41,8 +43,8 @@ export default class IndelingslijstenPage extends React.Component {
     public render() {
 
         const props = this.props as IndelingslijstenPageState;
-        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, voorkeuren, datum, type } = props;
-        let { toewijzingen } = props;
+        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren } = props;
+        let { toewijzingen, plaatsvoorkeuren } = props;
         const plaatsList = arrayToObject(marktplaatsen, 'plaatsId');
         const vphl = ondernemersToLocatieKeyValue(ondernemers);
         const obstakelList = obstakelsToLocatieKeyValue(obstakels);
@@ -56,12 +58,11 @@ export default class IndelingslijstenPage extends React.Component {
 
         toewijzingen = type !== 'wenperiode' ? toewijzingen : [];
 
-        const plaatsvoorkeuren = voorkeuren.reduce((t: any, voorkeur: any) => {
+        plaatsvoorkeuren = plaatsvoorkeuren.reduce((t: any, voorkeur: any) => {
             if (!t[voorkeur.erkenningsNummer]) {
                 t[voorkeur.erkenningsNummer] = [];
             }
             t[voorkeur.erkenningsNummer].push(voorkeur);
-
             return t;
         }, {});
 
@@ -99,6 +100,7 @@ export default class IndelingslijstenPage extends React.Component {
                                             markt={markt}
                                             datum={datum}
                                             type={type}
+                                            voorkeuren={voorkeuren}
                                             plaatsvoorkeuren={plaatsvoorkeuren}
                                         />
                                 );

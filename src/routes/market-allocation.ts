@@ -14,6 +14,7 @@ import {
 } from '../makkelijkemarkt-api';
 import { internalServerErrorPage } from '../express-util';
 import { getOndernemersByMarkt } from '../model/ondernemer.functions';
+import { getVoorkeurenByMarkt } from '../model/voorkeur.functions';
 
 export const getIndelingslijstData = (marktId: string, marktDate: string) =>
     Promise.all([
@@ -25,6 +26,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
         getMarktGeografie(marktId),
         getMarktplaatsen(marktId),
         getPlaatsvoorkeuren(marktId),
+        getVoorkeurenByMarkt(marktId),
     ]).then( result => {
         const [
             ondernemers,
@@ -34,6 +36,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
             toewijzingen,
             geografie,
             marktplaatsen,
+            plaatsvoorkeuren,
             voorkeuren,
         ] = result;
         return {
@@ -44,6 +47,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
             toewijzingen,
             obstakels: geografie.obstakels || [],
             marktplaatsen,
+            plaatsvoorkeuren,
             voorkeuren,
         };
     });
@@ -73,5 +77,6 @@ export const indelingPage = (req: Request, res: Response) => {
         .then(data => {
             res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type: 'indeling' });
         }, internalServerErrorPage(res));
+
 
 };

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { getIndelingslijstInput, getSollicitantenlijstInput, getVoorrangslijstInput, getToewijzingslijst } from '../pakjekraam-api';
 import { internalServerErrorPage, HTTP_INTERNAL_SERVER_ERROR, httpErrorPage } from '../express-util';
-// import { Voorkeur } from '../model/voorkeur.model';
 
 import Indeling from '../allocation/indeling';
 
@@ -30,7 +29,6 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
     const marktId = req.params.marktId;
 
     const getToewijzingslijstPromise = getToewijzingslijst(marktId, datum);
-    // const getVoorkeuren = Voorkeur.findAll({ where: { marktId }, raw: true });
 
     Promise.all([
         getToewijzingslijstPromise

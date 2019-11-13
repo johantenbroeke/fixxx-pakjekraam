@@ -3,7 +3,7 @@ const Plaats = require('./Plaats.tsx').default;
 const PlaatsVPH = require('./PlaatsVPH');
 const PropTypes = require('prop-types');
 const React = require('react');
-const { ondernemerIsAfgemeld, ondernemerIsAfgemeldPeriode, vphIsGewisseld } = require('../../model/ondernemer.functions');
+const { ondernemerIsAfgemeld, ondernemerIsAfgemeldPeriode, vphIsGewisseld, vphIsUitgebreid } = require('../../model/ondernemer.functions');
 
 const IndelingslijstGroup = ({
     page,
@@ -16,6 +16,7 @@ const IndelingslijstGroup = ({
     toewijzingen,
     type,
     datum,
+    voorkeuren,
     plaatsvoorkeuren,
 }) => {
     let first = true;
@@ -57,13 +58,19 @@ const IndelingslijstGroup = ({
                 </thead>
                 <tbody className="IndelingslijstGroup__wrapper">
                     {page.plaatsList.map((plaatsNr, i) => {
-                        const vph = vphl[plaatsNr];
+                        let originelePlaatshouder = vphl[plaatsNr];
+                        let voorkeurOp = null;
 
-                        const aanmeldingVph = vph ? aanmeldingen.find(rsvp => rsvp.erkenningsNummer === vph.erkenningsNummer) : null;
+                        if (originelePlaatshouder) {
+                            originelePlaatshouder = ondernemers.find(ondernemer => ondernemer.erkenningsNummer == originelePlaatshouder.erkenningsNummer);
+                            voorkeurOp = voorkeuren.find(voorkeur => voorkeur.erkenningsNummer == originelePlaatshouder.erkenningsNummer);
+                        }
+
+                        const aanmeldingVph = originelePlaatshouder ? aanmeldingen.find(rsvp => rsvp.erkenningsNummer === originelePlaatshouder.erkenningsNummer) : null;
 
                         const toewijzing = (toewijzingen || []).find(({ plaatsen }) => plaatsen.includes(plaatsNr));
 
-                        const ondernemer = toewijzing ? ondernemers.find(
+                        const ingedeeldeOndernemer = toewijzing ? ondernemers.find(
                             ({ erkenningsNummer }) => erkenningsNummer === toewijzing.erkenningsNummer,
                         ) : null;
 
@@ -72,12 +79,14 @@ const IndelingslijstGroup = ({
                             key: plaatsNr,
                             plaats: plaatsList[plaatsNr],
                             obstakels: obstakelList,
-                            ondernemer,
-                            ondernemerIsGewisseld: ondernemer && ondernemer.status === 'vpl' ? vphIsGewisseld(ondernemer, toewijzingen) : false,
-                            vph,
-                            vphIsGewisseld: vph ? vphIsGewisseld(vph, toewijzingen) : false,
-                            vphIsAfgemeld: aanmeldingVph ? ondernemerIsAfgemeld(vph, [aanmeldingVph], datum) : false,
-                            vphIsAfgemeldPeriode: vph ? ondernemerIsAfgemeldPeriode(vph, datum) : false,
+                            ondernemer: ingedeeldeOndernemer,
+                            vph: originelePlaatshouder,
+                            opUitgebreid: originelePlaatshouder ? vphIsUitgebreid(originelePlaatshouder, toewijzingen) : false,
+                            opGewisseld: originelePlaatshouder ? vphIsGewisseld(originelePlaatshouder, toewijzingen) : false,
+                            opAfgemeld: aanmeldingVph ? ondernemerIsAfgemeld(originelePlaatshouder, [aanmeldingVph], datum) : false,
+                            opAfgemeldPeriode: originelePlaatshouder && voorkeurOp ? ondernemerIsAfgemeldPeriode(voorkeurOp, datum) : false,
+                            ondernemerUitgebreid: ingedeeldeOndernemer && ingedeeldeOndernemer.status == 'vpl' ? vphIsUitgebreid(ingedeeldeOndernemer, toewijzingen) : false,
+                            ondernemerGewisseld: ingedeeldeOndernemer && ingedeeldeOndernemer.status == 'vpl' ? vphIsGewisseld(ingedeeldeOndernemer, toewijzingen) : false,
                             aanmelding: aanmeldingVph,
                             markt,
                             datum,
@@ -130,6 +139,7 @@ IndelingslijstGroup.propTypes = {
     type: PropTypes.string,
     datum: PropTypes.string,
     plaatsvoorkeuren: PropTypes.object,
+    voorkeuren: PropTypes.array
 };
 
 module.exports = IndelingslijstGroup;
