@@ -39,13 +39,18 @@ const mapMarktenToAfwijzingen = (markten: any) => {
 };
 
 async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
-    const transaction = await sequelize.transaction();
-    await models.allocation.destroy({ where: { marktDate }, transaction });
-    await models.afwijzing.destroy({ where: { marktDate }, transaction });
-    await models.allocation.bulkCreate(result[0], { validate: true }, transaction);
-    await models.afwijzing.bulkCreate(result[1], { validate: true }, transaction);
-    await transaction.commit();
-    process.exit();
+
+    try {
+        const transaction = await sequelize.transaction();
+        await models.allocation.destroy({ where: { marktDate }, transaction });
+        await models.afwijzing.destroy({ where: { marktDate }, transaction });
+        await models.allocation.bulkCreate(result[0], { validate: true }, transaction);
+        await models.afwijzing.bulkCreate(result[1], { validate: true }, transaction);
+        await transaction.commit();
+        process.exit();
+    } catch(e) {
+        console.log(e);
+    }
 }
 
 async function allocation() {
