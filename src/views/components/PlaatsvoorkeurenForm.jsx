@@ -133,6 +133,8 @@ class PlaatsvoorkeurenForm extends React.Component {
             };
         };
 
+        const isMarktmeesterEnVph = ( role === 'marktmeester' && isVast(sollicitatie.status) );
+
         return (
             <form
                 className="Form Form--PlaatsvoorkeurenForm"
@@ -154,11 +156,14 @@ class PlaatsvoorkeurenForm extends React.Component {
                     <script dangerouslySetInnerHTML={marktRowsJSOM()} />
                     <script dangerouslySetInnerHTML={plaatsSetsJSON()} />
                     <input name="maximum" id="maximum" type="hidden" defaultValue={voorkeur.maximum} />
-                    { isVast(sollicitatie.status) ?
+                    {/* { isVast(sollicitatie.status) ?
                         <input name="minimum" id="minimum" type="hidden" defaultValue={sollicitatie.vastePlaatsen.length} />
                         : null
-                    }
-                    <div className="Fieldset PlaatsvoorkeurenForm__plaats-count">
+                    } */}
+                    <div className={"Fieldset PlaatsvoorkeurenForm__plaats-count " + ( isMarktmeesterEnVph ? 'Fieldset--highlighted' : null )}>
+                        { isMarktmeesterEnVph ?
+                            <p className="Fieldset__highlight-text">Verouderde functie! Alleen aanpassen als je weet wat je doet.</p> : null
+                        }
                         <h2 className="Fieldset__header">
                         { isVast(sollicitatie.status) ? `Uw vaste ${plaatsenDuiding(sollicitatie.vastePlaatsen)}` : 'Aantal plaatsen' }
                         </h2>
@@ -404,8 +409,11 @@ class PlaatsvoorkeurenForm extends React.Component {
                         <input type="hidden" name="marktId" defaultValue={markt.id} />
                         <input type="hidden" name="marktDate" defaultValue={marktDate} />
                         {/* Dit veld willen we alleen laten zien aan marktmeesters en sollicitanten */}
-                        { role == 'marktmeester' || (role == 'marktondernemer' && !isVast(sollicitatie.status)) ? (
-                            <div className={`Fieldset`}>
+                        { role == 'marktmeester' || !isVast(sollicitatie.status) ? (
+                            <div className={`Fieldset ${isMarktmeesterEnVph ? 'Fieldset--highlighted' : null}`}>
+                                { isMarktmeesterEnVph ?
+                                    <p className="Fieldset__highlight-text">Verouderde functie! Alleen aanpassen als je weet wat je doet.</p> : null
+                                }
                                 <h2 className="Fieldset__header">
                                     Flexibel indelen?
                                     <br />

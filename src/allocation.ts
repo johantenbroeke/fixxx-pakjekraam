@@ -80,7 +80,7 @@ async function runAllocation() {
         let marktenEnriched = await Promise.all(markten.map(markt => getMarktEnriched(String(markt.id))));
 
         marktenEnriched = marktenEnriched.filter( markt => markt.fase === 'live' || markt.fase === 'wenperiode');
-            // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
+        // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
 
         const maDiWoDo = getMaDiWoDo(tomorrow);
         marktenEnriched = marktenEnriched.filter( markt => markt.marktDagen.includes(maDiWoDo));
