@@ -1,14 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { getIndelingslijstInput, getSollicitantenlijstInput, getVoorrangslijstInput, getToewijzingslijst } from '../pakjekraam-api';
 import { internalServerErrorPage, HTTP_INTERNAL_SERVER_ERROR, httpErrorPage } from '../express-util';
-// import { Voorkeur } from '../model/voorkeur.model';
 
 import Indeling from '../allocation/indeling';
 
 export const vasteplaatshoudersPage = (req: Request, res: Response) => {
     const datum = req.params.datum;
     const type = 'vasteplaatshouders';
-    getIndelingslijstInput(req.params.marktId, datum).then(data => {
+    getIndelingslijstInput(req.params.marktId, datum).then((data: any) => {
         res.render('VastplaatshoudersPage', { data, datum, type });
     }, internalServerErrorPage(res));
 };
@@ -30,7 +29,6 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
     const marktId = req.params.marktId;
 
     const getToewijzingslijstPromise = getToewijzingslijst(marktId, datum);
-    // const getVoorkeuren = Voorkeur.findAll({ where: { marktId }, raw: true });
 
     Promise.all([
         getToewijzingslijstPromise

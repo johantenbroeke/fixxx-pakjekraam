@@ -59,6 +59,7 @@ class VastplaatshoudersPage extends React.Component {
                                         markt={markt}
                                         type={type}
                                         datum={datum}
+                                        voorkeuren={voorkeuren}
                                     />
                                 );
                             }

@@ -14,6 +14,7 @@ import {
 } from '../makkelijkemarkt-api';
 import { internalServerErrorPage } from '../express-util';
 import { getOndernemersByMarkt } from '../model/ondernemer.functions';
+import { getVoorkeurenByMarkt } from '../model/voorkeur.functions';
 
 export const getIndelingslijstData = (marktId: string, marktDate: string) =>
     Promise.all([
@@ -25,6 +26,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
         getMarktGeografie(marktId),
         getMarktplaatsen(marktId),
         getPlaatsvoorkeuren(marktId),
+        getVoorkeurenByMarkt(marktId),
     ]).then( result => {
         const [
             ondernemers,
@@ -34,6 +36,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
             toewijzingen,
             geografie,
             marktplaatsen,
+            plaatsvoorkeuren,
             voorkeuren,
         ] = result;
         return {
@@ -44,22 +47,42 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
             toewijzingen,
             obstakels: geografie.obstakels || [],
             marktplaatsen,
+            plaatsvoorkeuren,
             voorkeuren,
         };
     });
 
+
 export const indelingslijstPage = (req: Request, res: Response) => {
-    const { marktDate } = req.params;
+    const { marktDate, marktId } = req.params;
     const type = 'concept-indelingslijst';
-    getIndelingslijst(req.params.marktId, marktDate).then(data => {
-        res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type });
-    }, internalServerErrorPage(res));
+
+    Promise.all([
+        getIndelingslijst(marktId, marktDate),
+        getVoorkeurenByMarkt(marktId)
+    ])
+        .then((data: any) => {
+            const [
+                indelingslijst,
+                voorkeuren,
+            ] = data;
+            // console.log(indelingslijst);
+            // console.log(voorkeuren);
+            indelingslijst.plaatsvoorkeuren = indelingslijst.voorkeuren;
+            indelingslijst.voorkeuren = voorkeuren;
+            // delete data.voorkeuren;
+            return res.render('IndelingslijstPage.tsx', {
+                ...indelingslijst,
+                datum: marktDate,
+                type
+            });
+        }, internalServerErrorPage(res));
 };
 
 export const marketAllocationPage = (req: Request, res: Response) => {
 
-    const { marktDate } = req.params;
-    getIndelingslijstData(req.params.marktId, marktDate).then(data => {
+    const { marktDate, marktId } = req.params;
+    getIndelingslijstData(marktId, marktDate).then(data => {
         res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type:'wenperiode' });
     }, internalServerErrorPage(res));
 
@@ -73,5 +96,6 @@ export const indelingPage = (req: Request, res: Response) => {
         .then(data => {
             res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type: 'indeling' });
         }, internalServerErrorPage(res));
+
 
 };
