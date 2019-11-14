@@ -50,6 +50,7 @@ async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
         process.exit();
     } catch(e) {
         console.log(e);
+        process.exit(1);
     }
 }
 
@@ -65,6 +66,7 @@ async function allocation() {
         daysClosed.includes(tomorrowString) ? console.log(`Indeling wordt niet gedraaid, ${tomorrowString} gevonden in daysClosed.json`) : runAllocation();
     } catch(e) {
         console.log(e);
+        process.exit(1);
     }
 
 }
@@ -94,6 +96,7 @@ async function runAllocation() {
 
     }   catch(e) {
         console.log(e);
+        process.exit(1);
     }
 
 }
