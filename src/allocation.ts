@@ -39,13 +39,19 @@ const mapMarktenToAfwijzingen = (markten: any) => {
 };
 
 async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
-    const transaction = await sequelize.transaction();
-    await models.allocation.destroy({ where: { marktDate }, transaction });
-    await models.afwijzing.destroy({ where: { marktDate }, transaction });
-    await models.allocation.bulkCreate(result[0], { validate: true }, transaction);
-    await models.afwijzing.bulkCreate(result[1], { validate: true }, transaction);
-    await transaction.commit();
-    process.exit();
+
+    try {
+        const transaction = await sequelize.transaction();
+        await models.allocation.destroy({ where: { marktDate }, transaction });
+        await models.afwijzing.destroy({ where: { marktDate }, transaction });
+        await models.allocation.bulkCreate(result[0], { validate: true }, transaction);
+        await models.afwijzing.bulkCreate(result[1], { validate: true }, transaction);
+        await transaction.commit();
+        process.exit();
+    } catch(e) {
+        console.log(e);
+        process.exit();
+    }
 }
 
 async function allocation() {
@@ -60,6 +66,7 @@ async function allocation() {
         daysClosed.includes(tomorrowString) ? console.log(`Indeling wordt niet gedraaid, ${tomorrowString} gevonden in daysClosed.json`) : runAllocation();
     } catch(e) {
         console.log(e);
+        process.exit();
     }
 
 }
@@ -75,7 +82,7 @@ async function runAllocation() {
         let marktenEnriched = await Promise.all(markten.map(markt => getMarktEnriched(String(markt.id))));
 
         marktenEnriched = marktenEnriched.filter( markt => markt.fase === 'live' || markt.fase === 'wenperiode');
-            // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
+        // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
 
         const maDiWoDo = getMaDiWoDo(tomorrow);
         marktenEnriched = marktenEnriched.filter( markt => markt.marktDagen.includes(maDiWoDo));
@@ -89,6 +96,7 @@ async function runAllocation() {
 
     }   catch(e) {
         console.log(e);
+        process.exit();
     }
 
 }

@@ -52,8 +52,6 @@ class VoorkeurenPage extends React.Component {
             row.map(plaatsId => marktPlaatsen.find(plaats => plaats.plaatsId === plaatsId)).map(plaats => plaats),
         );
 
-        console.log(plaatsvoorkeuren);
-
         return (
             <Page messages={this.props.messages}>
                 <Header user={ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>

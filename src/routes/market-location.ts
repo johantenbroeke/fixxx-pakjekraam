@@ -49,10 +49,9 @@ export const marketLocationPage = (
         getPlaatsvoorkeurenOndernemer(erkenningsNummer),
         getIndelingVoorkeur(erkenningsNummer, currentMarktId),
         getMarktEnriched(currentMarktId),
-        getMededelingen(),76
+        getMededelingen(),
     ]).then(
         ([ondernemer, markten, plaatsvoorkeuren, indelingVoorkeur, markt, mededelingen]) => {
-            console.log(plaatsvoorkeuren);
             const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
             res.render('VoorkeurenPage', {
                 ondernemer,
@@ -85,6 +84,10 @@ export const updateMarketLocation = (req: Request, res: Response, next: NextFunc
      * TODO: Form data format validation
      * TODO: Business logic validation
      */
+
+
+    console.log('hier');
+    console.log(req.body);
 
     const { redirectTo } = req.body;
 

@@ -438,23 +438,23 @@ function splitByArray(orgArr, valueArr) {
                   }
               },
               _init = function(){
-                  var minVal = form.querySelector('input[name="minimum"]:checked') ? form.querySelector('input[name="minimum"]:checked').value : 1,
-                      maximum = form.querySelector('input[name="maximum"]').value || 1,
-                      extra = parseInt(maximum, 10) - parseInt(minVal, 10);
-                  form.querySelector('input[id="extra-count-'+extra+'"]').checked = true;
-                      var maxVal = form.querySelector('input[name="extra-count"]:checked').value;
-                  for (i = 0; i < explain.length; i++) {
-                      var min = explain[i].querySelector('.min');
-                      var max = explain[i].querySelector('.max');
-                      var extr = explain[i].querySelector('.extra');
-                      var minM = explain[i].querySelector('.minMulti');
-                      var maxM = explain[i].querySelector('.maxMulti');
-                      max.textContent = maxVal;
-                      min.textContent = minVal;
-                      extr.classList[maxVal < 1 ? 'add' : 'remove']('hidden');
-                      maxM.classList[maxVal <= 1 ? 'add' : 'remove']('hidden');
-                      minM.classList[minVal <= 1 ? 'add' : 'remove']('hidden');
-                  }
+                  // var minVal = form.querySelector('input[name="minimum"]:checked') ? form.querySelector('input[name="minimum"]:checked').value : 1,
+                  //     maximum = form.querySelector('input[name="maximum"]').value || 1,
+                  //     extra = parseInt(maximum, 10) - parseInt(minVal, 10);
+                  // form.querySelector('input[id="extra-count-'+extra+'"]').checked = true;
+                  //     var maxVal = form.querySelector('input[name="extra-count"]:checked').value;
+                  // for (i = 0; i < explain.length; i++) {
+                  //     var min = explain[i].querySelector('.min');
+                  //     var max = explain[i].querySelector('.max');
+                  //     var extr = explain[i].querySelector('.extra');
+                  //     var minM = explain[i].querySelector('.minMulti');
+                  //     var maxM = explain[i].querySelector('.maxMulti');
+                  //     max.textContent = maxVal;
+                  //     min.textContent = minVal;
+                  //     extr.classList[maxVal < 1 ? 'add' : 'remove']('hidden');
+                  //     maxM.classList[maxVal <= 1 ? 'add' : 'remove']('hidden');
+                  //     minM.classList[minVal <= 1 ? 'add' : 'remove']('hidden');
+                  // }
               }
           _init();
           form.addEventListener('change', _formChange);
