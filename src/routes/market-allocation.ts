@@ -52,18 +52,37 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
         };
     });
 
+
 export const indelingslijstPage = (req: Request, res: Response) => {
-    const { marktDate } = req.params;
+    const { marktDate, marktId } = req.params;
     const type = 'concept-indelingslijst';
-    getIndelingslijst(req.params.marktId, marktDate).then(data => {
-        res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type });
-    }, internalServerErrorPage(res));
+
+    Promise.all([
+        getIndelingslijst(marktId, marktDate),
+        getVoorkeurenByMarkt(marktId)
+    ])
+        .then((data: any) => {
+            const [
+                indelingslijst,
+                voorkeuren,
+            ] = data;
+            // console.log(indelingslijst);
+            // console.log(voorkeuren);
+            indelingslijst.plaatsvoorkeuren = indelingslijst.voorkeuren;
+            indelingslijst.voorkeuren = voorkeuren;
+            // delete data.voorkeuren;
+            return res.render('IndelingslijstPage.tsx', {
+                ...indelingslijst,
+                datum: marktDate,
+                type
+            });
+        }, internalServerErrorPage(res));
 };
 
 export const marketAllocationPage = (req: Request, res: Response) => {
 
-    const { marktDate } = req.params;
-    getIndelingslijstData(req.params.marktId, marktDate).then(data => {
+    const { marktDate, marktId } = req.params;
+    getIndelingslijstData(marktId, marktDate).then(data => {
         res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type:'wenperiode' });
     }, internalServerErrorPage(res));
 

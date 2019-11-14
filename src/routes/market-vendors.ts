@@ -7,7 +7,7 @@ import Indeling from '../allocation/indeling';
 export const vasteplaatshoudersPage = (req: Request, res: Response) => {
     const datum = req.params.datum;
     const type = 'vasteplaatshouders';
-    getIndelingslijstInput(req.params.marktId, datum).then(data => {
+    getIndelingslijstInput(req.params.marktId, datum).then((data: any) => {
         res.render('VastplaatshoudersPage', { data, datum, type });
     }, internalServerErrorPage(res));
 };

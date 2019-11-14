@@ -28,8 +28,6 @@ export const ondernemerIsAfgemeld = (ondernemer: IMarktondernemer, aanmeldingen:
 
 export const ondernemerIsAfgemeldPeriode = (voorkeur: IMarktondernemerVoorkeur, marktDate: Date): Boolean => {
 
-    console.log(voorkeur);
-
     if (
         voorkeur.absentFrom && voorkeur.absentUntil &&
         marktDate >= voorkeur.absentFrom &&

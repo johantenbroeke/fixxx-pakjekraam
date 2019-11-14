@@ -11,6 +11,7 @@ import { numberSort, stringSort } from './util';
 import Sequelize from 'sequelize';
 import { allocation, plaatsvoorkeur, rsvp, voorkeur } from './model/index';
 import { calcToewijzingen } from './indeling';
+// import { getVoorkeurenByMarkt } from './model/voorkeur.functions';
 
 import {
     IMarkt,

@@ -756,13 +756,13 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTBUREAU),
     (req: Request, res: Response) => {
         getIndelingslijstInput(req.params.marktId, req.params.marktDate).then(
-            data => {
+            (data: any) => {
                 res.set({
                     'Content-Type': 'application/json; charset=UTF-8',
                 });
                 res.send(JSON.stringify(data, null, '  '));
             },
-            err => {
+            (err: Error) => {
                 res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
             },
         );
@@ -774,13 +774,13 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTBUREAU),
     (req: Request, res: Response) => {
         getIndelingslijst(req.params.marktId, req.params.marktDate).then(
-            markt => {
+            (markt: any) => {
                 res.set({
                     'Content-Type': 'application/json; charset=UTF-8',
                 });
                 res.send(JSON.stringify(markt || [], null, '  '));
             },
-            err => {
+            (err: Error) => {
                 res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
             },
         );
