@@ -85,6 +85,10 @@ export const updateMarketLocation = (req: Request, res: Response, next: NextFunc
      * TODO: Business logic validation
      */
 
+
+    console.log('hier');
+    console.log(req.body);
+
     const { redirectTo } = req.body;
 
     const removeExisting = () =>
