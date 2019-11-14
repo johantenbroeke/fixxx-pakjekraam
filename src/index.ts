@@ -727,7 +727,7 @@ app.post(
 );
 
 app.post(
-    ['/ondernemer/:erkenningsNummer/voorkeuren/', '/ondernemer/:erkenningsNummer/voorkeuren/:marktId/'],
+    ['/ondernemer/:erkenningsNummer/voorkeuren/:marktId/'],
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: Request, res: Response, next: NextFunction) =>
         updateMarketLocation(req, res, next, req.params.erkenningsNummer),
