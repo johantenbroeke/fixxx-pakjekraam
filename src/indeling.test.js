@@ -1076,6 +1076,42 @@ describe('Een sollicitant die ingedeeld wil worden', () => {
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
     });
 
+    it('komt liefst niet op de voorkeursplek van een ander als zij flexibel ingedeeld willen worden', () => {
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { anywhere: true } },
+                { sollicitatieNummer: 2 }
+            ],
+            marktplaatsen: [
+                {}, {}
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 2, plaatsId: '1' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { anywhere: true } },
+                { sollicitatieNummer: 2 }
+            ],
+            marktplaatsen: [
+                {}, { inactive: true }
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 2, plaatsId: '1' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+    });
+
     it('kan kiezen niet te worden ingedeeld op willekeurige plaatsen', () => {
         // Bij `anywhere === false`: Uitbreiden naar willekeurige plaatsen is toegestaan
         // indien de ondernemer op ten minsten één voorkeursplaats staat, maar indelen

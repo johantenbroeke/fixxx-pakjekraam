@@ -18,6 +18,7 @@ import {
 
 import Markt from './markt';
 import Ondernemer from './ondernemer';
+import Ondernemers from './ondernemers';
 import Toewijzing from './toewijzing';
 
 type SizeMap = Map<IMarktondernemer, number>;
@@ -29,6 +30,7 @@ type SizeMap = Map<IMarktondernemer, number>;
 // `_findBestGroup` de meest geschikte set plaatsen te vinden.
 interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
     brancheScore: number;
+    voorkeurScore: number;
 }
 
 export const BRANCHE_FULL: IAfwijzingReason = {
@@ -350,15 +352,23 @@ const Indeling = {
                                            intersectCount - plaatsBrancheCount < 0     ? 1 :
                                            ondernemerBrancheCount > plaatsBrancheCount ? 2 :
                                                                                          3;
+            // De voorkeurscore betekent: hoe meer ondernemers deze plaats als voorkeur hebben
+            // opgegeven, hoe hoger de score. Dit getal wordt gebruikt voor ondernemers die flexibel
+            // ingedeeld willen worden. We proberen deze ondernemers op een plaats te zetten waar
+            // geen of zo min mogelijk ondernemers een voorkeur voor hebben uitgesproken.
+            const voorkeurScore          = Ondernemers.countPlaatsVoorkeurenFor(indeling, plaats.plaatsId);
+
             return {
                 ...plaats,
                 priority,
-                brancheScore
+                brancheScore,
+                voorkeurScore
             };
         })
         .sort((a, b) =>
             b.brancheScore - a.brancheScore ||
-            b.priority - a.priority
+            b.priority - a.priority ||
+            a.voorkeurScore - b.voorkeurScore
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)
         const groups = Markt.groupByAdjacent(indeling, plaatsen, plaats =>
@@ -377,10 +387,17 @@ const Indeling = {
                 if (bScore - aScore) {
                     return bScore - aScore;
                 }
-                // ... en kijk anders naar de prioriteit.
+                // ... kijk vervolgens naar de prioriteit...
                 aScore = a.map(pl => pl.priority || 0).reduce(sum, 0);
                 bScore = b.map(pl => pl.priority || 0).reduce(sum, 0);
-                return bScore - aScore;
+                if (bScore - aScore) {
+                    return bScore - aScore;
+                }
+                // ... en als laatste naar het aantal ondernemers die deze plaats
+                // als voorkeur hebben.
+                aScore = a.map(pl => pl.voorkeurScore || 0).reduce(sum, 0);
+                bScore = b.map(pl => pl.voorkeurScore || 0).reduce(sum, 0);
+                return aScore - bScore;
             }
         );
     },
