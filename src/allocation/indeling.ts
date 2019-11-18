@@ -52,10 +52,9 @@ const Indeling = {
         }
 
         const openPlaatsen = markt.marktplaatsen.filter(plaats => !plaats.inactive);
-        const expansionLimit = Math.min(
-            Number.isFinite(markt.expansionLimit) ? markt.expansionLimit : Infinity,
-            markt.marktplaatsen.length
-        );
+        const expansionLimit = Number.isFinite(markt.expansionLimit) ?
+                               markt.expansionLimit :
+                               markt.marktplaatsen.length;
 
         const indeling = <IMarktindeling> {
             ...markt,
