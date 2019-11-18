@@ -5,8 +5,9 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "2",
-    "branches": ["bak"],
+		"plaatsId": "2",
+		"branches": ["bak"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["boom"]
   },
   {
@@ -15,7 +16,9 @@
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "4",
+		"plaatsId": "4",
+		"branches": ["bak"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["electra"]
   },
   {
@@ -45,7 +48,6 @@
   },
   {
     "plaatsId": "12",
-    "branches": ["401-experimentele-zone"],
     "properties": ["dubbel"]
   },
   {
@@ -56,7 +58,8 @@
     "plaatsId": "14"
   },
   {
-    "plaatsId": "15",
+		"plaatsId": "15",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["boom"]
   },
   {
@@ -64,17 +67,22 @@
     "properties": ["boom", "dubbel"]
   },
   {
-    "plaatsId": "17"
+		"plaatsId": "17",
+		"branches": ["101-agf-exotische-groenten"]
   },
   {
     "plaatsId": "18",
-    "properties": ["electra"]
+		"properties": ["electra"],
+		"branches": ["bak", "103-brood-banket"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "19"
   },
   {
-    "plaatsId": "20"
+		"plaatsId": "20",
+		"branches": ["bak", "103-brood-banket"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "21",
@@ -85,7 +93,8 @@
   },
   {
     "plaatsId": "23",
-    "branches": ["bak"]
+		"branches": ["bak"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "24",
@@ -96,15 +105,15 @@
   },
   {
     "plaatsId": "26",
-    "properties": ["dubbel"]
+		"properties": ["dubbel"],
+		"branches": ["302-bloemen-planten"]
   },
   {
-    "plaatsId": "27",
-    "branches": ["stn"]
+    "plaatsId": "27"
   },
   {
-    "plaatsId": "28",
-    "branches": ["agf"],
+		"plaatsId": "28",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["boom"]
   },
   {
@@ -112,7 +121,8 @@
     "properties": ["electra"]
   },
   {
-    "plaatsId": "30",
+		"plaatsId": "30",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["electra", "dubbel"]
   },
   {
@@ -148,25 +158,30 @@
   },
   {
     "plaatsId": "40",
-    "properties": ["boom"]
+		"properties": ["boom"],
+		"branches": ["401-experimentele-zone"]
   },
   {
-    "plaatsId": "41"
+		"plaatsId": "41",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "42",
-    "properties": ["dubbel"]
+		"properties": ["dubbel"],
+		"branches": ["401-experimentele-zone"]
   },
   {
-    "plaatsId": "43",
+		"plaatsId": "43",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["electra", "dubbel"]
   },
   {
     "plaatsId": "44"
   },
   {
-    "plaatsId": "45",
-    "branches": ["401-experimentele-zone"]
+    "plaatsId": "45"
   },
   {
     "plaatsId": "46",
@@ -194,7 +209,8 @@
   },
   {
     "plaatsId": "53",
-    "branches": ["bak"]
+		"branches": ["bak"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "54",
@@ -216,7 +232,8 @@
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "59",
+		"plaatsId": "59",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["bankje"]
   },
   {
@@ -270,7 +287,6 @@
   },
   {
     "plaatsId": "74",
-    "branches": ["401-experimentele-zone"],
     "properties": ["dubbel", "bankje", "boom"]
   },
   {
@@ -293,31 +309,44 @@
     "branches": ["kas"]
   },
   {
-    "plaatsId": "80"
+		"plaatsId": "80",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "81",
-    "branches": ["baks7"]
+		"branches": ["bak", "209-vis-gebakken"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
-    "plaatsId": "82"
+		"plaatsId": "82",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
-    "plaatsId": "83",
+		"plaatsId": "83",
+		"branches": ["bak", "209-vis-gebakken"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "84",
+		"plaatsId": "84",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["electra", "dubbel"]
   },
   {
-    "plaatsId": "85"
+		"plaatsId": "85",
+		"branches": ["bak", "207-patat-snacks"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "86"
   },
   {
-    "plaatsId": "87",
+		"plaatsId": "87",
+		"branches": ["bak", "207-patat-snacks"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
@@ -326,7 +355,9 @@
   },
   {
     "plaatsId": "89",
-    "properties": ["boom"]
+		"properties": ["boom"],
+		"branches": ["103-brood-banket"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "90",
@@ -334,14 +365,15 @@
   },
   {
     "plaatsId": "91",
-    "properties": ["dubbel"]
+		"properties": ["dubbel"],
+		"branches": ["103-brood-banket"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "92"
   },
   {
-    "plaatsId": "93",
-    "branches": ["stn"]
+    "plaatsId": "93"
   },
   {
     "plaatsId": "94",
@@ -351,39 +383,47 @@
     "plaatsId": "95"
   },
   {
-    "plaatsId": "96"
+		"plaatsId": "96",
+		"branches": ["101-agf-exotische-groenten"]
   },
   {
     "plaatsId": "97",
     "properties": ["dubbel", "boom"]
   },
   {
-    "plaatsId": "98",
+		"plaatsId": "98",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["dubbel"]
   },
   {
     "plaatsId": "99"
   },
   {
-    "plaatsId": "100"
+		"plaatsId": "100",
+		"branches": ["bak", "209-vis-gebakken"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
-    "plaatsId": "101",
+		"plaatsId": "101",
     "properties": ["electra", "dubbel"]
   },
   {
     "plaatsId": "102",
-    "branches": ["agf"],
+		"branches": ["bak", "209-vis-gebakken"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "103"
+		"plaatsId": "103",
+		"branches": ["101-agf-exotische-groenten", "104-hummus-kruiden-olijven"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "104"
   },
   {
-    "plaatsId": "105",
+		"plaatsId": "105",
+		"branches": ["101-agf-exotische-groenten", "104-hummus-kruiden-olijven"],
     "properties": ["dubbel"]
   },
   {
@@ -435,7 +475,9 @@
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "119"
+		"plaatsId": "119",
+		"branches": ["bak", "206-oudhollands-gebak-snoepwaren"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "120"
@@ -470,17 +512,24 @@
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "129"
+		"plaatsId": "129",
+		"branches": ["bak", "206-oudhollands-gebak-snoepwaren"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
-    "plaatsId": "130"
-  },
+		"plaatsId": "130",
+		"branches": ["bak", "105-noten-zuidvruchten"],
+		"verkoopinrichting": ["eigen-materieel"]
+	},
   {
-    "plaatsId": "131",
+		"plaatsId": "131",
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["boom"]
   },
   {
-    "plaatsId": "132",
+		"plaatsId": "132",
+		"branches": ["bak", "105-noten-zuidvruchten"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel", "boom"]
   },
   {
@@ -516,14 +565,16 @@
     "plaatsId": "141"
   },
   {
-    "plaatsId": "142"
+		"plaatsId": "142",
+		"branches": ["302-bloemen-planten"]
   },
   {
     "plaatsId": "143"
   },
   {
     "plaatsId": "144",
-    "properties": ["dubbel"]
+		"properties": ["dubbel"],
+		"branches": ["302-bloemen-planten"]
   },
   {
     "plaatsId": "145"
@@ -533,19 +584,24 @@
     "properties": ["electra"]
   },
   {
-    "plaatsId": "147"
+		"plaatsId": "147",
+		"branches": ["101-agf-exotische-groenten"]
   },
   {
     "plaatsId": "148",
-    "branches": ["302-bloemen-planten"]
+		"branches": ["302-bloemen-planten"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
-    "plaatsId": "149",
+		"plaatsId": "149",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["dubbel", "boom"]
   },
   {
     "plaatsId": "150",
-    "properties": ["dubbel", "boom"]
+		"properties": ["dubbel", "boom"],
+		"branches": ["302-bloemen-planten"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "151",
@@ -580,18 +636,23 @@
     "properties": ["electra", "dubbel"]
   },
   {
-    "plaatsId": "159"
+		"plaatsId": "159",
+		"branches": ["101-agf-exotische-groenten"]
   },
   {
-    "plaatsId": "160",
-    "branches": ["105-noten-zuidvruchten"]
+		"plaatsId": "160",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
-    "plaatsId": "161",
+		"plaatsId": "161",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["dubbel", "boom"]
   },
   {
-    "plaatsId": "162",
+		"plaatsId": "162",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
@@ -623,7 +684,8 @@
   },
   {
     "plaatsId": "171",
-    "branches": ["bak"]
+		"branches": ["bak"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "172"
@@ -642,8 +704,7 @@
     "plaatsId": "176"
   },
   {
-    "plaatsId": "177",
-    "branches": ["brc"]
+    "plaatsId": "177"
   },
   {
     "plaatsId": "178",
@@ -660,54 +721,74 @@
   },
   {
     "plaatsId": "182",
-    "branches": ["vis"]
+		"branches": ["bak", "107-vis-nat", "209-vis-gebakken"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
-    "plaatsId": "183"
+		"plaatsId": "183",
+		"branches": ["101-agf-exotische-groenten"]
   },
   {
-    "plaatsId": "184",
+		"plaatsId": "184",
+		"branches": ["bak", "107-vis-nat", "209-vis-gebakken"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel", "boom"]
   },
   {
-    "plaatsId": "185",
+		"plaatsId": "185",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "186",
+		"plaatsId": "186",
+		"branches": ["bak", "107-vis-nat", "209-vis-gebakken"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "187"
+		"plaatsId": "187",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
-    "plaatsId": "188",
+		"plaatsId": "188",
+		"branches": ["bak", "107-vis-nat", "209-vis-gebakken"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "189",
+		"plaatsId": "189",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
     "plaatsId": "190",
-    "properties": ["boom"]
+    "properties": ["boom"],
+		"branches": ["401-experimentele-zone"]
   },
   {
-    "plaatsId": "191",
-    "properties": ["dubbel"]
+		"plaatsId": "191",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"],
+		"properties": ["dubbel"]
   },
   {
-    "plaatsId": "192"
+    "plaatsId": "192",
+		"branches": ["401-experimentele-zone"]
   },
   {
     "plaatsId": "193",
-    "branches": ["olv"]
+		"branches": ["104-hummus-kruiden-olijven"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "194"
   },
   {
-    "plaatsId": "195",
+		"plaatsId": "195",
+		"branches": ["104-hummus-kruiden-olijven"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
@@ -752,14 +833,17 @@
   },
   {
     "plaatsId": "207",
-    "branches": ["bak"]
+		"branches": ["bak", "207-patat-snacks"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "208",
     "properties": ["dubbel", "boom"]
   },
   {
-    "plaatsId": "209",
+		"plaatsId": "209",
+		"branches": ["bak", "207-patat-snacks"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel", "boom"]
   },
   {
@@ -780,24 +864,28 @@
     "plaatsId": "214"
   },
   {
-    "plaatsId": "215",
-    "branches": ["105-noten-zuidvruchten"]
+		"plaatsId": "215",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "216",
     "properties": ["electra", "dubbel"]
   },
   {
-    "plaatsId": "217",
+		"plaatsId": "217",
+		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
   {
     "plaatsId": "218",
-    "branches": ["stn"]
+    "branches": ["403-standwerker"]
   },
   {
     "plaatsId": "219",
-    "branches": ["baks6"],
+		"branches": ["bak", "103-brood-banket"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["electra"]
   },
   {
@@ -805,7 +893,9 @@
   },
   {
     "plaatsId": "221",
-    "properties": ["dubbel"]
+		"properties": ["dubbel"],
+		"branches": ["bak", "103-brood-banket"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "222",
@@ -829,14 +919,16 @@
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "228",
+		"plaatsId": "228",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["boom"]
   },
   {
     "plaatsId": "229"
   },
   {
-    "plaatsId": "230",
+		"plaatsId": "230",
+		"branches": ["101-agf-exotische-groenten"],
     "properties": ["electra", "dubbel"]
   },
   {
@@ -862,7 +954,8 @@
   },
   {
     "plaatsId": "237",
-    "branches": ["baks5"]
+		"branches": ["bak"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "238",
@@ -870,14 +963,18 @@
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "239"
+		"plaatsId": "239",
+		"branches": ["bak", "105-noten-zuidvruchten"],
+		"verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "240",
     "properties": ["bankje"]
   },
   {
-    "plaatsId": "241",
+		"plaatsId": "241",
+		"branches": ["bak", "105-noten-zuidvruchten"],
+		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["electra", "dubbel"]
   },
   {
@@ -897,7 +994,8 @@
     "properties": ["dubbel"]
   },
   {
-    "plaatsId": "246"
+		"plaatsId": "246",
+		"branches": ["302-bloemen-planten"]
   },
   {
     "plaatsId": "247",
@@ -906,13 +1004,15 @@
   },
   {
     "plaatsId": "248",
-    "properties": ["electra", "dubbel"]
+		"properties": ["electra", "dubbel"],
+		"branches": ["302-bloemen-planten"]
   },
   {
     "plaatsId": "249",
     "branches": ["401-experimentele-zone"]
   },
   {
-    "plaatsId": "250"
+		"plaatsId": "250",
+		"branches": ["402-promotieplaats"]
   }
 ]
