@@ -1008,7 +1008,7 @@ describe('Een VPH die wil verplaatsen', () => {
 });
 
 describe('Een sollicitant die ingedeeld wil worden', () => {
-    it('krijgt voorkeur op brancheplaatsen binnen zijn branche', () => {
+    it('is niet verplicht zijn branche in te vullen', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1 },
@@ -1019,9 +1019,9 @@ describe('Een sollicitant die ingedeeld wil worden', () => {
             ]
         });
 
-        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
-        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
     });
 
     it('kan niet uitbreiden naar een niet-branche plaats als zijn branche verplicht is', () => {
