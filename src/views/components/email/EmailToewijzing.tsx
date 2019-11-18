@@ -43,6 +43,7 @@ export class EmailToewijzing extends React.Component<EmailIndelingProps> {
                     <EmailTable data={tableData} />
                     <p>Als u onverwachts toch niet kunt komen verzoeken wij u dit uiterlijk 08.45 uur aan de marktmeester te melden zodat een andere ondernemer uw plaats kan krijgen.</p>
                     <p>Dit kan telefonisch via: {telefoonnummer}.</p>
+                    <p>Alleen als er sprake is van overmacht hoeft u het marktgeld niet te betalen. Overmacht betekent dat u de avond van tevoren nog niet kon weten dat u niet naar de markt kunt komen. De marktmeester beoordeelt uw situatie.</p>
                     <p>
                         Met vriendelijke groet,
                         <br />

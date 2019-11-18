@@ -24,7 +24,7 @@ class PlaatsvoorkeurenForm extends React.Component {
 
         const defaultVoorkeur = {
             minimum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
-            maximum: 0,
+            maximum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
             anywhere: !isVast(sollicitatie.status),
             inactive: false,
         };
