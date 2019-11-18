@@ -402,8 +402,7 @@ const Indeling = {
                Ondernemer.heeftBranche(ondernemer, 'bak')    ? 1 :
                Ondernemer.heeftEVI(ondernemer)               ? 2 :
                Ondernemer.heeftVastePlaatsen(ondernemer)     ? 3 :
-               Ondernemer.heeftBranche(ondernemer)           ? 4 :
-                                                               5;
+                                                               4;
     },
     // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt:
     // 0. Ondernemer is VPH.
