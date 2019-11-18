@@ -49,7 +49,7 @@
   },
   {
     "brancheId": "203-ijs",
-    "description": "Ijs"
+    "description": "ijs"
   },
   {
     "brancheId": "204-koffie-versnaperingen",
@@ -185,16 +185,16 @@
   {
     "brancheId": "401-experimentele-zone",
     "description": "Experimentele zone",
-    "color": "#9bcdfd"
+    "color": "#ffff33"
   },
   {
     "brancheId": "402-promotieplaats",
     "description": "Promotieplaats",
-    "color": "#c0c0c0"
+    "color": "#ffcc66"
   },
   {
     "brancheId": "403-standwerker",
     "description": "Standwerker",
-    "color": "#c0c0c0"
+    "color": "#ffccff"
   }
 ]
