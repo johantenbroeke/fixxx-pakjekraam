@@ -158,9 +158,9 @@ const Indeling = {
 
     // `anywhere` wordt als argument meegegeven i.p.v. uit de ondernemers-
     // voorkeuren gehaald, omdat deze functie ook gebruikt wordt in
-    // `_findBestePlaatsen` om een set voorkeuren uit te breiden naar het
+    // `_findBestGroup` om een set voorkeuren uit te breiden naar het
     // gewenste aantal plaatsen. Voor deze uitbreiding staat `anywhere` altijd
-    // op true omdat de gewenste plaatsen al bemachtigd is, maar het er nog niet
+    // op true omdat de gewenste plaatsen al bemachtigd zijn, maar het er nog niet
     // genoeg zijn om de minimum wens te verzadigen.
     canBeAssignedTo: (
         indeling: IMarktindeling,
@@ -229,7 +229,7 @@ const Indeling = {
     performExpansion: (
         indeling: IMarktindeling,
         brancheId: BrancheId = undefined,
-        iteration: number = 1
+        iteration: number = 2
     ): IMarktindeling => {
         const queue = indeling.toewijzingen.filter(toewijzing =>
             Ondernemer.wantsExpansion(toewijzing) && (
@@ -279,7 +279,6 @@ const Indeling = {
         ondernemer: IMarktondernemer,
         groups: IPlaatsvoorkeur[][],
         size: number = 1,
-        filter?: (plaats: IMarktplaats) => boolean,
         compare?: (best: IPlaatsvoorkeur[], current: IPlaatsvoorkeur[]) => number
     ): IMarktplaats[] => {
         const minimumSize = Math.min(size, Ondernemer.getStartSize(ondernemer));
@@ -288,7 +287,9 @@ const Indeling = {
             if (group.length < size) {
                 const depth     = size - group.length;
                 const plaatsIds = group.map(({ plaatsId }) => plaatsId);
-                const extra     = Markt.getAdjacentPlaatsen(indeling, plaatsIds, depth, filter);
+                const extra     = Markt.getAdjacentPlaatsen(indeling, plaatsIds, depth, plaats =>
+                    Indeling.canBeAssignedTo(indeling, ondernemer, plaats, true)
+                );
                 group = group.concat(<IPlaatsvoorkeur[]> extra);
                 // Zet de zojuist toegevoegde plaatsen op de juiste plek.
                 group = Markt.groupByAdjacent(indeling, group)[0];
@@ -369,7 +370,6 @@ const Indeling = {
             ondernemer,
             groups,
             size,
-            plaats => Indeling.canBeAssignedTo(indeling, ondernemer, plaats, true),
             (a: IPlaatsvoorkeurPlus[], b: IPlaatsvoorkeurPlus[]) => {
                 // Kijk eerst of er een betere branche overlap is...
                 let aScore = a.map(pl => pl.brancheScore).reduce(sum, 0);
