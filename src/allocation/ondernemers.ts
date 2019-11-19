@@ -1,6 +1,8 @@
 import {
     DeelnemerStatus,
-    IMarktondernemer
+    IMarktindeling,
+    IMarktondernemer,
+    PlaatsId
 } from '../markt.model';
 
 const STATUS_PRIORITIES = [
@@ -25,6 +27,19 @@ const Ondernemers = {
         const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
 
         return sort1 || sort2 || sort3;
+    },
+
+    countPlaatsVoorkeurenFor: (
+        indeling: IMarktindeling,
+        plaatsId: PlaatsId
+    ): number => {
+        const result = indeling.voorkeuren.reduce((result, voorkeur) => {
+            if( voorkeur.plaatsId === plaatsId ) {
+                result.set(voorkeur.erkenningsNummer, voorkeur.priority);
+            }
+            return result;
+        }, new Map());
+        return result.size;
     },
 
     sort: (

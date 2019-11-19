@@ -25,6 +25,7 @@ export interface MMMarkt {
     marktDagen: string[];
     standaardKraamAfmeting: number;
     extraMetersMogelijk: boolean;
+    kiesJeKraamFase: string;
     aanwezigeOpties: {
         '3mKramen': boolean;
         '4mKramen': boolean;
@@ -32,6 +33,7 @@ export interface MMMarkt {
         elektra: boolean;
         afvaleiland: boolean;
     };
+    telefoonNummerContact: string,
     perfectViewNummer: number;
     aantalKramen: number;
     aantalMeter: number;
