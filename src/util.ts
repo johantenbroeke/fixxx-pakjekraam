@@ -112,7 +112,7 @@ export const addMinutes = (offsetDate: string | number, minutes: number): string
 };
 
 export const getTimezoneTime = (): Date => {
-    return moment().tz('Europe/Amsterdam').toDate();
+    return moment().tz('Europe/Amsterdam').format();
 };
 
 export const getTimezoneHours = (): String => {
