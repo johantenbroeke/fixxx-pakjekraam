@@ -239,14 +239,17 @@ describe('Indeling.calcSizes', () => {
         var markt = marktScenario({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
-                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'], maximum: 1 } },
-                { sollicitatieNummer: 3, voorkeur: { branches: ['brood'], maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['brood'], maximum: 1 } },
+                { sollicitatieNummer: 3, voorkeur: { branches: ['bak'], maximum: 2 } },
                 { sollicitatieNummer: 4, voorkeur: { branches: ['fruit'], maximum: 2 } }
             ],
             marktplaatsen: [
                 { branches: ['bak', 'brood'] }, { branches: ['brood', 'fruit'] }
+            ],
+            branches: [
+                { brancheId: 'bak', verplicht: true }
             ]
         });
-        expect(calcSizes(markt)).toStrictEqual({ 1:0, 2:1, 3:1, 4:0 });
+        expect(calcSizes(markt)).toStrictEqual({ 1:1, 2:0, 3:1, 4:0 });
     });
 });
