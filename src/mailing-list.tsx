@@ -16,151 +16,87 @@ import { checkLogin } from './makkelijkemarkt-api';
 // import { getMarktInfo } from './pakjekraam-api';
 // import { IMarktplaats, IPlaatsvoorkeur, IRSVP, IBranche } from 'markt.model';
 import { MMMarkt } from 'makkelijkemarkt.model';
-import { getMarktEnriched } from './model/markt.functions';
 
 requireEnv('MAILER_FROM');
 
 const marktDate = tomorrow();
+
+
+const sendAllocationMail = (subject: string, mailTemplate: JSX.Element, emailaddress: string) => {
+    return mail({
+        from: process.env.MAILER_FROM,
+        to: process.env.APP_ENV === ( 'development' || 'acceptance' ) ? 'tomootes@gmail.com,eva@tiltshift.nl' : emailaddress,
+        subject,
+        react: mailTemplate,
+    });
+};
+
+const mailToewijzing = (toewijzingenCombined: any, markt: MMMarkt) => {
+
+    const { ondernemer, user, toewijzing } = toewijzingenCombined;
+
+    console.log(`Stuur e-mail naar ${user.email} Ondernemer is ingedeeld op plaats ${ toewijzing.plaatsen }`);
+
+    let mailTemplate = null;
+    let subject = null;
+
+    if (markt.kiesJeKraamFase === 'wenperiode') {
+        subject = `Indeling ${yyyyMmDdtoDDMMYYYY(marktDate)} ${markt.naam}`;
+        mailTemplate = <EmailWenperiode subject={subject} ondernemer={ondernemer} telefoonnummer={markt.telefoonNummerContact} />;
+    }
+
+    if (markt.kiesJeKraamFase === 'live' ) {
+        subject = `Toewijzing ${yyyyMmDdtoDDMMYYYY(marktDate)} ${markt.naam}`;
+        mailTemplate = <EmailToewijzing
+            subject={subject}
+            ondernemer={ondernemer}
+            telefoonnummer={markt.telefoonNummerContact}
+            toewijzing={toewijzing}
+            marktDate={toewijzing.marktDate}
+            markt={markt}
+        />;
+    }
+
+    return sendAllocationMail(subject, mailTemplate, user.email);
+
+};
+
+
+const mailAfwijzing = (afwijzingCombined: any, markt: MMMarkt) => {
+
+    const { ondernemer, user, afwijzing } = afwijzingCombined;
+
+    console.log(`Stuur e-mail naar ${user.email} Ondernemer is niet ingedeeld vanwege ${ afwijzing.reason }`);
+
+    let mailTemplate = null;
+    let subject = null;
+
+    if (markt.kiesJeKraamFase === 'live') {
+        subject = `Indeling ${yyyyMmDdtoDDMMYYYY(marktDate)} ${markt.naam}`;
+        mailTemplate = <EmailWenperiode subject={subject} ondernemer={ondernemer} telefoonnummer={markt.telefoonNummerContact} />;
+    }
+
+    if (markt.kiesJeKraamFase === 'live') {
+        subject = `Niet ingedeeld ${yyyyMmDdtoDDMMYYYY(marktDate)} ${markt.naam}`,
+            mailTemplate = <EmailAfwijzing
+                subject={subject}
+                ondernemer={ondernemer}
+                telefoonnummer={markt.telefoonNummerContact}
+                afwijzing={afwijzing}
+                markt={markt}
+            />;
+    }
+
+    return sendAllocationMail(subject, mailTemplate, user.email);
+
+
+};
 
 const users$ = defer(() => getAllUsers()).pipe(
     tap(() => console.log('Keycloak OK!'), (e) => console.log(`Unable to connect to Keycloak: ${e}`)),
     retry(10, 5000),
     shareReplay(1),
 );
-
-const mailToewijzingen = (
-    toewijzingen: any[],
-    markt: MMMarkt,
-    marktEnriched: any,
-) => {
-
-    toewijzingen
-        .map(({ ondernemer, user, toewijzing }) => {
-
-            console.log(
-                `Stuur e-mail naar ${user.email} Ondernemer is ingedeeld op plaats ${ toewijzing.plaatsen }`,
-            );
-
-            const formattedMarkDate = yyyyMmDdtoDDMMYYYY(marktDate);
-
-            let mailTemplate = null;
-            let subject = null;
-            switch (marktEnriched.fase) {
-                case 'voorbereiding':
-                    mailTemplate = null;
-                    break;
-                case 'activatie':
-                    mailTemplate = null;
-                    break;
-                case 'wenperiode':
-                    subject = `Indeling ${formattedMarkDate} ${markt.naam}`,
-                    mailTemplate = <EmailWenperiode subject={subject} ondernemer={ondernemer} telefoonnummer={marktEnriched.marktEnriched} />;
-                    break;
-                case 'live':
-                    subject = `Toewijzing ${formattedMarkDate} ${markt.naam}`,
-                    mailTemplate = <EmailToewijzing
-                        subject={subject}
-                        ondernemer={ondernemer}
-                        telefoonnummer={marktEnriched.telefoonnummer}
-                        toewijzing={toewijzing}
-                        marktDate={toewijzing.marktDate}
-                        markt={markt}
-                    />;
-                break;
-                default:
-                    throw new Error('Fase markt not set, quiting mail script');
-            }
-
-            if (mailTemplate) {
-
-                const mailObj = {
-                    from: process.env.MAILER_FROM,
-                    to: process.env.NODE_ENV === 'development' ? 'tomootes@gmail.com' : user.email,
-                    subject,
-                    react: mailTemplate,
-                };
-
-                mail(mailObj).then(
-                    () => {
-                        console.log(`E-mail is verstuurd naar ${user.email}.`);
-                        process.exit(0);
-                    },
-                    (err: Error) => {
-                        console.error('E-mail sturen mislukt.', err);
-                        process.exit(1);
-                    },
-                ).catch((e: any) => {
-                    console.log(e);
-                });
-            }
-
-
-        });
-};
-
-const mailAfwijzingen = (
-    afwijzingen: any[],
-    markt: MMMarkt,
-    marktEnriched: any,
-) => {
-
-    afwijzingen
-        .map(({ ondernemer, user, afwijzing }) => {
-
-            const formattedMarkDate = yyyyMmDdtoDDMMYYYY(marktDate);
-
-            let mailTemplate = null;
-            let subject = null;
-
-            switch (marktEnriched.fase) {
-                case 'voorbereiding':
-                    mailTemplate = null;
-                    break;
-                case 'activatie':
-                    mailTemplate = null;
-                    break;
-                case 'wenperiode':
-                    subject = `Indeling ${formattedMarkDate} ${markt.naam}`,
-                    mailTemplate = <EmailWenperiode subject={subject} ondernemer={ondernemer} telefoonnummer={marktEnriched.marktEnriched} />;
-                    break;
-                case 'live':
-                    subject = `Niet ingedeeld ${formattedMarkDate} ${markt.naam}`,
-                    mailTemplate = <EmailAfwijzing
-                        subject={subject}
-                        ondernemer={ondernemer}
-                        telefoonnummer={marktEnriched.telefoonnummer}
-                        afwijzing={afwijzing}
-                        markt={markt}
-                    />;
-                    break;
-                default:
-                    throw new Error('Fase markt not set, quiting mail script');
-            }
-
-            if (mailTemplate) {
-
-                const mailObj = {
-                    from: process.env.MAILER_FROM,
-                    to: process.env.NODE_ENV === 'development' ? 'tomootes@gmail.com' : user.email,
-                    subject,
-                    react: mailTemplate,
-                };
-
-                mail(mailObj).then(
-                    () => {
-                        console.log(`E-mail is verstuurd naar ${user.email}.`);
-                        process.exit(0);
-                    },
-                    (err: Error) => {
-                        console.error('E-mail sturen mislukt.', err);
-                        process.exit(1);
-                    },
-                    ).catch((e: any) => {
-                        console.log(e);
-                    });
-            }
-        });
-};
 
 const makkelijkeMarkt$ = defer(() => checkLogin()).pipe(
     tap(
@@ -174,18 +110,17 @@ const makkelijkeMarkt$ = defer(() => checkLogin()).pipe(
 makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]) => {
     return getMarktenByDate(marktDate).then(markten => {
         return markten
-            .filter(markt => markt.id === 20)
+            .filter(markt => markt.kiesJeKraamFase)
+            .filter(markt => markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'wenperiode')
             .map(markt =>
                 Promise.all([
                     getMarktondernemersByMarkt(String(markt.id)),
                     getToewijzingen(String(markt.id), marktDate),
                     getAfwijzingen(String(markt.id), marktDate),
-                    getMarktEnriched(String(markt.id)),
                 ]).then(([
                     ondernemers,
                     toewijzingen,
                     afwijzingen,
-                    marktEnriched
                 ]) => {
 
                     console.log(`Verstuur mails voor de marktindeling van ${markt.id} op datum ${marktDate}`);
@@ -228,8 +163,19 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
                         })
                         .filter(({ user }) => !!user && !!user.email);
 
-                        toewijzingenCombined.length > 0 ? mailToewijzingen(toewijzingenCombined, markt, marktEnriched) : null;
-                        afwijzingenCombined.length > 0 ? mailAfwijzingen(afwijzingenCombined, markt, marktEnriched): null;
+                    console.log('Afwijzingen combined', afwijzingenCombined ? afwijzingenCombined.length : 0);
+
+                        return Promise.all(toewijzingenCombined.map( toewijzingCombined => mailToewijzing(toewijzingCombined, markt ) ))
+                        .then( result => {
+                            console.log(`${result.length} toewijzingen verstuurd.`);
+                            return Promise.all(afwijzingenCombined.map(
+                                afwijzingCombined => mailAfwijzing(afwijzingCombined, markt )
+                            ));
+                        })
+                        .then( result => {
+                            console.log(`${result.length} afwijzingen verstuurd.`);
+                            process.exit(0);
+                        });
 
                 })
                 .catch(e => {
