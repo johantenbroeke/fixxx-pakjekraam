@@ -13,6 +13,7 @@ const {
     formatISODayOfWeek,
 } = require('../../util.ts');
 const Button = require('./Button');
+const Form = require('./Form');
 const OndernemerMarktHeading = require('./OndernemerMarktHeading');
 
 
@@ -27,10 +28,11 @@ class AlgemeneVoorkeurenForm extends React.Component {
         next: PropTypes.string,
         query: PropTypes.string,
         role: PropTypes.string,
+        csrfToken: PropTypes.string,
     };
 
     render() {
-        const { branches, ondernemer, markt, marktId, marktDate, next, query, role } = this.props;
+        const { branches, ondernemer, markt, marktId, marktDate, next, query, role, csrfToken } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
         const nextMessage =
             (query && query.next) || '/markt-detail/' + ondernemer.erkenningsnummer + '/' + marktId + '/';
@@ -81,12 +83,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
         const vast = isVast(ondernemer.status) || true;
 
         return (
-            <form
-                className="Form Form--AlgemeneVoorkeurenForm"
-                method="POST"
-                action="./"
-                encType="application/x-www-form-urlencoded"
-            >
+
+            <Form csrfToken={csrfToken}>
                 <h1>Marktprofiel</h1>
                 <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
                 <div className="well well--max-width">
@@ -262,7 +260,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                         </a>
                     </p>
                 </div>
-            </form>
+            </Form>
         );
     }
 }

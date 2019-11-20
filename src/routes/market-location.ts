@@ -19,6 +19,7 @@ export const marketLocationPage = (
     query: any,
     currentMarktId: string,
     role: string,
+    csrfToken: string,
 ) => {
 
     const messages = getQueryErrors(req.query);
@@ -66,6 +67,7 @@ export const marketLocationPage = (
                 markt,
                 sollicitatie,
                 mededeling: mededelingen.plaatsVoorkeuren,
+                csrfToken,
             });
         },
         err => internalServerErrorPage(res)(err),
