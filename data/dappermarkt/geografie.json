@@ -269,7 +269,12 @@
       "kraamA": "124",
       "kraamB": "126",
       "obstakel": ["loopje"]
-    },
+		},
+		{
+      "kraamA": "123",
+      "kraamB": "125",
+      "obstakel": ["loopje"]
+		},
     {
       "kraamA": "128",
       "kraamB": "130",
@@ -293,11 +298,6 @@
     {
       "kraamA": "144",
       "kraamB": "146",
-      "obstakel": ["loopjediedichtmag"]
-    },
-    {
-      "kraamA": "133",
-      "kraamB": "135",
       "obstakel": ["loopjediedichtmag"]
     },
     {
