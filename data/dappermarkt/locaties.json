@@ -163,7 +163,7 @@
   },
   {
 		"plaatsId": "41",
-		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"branches": ["109-zuivel-poelier-eieren"],
 		"verkoopinrichting": ["eigen-materieel"]
   },
   {
@@ -173,7 +173,7 @@
   },
   {
 		"plaatsId": "43",
-		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"branches": ["109-zuivel-poelier-eieren"],
 		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["electra", "dubbel"]
   },
@@ -310,7 +310,7 @@
   },
   {
 		"plaatsId": "80",
-		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"branches": ["109-zuivel-poelier-eieren"],
 		"verkoopinrichting": ["eigen-materieel"]
   },
   {
@@ -415,11 +415,13 @@
   },
   {
 		"plaatsId": "103",
-		"branches": ["101-agf-exotische-groenten", "104-hummus-kruiden-olijven"],
-		"verkoopinrichting": ["eigen-materieel"]
+		"branches": ["101-agf-exotische-groenten"],
+		"verkoopinrichting": ["eigen-materieel"],
+		"properties": ["boom"]
   },
   {
-    "plaatsId": "104"
+		"plaatsId": "104",
+		"properties": ["boom"]
   },
   {
 		"plaatsId": "105",
@@ -449,7 +451,8 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "112"
+		"plaatsId": "112",
+		"properties": ["boom"]
   },
   {
     "plaatsId": "113",
@@ -641,7 +644,7 @@
   },
   {
 		"plaatsId": "160",
-		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"branches": ["109-zuivel-poelier-eieren"],
 		"verkoopinrichting": ["eigen-materieel"]
   },
   {
@@ -651,7 +654,7 @@
   },
   {
 		"plaatsId": "162",
-		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"branches": ["109-zuivel-poelier-eieren"],
 		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
@@ -865,7 +868,7 @@
   },
   {
 		"plaatsId": "215",
-		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"branches": ["109-zuivel-poelier-eieren"],
 		"verkoopinrichting": ["eigen-materieel"]
   },
   {
@@ -874,7 +877,7 @@
   },
   {
 		"plaatsId": "217",
-		"branches": ["bak", "109-zuivel-poelier-eieren"],
+		"branches": ["109-zuivel-poelier-eieren"],
 		"verkoopinrichting": ["eigen-materieel"],
     "properties": ["dubbel"]
   },
