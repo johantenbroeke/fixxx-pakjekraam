@@ -1567,4 +1567,27 @@ describe('Bugfix voor', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3', '4']);
     });
+
+    it('issue #566', () => {
+        // Oorspronkelijke bug
+        // -------------------
+        // In sommige gevallen staat een ondernemer twee keer in Mercato. In dat systeem staat deze
+        // persoon met twee verschillende sollicitatieNummers geregistreerd: x.01 en x.02. Deze
+        // toevoeging gaat in MakkelijkeMarkt echter verloren, waardoor de berekening twee identieke
+        // ondernemers als input krijgt. De berekening behandeld dit als twee losse ondernemers, maar
+        // voegt de toewijzingen van deze 'twee ondernemers' vervolgens wel samen, waardoor een
+        // toewijzing kan ontstaan met 2 niet naast elkaar liggende plaatsen.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers : [
+                { erkenningsNummer: '123456789', sollicitatieNummer : 1, status : 'soll' },
+                { erkenningsNummer: '123456789', sollicitatieNummer : 1, status : 'soll' }
+            ],
+            marktplaatsen: [
+                {}, {}
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+    });
 });

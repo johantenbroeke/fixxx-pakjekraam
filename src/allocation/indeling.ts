@@ -53,7 +53,7 @@ const Indeling = {
             throw Error('Invalid market date');
         }
 
-        const openPlaatsen = markt.marktplaatsen.filter(plaats => !plaats.inactive);
+        const openPlaatsen   = markt.marktplaatsen.filter(plaats => !plaats.inactive);
         const expansionLimit = Number.isFinite(markt.expansionLimit) ?
                                markt.expansionLimit :
                                markt.marktplaatsen.length;
@@ -69,11 +69,26 @@ const Indeling = {
             voorkeuren      : [...markt.voorkeuren]
         };
 
-        // We willen enkel de aanwezige ondernemers, gesorteerd op prioriteit.
+        // We willen enkel de aanwezige ondernemers, gesorteerd op prioriteit. Daarnaast
+        // staan ondernemers soms dubbel in de lijst (miscommunicatie tussen Mercato en
+        // MakkelijkeMarkt), dus dubbelingen moeten eruit gefilterd worden.
+        //
         // De sortering die hier plaatsvindt is van groot belang voor alle hierop
         // volgende code.
         indeling.toewijzingQueue = markt.ondernemers
-        .filter(ondernemer => Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate))
+        .reduce((result, ondernemer) => {
+            if (
+                Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate) &&
+                result.find(({ erkenningsNummer, sollicitatieNummer }) =>
+                    erkenningsNummer === ondernemer.erkenningsNummer ||
+                    sollicitatieNummer === ondernemer.sollicitatieNummer
+                ) === undefined
+            ) {
+                result.push(ondernemer);
+            }
+
+            return result;
+        }, [])
         .sort((a, b) => Indeling._compareOndernemers(indeling, a, b));
 
         return indeling;
