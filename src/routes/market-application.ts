@@ -64,12 +64,14 @@ export const handleMarketApplication = (req: Request, res: Response, next: NextF
     });
 };
 
+
 export const attendancePage = (
     res: Response,
     erkenningsNummer: string,
     currentMarktId: string,
     query: any,
     role: string,
+    csrfToken: string,
 ) => {
 
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
@@ -100,6 +102,7 @@ export const attendancePage = (
                 query,
                 role,
                 mededelingen,
+                csrfToken,
             });
         },
         err => internalServerErrorPage(res)(err),

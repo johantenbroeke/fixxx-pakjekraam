@@ -4,6 +4,7 @@ const { formatOndernemerName, plaatsSort, isVast } = require('../../domain-knowl
 const { flatten } = require('../../util.ts');
 const MarktplaatsSelect = require('./MarktplaatsSelect');
 const Button = require('./Button');
+const Form = require('./Form');
 
 
 class PlaatsvoorkeurenForm extends React.Component {
@@ -17,10 +18,11 @@ class PlaatsvoorkeurenForm extends React.Component {
         role: PropTypes.string,
         query: PropTypes.string,
         sollicitatie: PropTypes.object.isRequired,
+        csrfToken: PropTypes.string,
     };
 
     render() {
-        const { markt, ondernemer, plaatsvoorkeuren, query, rows, indelingVoorkeur, marktDate, role, sollicitatie } = this.props;
+        const { markt, ondernemer, plaatsvoorkeuren, query, rows, indelingVoorkeur, marktDate, role, sollicitatie, csrfToken } = this.props;
 
         const defaultVoorkeur = {
             minimum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
@@ -136,14 +138,13 @@ class PlaatsvoorkeurenForm extends React.Component {
         const isMarktmeesterEnVph = ( role === 'marktmeester' && isVast(sollicitatie.status) );
 
         return (
-            <form
+            <Form
                 className="Form Form--PlaatsvoorkeurenForm"
-                method="POST"
-                name="plaatsvoorkeur-form"
-                action="./"
-                encType="application/x-www-form-urlencoded"
-                data-decorator="voorkeur-form"
-                data-vasteplaats-count={sollicitatie.vastePlaatsen.length}
+                csrfToken={csrfToken}
+                // dataAttributes={[
+                //     { 'vasteplaats-count':'voorkeur-form' },
+                // ]}
+                decorator="voorkeur-form"
             >
                 <input
                     id="erkenningsNummer"
@@ -469,7 +470,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         />
                     </p>
                 </div>
-            </form>
+            </Form>
         );
     }
 }
