@@ -18,10 +18,11 @@ class AlgemeneVoorkeurenPage extends React.Component {
         query: PropTypes.string,
         role: PropTypes.string,
         messages: PropTypes.array,
+        csrfToken: PropTypes.string,
     };
 
     render() {
-        const { ondernemer, messages, role } = this.props;
+        const { ondernemer, messages, role, csrfToken } = this.props;
         return (
             <Page messages={messages}>
                 <Header user={ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
@@ -40,6 +41,7 @@ class AlgemeneVoorkeurenPage extends React.Component {
                         voorkeur={this.props.voorkeur}
                         query={this.props.query}
                         role={role}
+                        csrfToken={this.props.csrfToken}
                     />
                 </Content>
             </Page>

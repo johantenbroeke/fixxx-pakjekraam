@@ -66,7 +66,7 @@ class AfmeldForm extends React.Component {
         );
 
         return (
-            <Form decorator="aanwezigheid-for" csrfToken={csrfToken}>
+            <Form decorator="aanwezigheid-form" csrfToken={csrfToken}>
                 <input
                     id="erkenningsNummer"
                     name="erkenningsNummer"

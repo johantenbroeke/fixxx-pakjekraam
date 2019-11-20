@@ -141,10 +141,10 @@ class PlaatsvoorkeurenForm extends React.Component {
             <Form
                 className="Form Form--PlaatsvoorkeurenForm"
                 csrfToken={csrfToken}
-                dataAttributes={[
-                    { 'vasteplaats-count':'voorkeur-form' },
-                ]}
-                decorator={'voorkeur-form'}
+                // dataAttributes={[
+                //     { 'vasteplaats-count':'voorkeur-form' },
+                // ]}
+                decorator="voorkeur-form"
             >
                 <input
                     id="erkenningsNummer"

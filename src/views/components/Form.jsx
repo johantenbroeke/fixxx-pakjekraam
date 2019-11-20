@@ -12,12 +12,6 @@ class Page extends React.Component {
 
     render() {
         const { csrfToken, decorator, dataAttributes } = this.props;
-        // let dataproperties = [
-        //     { 'decorator': decorator },
-        //     { 'vasteplaats-count': 3 },
-        // ]
-        console.log(dataAttributes);
-
         return (
             <form
                 className="Form"
