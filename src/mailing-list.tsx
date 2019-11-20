@@ -21,11 +21,12 @@ requireEnv('MAILER_FROM');
 
 const marktDate = tomorrow();
 
+console.log(process.env);
 
 const sendAllocationMail = (subject: string, mailTemplate: JSX.Element, emailaddress: string) => {
     return mail({
         from: process.env.MAILER_FROM,
-        to: process.env.APP_ENV === ( 'development' || 'acceptance' ) ? 'tomootes@gmail.com,eva@tiltshift.nl' : emailaddress,
+        to: (process.env.APP_ENV === 'acceptance') || (process.env.APP_ENV === 'development') ? 'tomootes@gmail.com,eva@tiltshift.nl' : emailaddress,
         subject,
         react: mailTemplate,
     });
