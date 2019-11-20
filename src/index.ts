@@ -193,6 +193,14 @@ app.get('/markt/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, 
     getMarktenEnabled().then((markten: any) => res.render('MarktenPage', { markten }));
 });
 
+app.get(
+    '/environment/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    (req: Request, res: Response) => {
+        res.render('EnvironmentPage');
+    }
+);
+
 // For debug purposes:
 app.get('/markt/index.json', keycloak.protect(KeycloakRoles.MARKTBUREAU), (req: Request, res: Response) => {
     getMarkten().then(jsonPage(res));
