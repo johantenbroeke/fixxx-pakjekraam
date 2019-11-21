@@ -306,10 +306,6 @@
       "obstakel": ["loopjediedichtmag"]
     },
     {
-      "kraamA": "119",
-      "kraamB": "121"
-    },
-    {
       "kraamA": "133",
       "kraamB": "135",
       "obstakel": ["loopjediedichtmag"]
