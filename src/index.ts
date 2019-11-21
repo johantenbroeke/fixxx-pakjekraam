@@ -196,11 +196,14 @@ app.get(
     allocationMailPage,
 );
 
-app.get('/markt/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
-    getMarktenEnabled()
-        .then((markten: any) => {
-            res.render('MarktenPage', { markten });
-        }, internalServerErrorPage(res));
+app.get(
+    '/markt/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    (req: Request, res: Response) => {
+        return getMarktenEnabled()
+            .then((markten: any) => {
+                res.render('MarktenPage', { markten });
+            }, internalServerErrorPage(res));
 });
 
 app.get(
@@ -706,8 +709,11 @@ app.get(
 );
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    console.error(err);
-    res.render('ErrorPage', { message: err.message, stack: err.stack, errorCode: 500, req });
+    if (process.env.APP_ENV === 'production') {
+        res.render('ErrorPage', { errorCode: 500, req });
+    } else {
+        res.render('ErrorPage', { message: err.message, stack: err.stack, errorCode: 500, req });
+    }
 });
 
 // Static files that are public (robots.txt, favicon.ico)
