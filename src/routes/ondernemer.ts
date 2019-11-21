@@ -5,7 +5,7 @@ import { deleteRsvpsByErkenningsnummer } from '../model/rsvp.functions';
 import { deleteVoorkeurenByErkenningsnummer } from '../model/voorkeur.functions';
 import { getMarktenEnabled } from '../model/markt.functions';
 import { getMarktondernemer } from '../makkelijkemarkt-api';
-import { getQueryErrors } from '../express-util';
+import { getQueryErrors, internalServerErrorPage } from '../express-util';
 import { MMSollicitatie } from '../makkelijkemarkt.model';
 
 export const deleteUserPage = ( req: Request, res: Response, result: string, error: string, csrfToken: string ) => {
@@ -24,8 +24,7 @@ export const deleteUser = (req: Request, res: Response, erkenningsNummer: string
         deleteUserPage(req, res, `${numberOfRecordsFound} records mbt registratienummer '${req.body.erkenningsNummer}' verwijderd`, null, req.csrfToken());
     })
     .catch( ( e: string ) => {
-        deleteUserPage(req, res, null, e, req.csrfToken());
-        throw new Error(e);
+        internalServerErrorPage(res);
     });
 
 };
@@ -43,7 +42,7 @@ export const publicProfilePage = async (req: Request, res: Response, erkenningsN
 
         res.render('PublicProfilePage', { ondernemer, messages });
     } catch(err) {
-        res.status(500).end(String(err));
+        internalServerErrorPage(res);
     }
 
 };

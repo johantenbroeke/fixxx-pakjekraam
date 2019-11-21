@@ -197,7 +197,10 @@ app.get(
 );
 
 app.get('/markt/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
-    getMarktenEnabled().then((markten: any) => res.render('MarktenPage', { markten }));
+    getMarktenEnabled()
+        .then((markten: any) => {
+            res.render('MarktenPage', { markten });
+        }, internalServerErrorPage(res));
 });
 
 app.get(
@@ -269,37 +272,29 @@ app.get(
     afmeldingenVasteplaatshoudersPage
 );
 
-app.get(
-    '/markt-detail/:erkenningsNummer/:marktId/:datum/sollicitanten/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    (req: Request, res: Response) => {
-        const datum = req.params.datum;
-        const type = 'sollicitanten';
+// app.get(
+//     '/markt-detail/:erkenningsNummer/:marktId/:datum/sollicitanten/',
+//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
+//     (req: Request, res: Response) => {
+//         const datum = req.params.datum;
+//         const type = 'sollicitanten';
 
-        getSollicitantenlijstInput(req.params.marktId, req.params.datum).then(
-            ({ ondernemers, aanmeldingen, voorkeuren, markt }) => {
-                res.render('SollicitantenPage', { ondernemers, aanmeldingen, voorkeuren, markt, datum, type });
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
-            },
-        );
-    },
-);
+//         getSollicitantenlijstInput(req.params.marktId, req.params.datum).then(
+//             ({ ondernemers, aanmeldingen, voorkeuren, markt }) => {
+//                 res.render('SollicitantenPage', { ondernemers, aanmeldingen, voorkeuren, markt, datum, type });
+//             },
+//             err => {
+//                 res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
+//             },
+//         );
+//     },
+// );
 
 app.get(
     '/dashboard/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
         vendorDashboardPage(req, res, next, getErkenningsNummer(req));
-    },
-);
-
-app.get(
-    '/ondernemer/:erkenningsNummer/dashboard/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    (req: Request, res: Response, next: NextFunction) => {
-        vendorDashboardPage(req, res, next, req.params.erkenningsNummer);
     },
 );
 
@@ -550,7 +545,8 @@ app.get(
     '/algemene-voorkeuren/:marktId/markt-voorkeuren.json',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: Request, res: Response) => {
-        getIndelingVoorkeuren(req.params.marktId).then(jsonPage(res), internalServerErrorPage(res));
+        getIndelingVoorkeuren(req.params.marktId)
+            .then(jsonPage(res), internalServerErrorPage(res));
     },
 );
 

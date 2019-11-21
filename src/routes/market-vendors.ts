@@ -28,13 +28,8 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
     const datum = req.params.datum;
     const marktId = req.params.marktId;
 
-    const getToewijzingslijstPromise = getToewijzingslijst(marktId, datum);
-
-    Promise.all([
-        getToewijzingslijstPromise
-    ])
-        .then(
-            ([data]) => {
+    getToewijzingslijst(marktId, datum)
+        .then( data => {
 
                 const { ondernemers, aanmeldingen } = data;
                 const vasteplaatshouders = ondernemers.filter(ondernemer => ondernemer.status === 'vpl');
@@ -49,7 +44,7 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
                     datum,
                 });
             },
-            err => httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR)(err),
+            internalServerErrorPage(res),
         )
         .catch(next);
 };
@@ -80,7 +75,7 @@ export const voorrangslijstPage = (req: Request, res: Response, next: NextFuncti
                 algemenevoorkeuren,
             });
         },
-        next,
+        internalServerErrorPage(res),
     ).catch(next);
 };
 
@@ -109,6 +104,6 @@ export const voorrangslijstVolledigPage = (req: Request, res: Response, next: Ne
                 algemenevoorkeuren,
             });
         },
-        next,
+        internalServerErrorPage(res),
     ).catch(next);
 };

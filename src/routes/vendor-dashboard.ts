@@ -6,7 +6,7 @@ import {
     getAanmeldingenByOndernemer,
     getToewijzingenByOndernemer,
 } from '../pakjekraam-api';
-import { errorPage, getQueryErrors } from '../express-util';
+import { internalServerErrorPage, getQueryErrors } from '../express-util';
 import { tomorrow, nextWeek } from '../util';
 // import { parse } from '@babel/core';
 // import { promises } from 'fs';
@@ -48,7 +48,7 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
                     toewijzingen,
                 });
             },
-            err => errorPage(res, err),
+            internalServerErrorPage(res),
         )
         .catch(next);
 };
