@@ -98,6 +98,7 @@ export const marketPreferencesPage = (
     marktId: string,
     marktDate: string,
     role: string,
+    csrfToken: string,
 ) => {
 
     const messages = getQueryErrors(req.query);
@@ -128,6 +129,7 @@ export const marketPreferencesPage = (
             query,
             messages,
             role,
+            csrfToken,
         });
 
     }, internalServerErrorPage(res));

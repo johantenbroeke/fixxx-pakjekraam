@@ -1,26 +1,53 @@
 .Icon{
 
     display: flex;
-    
-    // width: 2rem;
-    // height: 2rem;
     color: black;
+    font-size: 1rem;
+    
 
-    &:before{
-        font-family: icomoon!important;
-        speak: none;
-        font-style: normal;
-        font-weight: 400;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        right: 0;
+    // &:before{
+    //     font-family: icomoon!important;
+    //     speak: none;
+    //     font-style: normal;
+    //     font-weight: 400;
+    //     font-variant: normal;
+    //     text-transform: none;
+    //     line-height: 1;
+    //     right: 0;
+    // }
+
+    &--icomoon{
+        &:before{
+            font-family: icomoon!important;
+            speak: none;
+            font-style: normal;
+            font-weight: 400;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            right: 0;
+        }
     }
 
     &--wissel{
         &:before{
             content: "↓↑";
+            font-size: .75rem;
             letter-spacing: -2px;
+        }
+    }
+
+    &--plus{
+        &:before{
+            content: "+";
+        }
+    }
+    
+    &--unchecked{
+        &:before{
+            content: "+";
+            transform: rotate(45deg);
+            font-size: 1.125rem;
         }
     }
 
@@ -40,7 +67,6 @@
 
     &--table{
         height: 100%;
-
         font-size: .65rem;
     }
 

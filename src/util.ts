@@ -237,6 +237,29 @@ export const arrayToChunks = function(array: [], size: number) {
       results.push(array.splice(0, size));
     }
     return results;
+};
+
+export const removeDuplicates = function(array: any[]) {
+    const uniqueArray = array.filter((thing, index) => {
+        const _thing = JSON.stringify(thing);
+        return index === array.findIndex(obj => {
+            return JSON.stringify(obj) === _thing;
+        });
+    });
+    return uniqueArray;
+};
+
+export const uniqBy = (arr: any[], predicate: string) => {
+    const cb = typeof predicate === 'function' ? predicate : (o: any) => o[predicate];
+
+    return [...arr.reduce((map, item) => {
+      const key = (item === null || item === undefined) ?
+        item : cb(item);
+
+      map.has(key) || map.set(key, item);
+
+      return map;
+    }, new Map()).values()];
   };
 
 export const paginate = <T>(arr: T[], count: number): T[][] => {

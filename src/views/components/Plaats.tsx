@@ -8,28 +8,32 @@ const Plaats = ({
     plaats,
     vph,
     ondernemer,
-    ondernemerIsGewisseld,
     first,
     aanmelding,
     toewijzing,
     plaatsvoorkeuren,
     type,
-    vphIsGewisseld,
-    vphIsAfgemeld,
-    vphIsAfgemeldPeriode,
+    opUitgebreid,
+    opGewisseld,
+    opAfgemeld,
+    opAfgemeldPeriode,
+    ondernemerUitgebreid,
+    ondernemerGewisseld
 }: {
     plaats: IMarktplaats;
     vph?: IMarktondernemer;
     ondernemer?: IMarktondernemer;
-    ondernemerIsGewisseld?: boolean;
     first?: boolean;
     aanmelding?: IRSVP;
     toewijzing?: IToewijzing;
     plaatsvoorkeuren?: any;
     type?: string;
-    vphIsGewisseld?: boolean;
-    vphIsAfgemeld?: boolean;
-    vphIsAfgemeldPeriode?: boolean;
+    opUitgebreid?: boolean;
+    opGewisseld?: boolean;
+    opAfgemeld?: boolean;
+    opAfgemeldPeriode?: boolean;
+    ondernemerUitgebreid?: boolean;
+    ondernemerGewisseld?: boolean;
 }) => {
     const colorList: { [index: string]: string } = {
         'branche-vis': '#343797',
@@ -110,9 +114,10 @@ const Plaats = ({
         : undefined;
 
     return (
+
         <tr
             className={`
-                Plaats ${first && 'Plaats--first'} ${tags.join(' ')} ${vphIsAfgemeld || vphIsAfgemeldPeriode? ' Plaats--vph-attendance-not-attending': null }`}
+                Plaats ${first && 'Plaats--first'} ${tags.join(' ')} ${opAfgemeld || opAfgemeldPeriode? ' Plaats--vph-attendance-not-attending': null }`}
             data-sollicitatie-nummer={vph && vph.sollicitatieNummer}
         >
             <td className="Plaats__prop Plaats__prop-properties">
@@ -121,11 +126,12 @@ const Plaats = ({
             <td className="Plaats__prop Plaats__prop-plaats-nr">
                 {plaats.plaatsId}
                 {color && <PrintableBackground color={color} />}
-            </td>
+            </td>≈
             <td className="Plaats__prop Plaats__prop-soll Plaats__prop-vph">
-                {vphIsGewisseld ? <div className="Plaats__prop__icon Icon Icon--wissel"></div> : null }
-                {vphIsAfgemeld ? <div className="Plaats__prop__icon"><img src="/images/unchecked.svg" alt="Unchecked"/></div> : null }
-                {vphIsAfgemeldPeriode ? <div className="Plaats__prop__icon"><img src="/images/Calendar.svg" alt="Unchecked"/></div> : null}
+                {opUitgebreid ? <div className="Plaats__prop__icon Icon Icon--plus"></div> : null }
+                {opGewisseld ? <div className="Plaats__prop__icon Icon Icon--wissel"></div> : null }
+                {opAfgemeld ? <div className="Plaats__prop__icon Icon Icon--unchecked" ></div> : null }
+                {opAfgemeldPeriode ? <div className="Plaats__prop__icon"><img src="/images/Calendar.svg" alt="Unchecked"/></div> : null}
                 <span id={`soll-${vph && vph.sollicitatieNummer}`} />
                 {vph ? (
                     <a href={`/profile/${vph.erkenningsNummer}`}>
@@ -137,7 +143,8 @@ const Plaats = ({
                 {vph ? vph.description : <strong>{tags.join(' ')}</strong>}
             </td>
             <td className="Plaats__prop Plaats__prop-soll">
-                {ondernemerIsGewisseld ? <div className="Plaats__prop__icon Icon Icon--wissel"></div> : null }
+                {ondernemerUitgebreid ? <div className="Plaats__prop__icon Icon Icon--plus"></div> : null }
+                {ondernemerGewisseld ? <div className="Plaats__prop__icon Icon Icon--wissel"></div> : null }
                 {type === 'wenperiode' && voorkeur ? <strong>({voorkeur.minimum ?
                 voorkeur.minimum : voorkeur.maximum}, {voorkeur.minimum ?
                 voorkeur.maximum - voorkeur.minimum : 0})</strong> : ''}{ondernemer ? (

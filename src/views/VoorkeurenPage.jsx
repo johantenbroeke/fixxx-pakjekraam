@@ -23,6 +23,7 @@ class VoorkeurenPage extends React.Component {
         markt: PropTypes.object,
         sollicitatie: PropTypes.object,
         mededeling: PropTypes.object,
+        csrfToken: PropTypes.string,
     };
 
     render() {
@@ -38,6 +39,7 @@ class VoorkeurenPage extends React.Component {
             markt,
             sollicitatie,
             mededeling,
+            csrfToken,
         } = this.props;
         const rows = (
             markt.rows ||
@@ -80,6 +82,7 @@ class VoorkeurenPage extends React.Component {
                         role={role}
                         query={this.props.query}
                         sollicitatie={sollicitatie}
+                        csrfToken={csrfToken}
                     />
                 </Content>
             </Page>

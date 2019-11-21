@@ -211,11 +211,6 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "104",
-      "kraamB": "106",
-      "obstakel": ["boom"]
-    },
-    {
       "kraamA": "106",
       "kraamB": "108",
       "obstakel": ["loopjediedichtmag"]
@@ -256,11 +251,6 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "103",
-      "kraamB": "105",
-      "obstakel": ["boom"]
-    },
-    {
       "kraamA": "105",
       "kraamB": "107",
       "obstakel": ["loopjediedichtmag"]
@@ -279,7 +269,12 @@
       "kraamA": "124",
       "kraamB": "126",
       "obstakel": ["loopje"]
-    },
+		},
+		{
+      "kraamA": "123",
+      "kraamB": "125",
+      "obstakel": ["loopje"]
+		},
     {
       "kraamA": "128",
       "kraamB": "130",
@@ -306,14 +301,9 @@
       "obstakel": ["loopjediedichtmag"]
     },
     {
-      "kraamA": "119",
-      "kraamB": "121",
-      "obstakel": ["loopjediedichtmag"]
-    },
-    {
       "kraamA": "133",
       "kraamB": "135",
-      "obstakel": ["loopje"]
+      "obstakel": ["loopjediedichtmag"]
     },
     {
       "kraamA": "137",
@@ -422,8 +412,8 @@
     },
     {
       "kraamA": "212",
-      "kraamB": "214",
-      "obstakel": ["loopjediedichtmag"]
+			"kraamB": "214",
+			"obstakel": ["loopje"]
     },
     {
       "kraamA": "216",

@@ -1,6 +1,7 @@
 import { getMarktondernemersByMarkt as getMarktondernemersByMarktMM } from '../makkelijkemarkt-api';
 import {
     IMarktondernemer,
+    IMarktondernemerVoorkeur,
     IRSVP,
     IToewijzing,
 } from '../markt.model';
@@ -25,13 +26,12 @@ export const ondernemerIsAfgemeld = (ondernemer: IMarktondernemer, aanmeldingen:
 
 };
 
-export const ondernemerIsAfgemeldPeriode = (ondernemer: IMarktondernemer, marktDate: Date): Boolean => {
+export const ondernemerIsAfgemeldPeriode = (voorkeur: IMarktondernemerVoorkeur, marktDate: Date): Boolean => {
 
-    const { absentFrom = null, absentUntil = null } = ondernemer.voorkeur || {};
     if (
-        absentFrom && absentUntil &&
-        marktDate >= absentFrom &&
-        marktDate <= absentUntil
+        voorkeur.absentFrom && voorkeur.absentUntil &&
+        marktDate >= voorkeur.absentFrom &&
+        marktDate <= voorkeur.absentUntil
     ) {
         return true;
     } else {
@@ -40,20 +40,46 @@ export const ondernemerIsAfgemeldPeriode = (ondernemer: IMarktondernemer, marktD
 
 };
 
-export const vphIsGewisseld = (vph: IMarktondernemer, toewijzingen: IToewijzing[]): Boolean => {
+export const vphIsGewisseld = (ondernemer: IMarktondernemer, toewijzingen: IToewijzing[]): Boolean => {
 
-    const toewijzingVph = toewijzingen.find( toewijzing => toewijzing.erkenningsNummer === vph.erkenningsNummer );
+    const toewijzingVph = toewijzingen.find(toewijzing => toewijzing.erkenningsNummer === ondernemer.erkenningsNummer);
 
     if (!toewijzingVph) {
         return false;
     }
 
     toewijzingVph.plaatsen.sort(( a: any, b: any ) => a - b);
-    vph.plaatsen.sort(( a: any, b: any ) => a - b);
+    ondernemer.plaatsen.sort(( a: any, b: any ) => a - b);
 
-    // const toewijzingOpVastePlekken = toewijzingVph.plaatsen.filter( plaats => vph.plaatsen.includes(plaats) );
+    if (
+        // Als de arrays hetzelfde zijn is er niet gewisseld
+        JSON.stringify(toewijzingVph.plaatsen) !== JSON.stringify(ondernemer.plaatsen) &&
+        // Als alle plaatsen van de ondernemer voorkomen in de toewijzing is er niet gewisseld
+        !ondernemer.plaatsen.every( (item) => toewijzingVph.plaatsen.indexOf(item) !== -1 )
+    ) {
+        return true;
+    } else {
+        return false;
+    }
 
-    if ( JSON.stringify(toewijzingVph.plaatsen) !== JSON.stringify(vph.plaatsen) ) {
+};
+
+export const vphIsUitgebreid = (ondernemer: IMarktondernemer, toewijzingen: IToewijzing[]): Boolean => {
+
+    const toewijzingVph = toewijzingen.find(toewijzing => toewijzing.erkenningsNummer === ondernemer.erkenningsNummer);
+
+    if (!toewijzingVph) {
+        return false;
+    }
+
+    toewijzingVph.plaatsen.sort(( a: any, b: any ) => a - b);
+    ondernemer.plaatsen.sort(( a: any, b: any ) => a - b);
+
+    if (
+        toewijzingVph.plaatsen.length > ondernemer.plaatsen.length &&
+        // Wanneer de twee originele pleken allemaal onderdeel zijn van de toewijzing, ook niet tonen, dan is het namelijk een uitbreiding
+        ondernemer.plaatsen.some(r => toewijzingVph.plaatsen.includes(r))
+    ) {
         return true;
     } else {
         return false;

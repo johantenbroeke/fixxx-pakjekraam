@@ -50,7 +50,7 @@
     "class-name": false,
     "curly": true,
     "import-spacing": true,
-    "match-default-export-name": true,
+    "match-default-export-name": false,
     "max-line-length": [false, 170],
     "member-access": true,
     "newline-before-return": false,
@@ -155,6 +155,7 @@
     "no-switch-case-fall-through": false,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
+    "no-unused-parameters": true,
     "no-use-before-declare": true,
     "object-literal-sort-keys": false,
     "one-line": {

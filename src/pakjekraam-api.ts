@@ -7,10 +7,11 @@ import {
     getMarktondernemersByMarkt as getMarktondernemersByMarktMM,
 } from './makkelijkemarkt-api';
 import { formatOndernemerName, isVast, parseMarktDag, slugifyMarkt } from './domain-knowledge.js';
-import { numberSort, stringSort } from './util';
+import { numberSort, stringSort, removeDuplicates } from './util';
 import Sequelize from 'sequelize';
 import { allocation, plaatsvoorkeur, rsvp, voorkeur } from './model/index';
 import { calcToewijzingen } from './indeling';
+// import { getVoorkeurenByMarkt } from './model/voorkeur.functions';
 
 import {
     IMarkt,
@@ -351,25 +352,18 @@ export const enrichOndernemersWithVoorkeuren = (ondernemers: IMarktondernemer[],
 };
 
 export const getMarktondernemersByMarkt = (marktId: string) =>
-    getMarktondernemersByMarktMM(marktId).then(sollictaties =>
-        sollictaties.filter(sollictatie => !sollictatie.doorgehaald).map(convertSollicitatie),
-    );
+    getMarktondernemersByMarktMM(marktId).then(sollicitaties => {
+        const sollicitatiesGefilterd = sollicitaties.filter(sollicitatie => !sollicitatie.doorgehaald).map(convertSollicitatie);
+        return removeDuplicates(sollicitatiesGefilterd);
+    });
 
 export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
-
-    const ondernemersPromise = getMarktondernemersByMarktMM(marktId).then(ondernemers =>
-        ondernemers.filter(ondernemer => !ondernemer.doorgehaald).map(convertSollicitatie),
-    );
 
     const voorkeurenPromise = Voorkeur.findAll({ where: { marktId }, raw: true })
         .then( voorkeuren => voorkeuren.map(convertVoorkeur));
 
-    // const voorkeurenPromise = getIndelingVoorkeuren(marktId, marktDate).then(voorkeuren =>
-    //     voorkeuren.map(convertVoorkeur),
-    // );
-
     // Populate the `ondernemer.voorkeur` field
-    const enrichedOndernemers = Promise.all([ondernemersPromise, voorkeurenPromise]).then( result => {
+    const enrichedOndernemers = Promise.all([getMarktondernemersByMarkt(marktId), voorkeurenPromise]).then( result => {
         return enrichOndernemersWithVoorkeuren(...result);
     });
 

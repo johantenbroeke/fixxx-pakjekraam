@@ -28,8 +28,6 @@ const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, mededelingen, soll
             return t;
         }, []);
 
-    console.log(voorkeurDef);
-
     return (
         <div className="OndernemerVoorkeuren background-link-parent" id="plaatsvoorkeuren">
             <a href={blockUrl} className="background-link" />

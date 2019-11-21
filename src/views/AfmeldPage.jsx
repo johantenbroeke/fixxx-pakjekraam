@@ -20,6 +20,7 @@ class AfmeldPage extends React.Component {
         query: PropTypes.string,
         role: PropTypes.string,
         mededelingen: PropTypes.object.isRequired,
+        csrfToken: PropTypes.string,
     };
 
     render() {
@@ -46,6 +47,7 @@ class AfmeldPage extends React.Component {
                         currentMarktId={this.props.currentMarktId}
                         query={this.props.query}
                         role={this.props.role}
+                        csrfToken={this.props.csrfToken}
                     />
                 </Content>
             </Page>

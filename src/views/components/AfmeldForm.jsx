@@ -1,4 +1,5 @@
 const OndernemerMarktHeading = require('./OndernemerMarktHeading');
+const Form = require('./Form');
 const React = require('react');
 import moment from 'moment';
 const PropTypes = require('prop-types');
@@ -15,7 +16,6 @@ const {
 } = require('../../util.ts');
 const { filterRsvpList, isVast } = require('../../domain-knowledge.js');
 
-
 class AfmeldForm extends React.Component {
     propTypes = {
         aanmeldingen: PropTypes.array,
@@ -26,10 +26,11 @@ class AfmeldForm extends React.Component {
         currentMarktId: PropTypes.string,
         query: PropTypes.string,
         role: PropTypes.string,
+        csrfToken: PropTypes.string,
     };
 
     render() {
-        const { markten, ondernemer, currentMarktId, query, role, aanmeldingen } = this.props;
+        const { markten, ondernemer, currentMarktId, query, role, aanmeldingen, csrfToken } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(
             soll => !soll.doorgehaald && String(soll.markt.id) === currentMarktId,
         );
@@ -65,13 +66,7 @@ class AfmeldForm extends React.Component {
         );
 
         return (
-            <form
-                className="Form"
-                method="POST"
-                data-decorator="aanwezigheid-form"
-                action="./"
-                encType="application/x-www-form-urlencoded"
-            >
+            <Form decorator="aanwezigheid-form" csrfToken={csrfToken}>
                 <input
                     id="erkenningsNummer"
                     name="erkenningsNummer"
@@ -129,8 +124,7 @@ class AfmeldForm extends React.Component {
                                 ? `/profile/${ondernemer.erkenningsnummer}?error=aanwezigheid-saved`
                                 : `/markt-detail/${markt.id}?error=aanwezigheid-saved#aanwezigheid`
                         }`}
-                    >
-                        Bewaren
+                    >Bewaren
                     </button>
                     {currentMarktId && (
                         <a
@@ -145,7 +139,7 @@ class AfmeldForm extends React.Component {
                         </a>
                     )}
                 </p>
-            </form>
+            </Form>
         );
     }
 }

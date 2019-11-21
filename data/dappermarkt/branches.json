@@ -1,0 +1,59 @@
+[
+	{
+    "id": "101-agf-exotische-groenten",
+		"verplicht": true,
+		"maximumPlaatsen": 17
+  },
+  {
+    "id": "302-bloemen-planten",
+    "verplicht": true
+	},
+	{
+    "id": "103-brood-banket",
+    "verplicht": true
+	},
+	{
+    "id": "107-vis-nat",
+    "verplicht": true
+	},
+	{
+    "id": "209-vis-gebakken",
+    "verplicht": true
+	},
+	{
+    "id": "105-noten-zuidvruchten",
+    "verplicht": true
+	},
+	{
+    "id": "104-hummus-kruiden-olijven",
+    "verplicht": true
+	},
+  {
+    "id": "109-zuivel-poelier-eieren",
+    "verplicht": true
+	},
+	{
+    "id": "206-oudhollands-gebak-snoepwaren",
+    "verplicht": true
+	},
+	{
+    "id": "207-patat-snacks",
+    "verplicht": true
+	},
+	{
+    "id": "401-experimentele-zone",
+    "verplicht": true
+  },
+	{
+    "id": "bak",
+    "verplicht": true
+	},
+	{
+    "id": "402-promotieplaats",
+    "verplicht": true
+	},
+	{
+    "id": "403-standwerker",
+    "verplicht": true
+  }
+]
