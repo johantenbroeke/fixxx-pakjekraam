@@ -91,7 +91,6 @@ export const voorrangslijstVolledigPage = (req: Request, res: Response, next: Ne
     getVoorrangslijstInput(req.params.marktId, req.params.datum).then( result => {
 
             const { ondernemers, aanmeldingen, voorkeuren, markt, aLijst, algemenevoorkeuren } = result;
-
             const ondernemersFiltered = ondernemers.filter(ondernemer => ondernemer.status !== 'vpl');
             // const toewijzingenOptional = markt.fase === 'wenperiode' ? [] : toewijzingen;
 
