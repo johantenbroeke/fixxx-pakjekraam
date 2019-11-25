@@ -7,7 +7,7 @@ import {
     getMarktondernemersByMarkt as getMarktondernemersByMarktMM,
 } from './makkelijkemarkt-api';
 import { formatOndernemerName, isVast, parseMarktDag, slugifyMarkt } from './domain-knowledge.js';
-import { numberSort, stringSort, removeDuplicates } from './util';
+import { numberSort, stringSort } from './util';
 import Sequelize from 'sequelize';
 import { allocation, plaatsvoorkeur, rsvp, voorkeur } from './model/index';
 import { calcToewijzingen } from './indeling';
@@ -352,10 +352,10 @@ export const enrichOndernemersWithVoorkeuren = (ondernemers: IMarktondernemer[],
 };
 
 export const getMarktondernemersByMarkt = (marktId: string) =>
-    getMarktondernemersByMarktMM(marktId).then(sollicitaties => {
-        const sollicitatiesGefilterd = sollicitaties.filter(sollicitatie => !sollicitatie.doorgehaald).map(convertSollicitatie);
-        return removeDuplicates(sollicitatiesGefilterd);
-    });
+    getMarktondernemersByMarktMM(marktId)
+        .then(sollicitaties => {
+            return sollicitaties.filter(sollicitatie => !sollicitatie.doorgehaald).map(convertSollicitatie);
+        });
 
 export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
 
