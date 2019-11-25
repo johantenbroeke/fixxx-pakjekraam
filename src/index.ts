@@ -146,7 +146,8 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            sameSite: true
+            sameSite: true,
+            secure: true
         }
     }),
 );
