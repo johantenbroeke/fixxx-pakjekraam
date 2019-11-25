@@ -51,6 +51,10 @@ export const internalServerErrorPage = (res: Response) =>  {
     return httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR);
 };
 
+export const isAbsoluteUrl = (url: string): Boolean =>
+    (url.indexOf('http://') === 0 || url.indexOf('https://') === 0);
+
+
 export const forbiddenErrorPage = (res: Response) => httpErrorPage(res, HTTP_FORBIDDEN_ERROR);
 
 /*
