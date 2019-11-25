@@ -10,7 +10,7 @@ import morgan from 'morgan';
 import url from 'url';
 import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makkelijkemarkt-api';
 import { requireEnv, today, tomorrow } from './util';
-import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors } from './express-util';
+import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors, isAbsoluteUrl } from './express-util';
 import { marktDetailController } from './routes/markt-detail';
 import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
 import cookieParser from 'cookie-parser';
@@ -161,7 +161,8 @@ app.use(
 // endless loop.
 app.get('/login', keycloak.protect(), (req: GrantedRequest, res: Response) => {
     if (req.query.next) {
-        res.redirect(req.query.next);
+        // To prevent open redirects, filter out absolute URLS
+        !isAbsoluteUrl(req.query.next) ? res.redirect(req.query.next) : res.redirect('/');
     } else if (isMarktondernemer(req)) {
         res.redirect('/dashboard/');
     } else if (isMarktmeester(req)) {
