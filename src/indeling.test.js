@@ -1366,21 +1366,6 @@ describe('Een ondernemer die wil uitbreiden', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([1, 2]);
-
-        var { toewijzingen, afwijzingen } = calc({
-            ondernemers: [
-                { voorkeur: { minimum: 3 } },
-                { voorkeur: { minimum: 2 } }
-            ],
-            marktplaatsen: [
-                {}, {}, {}
-            ],
-            expansionLimit: 2
-        });
-
-        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
-        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2', '3']);
     });
 
     it('kan dat niet indien het maximum aantal branche-plaatsen wordt overschreden', () => {
@@ -1492,8 +1477,25 @@ describe('Een ondernemer die wil uitbreiden', () => {
     });
 });
 
-describe('Een ondernemer die is afgewezen', () => {
-    it('kan toch nog geplaatst worden na de afwijzing van een voorgaande ondernemer', () => {
+describe('Probeer afwijzing te voorkomen', () => {
+    it('bij 2 ondernemers met concurrerende minimum voorkeuren', () => {
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { minimum: 3 } },
+                { sollicitatieNummer: 2, voorkeur: { minimum: 2 } }
+            ],
+            marktplaatsen: [
+                {}, {}, {}
+            ],
+            expansionLimit: 2
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2', '3']);
+    });
+
+    it('bij de 2de verplichte branche ondernemer als de 1ste wordt afgewezen', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { branches: ['x'], minimum: 2 } },

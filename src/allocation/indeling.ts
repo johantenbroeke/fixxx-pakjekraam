@@ -266,6 +266,8 @@ const Indeling = {
         return indeling;
     },
 
+    // Uitbreiden gaat in iteraties: iedereen die een 3de plaats wil krijgt deze
+    // aangeboden alvorens iedereen die een 4de plaats wil hiertoe de kans krijgt.
     performExpansion: (
         indeling: IMarktindeling,
         brancheId: BrancheId = undefined,
@@ -279,39 +281,34 @@ const Indeling = {
             )
         );
 
-        if(
-            !indeling.openPlaatsen.length ||
-            !queue.length ||
-            iteration > indeling.expansionLimit
-        ) {
-            // The people still in the queue have fewer places than desired. Check if they
-            // must be rejected because of their `minimum` setting.
-            return queue.reduce((indeling, toewijzing) => {
-                const { ondernemer, plaatsen } = toewijzing;
+        indeling = queue.reduce((indeling, toewijzing) => {
+            const { ondernemer } = toewijzing;
+
+            const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1);
+            const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent, 1, true);
+
+            // Nog voordat we controleren of deze ondernemer in deze iteratie eigenlijk wel kan
+            // uitbreiden (zie `canExpandInIteration` in de `else`) bekijken we of er wel een
+            // geschikte plaats is. Is dit niet het geval, en heeft de ondernemer een `minimum`,
+            // dan kunnen we ze al afwijzen nog voordat ze überhaupt aan de beurt zijn. Dit levert
+            // ruimte op voor andere ondernemers.
+            if (!uitbreidingPlaats) {
+                const { plaatsen } = Toewijzing.find(indeling, ondernemer);
                 const { minimum = 0 } = ondernemer.voorkeur || {};
 
                 return minimum > plaatsen.length ?
                        Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
                        indeling;
-            }, indeling);
-        }
-
-        indeling = queue.reduce((indeling, toewijzing) => {
-            const { ondernemer } = toewijzing;
-
-            if (!Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
-                return indeling;
+            } else {
+                return Ondernemer.canExpandInIteration(indeling, iteration, toewijzing) ?
+                       Toewijzing.add(indeling, ondernemer, uitbreidingPlaats) :
+                       indeling;
             }
-
-            const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1);
-            const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent, 1, true);
-
-            return uitbreidingPlaats ?
-                   Toewijzing.add(indeling, ondernemer, uitbreidingPlaats) :
-                   indeling;
         }, indeling);
 
-        return Indeling.performExpansion(indeling, brancheId, ++iteration);
+        return queue.length && iteration < indeling.expansionLimit ?
+               Indeling.performExpansion(indeling, brancheId, ++iteration) :
+               indeling;
     },
 
     // Als een VPH voorkeuren heeft opgegeven, dan geven zij daarmee aan dat ze
