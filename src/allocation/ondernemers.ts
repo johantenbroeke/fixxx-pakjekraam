@@ -39,6 +39,7 @@ const Ondernemers = {
             }
             return result;
         }, new Map());
+
         return result.size;
     },
 

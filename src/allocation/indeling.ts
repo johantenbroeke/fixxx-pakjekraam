@@ -208,18 +208,33 @@ const Indeling = {
         );
     },
 
-    // Als een VPH voorkeuren heeft opgegeven, dan geven zij daarmee aan dat ze
-    // willen verplaatsen. We beschouwen een VPH eveneens als een verplaatser
-    // als niet al hun vaste plaatsen beschikbaar zijn.
-    willMove: (
+    // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
+    // 0. VPHs die niet willen verplaatsen.
+    // 1. Ondernemers die willen bakken (kan ook een VPH zijn die wil verplaatsen).
+    // 2. Ondernemers met een EVI (kan ook een VPH zijn die wil verplaatsen).
+    // 3. VPHs die willen/moeten verplaatsen.
+    // 4. Sollicitanten in een branche.
+    // 5. Sollicitanten zonder branche (in principe niet de bedoeling).
+    getStatusGroup: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
-    ): boolean => {
-        const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
-        const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats));
-        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+    ): number => {
+        return Ondernemer.heeftVastePlaatsen(ondernemer) &&
+               !Indeling.willMove(indeling, ondernemer)      ? 0 :
+               Ondernemer.heeftBranche(ondernemer, 'bak')    ? 1 :
+               Ondernemer.heeftEVI(ondernemer)               ? 2 :
+               Ondernemer.heeftVastePlaatsen(ondernemer)     ? 3 :
+                                                               4;
+    },
 
-        return beschikbaar.length < vastePlaatsen.length || !!voorkeuren.length;
+    // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt.
+    getListGroup: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): number => {
+        return Ondernemer.heeftVastePlaatsen(ondernemer) ? 1 :
+               indeling.aLijst.includes(ondernemer)      ? 1 :
+                                                           2;
     },
 
     isAanwezig: (
@@ -292,6 +307,20 @@ const Indeling = {
         }, indeling);
 
         return Indeling.performExpansion(indeling, brancheId, ++iteration);
+    },
+
+    // Als een VPH voorkeuren heeft opgegeven, dan geven zij daarmee aan dat ze
+    // willen verplaatsen. We beschouwen een VPH eveneens als een verplaatser
+    // als niet al hun vaste plaatsen beschikbaar zijn.
+    willMove: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): boolean => {
+        const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
+        const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats));
+        const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
+
+        return beschikbaar.length < vastePlaatsen.length || !!voorkeuren.length;
     },
 
     _findBestGroup: (
@@ -424,37 +453,6 @@ const Indeling = {
         );
     },
 
-    // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
-    // 0. VPHs die niet willen verplaatsen.
-    // 1. Ondernemers die willen bakken (kan ook een VPH zijn die wil verplaatsen).
-    // 2. Ondernemers met een EVI (kan ook een VPH zijn die wil verplaatsen).
-    // 3. VPHs die willen/moeten verplaatsen.
-    // 4. Sollicitanten in een branche.
-    // 5. Sollicitanten zonder branche (in principe niet de bedoeling).
-    _getStatusGroup: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): number => {
-        return Ondernemer.heeftVastePlaatsen(ondernemer) &&
-               !Indeling.willMove(indeling, ondernemer)      ? 0 :
-               Ondernemer.heeftBranche(ondernemer, 'bak')    ? 1 :
-               Ondernemer.heeftEVI(ondernemer)               ? 2 :
-               Ondernemer.heeftVastePlaatsen(ondernemer)     ? 3 :
-                                                               4;
-    },
-    // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt:
-    // 0. Ondernemer is VPH.
-    // 1. Ondernemer die voorkomt in de A-lijst.
-    // 2. Ondernemer die niet voorkomt in de A-lijst.
-    _getListGroup: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): number => {
-        return Ondernemer.heeftVastePlaatsen(ondernemer) ? 0 :
-               indeling.aLijst.includes(ondernemer)      ? 1 :
-                                                           2;
-    },
-
     _isAvailable: (
         indeling: IMarktindeling,
         plaats: IMarktplaats
@@ -494,11 +492,11 @@ const Indeling = {
         b: IMarktondernemer
     ): number => {
         // Sorteer eerst op status groep...
-        const sort1 = Indeling._getStatusGroup(indeling, a) -
-                      Indeling._getStatusGroup(indeling, b);
+        const sort1 = Indeling.getStatusGroup(indeling, a) -
+                      Indeling.getStatusGroup(indeling, b);
         // ... dan op aanwezigheid in de A-lijst...
-        const sort2 = Indeling._getListGroup(indeling, a) -
-                      Indeling._getListGroup(indeling, b);
+        const sort2 = Indeling.getListGroup(indeling, a) -
+                      Indeling.getListGroup(indeling, b);
         // ... dan op anciënniteitsnummer.
         const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
 
