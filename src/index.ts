@@ -146,10 +146,19 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            sameSite: true
+            sameSite: true,
+            secure: true
         }
     }),
 );
+
+app.use( (req, res, next) => {
+    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.header('X-Content-Type-Options','nosniff');
+    res.header('X-XSS-Protection','1; mode=block');
+    res.header('X-Frame-Options','SAMEORIGIN');
+    next();
+});
 
 app.use(
     keycloak.middleware({
