@@ -13,39 +13,23 @@ import Ondernemer from './allocation/ondernemer';
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
     let indeling = Indeling.init(markt);
+    const { ondernemers } = indeling;
 
-    // Deel ondernemers in
-    // -------------------
-    // - VPHs met meer dan 1 plaats krijgen deze toegewezen.
-    // - VPHs met 1 plaats en sollicitanten krijgen maximaal 2 plaatsen (afhankelijk van hun
-    //   voorkeuren, en de hoeveelheid beschikbare ruimte op de markt).
-    //
-    // Voor de prioritering van indelen, zie `Indeling._compareOndernemers` die in
-    // `Indeling.init` wordt gebruikt om alle aanwezige ondernemers te sorteren.
-    const sizes = Indeling.calcSizes(indeling);
-    indeling = indeling.toewijzingQueue
-    .reduce((indeling, ondernemer) => {
-        return Indeling.assignPlaatsen(indeling, ondernemer, sizes);
-    }, indeling);
+    // Als er een A-lijst is, deel deze ondernemers eerst volledig in...
+    if (indeling.aLijst.length) {
+        const aListQueue = ondernemers.filter(ondernemer =>
+            Indeling.getListGroup(indeling, ondernemer) === 1
+        );
+        indeling = Indeling.performAllocation(indeling, aListQueue);
+    }
 
-    // Voer uitbreidingen uit
-    // ----------------------
-    // Dit gaat in iteraties: iedereen die een 3de plaats wil krijgt deze aangeboden alvorens
-    // iedereen die een 4de plaats wil hiertoe de kans krijgt.
-    indeling = Indeling.performExpansion(indeling);
-
-    // Probeer afwijzingen opnieuw
-    // ---------------------------
-    // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
-    // eerder afgewezen sollictanten opnieuw in te delen omdat deze mogelijk passen op
-    // de vrijgekomen plaatsen.
-    indeling = indeling.afwijzingen
-    .reduce((indeling, { ondernemer }) => {
-        return !Ondernemer.isVast(ondernemer) ?
-               Indeling.assignPlaatsen(indeling, ondernemer) :
-               indeling;
-    }, indeling);
-    indeling = Indeling.performExpansion(indeling);
+    // ... en probeer daarna de andere ondernemers nog een plaats te geven.
+    // Indien er geen A-lijst is voor deze dag deelt dit stuk alle ondernemers in.
+    const bListQueue = ondernemers.filter(ondernemer =>
+        !indeling.aLijst.length ||
+        Indeling.getListGroup(indeling, ondernemer) === 2
+    );
+    indeling = Indeling.performAllocation(indeling, bListQueue);
 
     return indeling;
 };
