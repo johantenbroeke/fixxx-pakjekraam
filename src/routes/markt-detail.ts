@@ -11,7 +11,7 @@ import {
     getMededelingen,
 } from '../pakjekraam-api';
 
-import { HTTP_INTERNAL_SERVER_ERROR, httpErrorPage, getQueryErrors } from '../express-util';
+import { internalServerErrorPage, getQueryErrors } from '../express-util';
 
 export const marktDetailController = (
     req: Request,
@@ -52,7 +52,7 @@ export const marktDetailController = (
                     mededelingen,
                 });
             },
-            err => httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR)(err),
+            internalServerErrorPage(res),
         )
         .catch(next);
 };

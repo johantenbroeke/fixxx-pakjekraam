@@ -138,21 +138,14 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
         .then(conflicts => conflicts.reduce(flatten, []))
         .then(conflicts => {
             if (conflicts.length > 0) {
+
                 // TODO: Redirect to previous page and display helpful error message
-                httpErrorPage(res, HTTP_FORBIDDEN_ERROR)(
-                    conflicts
-                        .map(
-                            application =>
-                                // TODO: Add human readable market name to Error, instead of ID
-                                new Error(
-                                    `U hebt zich al aangemeld voor markt ${application.marktId} op ${
-                                        application.marktDate
-                                    }. Inschrijven voor meerdere markten is niet mogelijk.`,
-                                ),
-                        )
-                        .map(({ message }) => message)
-                        .join(LF),
-                );
+                const messages = conflicts
+                    .map( application => {
+                        return `U hebt zich al aangemeld voor markt ${application.marktId} op ${application.marktDate }. Inschrijven voor meerdere markten is niet mogelijk.`;
+                    });
+
+                res.render('ErrorPage.jsx', { message: messages[0] });
             } else {
                 // TODO: Redirect with success code
                 // TODO: Use `Sequelize.transaction`

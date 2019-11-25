@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getMarktondernemer } from '../makkelijkemarkt-api';
-import { HTTP_PAGE_NOT_FOUND, httpErrorPage } from '../express-util';
+import { HTTP_PAGE_NOT_FOUND, internalServerErrorPage } from '../express-util';
 import * as qs from 'qs';
 
 export const activationQRPage = (req: Request, res: Response) => {
@@ -25,5 +25,5 @@ export const activationQRPage = (req: Request, res: Response) => {
         res.render('QRCodeImage', {
             value: activationURL,
         });
-    }, httpErrorPage(res, HTTP_PAGE_NOT_FOUND));
+    }, internalServerErrorPage(res));
 };
