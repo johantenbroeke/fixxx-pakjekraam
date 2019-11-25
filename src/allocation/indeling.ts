@@ -91,6 +91,9 @@ const Indeling = {
         }, [])
         .sort((a, b) => Indeling._compareOndernemers(indeling, a, b));
 
+        // TODO: Verwijder voorkeuren uit `indeling.voorkeuren` van ondernemers die niet in
+        //       `indeling.ondernemers` zitten.
+
         return indeling;
     },
 
@@ -372,6 +375,10 @@ const Indeling = {
             // ingedeeld willen worden. We proberen deze ondernemers op een plaats te zetten waar
             // geen of zo min mogelijk ondernemers een voorkeur voor hebben uitgesproken.
             const voorkeurScore          = Ondernemers.countPlaatsVoorkeurenFor(indeling, plaats.plaatsId);
+
+            // TODO: Voeg verplichte branches en EVI toe, zodat flexibele ondernemers niet op een van
+            //       deze plekken komen terwijl er in de B-lijst nog ondernemers zijn die hier op willen
+            //       staan.
 
             return {
                 ...plaats,
