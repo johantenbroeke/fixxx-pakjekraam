@@ -24,14 +24,12 @@ class OndernemerDashboard extends React.Component {
     render() {
         const { ondernemer, messages, plaatsvoorkeuren, markten, user, aanmeldingen, toewijzingen } = this.props;
 
-        const marktenEnabled = markten.filter(m => m.enabled);
-
         const sollicitaties = ondernemer.sollicitaties.filter(soll => {
-            return !soll.doorgehaald && marktenEnabled.map(markt => markt.id).includes(soll.markt.id);
+            return !soll.doorgehaald && markten.map(markt => markt.id).includes(soll.markt.id);
         });
 
         const marktenPlusAanmelding = sollicitaties.map(sollicitatie => {
-            const marktVoorSollicitatie = marktenEnabled.find(markt => markt.id == sollicitatie.markt.id);
+            const marktVoorSollicitatie = markten.find(markt => markt.id == sollicitatie.markt.id);
             const aanmeldingenVoorDezeMarkt = aanmeldingen.filter(aanmelding => {
                 return aanmelding.marktId == marktVoorSollicitatie.id;
             });

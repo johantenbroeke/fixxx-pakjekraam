@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { checkActivationCode } from '../makkelijkemarkt-api';
 import { userExists } from '../keycloak-api';
-import { publicErrors, getQueryErrors, httpErrorPage, redirectWithParams } from '../express-util';
+import { publicErrors, getQueryErrors, internalServerErrorPage, redirectWithParams } from '../express-util';
 
 export const activationPage = (req: Request, res: Response) => {
     res.render('ActivatePage', {
@@ -47,6 +47,6 @@ export const handleActivation = (req: Request, res: Response) => {
             },
         )
         .catch( e => {
-            httpErrorPage(res, e);
+            internalServerErrorPage(res);
         });
 };

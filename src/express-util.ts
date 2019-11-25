@@ -47,7 +47,9 @@ export const httpErrorPage = (res: Response, errorCode: number) => (err: Error |
     res.render('ErrorPage.jsx', { errorCode });
 };
 
-export const internalServerErrorPage = (res: Response) => httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR);
+export const internalServerErrorPage = (res: Response) =>  {
+    return httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR);
+};
 
 export const forbiddenErrorPage = (res: Response) => httpErrorPage(res, HTTP_FORBIDDEN_ERROR);
 
