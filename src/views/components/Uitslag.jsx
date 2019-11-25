@@ -22,7 +22,7 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
 
     return (
         <div>
-            {timeInHours > 21 && timeInHours < 24 || !markt.geopend && ( markt.fase === 'wenperiode' || markt.fase === 'live' ) ? (
+            {timeInHours > 21 && timeInHours < 24 || !markt.geopend && ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Morgen ({formatDate(tomorrow)})
@@ -33,7 +33,7 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
                             <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--niet-aangemeld"> niet aangemeld</span>
                         )}
                     </h4>
-                    { toewijzingMorgen && markt.fase === 'live' ? (
+                    { toewijzingMorgen && markt.kiesJeKraamFase === 'live' ? (
                         <AlertLine
                             type="success"
                             title="Ingedeeld"
@@ -46,7 +46,7 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
                     ) : null}
                 </div>
             ) : null }
-            {timeInHours >= 0 && timeInHours < 18 && markt.geopend && ( markt.fase === 'wenperiode' || markt.fase === 'live' ) ? (
+            {timeInHours >= 0 && timeInHours < 18 && markt.geopend && ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Vandaag ({formatDate(today)})
@@ -63,7 +63,7 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
                             </span>
                         )}
                     </h4>
-                    {toewijzingVandaag && markt.fase === 'live' ? (
+                    {toewijzingVandaag && markt.kiesJeKraamFase === 'live' ? (
                         <AlertLine
                             type="success"
                             title="Ingedeeld"
@@ -71,7 +71,7 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
                             message={ plaatsenDuiding(toewijzingVandaag.plaatsen) }
                             inline={true}
                         />
-                    ) : markt.fase === 'live' ? (
+                    ) : markt.kiesJeKraamFase === 'live' ? (
                         <span>Geen toewijzing </span>
                     ) : null }
                 </div>

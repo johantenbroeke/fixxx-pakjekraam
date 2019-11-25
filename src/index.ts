@@ -10,7 +10,7 @@ import morgan from 'morgan';
 import url from 'url';
 import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makkelijkemarkt-api';
 import { requireEnv, today, tomorrow } from './util';
-import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors } from './express-util';
+import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors, isAbsoluteUrl } from './express-util';
 import { marktDetailController } from './routes/markt-detail';
 import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
 import cookieParser from 'cookie-parser';
@@ -124,6 +124,7 @@ app.use(cookieParser());
 
 const pool = new Pool(parseDatabaseURL(process.env.DATABASE_URL));
 const sessionStore = new (connectPgSimple(session))({ pool });
+
 const keycloak = new Keycloak(
     { store: sessionStore },
     {
@@ -145,10 +146,19 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            sameSite: true
+            sameSite: true,
+            secure: true
         }
     }),
 );
+
+app.use( (req, res, next) => {
+    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.header('X-Content-Type-Options','nosniff');
+    res.header('X-XSS-Protection','1; mode=block');
+    res.header('X-Frame-Options','SAMEORIGIN');
+    next();
+});
 
 app.use(
     keycloak.middleware({
@@ -160,7 +170,8 @@ app.use(
 // endless loop.
 app.get('/login', keycloak.protect(), (req: GrantedRequest, res: Response) => {
     if (req.query.next) {
-        res.redirect(req.query.next);
+        // To prevent open redirects, filter out absolute URLS
+        !isAbsoluteUrl(req.query.next) ? res.redirect(req.query.next) : res.redirect('/');
     } else if (isMarktondernemer(req)) {
         res.redirect('/dashboard/');
     } else if (isMarktmeester(req)) {
@@ -196,8 +207,14 @@ app.get(
     allocationMailPage,
 );
 
-app.get('/markt/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
-    getMarktenEnabled().then((markten: any) => res.render('MarktenPage', { markten }));
+app.get(
+    '/markt/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    (req: Request, res: Response) => {
+        return getMarktenEnabled()
+            .then((markten: any) => {
+                res.render('MarktenPage', { markten });
+            }, internalServerErrorPage(res));
 });
 
 app.get(
@@ -269,37 +286,29 @@ app.get(
     afmeldingenVasteplaatshoudersPage
 );
 
-app.get(
-    '/markt-detail/:erkenningsNummer/:marktId/:datum/sollicitanten/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    (req: Request, res: Response) => {
-        const datum = req.params.datum;
-        const type = 'sollicitanten';
+// app.get(
+//     '/markt-detail/:erkenningsNummer/:marktId/:datum/sollicitanten/',
+//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
+//     (req: Request, res: Response) => {
+//         const datum = req.params.datum;
+//         const type = 'sollicitanten';
 
-        getSollicitantenlijstInput(req.params.marktId, req.params.datum).then(
-            ({ ondernemers, aanmeldingen, voorkeuren, markt }) => {
-                res.render('SollicitantenPage', { ondernemers, aanmeldingen, voorkeuren, markt, datum, type });
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
-            },
-        );
-    },
-);
+//         getSollicitantenlijstInput(req.params.marktId, req.params.datum).then(
+//             ({ ondernemers, aanmeldingen, voorkeuren, markt }) => {
+//                 res.render('SollicitantenPage', { ondernemers, aanmeldingen, voorkeuren, markt, datum, type });
+//             },
+//             err => {
+//                 res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
+//             },
+//         );
+//     },
+// );
 
 app.get(
     '/dashboard/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
         vendorDashboardPage(req, res, next, getErkenningsNummer(req));
-    },
-);
-
-app.get(
-    '/ondernemer/:erkenningsNummer/dashboard/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    (req: Request, res: Response, next: NextFunction) => {
-        vendorDashboardPage(req, res, next, req.params.erkenningsNummer);
     },
 );
 
@@ -550,7 +559,8 @@ app.get(
     '/algemene-voorkeuren/:marktId/markt-voorkeuren.json',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: Request, res: Response) => {
-        getIndelingVoorkeuren(req.params.marktId).then(jsonPage(res), internalServerErrorPage(res));
+        getIndelingVoorkeuren(req.params.marktId)
+            .then(jsonPage(res), internalServerErrorPage(res));
     },
 );
 
@@ -710,8 +720,11 @@ app.get(
 );
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    console.error(err);
-    res.render('ErrorPage', { message: err.message, stack: err.stack, errorCode: 500, req });
+    if (process.env.APP_ENV === 'production') {
+        res.render('ErrorPage', { errorCode: 500, req });
+    } else {
+        res.render('ErrorPage', { message: err.message, stack: err.stack, errorCode: 500, req });
+    }
 });
 
 // Static files that are public (robots.txt, favicon.ico)

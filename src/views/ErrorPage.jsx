@@ -24,9 +24,7 @@ class ErrorPage extends React.Component {
                         Er is een fout opgetreden. <br />
                         Probeer opnieuw <a href={`/login?next=${req ? req.originalUrl : ''}`}>in te loggen</a>
                     </h4>
-
                     <p>{message}</p>
-
                     <p>{stack}</p>
                 </Content>
             </Page>
