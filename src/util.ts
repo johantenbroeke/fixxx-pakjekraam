@@ -249,19 +249,6 @@ export const removeDuplicates = function(array: any[]) {
     return uniqueArray;
 };
 
-export const uniqBy = (arr: any[], predicate: string) => {
-    const cb = typeof predicate === 'function' ? predicate : (o: any) => o[predicate];
-
-    return [...arr.reduce((map, item) => {
-      const key = (item === null || item === undefined) ?
-        item : cb(item);
-
-      map.has(key) || map.set(key, item);
-
-      return map;
-    }, new Map()).values()];
-  };
-
 export const paginate = <T>(arr: T[], count: number): T[][] => {
     return arr.reduce((t, a, i) => {
         !(i % count) && t.push([]);
