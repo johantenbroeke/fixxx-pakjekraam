@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
-import { deleteAllocationsByErkenningsnummer } from '../model/allocation.functions';
 import { deletePlaatsvoorkeurenByErkenningsnummer } from '../model/plaatsvoorkeur.functions';
 import { deleteRsvpsByErkenningsnummer } from '../model/rsvp.functions';
 import { deleteVoorkeurenByErkenningsnummer } from '../model/voorkeur.functions';
 import { getMarktenEnabled } from '../model/markt.functions';
 import { getMarktondernemer } from '../makkelijkemarkt-api';
-import { getQueryErrors, internalServerErrorPage } from '../express-util';
-import { uniqBy } from '../util';
+import { getQueryErrors } from '../express-util';
 import { MMSollicitatie } from '../makkelijkemarkt.model';
 
 export const deleteUserPage = ( req: Request, res: Response, result: string, error: string, csrfToken: string ) => {
@@ -40,8 +38,6 @@ export const publicProfilePage = async (req: Request, res: Response, erkenningsN
 
         const marktenEnabledIds = marktenEnabled.map( (markt: any) => markt.id);
         ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) => marktenEnabledIds.includes(sollicitatie.markt.id) );
-
-        ondernemer.sollicitaties = uniqBy(ondernemer.sollicitaties, 'sollicitatieNummer');
 
         res.render('PublicProfilePage', { ondernemer, messages });
     } catch(err) {

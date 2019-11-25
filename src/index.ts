@@ -124,6 +124,7 @@ app.use(cookieParser());
 
 const pool = new Pool(parseDatabaseURL(process.env.DATABASE_URL));
 const sessionStore = new (connectPgSimple(session))({ pool });
+
 const keycloak = new Keycloak(
     { store: sessionStore },
     {
