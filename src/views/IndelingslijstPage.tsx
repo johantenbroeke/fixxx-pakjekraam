@@ -25,6 +25,7 @@ export type IndelingslijstenPageState = {
 };
 
 export default class IndelingslijstenPage extends React.Component {
+
     public propTypes: ValidationMap<IndelingslijstenPageState> = {
         aanmeldingen: PropTypes.array,
         obstakels: PropTypes.array,

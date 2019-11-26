@@ -1,17 +1,12 @@
 import { voorkeur } from './index';
 import {
     IMarktondernemerVoorkeur,
-    // IMarktondernemerVoorkeurRow,
 } from '../markt.model';
 import { Voorkeur } from './voorkeur.model';
-// import { numberSort } from '../util';
 
+import Sequelize from 'sequelize';
 
-// const indelingVoorkeurSort = (a: IMarktondernemerVoorkeur, b: IMarktondernemerVoorkeur) =>
-//         numberSort(indelingVoorkeurPrio(a), indelingVoorkeurPrio(b));
-
-// const indelingVoorkeurPrio = (voorkeur: IMarktondernemerVoorkeur): number =>
-//         (voorkeur.marktId ? 1 : 0) | (voorkeur.marktDate ? 2 : 0);
+const Op = Sequelize.Op;
 
 export const deleteVoorkeurenByErkenningsnummer = (erkenningsNummer: string) =>
     voorkeur
@@ -23,3 +18,23 @@ export const getVoorkeurenByMarkt = (marktId: string): Promise<IMarktondernemerV
             where: { marktId }, raw: true
         })
         .then(voorkeuren => voorkeuren);
+
+export const getVoorkeurByOndernemer = (erkenningsNummer: string): Promise<IMarktondernemerVoorkeur> =>
+    voorkeur
+        .findOne<Voorkeur>({
+            where: { erkenningsNummer }, raw: true
+        });
+
+export const getVoorkeurenAbsentByMarkt = (marktId: string): Promise<IMarktondernemerVoorkeur[]> =>
+    voorkeur
+        .findAll<Voorkeur>({
+            where: {
+                marktId,
+                absentFrom: {
+                    [Op.ne]: null
+                },
+                absentUntil: {
+                    [Op.ne]: null
+                },
+            }, raw: true
+        });

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { IMarkt, IMarktondernemer, IRSVP } from '../../markt.model';
+const moment = require('moment');
 
 const OndernemerList = ({
     ondernemers,
@@ -29,7 +30,15 @@ const OndernemerList = ({
                             </td>
                             <td>{ondernemer.status}</td>
                             <td>{ondernemer.description}</td>
-                            <td> <strong>({ondernemer.plaatsen.join(',')})</strong></td>
+                            { ondernemer.voorkeur.absentFrom && ondernemer.voorkeur.absentUntil ?
+                                        <td className="small">
+                                            <span className={`Pil Pil--${ondernemer.status}`}>
+                                                { moment(ondernemer.voorkeur.absentFrom).format('DD-MM-YYYY') } <strong> t/m </strong> { moment(ondernemer.voorkeur.absentUntil).format('DD-MM-YYYY') }
+                                            </span>
+                                        </td> :
+                                        <td></td>
+                            }
+                            {/* <td> <strong>({ondernemer.plaatsen.join(',')})</strong></td> */}
                         </tr>
                     );
                 })}
