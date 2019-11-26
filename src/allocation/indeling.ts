@@ -78,10 +78,6 @@ const Indeling = {
         indeling.toewijzingQueue = markt.ondernemers
         .reduce((result, ondernemer) => {
             if (
-                (
-                    !indeling.aLijst.length ||
-                    Indeling._getListGroup(indeling, ondernemer) !== 2
-                ) &&
                 Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate) &&
                 result.find(({ erkenningsNummer, sollicitatieNummer }) =>
                     erkenningsNummer === ondernemer.erkenningsNummer ||

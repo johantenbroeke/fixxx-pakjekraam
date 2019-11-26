@@ -127,7 +127,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
 });
 
 describe('Een sollicitant op de A-lijst', () => {
-    it.skip('krijgt voorrang over andere gelijkwaardige sollicitanten', () => {
+    it('krijgt voorrang over andere gelijkwaardige sollicitanten', () => {
         // Gewone sollicitant
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
@@ -203,7 +203,7 @@ describe('Een sollicitant op de A-lijst', () => {
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
     });
 
-    it.skip('krijgt GEEN voorrang over sollicitanten in een hogere status groep', () => {
+    it('krijgt GEEN voorrang over sollicitanten in een hogere status groep', () => {
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1 },
@@ -1040,7 +1040,7 @@ describe('Een sollicitant die ingedeeld wil worden', () => {
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 
-    it.skip('krijgt voorkeur als zij op de A-lijst staan', () => {
+    it('krijgt voorkeur als zij op de A-lijst staan', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1 },
