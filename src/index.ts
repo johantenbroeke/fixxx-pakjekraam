@@ -11,7 +11,6 @@ import url from 'url';
 import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makkelijkemarkt-api';
 import { requireEnv, today, tomorrow } from './util';
 import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors, isAbsoluteUrl } from './express-util';
-import { marktDetailController } from './routes/markt-detail';
 import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
 import cookieParser from 'cookie-parser';
 
@@ -49,6 +48,8 @@ import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
 import { deleteUserPage, deleteUser, publicProfilePage } from './routes/ondernemer';
+import { langdurigAfgemeld, marktDetailController } from './routes/markt';
+
 import { vasteplaatshoudersPage, sollicitantenPage, voorrangslijstPage, voorrangslijstVolledigPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
 import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
 import { KeycloakRoles } from './permissions';
@@ -146,8 +147,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            sameSite: true,
-            secure: true
+            sameSite: true
         }
     }),
 );
@@ -169,6 +169,7 @@ app.use(
 // Put the login route before the expired redirect to prevent an
 // endless loop.
 app.get('/login', keycloak.protect(), (req: GrantedRequest, res: Response) => {
+
     if (req.query.next) {
         // To prevent open redirects, filter out absolute URLS
         !isAbsoluteUrl(req.query.next) ? res.redirect(req.query.next) : res.redirect('/');
@@ -191,11 +192,11 @@ app.get(
     applicationMailPage,
 );
 
-app.get(
-    '/mail/:marktId/:marktDate/:erkenningsNummer/voorkeuren',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    preferencesMailPage,
-);
+// app.get(
+//     '/mail/:marktId/:marktDate/:erkenningsNummer/voorkeuren',
+//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
+//     preferencesMailPage,
+// );
 
 app.get('/email/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
     res.render('EmailPage');
@@ -248,6 +249,13 @@ app.get(
             .then((markt: any) => res.render('MarktDetailPage', { markt }))
             .catch(next);
     },
+);
+
+app.get(
+    '/markt/:marktId/langdurig-afgemeld',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    (req: Request, res: Response, next: NextFunction) =>
+        langdurigAfgemeld(req, res, req.params.marktId)
 );
 
 app.get(

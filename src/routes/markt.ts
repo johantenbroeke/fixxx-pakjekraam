@@ -1,7 +1,10 @@
+import { getMarkt } from '../model/markt.functions';
+import { getOndernemersLangdurigAfgemeldByMarkt } from '../model/ondernemer.functions';
+import { getVoorkeurByOndernemer } from '../model/voorkeur.functions';
+
 import { NextFunction, Request, Response } from 'express';
 
 import { getMarktondernemer } from '../makkelijkemarkt-api';
-import { getMarktEnriched } from '../model/markt.functions';
 import {
     getAllBranches,
     getIndelingVoorkeur,
@@ -12,6 +15,27 @@ import {
 } from '../pakjekraam-api';
 
 import { internalServerErrorPage, getQueryErrors } from '../express-util';
+
+
+export const langdurigAfgemeld = (
+    req: Request,
+    res: Response,
+    marktId: string,
+) => {
+    return Promise.all([
+        getMarkt(marktId),
+        getOndernemersLangdurigAfgemeldByMarkt(marktId)
+    ])
+    .then(([markt, ondernemers]) => {
+        res.render('OndernemerlijstMarkt', {
+            markt,
+            ondernemers,
+        });
+    })
+    .catch( e => {
+        internalServerErrorPage(res);
+    });
+};
 
 export const marktDetailController = (
     req: Request,
@@ -29,20 +53,21 @@ export const marktDetailController = (
         getMarktondernemer(erkenningsNummer),
         getPlaatsvoorkeurenOndernemer(erkenningsNummer),
         getAanmeldingenByOndernemerEnMarkt(marktId, erkenningsNummer),
-        getMarktEnriched(marktId),
+        getMarkt(marktId),
         getIndelingVoorkeur(erkenningsNummer, req.params.marktId),
         getAllBranches(),
         getMededelingen(),
-        getToewijzingenByOndernemerEnMarkt(marktId, erkenningsNummer)
+        getToewijzingenByOndernemerEnMarkt(marktId, erkenningsNummer),
+        getVoorkeurByOndernemer(erkenningsNummer)
     ])
         .then(
-            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, voorkeur, branches, mededelingen, toewijzingen]) => {
+            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, plaatsvoorkeur, branches, mededelingen, toewijzingen, algemeneVoorkeur]) => {
                 res.render('OndernemerMarktDetailPage', {
                     ondernemer,
                     plaatsvoorkeuren,
                     aanmeldingen,
                     markt,
-                    voorkeur,
+                    voorkeur: plaatsvoorkeur,
                     branches,
                     marktId: req.params.marktId,
                     next: req.query.next,
@@ -50,9 +75,11 @@ export const marktDetailController = (
                     messages,
                     toewijzingen,
                     mededelingen,
+                    algemeneVoorkeur,
                 });
             },
             internalServerErrorPage(res),
         )
         .catch(next);
 };
+

@@ -3,6 +3,7 @@ import {
 } from '../makkelijkemarkt-api';
 import { getMarktProperties, getMarktPaginas, getMarktplaatsen, getMarktInfo, getMarkten } from '../pakjekraam-api';
 import { IMarktEnriched } from '../markt.model';
+import { MMMarkt } from 'makkelijkemarkt.model';
 
 export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
     return Promise.all([
@@ -22,6 +23,10 @@ export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
         };
     });
 };
+
+export const getMarkt = (marktId: string): Promise<MMMarkt> =>
+    getMakkelijkeMarkt(marktId);
+
 
 export const getMarktenEnabled = () => {
     return getMarkten()

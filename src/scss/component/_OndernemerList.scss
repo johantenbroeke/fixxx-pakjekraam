@@ -15,7 +15,12 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        .soll {
+        &.small{
+            font-weight: bold;
+            font-size: .8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
     th {
