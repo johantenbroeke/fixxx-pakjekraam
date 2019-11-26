@@ -73,7 +73,7 @@ const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, mededelingen, soll
                     <p>
                         {isVast(sollicitatie.status) ? (
                             <strong>
-                                <u>Wilt u schuiven naar een ander plaats of vergroten?</u>
+                                <u>Wilt u schuiven naar een ander plaatse of vergroten?</u>
                             </strong>
                         ) : (
                             <strong>

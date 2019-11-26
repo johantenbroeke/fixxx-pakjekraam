@@ -6,8 +6,11 @@ import {
     IToewijzing,
 } from '../markt.model';
 
+import { getVoorkeurenAbsentByMarkt } from './voorkeur.functions';
+
 import { MMSollicitatieStandalone } from '../makkelijkemarkt.model';
 import { formatOndernemerName } from '../domain-knowledge.js';
+import { today } from '../util';
 
 
 export const ondernemerIsAfgemeld = (ondernemer: IMarktondernemer, aanmeldingen: IRSVP[], currentMarktDate: String): Boolean => {
@@ -113,3 +116,27 @@ export const getOndernemersByMarkt = (marktId: string) =>
     getMarktondernemersByMarktMM(marktId).then(ondernemers =>
         ondernemers.filter(ondernemer => !ondernemer.doorgehaald).map(convertSollicitatieToOndernemer)
     );
+
+export const getOndernemersLangdurigAfgemeldByMarkt = (marktId: string) => {
+    return Promise.all([
+        getVoorkeurenAbsentByMarkt(marktId),
+        getOndernemersByMarkt(marktId)
+    ])
+    .then( ([voorkeuren, ondernemers]) => {
+        const voorkeurenFiltered = voorkeuren.filter( voorkeur => {
+            const until = new Date(voorkeur.absentUntil);
+            const todayNow = new Date(today());
+            return +until >= +todayNow;
+        });
+        const ondernemersAbsentErkenningsnummers = voorkeurenFiltered.map( (voorkeur: any) => voorkeur.erkenningsNummer);
+        const ondenemersAbsent = ondernemers.filter( ondernemer =>
+            ondernemersAbsentErkenningsnummers.includes(ondernemer.erkenningsNummer)
+        );
+        return ondenemersAbsent.map(ondernemer => {
+            ondernemer.voorkeur = voorkeuren.find(voorkeur =>
+                voorkeur.erkenningsNummer === ondernemer.erkenningsNummer
+            );
+            return ondernemer;
+        });
+    });
+};
