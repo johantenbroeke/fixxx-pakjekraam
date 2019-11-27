@@ -118,7 +118,7 @@ export const marketPreferencesPage = (
         }),
         getAllBranches(),
     ]).then(([ondernemer, markt, voorkeur, branches]) => {
-
+        console.log(branches);
         res.render('AlgemeneVoorkeurenPage', {
             ondernemer,
             markt,

@@ -4,12 +4,13 @@
 .Obstakel {
     margin-right: 5px;
     font-size: 14px;
+
     &__icon {
         position: relative;
         z-index: 1;
         display: inline-block;
-        width: 20px;
-        height: 20px;
+        width: 15px;
+        height: 15px;
         border-radius: 50%;
         background-color: #fff;
         background-size: 14px 14px;
@@ -23,16 +24,16 @@
             &.icon-#{$icon}:before {
                 @include icon($var);
                 color: $primary-black;
-                font-size: 14px;
-                width: 20px;
-                height: 20px;
-                line-height: 20px;
+                font-size: 11px;
+                width: 15px;
+                height: 15px;
+                line-height: 15px;
                 display: inline-block;
                 text-align: center;
             }
         }
         &.icon-bankje:before {
-            font-size: 12px;
+            font-size: 7px;
         }
     }
     &__street {

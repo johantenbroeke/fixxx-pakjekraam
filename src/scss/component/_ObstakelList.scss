@@ -1,10 +1,16 @@
 .ObstakelList {
     height: 30px;
     td {
+        // background: orchid;
         border: none;
         margin: 0;
         padding: 0;
-        align-items: center;
         position: relative;
+        text-align: center;
+        vertical-align:bottom;
+    }
+    .Obstakel{
+        margin-top:5px;
+        margin-left: 5px;
     }
 }

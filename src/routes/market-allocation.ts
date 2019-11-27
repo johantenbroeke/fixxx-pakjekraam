@@ -2,12 +2,12 @@ import { Request, Response } from 'express';
 import {
     getAanmeldingen,
     getIndelingslijst,
-    // getToewijzingslijst,
     getToewijzingen,
     getMarktPaginas,
     getMarktGeografie,
     getMarktplaatsen,
     getPlaatsvoorkeuren,
+    getAllBranches,
 } from '../pakjekraam-api';
 import {
     getMarkt,
@@ -27,6 +27,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
         getMarktplaatsen(marktId),
         getPlaatsvoorkeuren(marktId),
         getVoorkeurenByMarkt(marktId),
+        getAllBranches(),
     ]).then( result => {
         const [
             ondernemers,
@@ -38,6 +39,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
             marktplaatsen,
             plaatsvoorkeuren,
             voorkeuren,
+            branches,
         ] = result;
         return {
             ondernemers,
@@ -49,6 +51,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
             marktplaatsen,
             plaatsvoorkeuren,
             voorkeuren,
+            branches
         };
     });
 

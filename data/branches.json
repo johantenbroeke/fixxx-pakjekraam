@@ -1,29 +1,38 @@
 [
   {
+    "brancheId": "bak",
+    "description": "Bakplaats",
+    "color": "#FF8100"
+	},
+	{
     "brancheId": "101-agf-exotische-groenten",
     "description": "AGF & exotische groenten",
     "color": "#2bb527"
   },
   {
     "brancheId": "102-bio-health-fairtrade",
-    "description": "Biologisch, health & fairtrade producten"
-  },
+		"description": "Biologisch, health & fairtrade producten",
+		"color": "#99cc99"
+	},
   {
     "brancheId": "103-brood-banket",
-    "description": "Brood & Banket"
+    "description": "Brood & banket",
+		"color": "#cc9966"
   },
   {
     "brancheId": "104-hummus-kruiden-olijven",
-    "description": "Hummus, kruiden & olijven"
+		"description": "Hummus, kruiden & olijven",
+		"color": "#99cc66"
   },
   {
     "brancheId": "105-noten-zuidvruchten",
     "description": "Noten & zuidvruchten",
-    "color": "#fd9bcb"
+    "color": "#cb3f00"
   },
   {
     "brancheId": "106-o-k-oliebollen",
-    "description": "O&K - Oliebollen"
+		"description": "O&K - Oliebollen",
+		"color": "#A53E20"
   },
   {
     "brancheId": "107-vis-nat",
@@ -32,38 +41,43 @@
   },
   {
     "brancheId": "108-vleeswaren",
-    "description": "Vleeswaren (geen poelier)"
+    "description": "Vleeswaren (geen poelier)",
+		"color": "#990000"
   },
   {
     "brancheId": "109-zuivel-poelier-eieren",
     "description": "Zuivel, poelier & eieren",
-    "color": "#825ffd"
+    "color": "#ffffcc"
   },
   {
     "brancheId": "201-broodjes-belegd",
-    "description": "Broodjes belegd"
+    "description": "Broodjes belegd",
+		"color": "#cc9966"
   },
   {
     "brancheId": "202-hotdogs",
-    "description": "Broodjes belegd"
+    "description": "Hotdogs",
+		"color": "#A53E20"
   },
   {
     "brancheId": "203-ijs",
-    "description": "ijs"
+    "description": "IJs",
+		"color": "#75AEDC"
   },
   {
     "brancheId": "204-koffie-versnaperingen",
-    "description": "Koffie & versnaperingen"
+		"description": "Koffie & versnaperingen",
+		"color": "#6f4e37"
   },
   {
     "brancheId": "205-loempias",
     "description": "Loempia's",
-    "color": "#fd9bcb"
+    "color": "#cf9a41"
   },
   {
     "brancheId": "206-oudhollands-gebak-snoepwaren",
     "description": "Oudhollands gebak & snoepwaren",
-    "color": "#fd9bcb"
+    "color": "#ffbcd9"
   },
   {
     "brancheId": "207-patat-snacks",
@@ -72,7 +86,8 @@
   },
   {
     "brancheId": "208-smoothies",
-    "description": "Smoothies"
+    "description": "Smoothies",
+		"color": "#443344"
   },
   {
     "brancheId": "209-vis-gebakken",
@@ -81,25 +96,28 @@
   },
   {
     "brancheId": "301-antiek-kunst",
-    "description": "Antiek & kunst"
+    "description": "Antiek & kunst",
+		"color": "#A53E20"
   },
   {
     "brancheId": "302-bloemen-planten",
     "description": "Bloemen & planten",
-    "color": "#6bb592"
+    "color": "#5AAB61"
   },
   {
     "brancheId": "303-boeken",
-    "description": "Boeken"
+		"description": "Boeken",
+		"color": "#3366cc"
   },
   {
     "brancheId": "304-dierenbijnodigdheden",
-    "description": "Dierenbenodigdheden"
+    "description": "Dierenbenodigdheden",
+		"color": "#e9b167"
   },
   {
     "brancheId": "305-horloges-brillen-sieraden",
     "description": "Horloges, brillen & sieraden",
-    "color": "#c0c0c0"
+    "color": "#333366"
   },
   {
     "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
@@ -128,11 +146,13 @@
   },
   {
     "brancheId": "311-lampen",
-    "description": "Lampen"
+    "description": "Lampen",
+		"color": "#A53E20"
   },
   {
     "brancheId": "312-o-k-kerstbomen",
-    "description": "O&K - Kerstbomen"
+    "description": "O&K - Kerstbomen",
+		"color": "#A53E20"
   },
   {
     "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
@@ -141,7 +161,8 @@
   },
   {
     "brancheId": "314-partijhandel",
-    "description": "Partijhandel"
+    "description": "Partijhandel",
+		"color": "#A53E20"
   },
   {
     "brancheId": "315-schoenen-tassen-lederwaren",
@@ -150,37 +171,43 @@
   },
   {
     "brancheId": "316-souvenirs",
-    "description": "Souvenirs"
+		"description": "Souvenirs",
+		"color": "#A53E20"
   },
   {
     "brancheId": "317-speelgoed-spellen",
-    "description": "Speelgoed & spellen"
+    "description": "Speelgoed & spellen",
+		"color": "#A53E20"
   },
   {
     "brancheId": "318-doe-het-zelf-gereedschap-ijzerwaren",
-    "description": "Tech - Doe-het-zelf, gereedschap & ijzerwaren "
+    "description": "Tech - Doe-het-zelf, gereedschap & ijzerwaren ",
+		"color": "#666666"
   },
   {
     "brancheId": "319-elektronica-mobieltjes-accessoires",
-    "description": "Tech - Elektronica, mobieltjes en accessoires"
+    "description": "Tech - Elektronica, mobieltjes en accessoires",
+		"color": "#666666"
   },
   {
     "brancheId": "320-fietsen-auto-accessoires",
-    "description": "Tech - Fietsen & auto accessoires "
+    "description": "Tech - Fietsen & auto accessoires ",
+		"color": "#666666"
   },
   {
     "brancheId": "321-stoffen-textiel-fornituren",
-    "description": "Textiel - Stoffen, textiel & fournituren"
+    "description": "Textiel - Stoffen, textiel & fournituren",
+		"color": "#A53E20"
   },
   {
     "brancheId": "322-tapijten-vloerkleden",
-    "description": "Textiel -  Tapijten en vloerkleden",
+    "description": "Textiel - Tapijten en vloerkleden",
     "color": "#c0c0c0"
   },
   {
     "brancheId": "323-raamdecoratie",
     "description": "Textiel - Raamdecodatie",
-    "color": "#c0c0c0"
+    "color": "#f9f9f9"
   },
   {
     "brancheId": "401-experimentele-zone",
@@ -195,6 +222,6 @@
   {
     "brancheId": "403-standwerker",
     "description": "Standwerker",
-    "color": "#ffccff"
+    "color": "#ffcccc"
   }
 ]
