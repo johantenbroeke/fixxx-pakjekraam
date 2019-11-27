@@ -73,8 +73,8 @@ class OndernemerMarktDetailPage extends React.Component {
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
-                    { markt.fase ? (
-                        <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.fase] }} />
+                    { markt.kiesJeKraamFase ? (
+                        <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
                     ) : null}
                     <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
                     { absentGemeld ? (

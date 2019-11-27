@@ -158,7 +158,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
                         </p>
                     </div>
                     { role == 'marktmeester' ? (
-                        <div className={`Fieldset`}>
+                        <div className={`Fieldset Fieldset--highlighted`}>
+                            <p className="Fieldset__highlight-text">Functie speciaal voor marktmeesters! Alleen aanpassen als je weet wat je doet.</p>
                             <h2 className="Fieldset__header">Langdurige afwezigheid</h2>
                             <p className="InputField  InputField--text">
                                 <label className="Label" htmlFor="absentFrom">Afwezig vanaf (dd-mm-yyyy): </label>

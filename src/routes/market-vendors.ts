@@ -75,7 +75,7 @@ export const voorrangslijstPage = (req: Request, res: Response, next: NextFuncti
                 }
             });
 
-            const type = markt.fase;
+            const type = markt.kiesJeKraamFase;
 
             res.render('VoorrangslijstPage', {
                 ondernemers,
