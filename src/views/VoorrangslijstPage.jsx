@@ -42,8 +42,8 @@ class VoorrangslijstPage extends React.Component {
 
         const itemsOnPage = 40;
         const aLijstAangemeld = 0;
-        const Aangemeld = 2;
         const aLijstNietAangemeld = 1;
+        const Aangemeld = 2;
         const NietAangemeld = 3;
 
         ondernemers = ondernemers.filter(
@@ -59,31 +59,29 @@ class VoorrangslijstPage extends React.Component {
         const ondernemersErkenningsNummers = ondernemers.map(ondernemer => ondernemer.erkenningsNummer);
         const ondernemersRest = aLijstErkenningsNummers.filter(nr => !ondernemersErkenningsNummers.includes(nr));
 
-
         const ondernemersGrouped = ondernemers
             .reduce(
                 (total, ondernemer) => {
                     total[
-                        Indeling.isAanwezig(ondernemer, aanmeldingen, datum) &&
-                        aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
-                            ? aLijstAangemeld
-                            : Indeling.isAanwezig(ondernemer, aanmeldingen, datum) &&
-                              !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
-                            ? Aangemeld
-                            : !Indeling.isAanwezig(ondernemer, aanmeldingen, datum) &&
-                              aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
-                            ? aLijstNietAangemeld
-                            : !Indeling.isAanwezig(ondernemer, aanmeldingen, datum) &&
-                              !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
-                            ? NietAangemeld
-                            : NietAangemeld
+                        Indeling.isAanwezig(ondernemer, aanmeldingen, datum) && aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
+                            ? aLijstAangemeld : Indeling.isAanwezig(ondernemer, aanmeldingen, datum) && !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
+                            ? Aangemeld : !Indeling.isAanwezig(ondernemer, aanmeldingen, datum) && aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
+                            ? aLijstNietAangemeld : !Indeling.isAanwezig(ondernemer, aanmeldingen, datum) && !aLijstErkenningsNummers.includes(ondernemer.erkenningsNummer)
+                            ? NietAangemeld : NietAangemeld
                     ].push(ondernemer);
-
                     return total;
                 },
                 [[], [], [], []],
             )
+            .map( (group, index) => {
+                if ( index === 1 || index === 2 || index === 3) {
+                    return group.filter(ondernemer => ondernemer.status !== 'vpl');
+                } else {
+                    return group;
+                }
+            })
             .map(group => paginate(paginate(group, itemsOnPage), 2));
+
         const titleBase = type === 'wenperiode' ? 'Alle sollicitanten' : 'Ondernemers niet ingedeeld';
         const titles = [
             `${titleBase} ${aLijstDay ? ', A lijst' : ''} aangemeld: ${markt.naam}`,

@@ -69,8 +69,8 @@ class VoorkeurenPage extends React.Component {
                     <br />
                         Wijzigt u de plaatsvoorkeuren na 21.00 uur? Dan gelden de wijzigingen voor de dagen na morgen.
                     </p>
-                    { markt.fase ? (
-                        <p dangerouslySetInnerHTML={{ __html: mededeling[markt.fase] }} />
+                    { markt.kiesJeKraamFase ? (
+                        <p dangerouslySetInnerHTML={{ __html: mededeling[markt.kiesJeKraamFase] }} />
                     ) : null}
                     <PlaatsvoorkeurenForm
                         plaatsvoorkeuren={plaatsvoorkeuren}
