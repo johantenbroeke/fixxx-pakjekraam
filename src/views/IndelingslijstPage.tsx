@@ -6,7 +6,7 @@ import { arrayToObject } from '../util';
 import IndelingslijstGroup from './components/IndelingslijstGroup';
 import PrintPage from './components/PrintPage';
 import Street from './components/Street';
-import { IRSVP, IMarktplaats, IMarktondernemer, IToewijzing, IMarkt, IObstakelBetween, IMarktondernemerVoorkeur } from '../markt.model';
+import { IRSVP, IMarktplaats, IMarktondernemer, IToewijzing, IMarkt, IObstakelBetween, IMarktondernemerVoorkeur, IBranche } from '../markt.model';
 import { IAllocationPrintout } from '../model/printout.model';
 
 export type IndelingslijstenPageState = {
@@ -22,29 +22,15 @@ export type IndelingslijstenPageState = {
     marktId: string;
     datum: string;
     type: string;
+    branches: IBranche[];
 };
 
 export default class IndelingslijstenPage extends React.Component {
 
-    public propTypes: ValidationMap<IndelingslijstenPageState> = {
-        aanmeldingen: PropTypes.array,
-        obstakels: PropTypes.array,
-        marktplaatsen: PropTypes.array,
-        ondernemers: PropTypes.array,
-        paginas: PropTypes.array,
-        toewijzingen: PropTypes.array,
-        markt: PropTypes.any,
-        plaatsvoorkeuren: PropTypes.array,
-        voorkeuren: PropTypes.array,
-        marktId: PropTypes.string,
-        datum: PropTypes.string,
-        type: PropTypes.string,
-    };
-
     public render() {
 
         const props = this.props as IndelingslijstenPageState;
-        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren } = props;
+        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren, branches } = props;
         let { toewijzingen, plaatsvoorkeuren } = props;
         const plaatsList = arrayToObject(marktplaatsen, 'plaatsId');
         const vphl = ondernemersToLocatieKeyValue(ondernemers);
@@ -100,9 +86,9 @@ export default class IndelingslijstenPage extends React.Component {
                                             ondernemers={ondernemers}
                                             markt={markt}
                                             datum={datum}
-                                            type={type}
                                             voorkeuren={voorkeuren}
                                             plaatsvoorkeuren={plaatsvoorkeuren}
+                                            branches={branches}
                                         />
                                 );
                             }
