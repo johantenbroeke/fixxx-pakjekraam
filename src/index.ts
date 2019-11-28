@@ -36,9 +36,7 @@ import { activationPage, handleActivation } from './routes/activation';
 import { registrationPage, handleRegistration } from './routes/registration';
 import {
     attendancePage,
-    handleAttendanceUpdate,
-    marketApplicationPage,
-    handleMarketApplication,
+    handleAttendanceUpdate
 } from './routes/market-application';
 import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
 import { vendorDashboardPage } from './routes/vendor-dashboard';
