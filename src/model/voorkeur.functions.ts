@@ -25,6 +25,12 @@ export const getVoorkeurByOndernemer = (erkenningsNummer: string): Promise<IMark
             where: { erkenningsNummer }, raw: true
         });
 
+export const getVoorkeurByMarktEnOndernemer = (marktId: string, erkenningsNummer: string): Promise<IMarktondernemerVoorkeur> =>
+voorkeur
+    .findOne<Voorkeur>({
+        where: { erkenningsNummer, marktId }, raw: true
+    });
+
 export const getVoorkeurenAbsentByMarkt = (marktId: string): Promise<IMarktondernemerVoorkeur[]> =>
     voorkeur
         .findAll<Voorkeur>({
