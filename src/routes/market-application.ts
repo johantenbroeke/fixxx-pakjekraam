@@ -105,7 +105,7 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
     );
 
     const getConflictingApplicationsPromise = Promise.all(responses.map(getConflictingApplications))
-        .then( conflicts => {
+        .then(conflicts => {
             return conflicts.reduce(flatten, []);
         });
 
@@ -113,21 +113,16 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
         getConflictingApplicationsPromise,
         getMarktenEnabled()
     ])
-        // .then(conflicts => )
-        .then( ([conflicts, markten]) => {
+        .then(([conflicts, markten]) => {
 
             if (conflicts.length > 0) {
-
-                // TODO: Redirect to previous page and display helpful error message
                 const messages = conflicts
-                    .map( application => {
+                    .map(application => {
                         const marktnaam = markten.find(markt => markt.id === parseInt(application.marktId)).naam;
                         return `U hebt zich al aangemeld voor <strong> ${marktnaam} </strong> op ${moment(application.marktDate).format('DD-MM-YYYY')}. Inschrijven voor meerdere markten is niet mogelijk.`;
                     });
+                res.redirect(`./?error=${messages}`);
 
-                    res.redirect(`./?error=${messages}`);
-
-                res.render('ErrorPage.jsx', { message: messages[0] });
             } else {
                 // TODO: Redirect with success code
                 // TODO: Use `Sequelize.transaction`
