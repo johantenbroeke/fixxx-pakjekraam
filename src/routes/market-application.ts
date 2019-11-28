@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import { getAanmeldingenByOndernemer, getConflictingApplications, getMededelingen } from '../pakjekraam-api';
-import { httpErrorPage, internalServerErrorPage, HTTP_CREATED_SUCCESS, HTTP_FORBIDDEN_ERROR } from '../express-util';
+import { httpErrorPage, internalServerErrorPage, HTTP_CREATED_SUCCESS, HTTP_FORBIDDEN_ERROR, getQueryErrors } from '../express-util';
 import models from '../model/index';
 import { flatten, nextWeek, LF, tomorrow } from '../util';
 import { IRSVP } from '../markt.model';
 import { upsert } from '../sequelize-util.js';
-import { getMarktEnriched } from '../model/markt.functions';
+import { getMarktEnriched, getMarktenEnabled } from '../model/markt.functions';
+
+import moment from 'moment';
 
 export const marketApplicationPage = (
     res: Response,
@@ -26,44 +28,6 @@ export const marketApplicationPage = (
     );
 };
 
-const aanmeldFormDataToRSVP = (formData: any, erkenningsNummer: string): IRSVP => ({
-    marktId: formData.marktId,
-    marktDate: formData.aanmelding,
-    erkenningsNummer,
-    attending: true,
-});
-
-export const handleMarketApplication = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
-    const aanmelding = aanmeldFormDataToRSVP(req.body, erkenningsNummer);
-
-    return getConflictingApplications(aanmelding).then(conflicts => {
-        if (conflicts.length > 0) {
-            // TODO: Redirect to previous page and display helpful error message
-            httpErrorPage(res, HTTP_FORBIDDEN_ERROR)(
-                conflicts
-                    .map(
-                        a =>
-                            // TODO: Add human readable market name to Error, instead of ID
-                            new Error(
-                                `U hebt zich al aangemeld voor markt ${a.marktId} op ${
-                                    a.marktDate
-                                }. Inschrijven voor meerdere markten is niet mogelijk.`,
-                            ),
-                    )
-                    .map(({ message }) => message)
-                    .join(LF),
-            );
-        }
-
-        models.rsvp
-            .create(aanmelding)
-            .then(
-                () => res.status(HTTP_CREATED_SUCCESS).redirect(req.body.next || '/'),
-                (error: Error) => internalServerErrorPage(res)(String(error)),
-            );
-    });
-};
-
 
 export const attendancePage = (
     res: Response,
@@ -74,6 +38,8 @@ export const attendancePage = (
     csrfToken: string,
 ) => {
 
+    const messages = getQueryErrors(query);
+
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
     const marktenPromise = ondernemerPromise.then(ondernemer =>
         Promise.all(
@@ -82,6 +48,9 @@ export const attendancePage = (
                 .map(marktId => getMarkt(marktId)),
         ),
     );
+
+    console.log(query);
+
 
     return Promise.all([
         ondernemerPromise,
@@ -92,6 +61,7 @@ export const attendancePage = (
     ]).then(
         ([ondernemer, markten, aanmeldingen, markt, mededelingen]) => {
             res.render('AfmeldPage', {
+                messages,
                 ondernemer,
                 aanmeldingen,
                 markten,
@@ -134,18 +104,25 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
         }),
     );
 
-    Promise.all(responses.map(getConflictingApplications))
-        .then(conflicts => conflicts.reduce(flatten, []))
+    const getConflictingApplicationsPromise = Promise.all(responses.map(getConflictingApplications))
         .then(conflicts => {
+            return conflicts.reduce(flatten, []);
+        });
+
+    Promise.all([
+        getConflictingApplicationsPromise,
+        getMarktenEnabled()
+    ])
+        .then(([conflicts, markten]) => {
+
             if (conflicts.length > 0) {
-
-                // TODO: Redirect to previous page and display helpful error message
                 const messages = conflicts
-                    .map( application => {
-                        return `U hebt zich al aangemeld voor markt ${application.marktId} op ${application.marktDate }. Inschrijven voor meerdere markten is niet mogelijk.`;
+                    .map(application => {
+                        const marktnaam = markten.find(markt => markt.id === parseInt(application.marktId)).naam;
+                        return `U hebt zich al aangemeld voor <strong> ${marktnaam} </strong> op ${moment(application.marktDate).format('DD-MM-YYYY')}. Inschrijven voor meerdere markten is niet mogelijk.`;
                     });
+                res.redirect(`./?error=${messages}`);
 
-                res.render('ErrorPage.jsx', { message: messages[0] });
             } else {
                 // TODO: Redirect with success code
                 // TODO: Use `Sequelize.transaction`
