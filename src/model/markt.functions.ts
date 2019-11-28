@@ -39,7 +39,7 @@ export const getMarktenEnabled = () => {
 };
 
 export const marktZichtbaarOndernemers = (markt: any) => {
-    return ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) && markt.kiesJeKraamActief;
+    return ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'activatie' ) && markt.kiesJeKraamActief;
 };
 
 export const getMarktenZichtbaarOndernemers = () => {

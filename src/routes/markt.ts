@@ -1,6 +1,6 @@
 import { getMarkt } from '../model/markt.functions';
 import { getOndernemersLangdurigAfgemeldByMarkt } from '../model/ondernemer.functions';
-import { getVoorkeurByOndernemer } from '../model/voorkeur.functions';
+import { getVoorkeurByMarktEnOndernemer } from '../model/voorkeur.functions';
 
 import { NextFunction, Request, Response } from 'express';
 
@@ -58,7 +58,7 @@ export const marktDetailController = (
         getAllBranches(),
         getMededelingen(),
         getToewijzingenByOndernemerEnMarkt(marktId, erkenningsNummer),
-        getVoorkeurByOndernemer(erkenningsNummer)
+        getVoorkeurByMarktEnOndernemer(marktId, erkenningsNummer)
     ])
         .then(
             ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, plaatsvoorkeur, branches, mededelingen, toewijzingen, algemeneVoorkeur]) => {
