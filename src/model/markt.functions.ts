@@ -3,6 +3,7 @@ import {
 } from '../makkelijkemarkt-api';
 import { getMarktProperties, getMarktPaginas, getMarktplaatsen, getMarktInfo, getMarkten } from '../pakjekraam-api';
 import { IMarktEnriched } from '../markt.model';
+import { MMMarkt } from 'makkelijkemarkt.model';
 
 export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
     return Promise.all([
@@ -23,6 +24,10 @@ export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
     });
 };
 
+export const getMarkt = (marktId: string): Promise<MMMarkt> =>
+    getMakkelijkeMarkt(marktId);
+
+
 export const getMarktenEnabled = () => {
     return getMarkten()
         // .then( markten => {
@@ -34,7 +39,7 @@ export const getMarktenEnabled = () => {
 };
 
 export const marktZichtbaarOndernemers = (markt: any) => {
-    return ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) && markt.kiesJeKraamActief;
+    return ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'activatie' ) && markt.kiesJeKraamActief;
 };
 
 export const getMarktenZichtbaarOndernemers = () => {

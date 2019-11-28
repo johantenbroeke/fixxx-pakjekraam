@@ -22,7 +22,12 @@ class AlgemeneVoorkeurenPage extends React.Component {
     };
 
     render() {
-        const { ondernemer, messages, role, csrfToken } = this.props;
+        const { ondernemer, messages, role } = this.props;
+        let { branches } = this.props;
+
+        branches = branches.filter(branche => branche.brancheId !== 'bak');
+        branches = branches.sort((a, b) => a.brancheId - b.brancheId);
+
         return (
             <Page messages={messages}>
                 <Header user={ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
@@ -33,7 +38,7 @@ class AlgemeneVoorkeurenPage extends React.Component {
                 </Header>
                 <Content>
                     <AlgemeneVoorkeurenForm
-                        branches={this.props.branches}
+                        branches={branches}
                         markt={this.props.markt}
                         marktId={this.props.marktId}
                         marktDate={this.props.marktDate}

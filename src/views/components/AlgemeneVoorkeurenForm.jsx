@@ -63,25 +63,6 @@ class AlgemeneVoorkeurenForm extends React.Component {
 
         weekDays.sort(numberSort);
 
-        const marktondernemer = 'marktondernemer' || 'marktmeester';
-
-        const dayKey = {
-            [ISO_MONDAY]: 'monday',
-            [ISO_TUESDAY]: 'tuesday',
-            [ISO_WEDNESDAY]: 'wednesday',
-            [ISO_THURSDAY]: 'thursday',
-            [ISO_FRIDAY]: 'friday',
-            [ISO_SATURDAY]: 'saturday',
-            [ISO_SUNDAY]: 'sunday',
-        };
-
-
-        /*
-         * TODO: `ondernemer` should be our `IMarktondernemer` object,
-         * not the `ondernemer` from Makkelijke Markt.
-         */
-        const vast = isVast(ondernemer.status) || true;
-
         return (
 
             <Form csrfToken={csrfToken}>
@@ -95,14 +76,14 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 <select id="brancheId" name="brancheId" className="Select">
                                     <option />
                                     {branches
-                                        .sort((a, b) => {
-                                            const nameA = a.description.toLowerCase(),
-                                                nameB = b.description.toLowerCase();
-                                            if (nameA < nameB) return -1;
-                                            if (nameA > nameB) return 1;
+                                        // .sort((a, b) => {
+                                        //     const nameA = a.description.toLowerCase(),
+                                        //         nameB = b.description.toLowerCase();
+                                        //     if (nameA < nameB) return -1;
+                                        //     if (nameA > nameB) return 1;
 
-                                            return 0;
-                                        })
+                                        //     return 0;
+                                        // })
                                         .map(branche => (
                                             <option
                                                 key={branche.brancheId}
@@ -176,28 +157,9 @@ class AlgemeneVoorkeurenForm extends React.Component {
                             />
                         </p>
                     </div>
-                    {/* {vast ? (
-                        <div className={`Fieldset ${advanced ? null : 'hidden'}`}>
-                            <h2 className="Fieldset__header">Op welke dagen kom je normaal gesproken?</h2>
-
-                            {weekDays.map(day => (
-                                <p key={day} className="InputField InputField--checkbox">
-                                    <input
-                                        id={`day${day}`}
-                                        type="checkbox"
-                                        name={dayKey[day]}
-                                        defaultChecked={voorkeur[dayKey[day]]}
-                                        defaultValue={day}
-                                    />
-                                    <label htmlFor={`day${day}`}>
-                                        Ik kom elke <strong>{formatISODayOfWeek(day)}</strong>
-                                    </label>
-                                </p>
-                            ))}
-                        </div>
-                    ) : null} */}
                     { role == 'marktmeester' ? (
-                        <div className={`Fieldset`}>
+                        <div className={`Fieldset Fieldset--highlighted`}>
+                            <p className="Fieldset__highlight-text">Functie speciaal voor marktmeesters! Alleen aanpassen als je weet wat je doet.</p>
                             <h2 className="Fieldset__header">Langdurige afwezigheid</h2>
                             <p className="InputField  InputField--text">
                                 <label className="Label" htmlFor="absentFrom">Afwezig vanaf (dd-mm-yyyy): </label>

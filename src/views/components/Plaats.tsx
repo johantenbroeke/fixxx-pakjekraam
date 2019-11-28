@@ -9,10 +9,10 @@ const Plaats = ({
     vph,
     ondernemer,
     first,
-    aanmelding,
     toewijzing,
     plaatsvoorkeuren,
     type,
+    color,
     opUitgebreid,
     opGewisseld,
     opAfgemeld,
@@ -24,10 +24,10 @@ const Plaats = ({
     vph?: IMarktondernemer;
     ondernemer?: IMarktondernemer;
     first?: boolean;
-    aanmelding?: IRSVP;
     toewijzing?: IToewijzing;
     plaatsvoorkeuren?: any;
     type?: string;
+    color?: string;
     opUitgebreid?: boolean;
     opGewisseld?: boolean;
     opAfgemeld?: boolean;
@@ -35,59 +35,6 @@ const Plaats = ({
     ondernemerUitgebreid?: boolean;
     ondernemerGewisseld?: boolean;
 }) => {
-    const colorList: { [index: string]: string } = {
-        'branche-vis': '#343797',
-        vis: '#343797',
-        'branche-natte-vis': '#CEFFFF',
-        'natte-vis': '#CEFFFF',
-        'branche-kip': '#9ACA27',
-        kip: '#9ACA27',
-        'branche-agf': '#2BB527',
-        agf: '#2BB527',
-        'exo-groente': '#2BB527',
-        'streek-groente': '#2BB527',
-        kas: '#2BB527',
-        blm: '#6bb592',
-        bloemen: '#6bb592',
-        'experimentele-zone': '#9BCDFD',
-        exp: '#9BCDFD',
-        zui: '#825ffd',
-        'kaas-zuivel': '#825ffd',
-        kaas: '#825ffd',
-        'branche-bak': '#FD9BCB',
-        bak: '#FD9BCB',
-        patat: '#FD9BCB',
-        baks7: '#FD9BCB',
-        baks6: '#FD9BCB',
-        baks5: '#FD9BCB',
-        baks4: '#FD9BCB',
-        'gebakken-vis': '#FD9BCB',
-        olv: '#FD9BCB',
-        noten: '#FD9BCB',
-        snacks: '#FD9BCB',
-        bakker: '#FD9BCB',
-        'snacks-loempia': '#FD9BCB',
-        standwerkersplaats: '#FBF136',
-        brc: '#C0C0C0',
-        food: '#C0C0C0',
-        keukenartikelen: '#C0C0C0',
-        borstel: '#C0C0C0',
-        dameskleding: '#C0C0C0',
-        'nacht-en-ondermode': '#C0C0C0',
-        horloges: '#C0C0C0',
-        modestoffen: '#C0C0C0',
-        sieraden: '#C0C0C0',
-        drogisterij: '#C0C0C0',
-        beenmode: '#C0C0C0',
-        tapijten: '#C0C0C0',
-        babykleding: '#C0C0C0',
-        schoenen: '#C0C0C0',
-        tassen: '#C0C0C0',
-        stn: '#C0C0C0',
-        promo: '#C0C0C0',
-        'eigen-materiaal': '#C0C0C0',
-        'kraam-8-meter': '#ff7700',
-    };
 
     let plaatsProps = plaats.properties || [],
         tags = plaats.properties || [];
@@ -97,21 +44,11 @@ const Plaats = ({
     plaatsProps.reverse();
     tags = tags.filter(word => ['experimentele-zone', 'standwerkersplaats', 'eigen-materiaal'].includes(word));
 
-    let color = Object.keys(colorList).find(key => {
-        return tags.length && key === tags[0].trim();
-    });
-
     const plaatsIds = vph && plaatsvoorkeuren[vph.erkenningsNummer] ?
         plaatsvoorkeuren[vph.erkenningsNummer].sort((a: any, b: any) =>
                             b.priority - a.priority).map((plaatsvoorkeur: any) =>
                             plaatsvoorkeur.plaatsId) : [];
     const voorkeur = vph && vph.voorkeur;
-
-    color = branches.length
-        ? colorList[branches[branches.length - 1]]
-            ? colorList[branches[branches.length - 1]]
-            : '#5D4211'
-        : undefined;
 
     return (
 
@@ -126,7 +63,7 @@ const Plaats = ({
             <td className="Plaats__prop Plaats__prop-plaats-nr">
                 {plaats.plaatsId}
                 {color && <PrintableBackground color={color} />}
-            </td>≈
+            </td>
             <td className="Plaats__prop Plaats__prop-soll Plaats__prop-vph">
                 {opUitgebreid ? <div className="Plaats__prop__icon Icon Icon--plus"></div> : null }
                 {opGewisseld ? <div className="Plaats__prop__icon Icon Icon--wissel"></div> : null }
@@ -160,17 +97,6 @@ const Plaats = ({
             </td>
         </tr>
     );
-};
-
-Plaats.propTypes = {
-    plaats: PropTypes.object.isRequired,
-    ondernemer: PropTypes.object,
-    vph: PropTypes.object,
-    first: PropTypes.bool,
-    aanmelding: PropTypes.object,
-    toewijzing: PropTypes.object,
-    plaatsvoorkeuren: PropTypes.object,
-    type: PropTypes.string,
 };
 
 export default Plaats;

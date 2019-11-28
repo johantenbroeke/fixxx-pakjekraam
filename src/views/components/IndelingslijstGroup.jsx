@@ -1,6 +1,6 @@
 const ObstakelList = require('./ObstakelList');
 const Plaats = require('./Plaats.tsx').default;
-const PlaatsVPH = require('./PlaatsVPH');
+// const PlaatsVPH = require('./PlaatsVPH');
 const PropTypes = require('prop-types');
 const React = require('react');
 const { ondernemerIsAfgemeld, ondernemerIsAfgemeldPeriode, vphIsGewisseld, vphIsUitgebreid } = require('../../model/ondernemer.functions');
@@ -14,16 +14,12 @@ const IndelingslijstGroup = ({
     ondernemers,
     aanmeldingen,
     toewijzingen,
-    type,
     datum,
     voorkeuren,
     plaatsvoorkeuren,
+    branches,
 }) => {
     let first = true;
-
-    // const renderPlaats = props => {
-    //     return type === 'vasteplaatshouders' ? <Plaats {...props} /> : <Plaats {...props} />;
-    // };
 
     const classes = page.class.split(' ').map(cl => {
         return 'IndelingslijstGroup--markt-' + markt.id + ' IndelingslijstGroup--' + cl.trim();
@@ -74,6 +70,13 @@ const IndelingslijstGroup = ({
                             ({ erkenningsNummer }) => erkenningsNummer === toewijzing.erkenningsNummer,
                         ) : null;
 
+                        const plaats = plaatsList[plaatsNr];
+                        let color = null;
+                        if (plaats.branches) {
+                            const plaatsBranche = branches.find(branche => branche.brancheId === plaats.branches[0]);
+                            plaatsBranche && plaatsBranche.color ? color = plaatsBranche.color : null;
+                        }
+
                         const plaatsProps = {
                             first,
                             key: plaatsNr,
@@ -90,9 +93,9 @@ const IndelingslijstGroup = ({
                             aanmelding: aanmeldingVph,
                             markt,
                             datum,
-                            type,
                             toewijzing,
                             plaatsvoorkeuren,
+                            color,
                         };
 
                         if (plaatsList[plaatsNr]) {
@@ -136,10 +139,10 @@ IndelingslijstGroup.propTypes = {
     obstakelList: PropTypes.object,
     ondernemers: PropTypes.array.isRequired,
     markt: PropTypes.object.isRequired,
-    type: PropTypes.string,
     datum: PropTypes.string,
     plaatsvoorkeuren: PropTypes.object,
-    voorkeuren: PropTypes.array
+    voorkeuren: PropTypes.array,
+    branches: PropTypes.array
 };
 
 module.exports = IndelingslijstGroup;

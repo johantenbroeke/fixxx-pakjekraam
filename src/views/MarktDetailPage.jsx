@@ -44,15 +44,14 @@ class MarktDetailPage extends React.Component {
         const nextVrijday = new Date(addDays(today(), DAYS_IN_WEEK - new Date().getDay()));
 
         let fase = null;
-        markt.fase == 'live' ? fase = null : fase = ` ${markt.fase}`;
+        markt.kiesJeKraamFase == 'live' ? fase = null : fase = ` ${markt.kiesJeKraamFase}`;
 
         return (
             <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase}>
-                <div className="row row--responsive">
-                    <div className="col-1-2">
-                        <h2>Lijsten per dag</h2>
-                    </div>
+                <div className="row row--responsive Section">
+                    <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
                 </div>
+                <h2 className="Heading Heading--intro-heading">Lijsten per dag</h2>
                 <div className="row row--responsive margin-bottom">
                     <div className="col-1-2 margin-bottom">
                         <h4>Deze week</h4>

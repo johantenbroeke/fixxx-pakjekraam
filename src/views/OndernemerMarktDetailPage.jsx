@@ -1,4 +1,5 @@
 const React = require('react');
+const moment = require('moment');
 const Page = require('./components/Page.jsx');
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
@@ -31,6 +32,7 @@ class OndernemerMarktDetailPage extends React.Component {
         endDate: PropTypes.string.isRequired,
         user: PropTypes.object,
         mededelingen: PropTypes.object,
+        algemeneVoorkeur: PropTypes.object
     };
 
     render() {
@@ -44,7 +46,8 @@ class OndernemerMarktDetailPage extends React.Component {
             voorkeur,
             branches,
             toewijzingen,
-            mededelingen
+            mededelingen,
+            algemeneVoorkeur
         } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
@@ -55,14 +58,13 @@ class OndernemerMarktDetailPage extends React.Component {
         );
 
         const dateOfTomorrow = tomorrow();
-        const toewijzingTomorrow = toewijzingen.find(toewijzing => {
-            return toewijzing.marktDate == dateOfTomorrow;
-        });
 
         const aanmeldingVandaag = aanmeldingen.find(aanmelding => aanmelding.marktDate == today());
         const aanmeldingMorgen = aanmeldingen.find(aanmelding => aanmelding.marktDate == tomorrow());
         const toewijzingVandaag = toewijzingen.find(aanmelding => aanmelding.marktDate == today());
         const toewijzingMorgen = toewijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
+
+        const absentGemeld = algemeneVoorkeur ? ( algemeneVoorkeur.absentFrom && algemeneVoorkeur.absentUntil )  : false;
 
         return (
             <Page messages={messages}>
@@ -71,10 +73,17 @@ class OndernemerMarktDetailPage extends React.Component {
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
-                    { markt.fase ? (
-                        <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.fase] }} />
+                    { markt.kiesJeKraamFase ? (
+                        <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
                     ) : null}
                     <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
+                    { absentGemeld ? (
+                        <Alert type="warning" inline={true}>
+                            <span>
+                                LET OP: U bent langere tijd afwezig gemeld <strong>({moment(algemeneVoorkeur.absentFrom).format('DD-MM-YYYY')} t/m {moment(algemeneVoorkeur.absentUntil).format('DD-MM-YYYY')})</strong>. Klopt dit niet, neem dan contact op met de marktmeesters via {markt.telefoonNummerContact}.
+                            </span>
+                        </Alert>
+                    ) : null }
                     {!voorkeur || !voorkeur.brancheId ? (
                         <Alert type="warning" inline={true}>
                             <span>

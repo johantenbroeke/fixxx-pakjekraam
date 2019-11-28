@@ -33,8 +33,8 @@ const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, mededelingen, soll
             <a href={blockUrl} className="background-link" />
             <HeaderTitleButton title="Plaatsvoorkeuren" url={blockUrl} />
             <div className="well">
-                { markt.fase ? (
-                    <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetailPlaatsvoorkeuren[markt.fase] }} />
+                { markt.kiesJeKraamFase ? (
+                    <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetailPlaatsvoorkeuren[markt.kiesJeKraamFase] }} />
                 ) : null}
                 {isVast(sollicitatie.status) ? (
                     <div className="margin-bottom">
@@ -73,7 +73,7 @@ const OndernemerMarktVoorkeuren = ({ plaatsvoorkeuren, markt, mededelingen, soll
                     <p>
                         {isVast(sollicitatie.status) ? (
                             <strong>
-                                <u>Wilt u schuiven naar een ander plaats of vergroten?</u>
+                                <u>Wilt u schuiven naar een ander plaatse of vergroten?</u>
                             </strong>
                         ) : (
                             <strong>

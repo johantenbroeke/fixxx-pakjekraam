@@ -31,7 +31,6 @@ export enum DeelnemerStatus {
 export interface IMarktProperties {
     marktId?: string;
     marktDate?: string;
-    fase?: string;
     expansionLimit?: number;
     rows?: string[][];
 }
@@ -55,7 +54,6 @@ export interface IMarktindelingSeed {
 }
 
 export interface IMarktindeling extends IMarkt, IMarktindelingSeed {
-    toewijzingQueue: IMarktondernemer[];
     openPlaatsen: IMarktplaats[];
     afwijzingen: IAfwijzing[];
     toewijzingen: IToewijzing[];

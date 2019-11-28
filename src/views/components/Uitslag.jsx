@@ -41,7 +41,7 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
                             message={plaatsenDuiding(toewijzingMorgen.plaatsen)}
                             inline={true}
                         />
-                    ) : markt.fase === 'live' ? (
+                    ) : markt.kiesJeKraamFase === 'live' ? (
                         <span> geen toewijzing </span>
                     ) : null}
                 </div>

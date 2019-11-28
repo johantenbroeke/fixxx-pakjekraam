@@ -29,6 +29,7 @@
         }
     }
     &--highlighted{
+        background: white;
         border: 3px dashed orange;
         padding: $gutter;
     }

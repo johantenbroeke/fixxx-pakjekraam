@@ -56,15 +56,29 @@ export const voorrangslijstPage = (req: Request, res: Response, next: NextFuncti
 
     getVoorrangslijstInput(req.params.marktId, req.params.datum).then( result => {
 
-            const { ondernemers, aanmeldingen, voorkeuren, markt, toewijzingen, aLijst, algemenevoorkeuren } = result;
+            let { ondernemers } = result;
+            const { aanmeldingen, voorkeuren, markt, toewijzingen, aLijst, algemenevoorkeuren } = result;
 
-            const ondernemersFiltered = markt.fase === 'wenperiode' ? ondernemers.filter(ondernemer => ondernemer.status !== 'vpl') : ondernemers;
-            const toewijzingenOptional = markt.fase === 'wenperiode' ? [] : toewijzingen;
+            ondernemers = markt.kiesJeKraamFase === 'wenperiode' ? ondernemers.filter(ondernemer => ondernemer.status !== 'vpl') : ondernemers;
+            const toewijzingenOptional = markt.kiesJeKraamFase === 'wenperiode' ? [] : toewijzingen;
 
-            const type = markt.fase;
+            ondernemers.map(ondernemer => {
+                ondernemer.voorkeur = algemenevoorkeuren.find(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer);
+                return ondernemer;
+            });
+
+            ondernemers = ondernemers.filter( ondernemer => {
+                if (ondernemer.voorkeur) {
+                    return !ondernemer.voorkeur.absentFrom && !ondernemer.voorkeur.absentUntil;
+                } else {
+                    return true;
+                }
+            });
+
+            const type = markt.kiesJeKraamFase;
 
             res.render('VoorrangslijstPage', {
-                ondernemers: ondernemersFiltered,
+                ondernemers,
                 aanmeldingen,
                 voorkeuren,
                 aLijst,
