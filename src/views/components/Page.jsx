@@ -25,7 +25,9 @@ class Page extends React.Component {
                 </head>
                 <body className={this.props.bodyClass}>
                     {(this.props.messages || []).map(message => (
-                        <Alert key={message.code} message={message.message} type={message.code} />
+                        <Alert key={message.code} type={message.code}>
+                            <span dangerouslySetInnerHTML={{ __html: message.message }}></span>
+                        </Alert>
                     ))}
                     {this.props.children}
                     <script crossOrigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=Array.from" />
