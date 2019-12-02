@@ -37,7 +37,7 @@ export const langdurigAfgemeld = (
     });
 };
 
-export const marktDetailController = (
+export const marktDetail = (
     req: Request,
     res: Response,
     next: NextFunction,

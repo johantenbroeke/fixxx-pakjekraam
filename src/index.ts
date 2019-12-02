@@ -46,7 +46,7 @@ import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
 import { deleteUserPage, deleteUser, publicProfilePage } from './routes/ondernemer';
-import { langdurigAfgemeld, marktDetailController } from './routes/markt';
+import { langdurigAfgemeld, marktDetail } from './routes/markt';
 
 import { vasteplaatshoudersPage, sollicitantenPage, voorrangslijstPage, voorrangslijstVolledigPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
 import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
@@ -585,14 +585,14 @@ app.get(
     '/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        marktDetailController(req, res, next, getErkenningsNummer(req)),
+    marktDetail(req, res, next, getErkenningsNummer(req)),
 );
 
 app.get(
     '/ondernemer/:erkenningsNummer/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: Request, res: Response, next: NextFunction) =>
-        marktDetailController(req, res, next, req.params.erkenningsNummer),
+    marktDetail(req, res, next, req.params.erkenningsNummer),
 );
 
 app.get(

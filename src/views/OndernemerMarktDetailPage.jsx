@@ -57,7 +57,7 @@ class OndernemerMarktDetailPage extends React.Component {
             today(),
         );
 
-        const dateOfTomorrow = tomorrow();
+        // const dateOfTomorrow = tomorrow();
 
         const aanmeldingVandaag = aanmeldingen.find(aanmelding => aanmelding.marktDate == today());
         const aanmeldingMorgen = aanmeldingen.find(aanmelding => aanmelding.marktDate == tomorrow());
