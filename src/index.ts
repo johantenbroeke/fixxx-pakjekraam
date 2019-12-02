@@ -150,11 +150,11 @@ app.use(
     }),
 );
 
-app.use( (req, res, next) => {
+app.use((req, res, next) => {
     res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-    res.header('X-Content-Type-Options','nosniff');
-    res.header('X-XSS-Protection','1; mode=block');
-    res.header('X-Frame-Options','SAMEORIGIN');
+    res.header('X-Content-Type-Options', 'nosniff');
+    res.header('X-XSS-Protection', '1; mode=block');
+    res.header('X-Frame-Options', 'SAMEORIGIN');
     next();
 });
 
@@ -214,7 +214,7 @@ app.get(
             .then((markten: any) => {
                 res.render('MarktenPage', { markten });
             }, internalServerErrorPage(res));
-});
+    });
 
 app.get(
     '/environment/',
@@ -625,7 +625,9 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response) => {
-        deleteUserPage(req, res, null, null, req.csrfToken());
+        !req.url.endsWith('/') ?
+            res.redirect(301, `${req.url}/`) :
+            deleteUserPage(req, res, null, null, req.csrfToken());
     },
 );
 
