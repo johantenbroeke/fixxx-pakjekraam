@@ -373,7 +373,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
         getMarktplaatsen(marktId),
         getAanmeldingen(marktId, marktDate),
         getPlaatsvoorkeuren(marktId),
-        getBranches(marktId),
+        getAllBranches(),
         getMarktPaginas(marktId),
         getMarktGeografie(marktId),
         // getMarktInfo(marktId),
