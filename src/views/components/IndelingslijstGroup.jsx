@@ -142,7 +142,7 @@ IndelingslijstGroup.propTypes = {
     datum: PropTypes.string,
     plaatsvoorkeuren: PropTypes.object,
     voorkeuren: PropTypes.array,
-    branches: PropTypes.array
+    branches: PropTypes.array.isRequired
 };
 
 module.exports = IndelingslijstGroup;
