@@ -1,0 +1,101 @@
+.Draggable-list-item{
+
+    padding: 10px;
+    background-color: $neutral-grey1;
+    border: 1px solid $neutral-grey3;
+    // border-bottom: 0;
+    // margin-bottom: $gutter;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // border-radius: 3px;
+    margin-bottom: 5px;
+
+    &.sortable-chosen{
+        background-color: $neutral-grey2;
+    }
+
+    &__handle{
+        width: 20px;
+        height: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        &__bar{
+            height: 2px;
+            border-radius: 3px;
+            background: $neutral-grey3;
+            width: 100%;
+        }
+    }
+
+    &:last-child{
+        border-bottom: 1px solid $neutral-grey3;
+    }
+
+    &__left {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__icon{
+        height: 20px;
+        img{
+            height: 100%;
+        }
+    }
+
+    &__label{
+        margin-left: $gutter;
+    }
+
+    &__right {
+
+    }
+
+    &__delete{
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+
+        &:hover {
+            &:before{
+                color: lighten($primary-darkblue, 20%);
+            }
+        }
+        &:before {
+            @include icon($icon-Trash-Bin);
+            font-size: 20px;
+            display: inline-block;
+            text-align: center;
+            color: $primary-darkblue;
+        }
+
+    }
+
+    // & > *:first-child {
+    //     margin-top: 0;
+    // }
+    // &--dark {
+    //     background-color: $primary-darkblue;
+    //     color: $primary-white;
+    // }
+    // & + & {
+    //     margin-top: $vm4;
+    // }
+    // &--max-width {
+    //     max-width: $fieldsetMaxWidth - (2 * $hm2);
+    // }
+
+    // @media screen and (min-width: $screenMedium) {
+    //     padding: $vm4 $hm4;
+    //     &--max-width {
+    //         max-width: $fieldsetMaxWidth - (2 * $hm4);
+    //     }
+    // }
+
+}

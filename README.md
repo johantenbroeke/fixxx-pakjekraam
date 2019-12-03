@@ -9,7 +9,7 @@ Maak een bestand genaamd `.env`, begin met de inhoud van `example.env` als basis
 Om de database op te starten tijdens development draai je:
 
 ```shell
-docker-compose up -d database 
+docker-compose up -d database
 ```
 
 ## Recreate DB in Docker
@@ -27,7 +27,7 @@ Om de SCSS naar CSS te compilen draai je `npm run watch`. Als je de wijzigingen 
 
 
 ### Compileren van JS
-Dit is niet nodig, je kunt de wijzigingen simpelweg in /src/public/js/script.js doen.
+You can simply run the command 'webpack'
 
 ### Concept indeling doen kan via volgende format:
 http://localhost:8080/markt/20/2019-09-10/concept-indelingslijst

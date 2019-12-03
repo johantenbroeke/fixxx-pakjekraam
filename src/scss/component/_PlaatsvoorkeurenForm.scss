@@ -1,7 +1,10 @@
 .PlaatsvoorkeurenForm {
+    margin: 0 0 90px;
     &__list {
         display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
+        margin-bottom: $gutter;
+        // flex-direction: column-reverse;
     }
     &__list-item {
         //display: flex;
@@ -13,6 +16,7 @@
             flex-wrap: wrap;
             justify-content: space-between;
         }
+
         &--hidden {
             display: none;
         }

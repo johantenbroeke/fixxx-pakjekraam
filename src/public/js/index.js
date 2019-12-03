@@ -1,3 +1,5 @@
+import Sortable from 'sortablejs';
+
 if (!String.prototype.includes) {
   String.prototype.includes = function (search, start) {
     'use strict';
@@ -107,9 +109,9 @@ function splitByArray(orgArr, valueArr) {
 
   var handlers = {
     'remove-voorkeur': function (e) {
-      var voorkeur = _closest(this, '.PlaatsvoorkeurenForm__list-item'),
+      var voorkeur = _closest(this, '.Draggable-list-item'),
         form = _closest(this, 'form'),
-        remove = voorkeur.classList.contains('remove'),
+        // remove = voorkeur.classList.contains('remove'),
         plaatsIdsInputs = voorkeur.querySelectorAll('input[type="hidden"]'),
         container = _closest(this, '.PlaatsvoorkeurenForm__list'),
         dataAttrs = ['name'],
@@ -126,15 +128,9 @@ function splitByArray(orgArr, valueArr) {
           prototypeHeading.textContent = (i + 1) + 'e keuze';
         };
       e && e.preventDefault();
-      voorkeur.classList[remove ? 'remove' : 'add']('remove');
       for (var i = 0; i < plaatsIdsInputs.length; i++) {
         for (var j = 0; j < dataAttrs.length; j++) {
-          if (remove) {
             plaatsIdsInputs[i].setAttribute(dataAttrs[j], plaatsIdsInputs[i].getAttribute('data-' + dataAttrs[j]));
-          } else {
-            plaatsIdsInputs[i].setAttribute('data-' + dataAttrs[j], plaatsIdsInputs[i].getAttribute(dataAttrs[j]));
-            plaatsIdsInputs[i].removeAttribute(dataAttrs[j]);
-          }
         }
       }
       helpers.trigger(form, 'submit');
@@ -177,8 +173,6 @@ function splitByArray(orgArr, valueArr) {
           body.appendChild(base);
         },
         _formChange = function (e) {
-          console.log('change');
-          console.log(_getFormData());
           if (e) {
             _submit();
           }
@@ -218,13 +212,11 @@ function splitByArray(orgArr, valueArr) {
     'voorkeur-form': function () {
       var form = this,
         vasteplaatsCount = form.dataset.vasteplaatsCount,
-        slider = form.querySelectorAll('input[type="range"]'),
         body = _closest(this, 'body'),
         extra = form.querySelectorAll('.PlaatsvoorkeurenForm__list-item__min-extra'),
         optional = form.querySelectorAll('.PlaatsvoorkeurenForm__list-item__optional'),
         explain = form.querySelectorAll('.PlaatsvoorkeurenForm__list-item__explain'),
-        minSlider = form.querySelector('input[name="minimum"]'),
-        maxSlider = form.querySelector('input[name="extra-count"]'),
+        plaatsvoorkeurenList = form.querySelectorAll('.PlaatsvoorkeurenForm__list')[0],
         redirectTo = './?error=plaatsvoorkeuren-saved',
         _submit = function (e) {
           if (e && e.x !== 0) {
@@ -232,6 +224,7 @@ function splitByArray(orgArr, valueArr) {
           }
           _addAlert('Bezig met bewaren');
           body.classList.add('in-progress');
+
           form.request = helpers.ajax({
             type: form.method,
             url: form.action,
@@ -251,10 +244,8 @@ function splitByArray(orgArr, valueArr) {
         },
         _getFormData = function () {
           var out = [],
-            items = form.querySelectorAll('.PlaatsvoorkeurenForm__list-item'),
+            items = form.querySelectorAll('#plaatsvoorkeuren-list-item'),
             erkenningsNummer = form.querySelector('[name="erkenningsNummer"]').value,
-            marktId = form.querySelector('[name="marktId"]').value,
-            marktDate = form.querySelector('[name="marktDate"]').value,
             minimum = form.querySelector('[name="minimum"]:checked').value,
             extra = form.querySelector('[name="extra-count"]:checked').value,
             maximum = parseInt(minimum, 10) + parseInt(extra, 10),
@@ -262,8 +253,6 @@ function splitByArray(orgArr, valueArr) {
           out.push(encodeURIComponent('erkenningsNummer') + '=' + encodeURIComponent(erkenningsNummer));
           out.push(encodeURIComponent('redirectTo') + '=' + encodeURIComponent(redirectTo));
           anywhere && out.push(encodeURIComponent('anywhere') + '=' + encodeURIComponent(anywhere));
-          out.push(encodeURIComponent('marktId') + '=' + encodeURIComponent(marktId));
-          out.push(encodeURIComponent('marktDate') + '=' + encodeURIComponent(marktDate));
           out.push(encodeURIComponent('minimum') + '=' + encodeURIComponent(minimum));
           out.push(encodeURIComponent('maximum') + '=' + encodeURIComponent(maximum));
           for (var i = 0; i < items.length; i++) {
@@ -271,11 +260,10 @@ function splitByArray(orgArr, valueArr) {
               plaatsId = items[i].querySelector('[name*="plaatsId"]'),
               priority = items[i].querySelector('[name*="priority"]'),
               marktId = items[i].querySelector('[name*="marktId"]');
-            if (plaatsId && priority && marktId) {
+            if (plaatsId && priority) {
               out.push(encodeURIComponent(plaatsId.getAttribute('name')) + '=' + encodeURIComponent(plaatsId.value));
-              out.push(encodeURIComponent(priority.getAttribute('name')) + '=' + encodeURIComponent(priority.value));
+              out.push(encodeURIComponent(priority.getAttribute('name')) + '=' + ( ( items.length - 1 ) - i));
               out.push(encodeURIComponent(marktId.getAttribute('name')) + '=' + encodeURIComponent(marktId.value));
-
             }
           }
           return out.join('&').replace(/%20/g, '+');;
@@ -320,26 +308,35 @@ function splitByArray(orgArr, valueArr) {
           }
         },
         _init = function () {
-          // var minVal = form.querySelector('input[name="minimum"]:checked') ? form.querySelector('input[name="minimum"]:checked').value : 1,
-          //     maximum = form.querySelector('input[name="maximum"]').value || 1,
-          //     extra = parseInt(maximum, 10) - parseInt(minVal, 10);
-          // form.querySelector('input[id="extra-count-'+extra+'"]').checked = true;
-          //     var maxVal = form.querySelector('input[name="extra-count"]:checked').value;
-          // for (i = 0; i < explain.length; i++) {
-          //     var min = explain[i].querySelector('.min');
-          //     var max = explain[i].querySelector('.max');
-          //     var extr = explain[i].querySelector('.extra');
-          //     var minM = explain[i].querySelector('.minMulti');
-          //     var maxM = explain[i].querySelector('.maxMulti');
-          //     max.textContent = maxVal;
-          //     min.textContent = minVal;
-          //     extr.classList[maxVal < 1 ? 'add' : 'remove']('hidden');
-          //     maxM.classList[maxVal <= 1 ? 'add' : 'remove']('hidden');
-          //     minM.classList[minVal <= 1 ? 'add' : 'remove']('hidden');
-          // }
+
+          function onEnd(evt) {
+            _submit();
+            _formChange();
+          };
+
+          Sortable.create(plaatsvoorkeurenList, {
+            animation: 150,  // ms, animation speed moving items when sorting, `0` — without animation
+            easing: "cubic-bezier(1, 0, 0, 1)", // Easing for animation. Defaults to null. See https://easings.net/ for examples.
+            onEnd,
+          });
+
+          var minimumElements = form.querySelectorAll('[name="minimum"]');
+          for (var i = 0; i < minimumElements.length; i++) {
+            var minimumEl = minimumElements[i];
+            minimumEl.addEventListener('change', _formChange);
+          }
+          var extraElements = form.querySelectorAll('[name="extra-count"]');
+          for (var i = 0; i < extraElements.length; i++) {
+            var extraElement = extraElements[i];
+            extraElement.addEventListener('change', _formChange);
+          }
+
+          var selectNew = form.querySelectorAll('.Select--MarktplaatsSelect')[0];
+          selectNew.addEventListener('change', _formChange);
+
         }
       _init();
-      form.addEventListener('change', _formChange);
+      // form.addEventListener('change', _formChange);
       form.addEventListener('submit', _submit);
     },
   };
@@ -445,4 +442,3 @@ function splitByArray(orgArr, valueArr) {
   var domain = location.domain;
 
 }(window, document.documentElement);
-
