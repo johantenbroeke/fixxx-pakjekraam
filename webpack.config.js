@@ -1,10 +1,10 @@
 const path = require('path');
 
 module.exports = {
-  mode: "development",
-  entry: "./src/public/js/index.js",
+  mode: "production",
+  entry: "./src/public/src/index.js",
   output: {
-    path: path.resolve(__dirname, "src/public/dist"), // string
+    path: path.resolve(__dirname, "src/public/js"), // string
     filename: "script.js",
   },
   watch: true
