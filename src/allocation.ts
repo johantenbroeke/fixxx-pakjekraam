@@ -29,7 +29,6 @@ const mapMarktenToToewijzingen = (markten: any) => {
     .reduce(flatten, []);
 };
 
-
 const mapMarktenToAfwijzingen = (markten: any) => {
     return markten
         .map((markt: any) =>

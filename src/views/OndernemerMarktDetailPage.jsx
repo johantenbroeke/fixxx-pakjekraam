@@ -28,6 +28,7 @@ class OndernemerMarktDetailPage extends React.Component {
         branches: PropTypes.object.isRequired,
         messages: PropTypes.array,
         toewijzingen: PropTypes.array,
+        afwijzingen: PropTypes.array,
         startDate: PropTypes.string.isRequired,
         endDate: PropTypes.string.isRequired,
         user: PropTypes.object,
@@ -46,6 +47,7 @@ class OndernemerMarktDetailPage extends React.Component {
             voorkeur,
             branches,
             toewijzingen,
+            afwijzingen,
             mededelingen,
             algemeneVoorkeur
         } = this.props;
@@ -63,6 +65,8 @@ class OndernemerMarktDetailPage extends React.Component {
         const aanmeldingMorgen = aanmeldingen.find(aanmelding => aanmelding.marktDate == tomorrow());
         const toewijzingVandaag = toewijzingen.find(aanmelding => aanmelding.marktDate == today());
         const toewijzingMorgen = toewijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
+        const afwijzingVandaag = afwijzingen.find(aanmelding => aanmelding.marktDate == today());
+        const afwijzingMorgen = afwijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
 
         const absentGemeld = algemeneVoorkeur ? ( algemeneVoorkeur.absentFrom && algemeneVoorkeur.absentUntil )  : false;
 
@@ -93,7 +97,18 @@ class OndernemerMarktDetailPage extends React.Component {
                         </Alert>
                     ) : null }
 
-                    <Uitslag ondernemer={ondernemer} today={today()} tomorrow={tomorrow()} markt={markt} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
+                    <Uitslag
+                        ondernemer={ondernemer}
+                        today={today()}
+                        tomorrow={tomorrow()}
+                        markt={markt}
+                        toewijzingVandaag={toewijzingVandaag}
+                        toewijzingMorgen={toewijzingMorgen}
+                        afwijzingVandaag={afwijzingVandaag}
+                        afwijzingMorgen={afwijzingMorgen}
+                        aanmeldingVandaag={aanmeldingVandaag}
+                        aanmeldingMorgen={aanmeldingMorgen}
+                    />
 
                     <div className="row row--responsive">
                         <div className="col-1-2">
