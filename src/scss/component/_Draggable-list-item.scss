@@ -1,7 +1,7 @@
 .Draggable-list-item{
 
     // padding: 6px 6px 6px 10px;
-    padding: .65rem;
+    // padding: .65rem;
     background-color: $neutral-grey1;
     border: 1px solid $neutral-grey3;
     cursor: pointer;
@@ -10,6 +10,7 @@
     align-items: center;
     margin-bottom: $gutter-sm;
     position: relative;
+    height: 46px;
 
     @media screen and (min-width: $screenMedium) {
         // font-size: 16px;
@@ -44,8 +45,11 @@
 
     &__left {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
+        width: calc(100% - 46px);
+        height: 100%;
+        padding-left: 15px;
     }
 
     &__icon{
@@ -66,8 +70,8 @@
 
     &__right {
         text-decoration: none;
-        width: 41px;
-        height: 43px;
+        width: 46px;
+        height: 100%;
         position: absolute;
         display: flex;
         right: 0;
@@ -75,7 +79,6 @@
         align-items: center;
         justify-content: center;
         bottom: 0;
-        z-index: 999;
     }
 
     &__delete{
@@ -92,13 +95,13 @@
         }
         &:before {
             @include icon($icon-Trash-Bin);
-            font-size: 22px;
+            font-size: 25px;
             display: inline-block;
             text-align: center;
             color: $primary-darkblue;
-            @media screen and (min-width: $screenMedium) {
-                font-size: 20px;
-            }
+            // @media screen and (min-width: $screenMedium) {
+            //     font-size: 20px;
+            // }
         }
 
     }
