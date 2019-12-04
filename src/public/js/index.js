@@ -114,19 +114,19 @@ function splitByArray(orgArr, valueArr) {
         // remove = voorkeur.classList.contains('remove'),
         plaatsIdsInputs = voorkeur.querySelectorAll('input[type="hidden"]'),
         container = _closest(this, '.PlaatsvoorkeurenForm__list'),
-        dataAttrs = ['name'],
-        items = container.querySelectorAll('.PlaatsvoorkeurenForm__list-item'),
-        prototype = _closest(this, '.PlaatsvoorkeurenForm__markt').querySelector('.PlaatsvoorkeurenForm__prototype'),
-        prototypeHeading = _closest(this, '.PlaatsvoorkeurenForm__markt').querySelector('.PlaatsvoorkeurenForm__prototype .PlaatsvoorkeurenForm__list-item__heading'),
-        _resetCopy = function () {
-          var i,
-            plaatsSetsList = container.querySelectorAll('.PlaatsvoorkeurenForm__list-item'),
-            plaatsSetsListArray = Array.prototype.slice.call(plaatsSetsList).sort(function (a, b) { return b.style.order - a.style.order });
-          for (i = 0; i < plaatsSetsListArray.length; i++) {
-            plaatsSetsListArray[i].querySelector('.PlaatsvoorkeurenForm__list-item__heading').textContent = (i + 1) + 'e keuze';
-          }
-          prototypeHeading.textContent = (i + 1) + 'e keuze';
-        };
+        dataAttrs = ['name'];
+        // items = container.querySelectorAll('.PlaatsvoorkeurenForm__list-item'),
+        // prototype = _closest(this, '.PlaatsvoorkeurenForm__markt').querySelector('.PlaatsvoorkeurenForm__prototype'),
+        // prototypeHeading = _closest(this, '.PlaatsvoorkeurenForm__markt').querySelector('.PlaatsvoorkeurenForm__prototype .PlaatsvoorkeurenForm__list-item__heading');
+        // _resetCopy = function () {
+        //   var i,
+        //     plaatsSetsList = container.querySelectorAll('.PlaatsvoorkeurenForm__list-item'),
+        //     plaatsSetsListArray = Array.prototype.slice.call(plaatsSetsList).sort(function (a, b) { return b.style.order - a.style.order });
+        //   for (i = 0; i < plaatsSetsListArray.length; i++) {
+        //     plaatsSetsListArray[i].querySelector('.PlaatsvoorkeurenForm__list-item__heading').textContent = (i + 1) + 'e keuze';
+        //   }
+        //   prototypeHeading.textContent = (i + 1) + 'e keuze';
+        // };
       e && e.preventDefault();
       for (var i = 0; i < plaatsIdsInputs.length; i++) {
         for (var j = 0; j < dataAttrs.length; j++) {
@@ -333,6 +333,9 @@ function splitByArray(orgArr, valueArr) {
 
           var selectNew = form.querySelectorAll('.Select--MarktplaatsSelect')[0];
           selectNew.addEventListener('change', _formChange);
+
+          var selectAnywhere = form.querySelectorAll('#anywhere')[0];
+          selectAnywhere.addEventListener('change', _formChange);
 
         }
       _init();

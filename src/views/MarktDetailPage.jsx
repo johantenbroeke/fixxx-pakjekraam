@@ -55,7 +55,7 @@ class MarktDetailPage extends React.Component {
                 <div className="row row--responsive Section">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
                 </div>
-                <h2 className="Heading Heading--intro-heading">Lijsten per dag</h2>
+                <h2 className="Heading Heading--intro">Lijsten per dag</h2>
                 <div className="row row--responsive margin-bottom">
                     <div className="col-1-2 margin-bottom">
                         <h4>Deze week</h4>

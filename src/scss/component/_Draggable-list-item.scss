@@ -1,16 +1,18 @@
 .Draggable-list-item{
 
-    padding: 10px;
+    padding: 6px 6px 6px 10px;
     background-color: $neutral-grey1;
     border: 1px solid $neutral-grey3;
-    // border-bottom: 0;
-    // margin-bottom: $gutter;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    // border-radius: 3px;
     margin-bottom: 5px;
+
+    @media screen and (min-width: $screenMedium) {
+        padding: 10px;
+        // font-size: 16px;
+    }
 
     &.sortable-chosen{
         background-color: $neutral-grey2;
@@ -22,6 +24,11 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+
+        @media screen and (min-width: $screenMedium) {
+            font-size: 16px;
+        }
+
         &__bar{
             height: 2px;
             border-radius: 3px;
@@ -48,7 +55,12 @@
     }
 
     &__label{
-        margin-left: $gutter;
+        margin-left: 10px;
+        font-size: 16px;
+        @media screen and (min-width: $screenMedium) {
+            font-size: 16px;
+            margin-left: $gutter;
+        }
     }
 
     &__right {
@@ -69,33 +81,15 @@
         }
         &:before {
             @include icon($icon-Trash-Bin);
-            font-size: 20px;
+            font-size: 22px;
             display: inline-block;
             text-align: center;
             color: $primary-darkblue;
+            @media screen and (min-width: $screenMedium) {
+                font-size: 20px;
+            }
         }
 
     }
-
-    // & > *:first-child {
-    //     margin-top: 0;
-    // }
-    // &--dark {
-    //     background-color: $primary-darkblue;
-    //     color: $primary-white;
-    // }
-    // & + & {
-    //     margin-top: $vm4;
-    // }
-    // &--max-width {
-    //     max-width: $fieldsetMaxWidth - (2 * $hm2);
-    // }
-
-    // @media screen and (min-width: $screenMedium) {
-    //     padding: $vm4 $hm4;
-    //     &--max-width {
-    //         max-width: $fieldsetMaxWidth - (2 * $hm4);
-    //     }
-    // }
 
 }

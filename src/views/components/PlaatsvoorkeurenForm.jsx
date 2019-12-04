@@ -267,7 +267,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                             data-max-uitbreidingen={1}
                         >
                             <div className="PlaatsvoorkeurenForm__list-item" id="plaatsvoorkeuren-list-item">
-                                <h4 className="PlaatsvoorkeurenForm__list-item__heading">
+                                <h4 className="PlaatsvoorkeurenForm__list-item__heading Fieldset__sub-header">
                                     Voorkeur toevoegen
                                 </h4>
                                 <div className="well well--small">

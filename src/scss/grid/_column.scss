@@ -4,6 +4,7 @@
     .col-1-2 {
         width: calc(50% - (30px / 2));
     }
+
     &--responsive {
         flex-direction: column;
         .col-1-2 {
@@ -14,6 +15,7 @@
         &--responsive {
             justify-content: space-between;
             flex-direction: row;
+            flex-wrap: wrap;
             .col-1-2 {
                 width: calc(50% - (30px / 2));
             }

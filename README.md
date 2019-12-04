@@ -13,6 +13,7 @@ docker-compose up -d database
 ```
 
 ## Recreate DB in Docker
+
 docker-compose up -d --no-deps --build --force-recreate database
 
 Draai `( . .env && npm run dev)` tijdens development (code wijzigen zorgt voor reload), of `npm run start` voor de echte versie. Gebruik `Control+C` om af te sluiten.
@@ -21,14 +22,14 @@ Draai `( . .env && npm run dev)` tijdens development (code wijzigen zorgt voor r
 
 Je kunt ook opstarten via docker, via `docker compose up`.
 
-### Compileren van SCSS
+
+### Compiling the SCSS
 
 Om de SCSS naar CSS te compilen draai je `npm run watch`. Als je de wijzigingen wilt zien refresh je je browser.
 
 
-### Compileren van JS
+### Compiling JS
+
 You can simply run the command 'webpack'
 
-### Concept indeling doen kan via volgende format:
-http://localhost:8080/markt/20/2019-09-10/concept-indelingslijst
 
