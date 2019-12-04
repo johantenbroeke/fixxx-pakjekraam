@@ -5,21 +5,32 @@
     & > *:first-child {
         margin-top: 0;
     }
+    & > *:last-child {
+        margin-bottom: 0;
+    }
     &--dark {
         background-color: $primary-darkblue;
         color: $primary-white;
     }
     & + & {
-        margin-top: $vm4;
+        margin-top: $vm2;
+        @media screen and (min-width: $screenMedium) {
+            margin-top: $vm4;
+        }
     }
     &--max-width {
         max-width: $fieldsetMaxWidth - (2 * $hm2);
     }
+
 
     @media screen and (min-width: $screenMedium) {
         padding: $vm4 $hm4;
         &--max-width {
             max-width: $fieldsetMaxWidth - (2 * $hm4);
         }
+    }
+
+    &--small{
+        padding: $gutter;
     }
 }

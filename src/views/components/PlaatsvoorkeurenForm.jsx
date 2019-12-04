@@ -49,26 +49,24 @@ class PlaatsvoorkeurenForm extends React.Component {
             index,
         }));
 
-        const next = query.next ? query.next : `./`;
-
         let minimumCount = null;
 
         if (role === 'marktmeester') {
             minimumCount =
-            sollicitatie.vastePlaatsen.length > 0
-                ? sollicitatie.vastePlaatsen.length + 2
-                : 3;
+                sollicitatie.vastePlaatsen.length > 0
+                    ? sollicitatie.vastePlaatsen.length + 2
+                    : 3;
         } else {
             minimumCount =
-            sollicitatie.vastePlaatsen.length > 0
-                ? sollicitatie.vastePlaatsen.length
-                : 3;
+                sollicitatie.vastePlaatsen.length > 0
+                    ? sollicitatie.vastePlaatsen.length
+                    : 3;
         }
 
         const minimumDisabled = sollicitatie.status === 'vpl' && role !== 'marktmeester';
 
         const minimumChecked = i => {
-            if ( isVast(sollicitatie.status) && role !== 'marktmeester' ) {
+            if (isVast(sollicitatie.status) && role !== 'marktmeester') {
                 if (sollicitatie.vastePlaatsen.length === i + 1) {
                     return true;
                 } else {
@@ -82,7 +80,7 @@ class PlaatsvoorkeurenForm extends React.Component {
         };
 
         const defaultCheckedMax = i => {
-            if ( ( voorkeur.maximum - voorkeur.minimum ) === i ) {
+            if ((voorkeur.maximum - voorkeur.minimum) === i) {
                 return true;
             } else {
                 return false;
@@ -107,20 +105,19 @@ class PlaatsvoorkeurenForm extends React.Component {
             .reduce((t, p) => {
                 t.push(entriesFiltered.filter(e => e.priority === p));
                 return t;
-            }, []);
+            }, [])
+            .map(entries => entries[0]);
 
-        const plaatsSets = entriesSplit.map(entry => entry.map(e => e.plaatsId));
+        const plaatsSets = entriesSplit.map(entry => entry.plaatsId);
 
         const rowsFlat = rows
             .reduce((t, r) => {
                 r.map(p => t.push(p)), [];
-
                 return t;
             })
             .sort((a, b) => plaatsSort(a, b, 'plaatsId'))
             .map(plaats => {
                 plaats.disabled = !plaatsSets.reduce((t, set) => t.concat(set), []).includes(plaats.plaatsId);
-
                 return plaats;
             });
         const marktRowsJSOM = () => {
@@ -135,7 +132,7 @@ class PlaatsvoorkeurenForm extends React.Component {
             };
         };
 
-        const isMarktmeesterEnVph = ( role === 'marktmeester' && isVast(sollicitatie.status) );
+        const isMarktmeesterEnVph = (role === 'marktmeester' && isVast(sollicitatie.status));
 
         return (
             <Form
@@ -161,16 +158,16 @@ class PlaatsvoorkeurenForm extends React.Component {
                         <input name="minimum" id="minimum" type="hidden" defaultValue={sollicitatie.vastePlaatsen.length} />
                         : null
                     } */}
-                    <div className={"Fieldset PlaatsvoorkeurenForm__plaats-count " + ( isMarktmeesterEnVph ? 'Fieldset--highlighted' : null )}>
-                        { isMarktmeesterEnVph ?
+                    <div className={"Fieldset PlaatsvoorkeurenForm__plaats-count " + (isMarktmeesterEnVph ? 'Fieldset--highlighted' : null)}>
+                        {isMarktmeesterEnVph ?
                             <p className="Fieldset__highlight-text">Verouderde functie! Alleen aanpassen als je weet wat je doet.</p> : null
                         }
                         <h2 className="Fieldset__header">
-                        { isVast(sollicitatie.status) ? `Uw vaste ${plaatsenDuiding(sollicitatie.vastePlaatsen)}` : 'Aantal plaatsen' }
+                            {isVast(sollicitatie.status) ? `Uw vaste ${plaatsenDuiding(sollicitatie.vastePlaatsen)}` : 'Aantal plaatsen'}
                         </h2>
                         <span className="Fieldset__sub-header">
-                            { isVast(sollicitatie.status)
-                                ?`${plaatsNummerDuiding(sollicitatie.vastePlaatsen)}: ${sollicitatie.vastePlaatsen.join(', ')}`
+                            {isVast(sollicitatie.status)
+                                ? `${plaatsNummerDuiding(sollicitatie.vastePlaatsen)}: ${sollicitatie.vastePlaatsen.join(', ')}`
                                 : <span>Hoeveel plaatsen hebt u <strong>echt nodig</strong>?</span>
                             }
                         </span>
@@ -220,98 +217,42 @@ class PlaatsvoorkeurenForm extends React.Component {
 
                     <div className="Fieldset">
                         <h2 className="Fieldset__header">Plaatsvoorkeuren</h2>
-                        {isVast(sollicitatie.status) ? (
-                            <span className="Fieldset__sub-header">
-                                Je vaste plaats{sollicitatie.vastePlaatsen.length > 1 ? 'en' : null}:{' '}
-                                <strong>{sollicitatie.vastePlaatsen.join(' en ')}</strong>
-                            </span>
-                        ) : null}
-                        <p>U kunt zoveel voorkeuren invullen als u wilt.</p>
+                        <span className="Fieldset__sub-header">U kunt zoveel voorkeuren invullen als u wilt.</span>
                         <div className="PlaatsvoorkeurenForm__list">
-                            {entriesSplit.map((entries, i, entriesArray) => (
-                                <div
-                                    className={`PlaatsvoorkeurenForm__list-item ${
-                                        entries[0].priority !== 1 && entries[0].priority !== 2
-                                            ? 'PlaatsvoorkeurenForm__list-item--sortable'
-                                            : null
-                                        } ${entries[0].readonly ? 'PlaatsvoorkeurenForm__list-item--hidden' : null}
-                                        ${
-                                        entries[0].priority !== 2
-                                            ? 'PlaatsvoorkeurenForm__list-item--readonly'
-                                            : null
-                                        }`}
-                                    key={i}
-                                    style={{ ...{ order: entries[0].priority } }}
-                                >
-                                    <h4 className="PlaatsvoorkeurenForm__list-item__heading">{i + 1}e voorkeur</h4>
-                                    <h4 className="PlaatsvoorkeurenForm__list-item__heading-remove">
-                                        {i + 1}e voorkeur wordt verwijderd na bewaren.
-                                    </h4>
-                                    <div className="well">
-                                        <span className="PlaatsvoorkeurenForm__list-item__label">
-                                            Plaatsnummer:{' '}
-                                            <strong>
-                                                {entries
-                                                    .map(e => {
-                                                        return e.plaatsId;
-                                                    })
-                                                    .join('')}
-                                            </strong>
-                                        </span>
-                                        {entries
-                                            .sort((a, b) => b.priority - a.priority)
-                                            .map(
-                                                ({ marktId, plaatsId, priority, index, readonly, newItem }, n, arr) => (
-                                                    <div
-                                                        key={index}
-                                                        className={`PlaatsvoorkeurenForm__list-item__wrapper`}
-                                                    >
-                                                        <input
-                                                            type="hidden"
-                                                            name={`plaatsvoorkeuren[${index}][marktId]`}
-                                                            defaultValue={markt.id}
-                                                        />
-                                                        <input
-                                                            type="hidden"
-                                                            name={`plaatsvoorkeuren[${index}][priority]`}
-                                                            defaultValue={priority || arr.length - n}
-                                                        />
-                                                        <input
-                                                            type="hidden"
-                                                            name={`plaatsvoorkeuren[${index}][plaatsId]`}
-                                                            value={plaatsId}
-                                                        />
-                                                        {/* <span className="PlaatsvoorkeurenForm__list-item__value">*/}
-                                                        {/* {plaatsId}*/}
-                                                        {/* </span>*/}
-                                                        {/* <div className="PlaatsvoorkeurenForm__list-item__extra PlaatsvoorkeurenForm__list-item__min-extra">*/}
-                                                        {/* <span className="count" />*/}
-                                                        {/* &nbsp;extra plaats*/}
-                                                        {/* </div>*/}
-                                                        {/* <div className="PlaatsvoorkeurenForm__list-item__extra PlaatsvoorkeurenForm__list-item__optional">*/}
-                                                        {/* <span className="count" />*/}
-                                                        {/* &nbsp;extra&nbsp;als er&nbsp;plek&nbsp;is.*/}
-                                                        {/* </div>*/}
-                                                    </div>
-                                                ),
-                                            )}
-                                        <span className="PlaatsvoorkeurenForm__list-item__explain">
-                                            Ik wil minimaal <span className="min" /> plaats
-                                            <span className="minMulti">en</span>
-                                            <span className="extra">
-                                                , en nog <span className="max" /> plaats
-                                                <span className="maxMulti">en</span> erbij als er plek is.
-                                            </span>
-                                        </span>
-                                        <div className="PlaatsvoorkeurenForm__list-item__tools">
-                                            <a
-                                                href="#"
-                                                data-handler="remove-voorkeur"
-                                                className="PlaatsvoorkeurenForm__list-item__tools-del"
-                                            >
-                                                verwijder
-                                            </a>
+                            {entriesSplit.map((entry, index, entriesArray) => (
+                                <div className="Draggable-list-item" id="plaatsvoorkeuren-list-item" key={entry.id}>
+                                    <div className="Draggable-list-item__left">
+                                        <div className="Draggable-list-item__handle">
+                                            <div className="Draggable-list-item__handle__bar"></div>
+                                            <div className="Draggable-list-item__handle__bar"></div>
                                         </div>
+                                        <span className="Draggable-list-item__label">
+                                            Plaatsnummer: <strong>{entry.plaatsId}</strong>
+                                        </span>
+                                    </div>
+
+                                    <input
+                                        type="hidden"
+                                        name={`plaatsvoorkeuren[${index}][marktId]`}
+                                        defaultValue={entry.marktId}
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name={`plaatsvoorkeuren[${index}][priority]`}
+                                        defaultValue={entry.priority || entriesArray.length - n}
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name={`plaatsvoorkeuren[${index}][plaatsId]`}
+                                        value={entry.plaatsId}
+                                    />
+                                    <div className="Draggable-list-item__right">
+                                        <a
+                                            href="#"
+                                            data-handler="remove-voorkeur"
+                                            className="Draggable-list-item__delete"
+                                        >
+                                        </a>
                                     </div>
                                 </div>
                             ))}
@@ -325,11 +266,11 @@ class PlaatsvoorkeurenForm extends React.Component {
                             data-select-base-id={entriesFiltered.length}
                             data-max-uitbreidingen={1}
                         >
-                            <div className="PlaatsvoorkeurenForm__list-item">
-                                <h4 className="PlaatsvoorkeurenForm__list-item__heading">
-                                    {entriesSplit.length + 1}e voorkeur
+                            <div className="PlaatsvoorkeurenForm__list-item" id="plaatsvoorkeuren-list-item">
+                                <h4 className="PlaatsvoorkeurenForm__list-item__heading Fieldset__sub-header">
+                                    Voorkeur toevoegen
                                 </h4>
-                                <div className="well">
+                                <div className="well well--small">
                                     <span className="PlaatsvoorkeurenForm__list-item__label">Kies een marktplaats</span>
                                     <div className={`PlaatsvoorkeurenForm__list-item__wrapper`}>
                                         <input
@@ -352,17 +293,10 @@ class PlaatsvoorkeurenForm extends React.Component {
                                         <div className="PlaatsvoorkeurenForm__list-item__extra PlaatsvoorkeurenForm__list-item__min-extra" />
                                         <div className="PlaatsvoorkeurenForm__list-item__extra PlaatsvoorkeurenForm__list-item__optional" />
                                     </div>
-                                    <span className="PlaatsvoorkeurenForm__list-item__explain">
-                                        Ik wil minimaal <span className="min" /> plaats
-                                        <span className="minMulti">en</span>
-                                        <span className="extra">
-                                            , en nog <span className="max" /> plaats<span className="maxMulti">en</span>{' '}
-                                            erbij als er plek is.
-                                        </span>
-                                    </span>
                                 </div>
                             </div>
                         </div>
+
                         {Array.from(new Array(0)).map((r, i) => (
                             <div
                                 className="PlaatsvoorkeurenForm__prototype ghost"
@@ -394,25 +328,15 @@ class PlaatsvoorkeurenForm extends React.Component {
                                             <div className="PlaatsvoorkeurenForm__list-item__extra PlaatsvoorkeurenForm__list-item__min-extra" />
                                             <div className="PlaatsvoorkeurenForm__list-item__extra PlaatsvoorkeurenForm__list-item__optional" />
                                         </div>
-                                        <span className="PlaatsvoorkeurenForm__list-item__explain">
-                                            Ik wil minimaal <span className="min" /> plaats
-                                            <span className="minMulti">en</span>
-                                            <span className="extra">
-                                                , en nog <span className="max" /> plaats
-                                                <span className="maxMulti">en</span> erbij als er plek is.
-                                            </span>
-                                        </span>
                                     </div>
                                 </div>
                             </div>
                         ))}
 
-                        <input type="hidden" name="marktId" defaultValue={markt.id} />
-                        <input type="hidden" name="marktDate" defaultValue={marktDate} />
                         {/* Dit veld willen we alleen laten zien aan marktmeesters en sollicitanten */}
-                        { role == 'marktmeester' || !isVast(sollicitatie.status) ? (
+                        {role == 'marktmeester' || !isVast(sollicitatie.status) ? (
                             <div className={`Fieldset ${isMarktmeesterEnVph ? 'Fieldset--highlighted' : null}`}>
-                                { isMarktmeesterEnVph ?
+                                {isMarktmeesterEnVph ?
                                     <p className="Fieldset__highlight-text">Verouderde functie! Alleen aanpassen als je weet wat je doet.</p> : null
                                 }
                                 <h2 className="Fieldset__header">
@@ -450,7 +374,6 @@ class PlaatsvoorkeurenForm extends React.Component {
                             className="Button Button--secondary"
                             type="submit"
                             name="redirectTo"
-                            // value={`./?error=plaatsvoorkeuren-saved&next=${next}#bottom-buttons`}
                             value={`${
                                 role === 'marktmeester'
                                     ? `/profile/${ondernemer.erkenningsnummer}?error=plaatsvoorkeuren-saved`

@@ -91,18 +91,13 @@ const getMarktDaysOndernemer = (startDate, endDate, marktdagen) => {
 const getMarktDays = (startDate, endDate, daysOfWeek) => {
     const start = Date.parse(startDate);
     const end = Date.parse(endDate);
-
     const days = Math.max(0, (end - start) / MILLISECONDS_IN_DAY);
-
     const dates = [];
-
     for (let i = 0, l = days; i <= l; i++) {
         const date = new Date(start);
-
         date.setDate(date.getDate() + i);
         dates.push(date);
     }
-
     return dates.filter(date => daysOfWeek.includes(date.getDay())).map(toISODate);
 };
 

@@ -5,14 +5,12 @@ import moment from 'moment';
 const PropTypes = require('prop-types');
 const {
     formatDayOfWeek,
-    addMinutes,
-    WEEK_DAYS,
-    MINUTES_IN_HOUR,
-    today,
     formatDate,
-    relativeHumanDay,
     endOfWeek,
     addDays,
+    getTimezoneTime,
+    addMinutesTime,
+    MINUTES_IN_HOUR
 } = require('../../util.ts');
 const { filterRsvpList, isVast } = require('../../domain-knowledge.js');
 
@@ -37,14 +35,17 @@ class AfmeldForm extends React.Component {
 
         const markt = markten.find(m => String(m.id) === currentMarktId);
 
-        const OFFSET = 4; // from 24:00 to 21:00 + 1 uur wintertijd
-        const now = addMinutes(new Date(), MINUTES_IN_HOUR * OFFSET);
-        // const tomorrow = addDays(now, 1);
+        // I know, 4 is a weird number, you would expect 3 because (24:00 - 21:00 = 3:00)
+        // but the function gets back to non-timezone so we need to add 1 hour
+        const OFFSET = 4;
+        const timezoneTime = getTimezoneTime();
+        // Offset is set to trick the filterRsvpList() function its tomorrow already at nine.
+        const timePlusOffsetHours = addMinutesTime(timezoneTime, MINUTES_IN_HOUR * OFFSET);
 
         const rsvpEntries = filterRsvpList(
             aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id),
             markt,
-            role === 'marktmeester' ? now : addDays(now, 1),
+            role === 'marktmeester' ? timePlusOffsetHours : addDays(timePlusOffsetHours, 1),
         );
 
         const weekAanmeldingen = rsvpEntries.reduce(

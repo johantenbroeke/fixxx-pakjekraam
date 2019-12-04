@@ -60,12 +60,12 @@ class OndernemerDashboard extends React.Component {
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
-                    <h1 className="h1">Mijn markten</h1>
+                    <h1 className="Heading Heading--intro">Mijn markten</h1>
                     <div className="row row--responsive">
-                        {marktenPlusToewijzing.map(markt => (
-                            <div key={markt.id} className="col-1-2">
+                        {marktenPlusToewijzing.map((markt, index) => (
                                 <OndernemerMarktTile
                                     markt={markt}
+                                    key={index}
                                     ondernemer={ondernemer}
                                     aanmeldingVandaag={markt.aanmeldingVandaag}
                                     aanmeldingMorgen={markt.aanmeldingMorgen}
@@ -74,7 +74,6 @@ class OndernemerDashboard extends React.Component {
                                     today={ today() }
                                     tomorrow={ tomorrow() }
                                 />
-                            </div>
                         ))}
                     </div>
                 </Content>

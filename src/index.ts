@@ -532,7 +532,7 @@ app.post(
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        updateMarketLocation(req, res, next, getErkenningsNummer(req)),
+        updateMarketLocation(req, res, next, req.params.marktId, getErkenningsNummer(req)),
 );
 
 app.get(
@@ -557,7 +557,7 @@ app.post(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response, next: NextFunction) =>
-        updateMarketLocation(req, res, next, req.params.erkenningsNummer),
+        updateMarketLocation(req, res, next, req.params.marktId, req.params.erkenningsNummer),
 );
 
 

@@ -81,7 +81,7 @@ const voorkeurenFormDataToObject = (formData: any): IPlaatsvoorkeurRow => ({
     priority: parseInt(formData.priority, 10),
 });
 
-export const updateMarketLocation = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
+export const updateMarketLocation = (req: Request, res: Response, next: NextFunction, marktId: string, erkenningsNummer: string) => {
     /*
      * TODO: Form data format validation
      * TODO: Business logic validation
@@ -124,7 +124,7 @@ export const updateMarketLocation = (req: Request, res: Response, next: NextFunc
             {
                 erkenningsNummer,
                 marktDate: req.body.marktDate || null,
-                marktId: req.body.marktId,
+                marktId,
             },
             {
                 anywhere: !!req.body.anywhere,
