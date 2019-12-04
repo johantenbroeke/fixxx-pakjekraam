@@ -246,14 +246,10 @@ class PlaatsvoorkeurenForm extends React.Component {
                                         name={`plaatsvoorkeuren[${index}][plaatsId]`}
                                         value={entry.plaatsId}
                                     />
-                                    <div className="Draggable-list-item__right">
-                                        <a
-                                            href="#"
-                                            data-handler="remove-voorkeur"
-                                            className="Draggable-list-item__delete"
-                                        >
-                                        </a>
-                                    </div>
+                                    <a   href="#"  data-handler="remove-voorkeur" className="Draggable-list-item__right">
+                                        <span className="Draggable-list-item__delete">
+                                        </span>
+                                    </a>
                                 </div>
                             ))}
                         </div>
