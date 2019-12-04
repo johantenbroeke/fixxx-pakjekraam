@@ -94,6 +94,7 @@ export const updateMarketLocation = (req: Request, res: Response, next: NextFunc
             .destroy({
                 where: {
                     erkenningsNummer,
+                    marktId,
                 },
             })
             .then(n => console.log(`${n} Bestaande voorkeuren verwijderd...`));
