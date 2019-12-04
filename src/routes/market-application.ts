@@ -49,9 +49,6 @@ export const attendancePage = (
         ),
     );
 
-    console.log(query);
-
-
     return Promise.all([
         ondernemerPromise,
         marktenPromise,
