@@ -44,7 +44,7 @@ class HomePage extends React.Component {
                         <a href="https://www.amsterdam.nl/adressengids/overig/marktbureau/">Marktbureau</a>.
                     </p>
                     Hebt u nog vragen? Kijk eerst bij de{' '}
-                    <a href="https://www.amsterdam.nl/ondernemen/markt-straathandel/digitaal-indelen-plein-40-45/">
+                    <a href="https://www.amsterdam.nl/ondernemen/markt-straathandel/digitaal-indelen/">
                         veelgestelde vragen
                     </a>
                     .<p />
