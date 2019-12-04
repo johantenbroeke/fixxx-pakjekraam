@@ -12,6 +12,7 @@ import { tomorrow, nextWeek } from '../util';
 // import { promises } from 'fs';
 
 import { getMarktenZichtbaarOndernemers } from '../model/markt.functions';
+import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 
 export const vendorDashboardPage = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
 
@@ -22,10 +23,11 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
         getMarktenZichtbaarOndernemers(),
         getPlaatsvoorkeurenOndernemer(erkenningsNummer),
         getAanmeldingenByOndernemer(erkenningsNummer),
-        getToewijzingenByOndernemer(erkenningsNummer)
+        getToewijzingenByOndernemer(erkenningsNummer),
+        getAfwijzingenByOndernemer(erkenningsNummer)
     ])
         .then(
-            ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen ]) => {
+            ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen, afwijzingen ]) => {
                 res.render('OndernemerDashboard', {
                     ondernemer,
                     aanmeldingen,
@@ -35,6 +37,7 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
                     endDate: nextWeek(),
                     messages,
                     toewijzingen,
+                    afwijzingen,
                 });
             },
             internalServerErrorPage(res),

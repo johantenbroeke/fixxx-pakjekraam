@@ -48,7 +48,6 @@ export const httpErrorPage = (res: Response, errorCode: number) => (err: Error |
 };
 
 export const internalServerErrorPage = (res: Response) =>  {
-    console.log(res);
     return httpErrorPage(res, HTTP_INTERNAL_SERVER_ERROR);
 };
 

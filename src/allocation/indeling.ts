@@ -35,15 +35,15 @@ interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
 
 export const BRANCHE_FULL: IAfwijzingReason = {
     code: 1,
-    message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld'
+    message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld.'
 };
 export const ADJACENT_UNAVAILABLE: IAfwijzingReason = {
     code: 2,
-    message: 'Geen geschikte plaats(en) gevonden'
+    message: 'Geen geschikte plaats(en) gevonden.'
 };
 export const MINIMUM_UNAVAILABLE: IAfwijzingReason = {
     code: 3,
-    message: 'Minimum aantal plaatsen niet beschikbaar'
+    message: 'Minimum aantal plaatsen niet beschikbaar.'
 };
 
 const Indeling = {

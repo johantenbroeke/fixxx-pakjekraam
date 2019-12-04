@@ -10,6 +10,8 @@ const OndernemerMarktTile = ({
     aanmeldingMorgen,
     toewijzingVandaag,
     toewijzingMorgen,
+    afwijzingVandaag,
+    afwijzingMorgen,
     today,
     ondernemer,
     tomorrow,
@@ -19,7 +21,18 @@ const OndernemerMarktTile = ({
             <h2 className="OndernemerMarktTile__heading">{markt.naam}</h2>
             <a className="background-link" href={`/markt-detail/${markt.id}`} />
             <Button label={`Ga naar ${markt.naam}`} href={`/markt-detail/${markt.id}`} />
-            <Uitslag today={today} ondernemer={ondernemer} markt={markt} tomorrow={tomorrow} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
+            <Uitslag
+                today={today}
+                ondernemer={ondernemer}
+                markt={markt}
+                tomorrow={tomorrow}
+                aanmeldingVandaag={aanmeldingVandaag}
+                aanmeldingMorgen={aanmeldingMorgen}
+                toewijzingVandaag={toewijzingVandaag}
+                toewijzingMorgen={toewijzingMorgen}
+                afwijzingVandaag={afwijzingVandaag}
+                afwijzingMorgen={afwijzingMorgen}
+            />
         </div>
     );
 };
@@ -30,6 +43,8 @@ OndernemerMarktTile.propTypes = {
     aanmeldingMorgen: PropTypes.object,
     toewijzingVandaag: PropTypes.object,
     toewijzingMorgen: PropTypes.object,
+    afwijzingVandaag: PropTypes.object,
+    afwijzingMorgen: PropTypes.object,
     sollicitatie: PropTypes.object,
     voorkeuren: PropTypes.object,
     indelingVoorkeuren: PropTypes.object,
