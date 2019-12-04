@@ -109,6 +109,7 @@ function splitByArray(orgArr, valueArr) {
 
   var handlers = {
     'remove-voorkeur': function (e) {
+      e.stopPropagation();
       var voorkeur = _closest(this, '.Draggable-list-item'),
         form = _closest(this, 'form'),
         // remove = voorkeur.classList.contains('remove'),
