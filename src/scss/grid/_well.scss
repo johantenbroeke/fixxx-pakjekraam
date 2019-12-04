@@ -12,12 +12,12 @@
         background-color: $primary-darkblue;
         color: $primary-white;
     }
-    & + & {
-        margin-top: $vm2;
-        @media screen and (min-width: $screenMedium) {
-            margin-top: $vm4;
-        }
-    }
+    // & + & {
+    //     margin-top: $vm2;
+    //     @media screen and (min-width: $screenMedium) {
+    //         margin-top: $vm4;
+    //     }
+    // }
     &--max-width {
         max-width: $fieldsetMaxWidth - (2 * $hm2);
     }

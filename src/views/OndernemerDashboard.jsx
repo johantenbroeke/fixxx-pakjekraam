@@ -66,6 +66,9 @@ class OndernemerDashboard extends React.Component {
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
+                    <div className="row row--responsive Section">
+                        <a href="https://www.amsterdam.nl/ondernemen/markt-straathandel/digitaal-indelen/" className="Link">Informatie over digitaal Indelen van de markt</a>
+                    </div>
                     <h1 className="Heading Heading--intro">Mijn markten</h1>
                     <div className="row row--responsive">
                         {marktenPlusToewijzing.map((markt, index) => (
