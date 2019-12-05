@@ -1,6 +1,11 @@
 .well {
     padding: $vm2 $hm2;
     background-color: $neutral-grey1;
+    margin-bottom: $gutter;
+
+    @media screen and (min-width: $screenMedium) {
+        margin-bottom: calc( 2 * #{$gutter});
+    }
 
     & > *:first-child {
         margin-top: 0;
@@ -18,6 +23,7 @@
     //         margin-top: $vm4;
     //     }
     // }
+
     &--max-width {
         max-width: $fieldsetMaxWidth - (2 * $hm2);
     }

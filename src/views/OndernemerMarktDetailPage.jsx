@@ -11,11 +11,9 @@ const OndernemerMarktVoorkeuren = require('./components/OndernemerMarktVoorkeure
 const OndernemerMarktAanwezigheid = require('./components/OndernemerMarktAanwezigheid');
 const OndernemerMarktAlgVoorkeuren = require('./components/OndernemerMarktAlgVoorkeuren');
 const { today, tomorrow, yesterday } = require('../util.ts');
-const Button = require('./components/Button');
 const Alert = require('./components/Alert');
-const AlertLine = require('./components/AlertLine');
 const Uitslag = require('./components/Uitslag');
-const { getMarktDays, parseMarktDag, filterRsvpList } = require('../domain-knowledge.js');
+const { filterRsvpList } = require('../domain-knowledge.js');
 
 class OndernemerMarktDetailPage extends React.Component {
     propTypes = {
