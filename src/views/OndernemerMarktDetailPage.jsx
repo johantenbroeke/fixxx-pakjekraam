@@ -81,6 +81,11 @@ class OndernemerMarktDetailPage extends React.Component {
                         <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
                     ) : null}
                     <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
+                    { markt.kiesJeKraamMededelingActief ? (
+                        <Alert type="warning" inline={true} title={markt.kiesJeKraamMededelingTitel}>
+                            {markt.kiesJeKraamMededelingTekst}
+                        </Alert>
+                    ) : null }
                     { absentGemeld ? (
                         <Alert type="warning" inline={true}>
                             <span>
