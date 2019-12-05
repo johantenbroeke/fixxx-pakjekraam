@@ -41,7 +41,6 @@ import {
 import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
 import { vendorDashboardPage } from './routes/vendor-dashboard';
 import { marketLocationPage, updateMarketLocation } from './routes/market-location';
-import { preferencesMailPage } from './routes/mail-preferences';
 import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
@@ -716,14 +715,6 @@ app.get(
                 res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
             },
         );
-    },
-);
-
-app.get(
-    '/markt-indeling/:marktId/:datum/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    (req: Request, res: Response) => {
-        res.render('MarktIndelingPage', {});
     },
 );
 
