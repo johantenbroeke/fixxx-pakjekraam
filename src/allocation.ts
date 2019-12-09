@@ -30,7 +30,6 @@ const mapMarktenToToewijzingen = (markten: any): Promise<IToewijzing[]> => {
     .reduce(flatten, []);
 };
 
-
 const mapMarktenToAfwijzingen = (markten: any): Promise<IAfwijzing[]> => {
     return markten
         .map((markt: any) =>

@@ -30,6 +30,7 @@ export const getAfwijzingEnriched = (afwijzing: IAfwijzing): Promise<IAfwijzing>
         getVoorkeurByMarktEnOndernemer(afwijzing.marktId, afwijzing.erkenningsNummer),
         getPlaatsvoorkeurenByMarktEnOndernemer(afwijzing.marktId, afwijzing.erkenningsNummer)
     ]).then(result => {
+
         const [ voorkeuren, plaatsvoorkeuren ] = result;
 
         afwijzing.plaatsvoorkeuren = plaatsvoorkeuren.length > 0 ? plaatsvoorkeuren.map(plaats => plaats.plaatsId): null;

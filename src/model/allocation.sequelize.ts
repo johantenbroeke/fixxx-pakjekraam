@@ -3,6 +3,7 @@ import { Allocation } from './allocation.model';
 
 export const initAllocation = (sequelize: Sequelize) => {
     const attributes = {
+
         marktId: {
             type: DataTypes.INTEGER,
             unique: 'key',
@@ -17,6 +18,24 @@ export const initAllocation = (sequelize: Sequelize) => {
         },
         erkenningsNummer: {
             type: DataTypes.STRING,
+        },
+        plaatsvoorkeuren: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+        },
+        anywhere: {
+            type: DataTypes.BOOLEAN,
+        },
+        minimum: {
+            type: DataTypes.INTEGER,
+        },
+        maximum: {
+            type: DataTypes.INTEGER,
+        },
+        bak: {
+            type: DataTypes.BOOLEAN,
+        },
+        brancheId: {
+            type: DataTypes.INTEGER,
         },
     };
 
