@@ -1,6 +1,7 @@
 import { getMarkt } from '../model/markt.functions';
 import { getOndernemersLangdurigAfgemeldByMarkt } from '../model/ondernemer.functions';
 import { getVoorkeurByMarktEnOndernemer } from '../model/voorkeur.functions';
+import { getAfwijzingenByOndernemerAndMarkt } from '../model/afwijzing.functions';
 
 import { NextFunction, Request, Response } from 'express';
 
@@ -37,7 +38,7 @@ export const langdurigAfgemeld = (
     });
 };
 
-export const marktDetailController = (
+export const marktDetail = (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -58,10 +59,11 @@ export const marktDetailController = (
         getAllBranches(),
         getMededelingen(),
         getToewijzingenByOndernemerEnMarkt(marktId, erkenningsNummer),
+        getAfwijzingenByOndernemerAndMarkt(marktId, erkenningsNummer),
         getVoorkeurByMarktEnOndernemer(marktId, erkenningsNummer)
     ])
         .then(
-            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, plaatsvoorkeur, branches, mededelingen, toewijzingen, algemeneVoorkeur]) => {
+            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, plaatsvoorkeur, branches, mededelingen, toewijzingen, afwijzingen, algemeneVoorkeur]) => {
                 res.render('OndernemerMarktDetailPage', {
                     ondernemer,
                     plaatsvoorkeuren,
@@ -73,8 +75,9 @@ export const marktDetailController = (
                     next: req.query.next,
                     query,
                     messages,
-                    toewijzingen,
                     mededelingen,
+                    toewijzingen,
+                    afwijzingen,
                     algemeneVoorkeur,
                 });
             },

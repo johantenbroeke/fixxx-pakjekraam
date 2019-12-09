@@ -111,6 +111,12 @@ export const addMinutes = (offsetDate: string | number, minutes: number): string
     return new Date(date.getTime() + minutes * 60000).toISOString().replace(/T.+/, '');
 };
 
+export const addMinutesTime = (offsetDate: string | number, minutes: number): Date => {
+    const date = new Date(offsetDate);
+    const dateNewTime = new Date(date.getTime() + minutes * 60000);
+    return moment(dateNewTime).tz('Europe/Amsterdam').format();
+};
+
 export const getTimezoneTime = (): Date => {
     return moment().tz('Europe/Amsterdam').format();
 };

@@ -46,12 +46,16 @@ class MarktDetailPage extends React.Component {
         let fase = null;
         markt.kiesJeKraamFase == 'live' ? fase = null : fase = ` ${markt.kiesJeKraamFase}`;
 
+
         return (
             <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase}>
+                 {/* {markt.kiesJeKraamGeblokkeerdePlaatsen ?
+                 <p>Geblokkeerde plaatsen: {markt.kiesJeKraamGeblokkeerdePlaatsen}</p> :
+                 null } */}
                 <div className="row row--responsive Section">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
                 </div>
-                <h2 className="Heading Heading--intro-heading">Lijsten per dag</h2>
+                <h2 className="Heading Heading--intro">Lijsten per dag</h2>
                 <div className="row row--responsive margin-bottom">
                     <div className="col-1-2 margin-bottom">
                         <h4>Deze week</h4>

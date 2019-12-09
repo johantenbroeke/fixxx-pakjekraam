@@ -36,19 +36,16 @@ import { activationPage, handleActivation } from './routes/activation';
 import { registrationPage, handleRegistration } from './routes/registration';
 import {
     attendancePage,
-    handleAttendanceUpdate,
-    marketApplicationPage,
-    handleMarketApplication,
+    handleAttendanceUpdate
 } from './routes/market-application';
 import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
 import { vendorDashboardPage } from './routes/vendor-dashboard';
 import { marketLocationPage, updateMarketLocation } from './routes/market-location';
-import { preferencesMailPage } from './routes/mail-preferences';
 import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
 import { deleteUserPage, deleteUser, publicProfilePage } from './routes/ondernemer';
-import { langdurigAfgemeld, marktDetailController } from './routes/markt';
+import { langdurigAfgemeld, marktDetail } from './routes/markt';
 
 import { vasteplaatshoudersPage, sollicitantenPage, voorrangslijstPage, voorrangslijstVolledigPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
 import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
@@ -152,11 +149,11 @@ app.use(
     }),
 );
 
-app.use( (req, res, next) => {
+app.use((req, res, next) => {
     res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-    res.header('X-Content-Type-Options','nosniff');
-    res.header('X-XSS-Protection','1; mode=block');
-    res.header('X-Frame-Options','SAMEORIGIN');
+    res.header('X-Content-Type-Options', 'nosniff');
+    res.header('X-XSS-Protection', '1; mode=block');
+    res.header('X-Frame-Options', 'SAMEORIGIN');
     next();
 });
 
@@ -216,7 +213,7 @@ app.get(
             .then((markten: any) => {
                 res.render('MarktenPage', { markten });
             }, internalServerErrorPage(res));
-});
+    });
 
 app.get(
     '/environment/',
@@ -534,7 +531,7 @@ app.post(
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        updateMarketLocation(req, res, next, getErkenningsNummer(req)),
+        updateMarketLocation(req, res, next, req.params.marktId, getErkenningsNummer(req)),
 );
 
 app.get(
@@ -559,7 +556,7 @@ app.post(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response, next: NextFunction) =>
-        updateMarketLocation(req, res, next, req.params.erkenningsNummer),
+        updateMarketLocation(req, res, next, req.params.marktId, req.params.erkenningsNummer),
 );
 
 
@@ -587,14 +584,14 @@ app.get(
     '/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        marktDetailController(req, res, next, getErkenningsNummer(req)),
+    marktDetail(req, res, next, getErkenningsNummer(req)),
 );
 
 app.get(
     '/ondernemer/:erkenningsNummer/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: Request, res: Response, next: NextFunction) =>
-        marktDetailController(req, res, next, req.params.erkenningsNummer),
+    marktDetail(req, res, next, req.params.erkenningsNummer),
 );
 
 app.get(
@@ -627,7 +624,9 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response) => {
-        deleteUserPage(req, res, null, null, req.csrfToken());
+        !req.url.endsWith('/') ?
+            res.redirect(301, `${req.url}/`) :
+            deleteUserPage(req, res, null, null, req.csrfToken());
     },
 );
 
@@ -716,14 +715,6 @@ app.get(
                 res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
             },
         );
-    },
-);
-
-app.get(
-    '/markt-indeling/:marktId/:datum/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    (req: Request, res: Response) => {
-        res.render('MarktIndelingPage', {});
     },
 );
 

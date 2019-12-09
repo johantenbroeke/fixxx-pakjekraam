@@ -18,11 +18,12 @@ class OndernemerDashboard extends React.Component {
         startDate: PropTypes.string.isRequired,
         endDate: PropTypes.string.isRequired,
         toewijzingen: PropTypes.array,
+        afwijzingen: PropTypes.array,
         user: PropTypes.object,
     };
 
     render() {
-        const { ondernemer, messages, plaatsvoorkeuren, markten, user, aanmeldingen, toewijzingen } = this.props;
+        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen } = this.props;
 
         const sollicitaties = ondernemer.sollicitaties.filter(soll => {
             return !soll.doorgehaald && markten.map(markt => markt.id).includes(soll.markt.id);
@@ -46,8 +47,13 @@ class OndernemerDashboard extends React.Component {
             const toewijzingenVoorDezeMarkt = toewijzingen.filter(toewijzing => {
                 return toewijzing.marktId == markt.id;
             });
+            const afwijzingenVoorDezeMarkt = afwijzingen.filter(toewijzing => {
+                return toewijzing.marktId == markt.id;
+            });
             markt.toewijzingVandaag = toewijzingenVoorDezeMarkt.find(aanmelding => aanmelding.marktDate == today());
             markt.toewijzingMorgen = toewijzingenVoorDezeMarkt.find(aanmelding => aanmelding.marktDate == tomorrow());
+            markt.afwijzingVandaag = afwijzingenVoorDezeMarkt.find(afwijzing => afwijzing.marktDate == today());
+            markt.afwijzingMorgen = afwijzingenVoorDezeMarkt.find(afwijzing => afwijzing.marktDate == tomorrow());
             return markt;
         });
 
@@ -60,21 +66,25 @@ class OndernemerDashboard extends React.Component {
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
-                    <h1 className="h1">Mijn markten</h1>
+                    <div className="row row--responsive Section">
+                        <a href="https://www.amsterdam.nl/ondernemen/markt-straathandel/digitaal-indelen/" rel="noopener noreferrer" target="_blank" className="Link">Informatie over digitaal Indelen van de markt</a>
+                    </div>
+                    <h1 className="Heading Heading--intro">Mijn markten</h1>
                     <div className="row row--responsive">
-                        {marktenPlusToewijzing.map(markt => (
-                            <div key={markt.id} className="col-1-2">
-                                <OndernemerMarktTile
-                                    markt={markt}
-                                    ondernemer={ondernemer}
-                                    aanmeldingVandaag={markt.aanmeldingVandaag}
-                                    aanmeldingMorgen={markt.aanmeldingMorgen}
-                                    toewijzingVandaag={markt.toewijzingVandaag}
-                                    toewijzingMorgen={markt.toewijzingMorgen}
-                                    today={ today() }
-                                    tomorrow={ tomorrow() }
-                                />
-                            </div>
+                        {marktenPlusToewijzing.map((markt, index) => (
+                            <OndernemerMarktTile
+                                markt={markt}
+                                key={index}
+                                ondernemer={ondernemer}
+                                aanmeldingVandaag={markt.aanmeldingVandaag}
+                                aanmeldingMorgen={markt.aanmeldingMorgen}
+                                toewijzingVandaag={markt.toewijzingVandaag}
+                                toewijzingMorgen={markt.toewijzingMorgen}
+                                afwijzingVandaag={markt.afwijzingVandaag}
+                                afwijzingMorgen={markt.afwijzingMorgen}
+                                today={today()}
+                                tomorrow={tomorrow()}
+                            />
                         ))}
                     </div>
                 </Content>

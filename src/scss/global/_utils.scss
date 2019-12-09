@@ -10,23 +10,3 @@
 .font-gray {
     color: $neutral-grey4;
 }
-.background-link-parent {
-    position: relative;
-    margin-top: 30px;
-}
-.background-link {
-    position: absolute;
-    z-index: 1;
-    left: -$vm2;
-    top: -$hm2;
-    right: -$vm2;
-    bottom: -$hm2;
-    background-color: $primary-black;
-    opacity: 0;
-    transition: 0.3s;
-
-    &:hover {
-        z-index: 1;
-        opacity: 0.05;
-    }
-}

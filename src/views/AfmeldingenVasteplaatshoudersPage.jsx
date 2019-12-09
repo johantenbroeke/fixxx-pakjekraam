@@ -3,11 +3,7 @@ const MarktDetailBase = require('./components/MarktDetailBase');
 const OndernemerListAfwezig = require('./components/OndernemerListAfwezig.tsx');
 const PrintPage = require('./components/PrintPage');
 const PropTypes = require('prop-types');
-const { paginate, arrayToChunks } = require('../util');
-const { A_LIJST_DAYS } = require('../domain-knowledge.js');
-
-import Indeling from '../allocation/indeling';
-import Ondernemers from '../allocation/ondernemers';
+const { arrayToChunks } = require('../util');
 
 class afmeldingenPage extends React.Component {
     propTypes = {
@@ -19,7 +15,6 @@ class afmeldingenPage extends React.Component {
 
     render() {
         const {
-           data,
            datum,
            markt,
            vasteplaatshoudersAfgemeld

@@ -19,9 +19,28 @@ export const getAfwijzingReason = (reasonCode: number) => {
     return reasons.find(reason => reason.code === reasonCode);
 };
 
+export const printAfwijzingReason = (reasonCode: number) => {
+    return getAfwijzingReason(reasonCode).message;
+};
+
 export const getAfwijzingen = (marktId: string, marktDate: string): Promise<any[]> =>
     afwijzing
         .findAll<Afwijzing>({
             where: { marktId, marktDate },
             raw: true,
         });
+
+export const getAfwijzingenByOndernemer = (erkenningsNummer: string): Promise<any[]> =>
+    afwijzing
+        .findAll<Afwijzing>({
+            where: { erkenningsNummer },
+            raw: true,
+        });
+
+export const getAfwijzingenByOndernemerAndMarkt = (marktId: string, erkenningsNummer: string): Promise<any[]> =>
+    afwijzing
+        .findAll<Afwijzing>({
+            where: { erkenningsNummer, marktId },
+            raw: true,
+        });
+

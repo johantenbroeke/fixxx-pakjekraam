@@ -4,6 +4,7 @@
     .col-1-2 {
         width: calc(50% - (30px / 2));
     }
+
     &--responsive {
         flex-direction: column;
         .col-1-2 {
@@ -13,7 +14,9 @@
     @media screen and (min-width: $screenMediumPlus) {
         &--responsive {
             justify-content: space-between;
+            align-items: flex-start;
             flex-direction: row;
+            flex-wrap: wrap;
             .col-1-2 {
                 width: calc(50% - (30px / 2));
             }

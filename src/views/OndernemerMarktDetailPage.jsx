@@ -11,11 +11,9 @@ const OndernemerMarktVoorkeuren = require('./components/OndernemerMarktVoorkeure
 const OndernemerMarktAanwezigheid = require('./components/OndernemerMarktAanwezigheid');
 const OndernemerMarktAlgVoorkeuren = require('./components/OndernemerMarktAlgVoorkeuren');
 const { today, tomorrow, yesterday } = require('../util.ts');
-const Button = require('./components/Button');
 const Alert = require('./components/Alert');
-const AlertLine = require('./components/AlertLine');
 const Uitslag = require('./components/Uitslag');
-const { getMarktDays, parseMarktDag, filterRsvpList } = require('../domain-knowledge.js');
+const { filterRsvpList } = require('../domain-knowledge.js');
 
 class OndernemerMarktDetailPage extends React.Component {
     propTypes = {
@@ -28,6 +26,7 @@ class OndernemerMarktDetailPage extends React.Component {
         branches: PropTypes.object.isRequired,
         messages: PropTypes.array,
         toewijzingen: PropTypes.array,
+        afwijzingen: PropTypes.array,
         startDate: PropTypes.string.isRequired,
         endDate: PropTypes.string.isRequired,
         user: PropTypes.object,
@@ -46,6 +45,7 @@ class OndernemerMarktDetailPage extends React.Component {
             voorkeur,
             branches,
             toewijzingen,
+            afwijzingen,
             mededelingen,
             algemeneVoorkeur
         } = this.props;
@@ -57,12 +57,14 @@ class OndernemerMarktDetailPage extends React.Component {
             today(),
         );
 
-        const dateOfTomorrow = tomorrow();
+        // const dateOfTomorrow = tomorrow();
 
         const aanmeldingVandaag = aanmeldingen.find(aanmelding => aanmelding.marktDate == today());
         const aanmeldingMorgen = aanmeldingen.find(aanmelding => aanmelding.marktDate == tomorrow());
         const toewijzingVandaag = toewijzingen.find(aanmelding => aanmelding.marktDate == today());
         const toewijzingMorgen = toewijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
+        const afwijzingVandaag = afwijzingen.find(aanmelding => aanmelding.marktDate == today());
+        const afwijzingMorgen = afwijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
 
         const absentGemeld = algemeneVoorkeur ? ( algemeneVoorkeur.absentFrom && algemeneVoorkeur.absentUntil )  : false;
 
@@ -77,6 +79,11 @@ class OndernemerMarktDetailPage extends React.Component {
                         <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
                     ) : null}
                     <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
+                    { markt.kiesJeKraamMededelingActief ? (
+                        <Alert type="warning" inline={true} title={markt.kiesJeKraamMededelingTitel}>
+                            {markt.kiesJeKraamMededelingTekst}
+                        </Alert>
+                    ) : null }
                     { absentGemeld ? (
                         <Alert type="warning" inline={true}>
                             <span>
@@ -93,7 +100,18 @@ class OndernemerMarktDetailPage extends React.Component {
                         </Alert>
                     ) : null }
 
-                    <Uitslag ondernemer={ondernemer} today={today()} tomorrow={tomorrow()} markt={markt} toewijzingVandaag={toewijzingVandaag} toewijzingMorgen={toewijzingMorgen} aanmeldingVandaag={aanmeldingVandaag} aanmeldingMorgen={aanmeldingMorgen}/>
+                    <Uitslag
+                        ondernemer={ondernemer}
+                        today={today()}
+                        tomorrow={tomorrow()}
+                        markt={markt}
+                        toewijzingVandaag={toewijzingVandaag}
+                        toewijzingMorgen={toewijzingMorgen}
+                        afwijzingVandaag={afwijzingVandaag}
+                        afwijzingMorgen={afwijzingMorgen}
+                        aanmeldingVandaag={aanmeldingVandaag}
+                        aanmeldingMorgen={aanmeldingMorgen}
+                    />
 
                     <div className="row row--responsive">
                         <div className="col-1-2">

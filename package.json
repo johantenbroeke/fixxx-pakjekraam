@@ -17,8 +17,8 @@
     "start": "ts-node src/index.ts",
     "predev": "npm run build && npm run deploy",
     "dev": "ts-node-dev --ignore-watch node_modules src/index.ts",
-    "allocation": "ts-node src/allocation.js",
-    "allocation-ts": "ts-node-dev src/allocation.ts --debug",
+    "allocation": "ts-node src/allocation.ts",
+    "allocation-ts": "ts-node src/allocation.ts --debug",
     "allocation-env": "( . .env && npm run allocation-ts)",
     "allocation-ts-env": "( . .env && npm run allocation-ts)",
     "migrate": "( . .env && npx sequelize-cli db:migrate)",
@@ -57,7 +57,7 @@
     "@types/validator": "10.11.0",
     "babel-eslint": "10.0.1",
     "babel-register": "6.26.0",
-    "eslint": "5.16.0",
+    "eslint": "6.5.1",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-react": "7.13.0",
     "gulp": "4.0.2",
@@ -110,7 +110,9 @@
     "react-qr-svg": "2.2.1",
     "rxjs": "6.5.2",
     "sequelize": "5.10.1",
-    "sequelize-cli": "5.5.1"
+    "sequelize-cli": "5.5.1",
+    "sortablejs": "1.10.1",
+    "webpack": "4.41.2"
   },
   "husky": {
     "hooks": {

@@ -13,6 +13,7 @@
     }
 }
 
+
 .Alert {
     border: 2px solid $neutral-grey3;
     padding: 16px 20px 16px 60px;
@@ -25,7 +26,15 @@
     animation: 4s ease-out 0s 1 slideInFromLeft forwards;
     top: 80px;
     min-width: 210px;
+    width: calc( 100%  - ( 2* #{$gutter}) );
     z-index: 100;
+
+    @media screen and (min-width: $screenMedium) {
+        font-size: 16px;
+        width: auto;
+        margin-left: $gutter;
+    }
+
     &__icon:before {
         position: absolute;
         left: 20px;
@@ -79,7 +88,7 @@
     &--inline {
         position: relative;
         display: block;
-        margin: 0 auto;
+        margin: 0 auto $gutter;
         animation: none;
         opacity: 1;
         transform: none;
