@@ -219,15 +219,25 @@ class PlaatsvoorkeurenForm extends React.Component {
                         <h2 className="Fieldset__header">Plaatsvoorkeuren</h2>
                         <span className="Fieldset__sub-header">U kunt zoveel voorkeuren invullen als u wilt.</span>
                         <div className="PlaatsvoorkeurenForm__list">
+                            <div className="Icon-line">
+                                <img className="Icon-line__icon" src="/images/draggable.svg" alt="Unchecked"/>
+                                <p className="Icon-line__text">Verander de volgorde van de plaatsnummers door ze op de juiste plaats te slepen.</p>
+                            </div>
+                            <h4 className="Fieldset__sub-header"><strong>Plaatsnummers</strong></h4>
+
                             {entriesSplit.map((entry, index, entriesArray) => (
                                 <div className="Draggable-list-item" id="plaatsvoorkeuren-list-item" key={entry.id}>
+
+                                    <div className="Draggable-list-item__handle">
+                                        <div className="Draggable-list-item__handle__bar"></div>
+                                        <div className="Draggable-list-item__handle__bar"></div>
+                                    </div>
+
                                     <div className="Draggable-list-item__left">
-                                        <div className="Draggable-list-item__handle">
-                                            <div className="Draggable-list-item__handle__bar"></div>
-                                            <div className="Draggable-list-item__handle__bar"></div>
-                                        </div>
+
                                         <span className="Draggable-list-item__label">
-                                            Plaatsnummer: <strong>{entry.plaatsId}</strong>
+                                            {/* Plaatsnummer: <strong>{entry.plaatsId}</strong> */}
+                                            <strong>{entry.plaatsId}</strong>
                                         </span>
                                     </div>
 
@@ -246,7 +256,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                                         name={`plaatsvoorkeuren[${index}][plaatsId]`}
                                         value={entry.plaatsId}
                                     />
-                                    <a   href="#"  data-handler="remove-voorkeur" className="Draggable-list-item__right">
+                                    <a href="#" data-handler="remove-voorkeur" className="Draggable-list-item__right">
                                         <span className="Draggable-list-item__delete">
                                         </span>
                                     </a>

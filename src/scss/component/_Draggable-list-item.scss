@@ -4,16 +4,16 @@
     // padding: .65rem;
     background-color: $neutral-grey1;
     border: 1px solid $neutral-grey3;
-    cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     align-items: center;
-    margin-bottom: $gutter-sm;
+    margin: 0 auto $gutter-sm;
     position: relative;
     height: 46px;
+    width: calc(100% - ( 6 * #{$gutter-sm}) );
 
     @media screen and (min-width: $screenMedium) {
-        // font-size: 16px;
+        width: 100%;
     }
 
     &.sortable-chosen{
@@ -22,10 +22,13 @@
 
     &__handle{
         width: 20px;
-        height: 8px;
+        height: 100%;
+        width: 46px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
+        align-items: center;
+        cursor:grab;
 
         @media screen and (min-width: $screenMedium) {
             font-size: 16px;
@@ -33,10 +36,17 @@
 
         &__bar{
             height: 2px;
+            width: 20px;
             border-radius: 3px;
             background: $neutral-grey3;
-            width: 100%;
+            &:first-child{
+                margin-bottom: 2px;
+            }
+            &:last-child{
+                margin-top: 2px;
+            }
         }
+
     }
 
     &:last-child{
@@ -47,9 +57,7 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        width: calc(100% - 46px);
         height: 100%;
-        padding-left: 15px;
     }
 
     &__icon{
@@ -60,11 +68,11 @@
     }
 
     &__label{
-        margin-left: 10px;
+        // margin-left: 10px;
         font-size: 16px;
         @media screen and (min-width: $screenMedium) {
             font-size: 16px;
-            margin-left: $gutter;
+            // margin-left: $gutter;
         }
     }
 
