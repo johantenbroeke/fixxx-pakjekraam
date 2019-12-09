@@ -138,6 +138,12 @@ export interface IToewijzing {
     plaatsen: PlaatsId[];
     erkenningsNummer: ErkenningsNummer;
     ondernemer?: IMarktondernemer;
+    anywhere?: boolean,
+    minimum?: number;
+    maximum?: number;
+    brancheId?: BrancheId;
+    bak?: boolean,
+    eigenMaterieel?: boolean,
 }
 
 export interface IAfwijzingReason {

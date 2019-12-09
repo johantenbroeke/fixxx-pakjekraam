@@ -3,12 +3,15 @@ import { getIndelingslijst, getDaysClosed } from './pakjekraam-api';
 
 import { flatten, tomorrow, getMaDiWoDo, toISODate } from './util';
 import { convertToewijzingForDB } from './model/allocation.functions';
+import { getVoorkeurByMarktEnOndernemer } from './model/voorkeur.functions';
 import { convertAfwijzingForDB } from './model/afwijzing.functions';
 // import { MMMarkt } from './makkelijkemarkt.model';
 // import { IMarkt, IMarktEnriched } from './markt.model';
+import { Allocation } from './model/allocation.model';
 import { getMarktenEnabled, getMarktEnriched } from './model/markt.functions';
 
 import { sequelize } from './model/index';
+import { IToewijzing } from 'markt.model';
 
 const marktDate = tomorrow();
 
@@ -29,6 +32,21 @@ const mapMarktenToToewijzingen = (markten: any) => {
     .reduce(flatten, []);
 };
 
+const enrichToewijzingen = (toewijzingen: IToewijzing[]) => {
+    return Promise.all(
+        toewijzingen.map(async (toewijzing: any) => {
+            const voorkeur = await getVoorkeurByMarktEnOndernemer(toewijzing.marktId, toewijzing.erkenningsNummer);
+            if (voorkeur) {
+                console.log('fissa');
+
+                toewijzing.anywhere = voorkeur.anywhere;
+            }
+            return toewijzing;
+          })
+    );
+};
+
+
 const mapMarktenToAfwijzingen = (markten: any) => {
     return markten
         .map((markt: any) =>
@@ -37,14 +55,15 @@ const mapMarktenToAfwijzingen = (markten: any) => {
         .reduce(flatten, []);
 };
 
-async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
-
+async function destroyAndCreateToewijzingenAfwijzingen(toewijzingen: any[], afwijzingen: any[]) {
     try {
         const transaction = await sequelize.transaction();
         await models.allocation.destroy({ where: { marktDate }, transaction });
         await models.afwijzing.destroy({ where: { marktDate }, transaction });
-        await models.allocation.bulkCreate(result[0], { validate: true }, transaction);
-        await models.afwijzing.bulkCreate(result[1], { validate: true }, transaction);
+        console.log('test');
+        console.log(toewijzingen);
+        await models.allocation.bulkCreate(toewijzingen, { validate: true }, transaction);
+        await models.afwijzing.bulkCreate(afwijzingen, { validate: true }, transaction);
         await transaction.commit();
         process.exit();
     } catch(e) {
@@ -60,8 +79,6 @@ async function allocation() {
         tomorrow.setDate(tomorrow.getDate() + 1);
         const tomorrowString = toISODate(tomorrow);
         const daysClosed = await getDaysClosed();
-        console.log(daysClosed);
-        console.log(tomorrowString);
         daysClosed.includes(tomorrowString) ? console.log(`Indeling wordt niet gedraaid, ${tomorrowString} gevonden in daysClosed.json`) : runAllocation();
     } catch(e) {
         console.log(e);
@@ -91,7 +108,24 @@ async function runAllocation() {
         const toewijzingen = await mapMarktenToToewijzingen(indelingen);
         const afwijzingen = await mapMarktenToAfwijzingen(indelingen);
 
-        await destroyAndCreateToewijzingenAfwijzingen([toewijzingen, afwijzingen]);
+        const toewijzingenEnriched = await Promise.all(
+            toewijzingen.map(async (toewijzing: any) => {
+                const voorkeur = await getVoorkeurByMarktEnOndernemer(toewijzing.marktId, toewijzing.erkenningsNummer);
+                console.log('vk');
+                console.log(voorkeur);
+                if (voorkeur !== null) {
+                    toewijzing.anywhere = voorkeur.anywhere;
+                    console.log(toewijzing);
+                    return toewijzing;
+                }
+                return toewijzing;
+            })
+        );
+
+        console.log('hey');
+        console.log(toewijzingenEnriched);
+
+        await destroyAndCreateToewijzingenAfwijzingen(toewijzingenEnriched, afwijzingen);
 
     }   catch(e) {
         console.log(e);
