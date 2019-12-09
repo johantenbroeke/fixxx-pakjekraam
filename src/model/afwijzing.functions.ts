@@ -1,8 +1,10 @@
-import { IMarkt } from 'markt.model';
+import { IMarkt, IAfwijzing } from 'markt.model';
 import { Afwijzing } from '../model/afwijzing.model';
 import { afwijzing } from '../model/index';
 import { BRANCHE_FULL, ADJACENT_UNAVAILABLE, MINIMUM_UNAVAILABLE } from '../allocation/indeling';
 
+import { getVoorkeurByMarktEnOndernemer  } from './voorkeur.functions';
+import { getPlaatsvoorkeurenByMarktEnOndernemer  } from './plaatsvoorkeur.functions';
 
 export const convertAfwijzingForDB = (afwijzing: any, markt: IMarkt, marktDate: string) => {
     return {
@@ -21,6 +23,24 @@ export const getAfwijzingReason = (reasonCode: number) => {
 
 export const printAfwijzingReason = (reasonCode: number) => {
     return getAfwijzingReason(reasonCode).message;
+};
+
+export const getAfwijzingEnriched = (afwijzing: IAfwijzing): Promise<IAfwijzing> => {
+    return Promise.all([
+        getVoorkeurByMarktEnOndernemer(afwijzing.marktId, afwijzing.erkenningsNummer),
+        getPlaatsvoorkeurenByMarktEnOndernemer(afwijzing.marktId, afwijzing.erkenningsNummer)
+    ]).then(result => {
+        const [ voorkeuren, plaatsvoorkeuren ] = result;
+
+        afwijzing.plaatsvoorkeuren = plaatsvoorkeuren.length > 0 ? plaatsvoorkeuren.map(plaats => plaats.plaatsId): null;
+        afwijzing.anywhere = voorkeuren ? voorkeuren.anywhere : null;
+        afwijzing.minimum = voorkeuren ? voorkeuren.minimum : null;
+        afwijzing.maximum = voorkeuren ? voorkeuren.maximum : null;
+        afwijzing.bak = voorkeuren ? !!(voorkeuren.parentBrancheId === 'bak') : null;
+        afwijzing.brancheId = voorkeuren ? voorkeuren.brancheId : null;
+
+        return afwijzing;
+    });
 };
 
 export const getAfwijzingen = (marktId: string, marktDate: string): Promise<any[]> =>

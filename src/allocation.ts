@@ -2,20 +2,18 @@ const models = require('./model/index.ts');
 import { getIndelingslijst, getDaysClosed } from './pakjekraam-api';
 
 import { flatten, tomorrow, getMaDiWoDo, toISODate } from './util';
-import { convertToewijzingForDB } from './model/allocation.functions';
-import { getVoorkeurByMarktEnOndernemer } from './model/voorkeur.functions';
-import { convertAfwijzingForDB } from './model/afwijzing.functions';
+import { convertToewijzingForDB, getToewijzingEnriched } from './model/allocation.functions';
+import { convertAfwijzingForDB, getAfwijzingEnriched } from './model/afwijzing.functions';
 // import { MMMarkt } from './makkelijkemarkt.model';
 // import { IMarkt, IMarktEnriched } from './markt.model';
-import { Allocation } from './model/allocation.model';
 import { getMarktenEnabled, getMarktEnriched } from './model/markt.functions';
 
 import { sequelize } from './model/index';
-import { IToewijzing } from 'markt.model';
+import { IToewijzing, IAfwijzing } from 'markt.model';
 
 const marktDate = tomorrow();
 
-const mapMarktenToToewijzingen = (markten: any) => {
+const mapMarktenToToewijzingen = (markten: any): Promise<IToewijzing[]> => {
     return markten
     .map((markt: any) =>
         markt.toewijzingen.map( (toewijzing: any) => convertToewijzingForDB(toewijzing, markt, marktDate)),
@@ -32,22 +30,8 @@ const mapMarktenToToewijzingen = (markten: any) => {
     .reduce(flatten, []);
 };
 
-const enrichToewijzingen = (toewijzingen: IToewijzing[]) => {
-    return Promise.all(
-        toewijzingen.map(async (toewijzing: any) => {
-            const voorkeur = await getVoorkeurByMarktEnOndernemer(toewijzing.marktId, toewijzing.erkenningsNummer);
-            if (voorkeur) {
-                console.log('fissa');
 
-                toewijzing.anywhere = voorkeur.anywhere;
-            }
-            return toewijzing;
-          })
-    );
-};
-
-
-const mapMarktenToAfwijzingen = (markten: any) => {
+const mapMarktenToAfwijzingen = (markten: any): Promise<IAfwijzing[]> => {
     return markten
         .map((markt: any) =>
             markt.afwijzingen.map( (afwijzing: any) => convertAfwijzingForDB(afwijzing, markt, marktDate)),
@@ -55,13 +39,11 @@ const mapMarktenToAfwijzingen = (markten: any) => {
         .reduce(flatten, []);
 };
 
-async function destroyAndCreateToewijzingenAfwijzingen(toewijzingen: any[], afwijzingen: any[]) {
+async function destroyAndCreateToewijzingenAfwijzingen(toewijzingen: IToewijzing[], afwijzingen: IAfwijzing[]) {
     try {
         const transaction = await sequelize.transaction();
         await models.allocation.destroy({ where: { marktDate }, transaction });
         await models.afwijzing.destroy({ where: { marktDate }, transaction });
-        console.log('test');
-        console.log(toewijzingen);
         await models.allocation.bulkCreate(toewijzingen, { validate: true }, transaction);
         await models.afwijzing.bulkCreate(afwijzingen, { validate: true }, transaction);
         await transaction.commit();
@@ -109,23 +91,14 @@ async function runAllocation() {
         const afwijzingen = await mapMarktenToAfwijzingen(indelingen);
 
         const toewijzingenEnriched = await Promise.all(
-            toewijzingen.map(async (toewijzing: any) => {
-                const voorkeur = await getVoorkeurByMarktEnOndernemer(toewijzing.marktId, toewijzing.erkenningsNummer);
-                console.log('vk');
-                console.log(voorkeur);
-                if (voorkeur !== null) {
-                    toewijzing.anywhere = voorkeur.anywhere;
-                    console.log(toewijzing);
-                    return toewijzing;
-                }
-                return toewijzing;
-            })
-        );
+            toewijzingen.map(toewijzing => getToewijzingEnriched(toewijzing)
+        ));
 
-        console.log('hey');
-        console.log(toewijzingenEnriched);
+        const afwijzingenEnriched = await Promise.all(
+            afwijzingen.map(afwijzing => getAfwijzingEnriched(afwijzing)
+        ));
 
-        await destroyAndCreateToewijzingenAfwijzingen(toewijzingenEnriched, afwijzingen);
+        await destroyAndCreateToewijzingenAfwijzingen(toewijzingenEnriched, afwijzingenEnriched);
 
     }   catch(e) {
         console.log(e);

@@ -2,7 +2,6 @@ import { voorkeur } from './index';
 import {
     IMarktondernemerVoorkeur,
     IMarktondernemerVoorkeurRow,
-
 } from '../markt.model';
 import { Voorkeur } from './voorkeur.model';
 
