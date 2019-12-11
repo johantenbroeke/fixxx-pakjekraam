@@ -56,7 +56,7 @@ class ToewijzingenAfwijzingenPage extends React.Component {
 
         function getMarktAfkorting(marktId) {
             const marktFound = markten.find(markt => markt.id === marktId);
-            return markt ? marktFound.afkorting : '';
+            return marktFound ? marktFound.afkorting : '';
         }
 
         return (
