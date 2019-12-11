@@ -122,16 +122,6 @@ export const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<I
         })
         .then(aanmeldingen => aanmeldingen);
 
-export const getToewijzingenByOndernemer = (erkenningsNummer: string): Promise<IToewijzing[]> =>
-        allocation
-            .findAll<Allocation>({
-                where: { erkenningsNummer },
-                raw: true,
-            })
-            .then(toewijzingen => {
-                return toewijzingen.reduce(toewijzingenPerDatum, []);
-            });
-
 export const getToewijzingenByOndernemerEnMarkt = (marktId: string, erkenningsNummer: string): Promise<IToewijzing[]> =>
     allocation
         .findAll<Allocation>({
@@ -548,9 +538,9 @@ export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
     }));
 
 export const getMarkten = () =>
-    getMakkelijkeMarkten()
+    getMakkelijkeMarkten();
         // Only show markten for which JSON data with location info exists
-        .then(markten => markten.filter(markt => fs.existsSync(`data/${slugifyMarkt(markt.id)}/markt.json`)));
+        // .then(markten => markten.filter(markt => fs.existsSync(`data/${slugifyMarkt(markt.id)}/markt.json`)));
 
 export const getMarktenByDate = (marktDate: string) => {
     const day = new Date(marktDate).getDay();

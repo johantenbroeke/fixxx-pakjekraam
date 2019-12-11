@@ -1,6 +1,7 @@
 import { voorkeur } from './index';
 import {
     IMarktondernemerVoorkeur,
+    IMarktondernemerVoorkeurRow,
 } from '../markt.model';
 import { Voorkeur } from './voorkeur.model';
 
@@ -25,7 +26,7 @@ export const getVoorkeurByOndernemer = (erkenningsNummer: string): Promise<IMark
             where: { erkenningsNummer }, raw: true
         });
 
-export const getVoorkeurByMarktEnOndernemer = (marktId: string, erkenningsNummer: string): Promise<IMarktondernemerVoorkeur> =>
+export const getVoorkeurByMarktEnOndernemer = (marktId: string, erkenningsNummer: string): Promise<IMarktondernemerVoorkeurRow> =>
 voorkeur
     .findOne<Voorkeur>({
         where: { erkenningsNummer, marktId }, raw: true
