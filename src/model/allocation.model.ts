@@ -12,5 +12,6 @@ export class Allocation extends Model<IToewijzing, IToewijzing> {
     public minimum!: number;
     public maximum!: number;
     public bak!: boolean;
+    public eigenMaterieel!: boolean;
     public brancheId!: string;
 }

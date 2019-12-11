@@ -38,7 +38,10 @@ export const getAfwijzingEnriched = (afwijzing: IAfwijzing): Promise<IAfwijzing>
         afwijzing.minimum = voorkeuren ? voorkeuren.minimum : null;
         afwijzing.maximum = voorkeuren ? voorkeuren.maximum : null;
         afwijzing.bak = voorkeuren ? !!(voorkeuren.parentBrancheId === 'bak') : null;
+        afwijzing.eigenMaterieel = voorkeuren ? !!(voorkeuren.inrichting === 'eigen-materieel') : null;
         afwijzing.brancheId = voorkeuren ? voorkeuren.brancheId : null;
+
+        // console.log(afwijzing);
 
         return afwijzing;
     });

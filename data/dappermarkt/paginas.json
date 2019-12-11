@@ -248,18 +248,13 @@
       },
       {
         "class": "straat-10b",
-        "plaatsList": ["171", "173", "175"],
+        "plaatsList": ["171"],
         "title": "Achter Tolhuysen"
       },
       {
         "class": "straat-11a",
         "plaatsList": ["176", "178", "180"],
         "title": "Achter de Vis"
-      },
-      {
-        "class": "straat-11b",
-        "plaatsList": ["177", "179", "181"],
-        "title": "Achter de Groente"
       }
     ]
   }

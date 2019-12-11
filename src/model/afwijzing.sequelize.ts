@@ -33,6 +33,9 @@ export const initAfwijzing = (sequelize: Sequelize) => {
         bak: {
             type: DataTypes.BOOLEAN,
         },
+        eigenMaterieel: {
+            type: DataTypes.BOOLEAN,
+        },
         brancheId: {
             type: DataTypes.INTEGER,
         },

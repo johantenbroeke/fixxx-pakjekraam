@@ -1,0 +1,97 @@
+.Table{
+    // background: orchid;
+    // overflow: auto;
+    overflow-x: auto;
+
+    &__table{
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid #ddd;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: .875rem;
+
+        @media screen and (min-width: $screenMedium) {
+            // table-layout: fixed;
+        }
+
+        tbody{
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: $gutter-xs;
+            @media screen and (min-width: $screenMedium) {
+                min-width: inherit;
+            }
+        }
+
+        td {
+            vertical-align: top;
+            word-break: break-all;
+        }
+
+        &__column {
+
+            &--x-small{
+                min-width: 108px !important;
+                @media screen and (min-width: $screenMedium) {
+
+                }
+            }
+            &--small{
+                min-width: 138px !important;
+                @media screen and (min-width: $screenMedium) {
+
+                }
+            }
+            &--medium{
+                min-width: 188px !important;
+                @media screen and (min-width: $screenMedium) {
+                    width: 16%;
+                }
+            }
+        }
+
+    }
+
+    &--toewijzingen-afwijzingen{
+        table {
+            tr{
+                th,td {
+                    &:nth-child(1) {
+                        min-width: $table-cell-width-small;
+                    }
+                    &:nth-child(2) {
+                        min-width: $table-cell-width-small;
+                    }
+                    &:nth-child(3) {
+                        min-width: $table-cell-width-small;
+                    }
+                    &:nth-child(4) {
+                        min-width: $table-cell-width-small;
+                    }
+                    &:nth-child(5) {
+                        min-width: $table-cell-width-small;
+                    }
+                    &:nth-child(6) {
+                        min-width: $table-cell-width-small;
+                    }
+                    &:nth-child(7) {
+                        min-width: $table-cell-width-small;
+                    }
+                    &:nth-child(8) {
+                        min-width: 10rem;
+                        @media screen and (min-width: $screenMedium) {
+                            min-width: inherit;
+                        }
+                    }
+                    &:nth-child(9) {
+                        min-width: 15rem;
+                    }
+                }
+            }
+        }
+    }
+
+}

@@ -12,5 +12,6 @@ export class Afwijzing extends Model<IAfwijzing> {
     public minimum!: number;
     public maximum!: number;
     public bak!: boolean;
+    public eigenMaterieel!: boolean;
     public brancheId!: string;
 }

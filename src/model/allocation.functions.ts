@@ -1,10 +1,12 @@
-import { allocation as Allocation } from './index';
+import { allocation } from './index';
 import { IToewijzing, IMarkt } from 'markt.model';
 import { getVoorkeurByMarktEnOndernemer  } from './voorkeur.functions';
 import { getPlaatsvoorkeurenByMarktEnOndernemer  } from './plaatsvoorkeur.functions';
 
+import { Allocation } from './allocation.model';
+
 export const deleteAllocationsByErkenningsnummer = (erkenningsNummer: string) =>
-    Allocation.destroy({ where: { erkenningsNummer } });
+    allocation.destroy({ where: { erkenningsNummer } });
 
 export const convertToewijzingForDB = (toewijzing: IToewijzing[], markt: IMarkt, marktDate: string) => {
     return {
@@ -26,8 +28,39 @@ export const getToewijzingEnriched = (toewijzing: IToewijzing): Promise<IToewijz
         toewijzing.minimum = voorkeuren ? voorkeuren.minimum : null;
         toewijzing.maximum = voorkeuren ? voorkeuren.maximum : null;
         toewijzing.bak = voorkeuren ? !!(voorkeuren.parentBrancheId === 'bak') : null;
+        toewijzing.eigenMaterieel = voorkeuren ? !!(voorkeuren.inrichting === 'eigen-materieel') : null;
         toewijzing.brancheId = voorkeuren ? voorkeuren.brancheId : null;
 
         return toewijzing;
     });
 };
+
+
+const toewijzingenPerDatum = (toewijzingen: IToewijzing[], row: Allocation): IToewijzing[] => {
+
+    const { marktId, marktDate, erkenningsNummer } = row;
+
+    const existing = toewijzingen.find(toewijzing => toewijzing.marktDate === marktDate);
+
+    const voorkeur: IToewijzing = {
+        ...row,
+        plaatsen: [...(existing ? existing.plaatsen : []), row.plaatsId],
+    };
+
+    if (existing) {
+        return [...toewijzingen.filter(toewijzing => toewijzing.marktDate !== marktDate), voorkeur];
+    } else {
+        return [...toewijzingen, voorkeur];
+    }
+
+};
+
+export const getToewijzingenByOndernemer = (erkenningsNummer: string): Promise<IToewijzing[]> =>
+        allocation
+            .findAll<Allocation>({
+                where: { erkenningsNummer },
+                raw: true,
+            })
+            .then(toewijzingen => {
+                return toewijzingen.reduce(toewijzingenPerDatum, []);
+            });

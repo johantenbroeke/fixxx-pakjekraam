@@ -164,6 +164,7 @@ export interface IAfwijzing {
     plaatsvoorkeuren?: string[];
     brancheId?: BrancheId;
     bak?: boolean;
+    eigenMaterieel?: boolean;
 }
 
 export interface IBranche {

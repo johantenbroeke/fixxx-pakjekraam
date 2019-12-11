@@ -27,6 +27,10 @@ module.exports = {
         { type: Sequelize.BOOLEAN, },
         { transaction }
       );
+      await queryInterface.addColumn('allocation', 'eigenMaterieel',
+        { type: Sequelize.BOOLEAN, },
+        { transaction }
+      );
       await queryInterface.addColumn('allocation', 'brancheId',
         { type: Sequelize.STRING, },
         { transaction }
@@ -49,6 +53,10 @@ module.exports = {
         { transaction }
       );
       await queryInterface.addColumn('afwijzing', 'bak',
+        { type: Sequelize.BOOLEAN, },
+        { transaction }
+      );
+      await queryInterface.addColumn('afwijzing', 'eigenMaterieel',
         { type: Sequelize.BOOLEAN, },
         { transaction }
       );
@@ -75,6 +83,7 @@ module.exports = {
       await queryInterface.removeColumn('allocation', 'minimum', { transaction })
       await queryInterface.removeColumn('allocation', 'maximum', { transaction })
       await queryInterface.removeColumn('allocation', 'bak', { transaction })
+      await queryInterface.removeColumn('allocation', 'eigenMaterieel', { transaction })
       await queryInterface.removeColumn('allocation', 'brancheId', { transaction })
 
       await queryInterface.removeColumn('afwijzing', 'plaatsvoorkeuren', { transaction })
@@ -82,6 +91,7 @@ module.exports = {
       await queryInterface.removeColumn('afwijzing', 'minimum', { transaction })
       await queryInterface.removeColumn('afwijzing', 'maximum', { transaction })
       await queryInterface.removeColumn('afwijzing', 'bak', { transaction })
+      await queryInterface.removeColumn('afwijzing', 'eigenMaterieel', { transaction })
       await queryInterface.removeColumn('afwijzing', 'brancheId', { transaction })
 
       await transaction.commit();
