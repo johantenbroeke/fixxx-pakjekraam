@@ -34,7 +34,7 @@ class ToewijzingenAfwijzingenPage extends React.Component {
 
         // Sort by date
         toewijzingenAfwijzingen = toewijzingenAfwijzingen.sort( (a, b) =>
-            new Date(a.marktDate).getTime() - new Date(b.marktDate).getTime()
+            new Date(b.marktDate).getTime()- new Date(a.marktDate).getTime()
         );
 
         // Take only the first 14 records
