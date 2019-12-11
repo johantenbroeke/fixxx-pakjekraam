@@ -198,6 +198,16 @@ class AlgemeneVoorkeurenForm extends React.Component {
                         <input type="hidden" name="marktId" defaultValue={marktId} />
                         <input type="hidden" name="marktDate" defaultValue={marktDate} />
                         <input type="hidden" name="anywhere" defaultValue={voorkeur.anywhere !== false && 'on'} />
+                        <a
+                            className="Button Button--tertiary"
+                            href={`${
+                                role === 'marktmeester'
+                                    ? `/profile/${ondernemer.erkenningsnummer}`
+                                    : `/markt-detail/${markt.id}#marktprofiel`
+                            }`}
+                        >
+                            Voorkeuren
+                        </a>
                         <button
                             className="Button Button--secondary"
                             type="submit"
@@ -210,16 +220,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                         >
                             Bewaar
                         </button>
-                        <a
-                            className="Button Button--tertiary"
-                            href={`${
-                                role === 'marktmeester'
-                                    ? `/profile/${ondernemer.erkenningsnummer}`
-                                    : `/markt-detail/${markt.id}#marktprofiel`
-                            }`}
-                        >
-                            Annuleer
-                        </a>
+
                     </p>
                 </div>
             </Form>

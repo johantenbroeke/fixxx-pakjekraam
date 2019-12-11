@@ -79,10 +79,10 @@ class AfmeldForm extends React.Component {
                         Vink uit op welke dagen u (of uw vervanger) niet op deze markt staat.
                     </span>
                 ) : (
-                    <span className="Fieldset__subtitle">
-                        Vink aan op welke dagen u (of uw vervanger) naar de markt wilt komen.
+                        <span className="Fieldset__subtitle">
+                            Vink aan op welke dagen u (of uw vervanger) naar de markt wilt komen.
                     </span>
-                )}
+                    )}
                 {weekAanmeldingen.map((week, i) => (
                     <div key={i}>
                         <span className="OndernemerMarktAanwezigheid__divider">
@@ -115,6 +115,16 @@ class AfmeldForm extends React.Component {
                     </div>
                 ))}
                 <p className="InputField InputField--submit">
+                    <a
+                        className="Button Button--tertiary"
+                        href={`${
+                            role === 'marktmeester'
+                                ? `/profile/${ondernemer.erkenningsnummer}`
+                                : `/markt-detail/${markt.id}#aanwezigheid`
+                            }`}
+                    >
+                        Voorkeuren
+                    </a>
                     <button
                         className="Button Button--secondary"
                         type="submit"
@@ -123,21 +133,9 @@ class AfmeldForm extends React.Component {
                             role === 'marktmeester'
                                 ? `/profile/${ondernemer.erkenningsnummer}?error=aanwezigheid-saved`
                                 : `/markt-detail/${markt.id}?error=aanwezigheid-saved#aanwezigheid`
-                        }`}
+                            }`}
                     >Bewaren
                     </button>
-                    {currentMarktId && (
-                        <a
-                            className="Button Button--tertiary"
-                            href={`${
-                                role === 'marktmeester'
-                                    ? `/profile/${ondernemer.erkenningsnummer}`
-                                    : `/markt-detail/${markt.id}#aanwezigheid`
-                            }`}
-                        >
-                            Annuleer
-                        </a>
-                    )}
                 </p>
             </Form>
         );
