@@ -84,20 +84,27 @@ async function runAllocation() {
         const maDiWoDo = getMaDiWoDo(tomorrow);
         marktenEnriched = marktenEnriched.filter( markt => markt.marktDagen.includes(maDiWoDo));
 
-        const indelingen = await Promise.all(markten.map(markt => getIndelingslijst(String(markt.id), marktDate)));
+        if (marktenEnriched.length > 0) {
 
-        const toewijzingen = await mapMarktenToToewijzingen(indelingen);
-        const afwijzingen = await mapMarktenToAfwijzingen(indelingen);
+            const indelingen = await Promise.all(marktenEnriched.map(markt => getIndelingslijst(String(markt.id), marktDate)));
 
-        const toewijzingenEnriched = await Promise.all(
-            toewijzingen.map(toewijzing => getToewijzingEnriched(toewijzing)
-        ));
+            const toewijzingen = await mapMarktenToToewijzingen(indelingen);
+            const afwijzingen = await mapMarktenToAfwijzingen(indelingen);
 
-        const afwijzingenEnriched = await Promise.all(
-            afwijzingen.map(afwijzing => getAfwijzingEnriched(afwijzing)
-        ));
+            const toewijzingenEnriched = await Promise.all(
+                toewijzingen.map(toewijzing => getToewijzingEnriched(toewijzing)
+            ));
 
-        await destroyAndCreateToewijzingenAfwijzingen(toewijzingenEnriched, afwijzingenEnriched);
+            const afwijzingenEnriched = await Promise.all(
+                afwijzingen.map(afwijzing => getAfwijzingEnriched(afwijzing)
+            ));
+
+            await destroyAndCreateToewijzingenAfwijzingen(toewijzingenEnriched, afwijzingenEnriched);
+
+        } else {
+            console.log('Geen indelingen gedraaid.');
+            process.exit();
+        }
 
     }   catch(e) {
         console.log(e);
