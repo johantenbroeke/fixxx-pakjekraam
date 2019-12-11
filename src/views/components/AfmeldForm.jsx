@@ -1,7 +1,6 @@
 const OndernemerMarktHeading = require('./OndernemerMarktHeading');
 const Form = require('./Form');
 const React = require('react');
-import moment from 'moment';
 const PropTypes = require('prop-types');
 const {
     formatDayOfWeek,

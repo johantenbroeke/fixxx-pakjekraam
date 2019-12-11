@@ -17,6 +17,7 @@ class OndernemerProfile extends React.Component {
             <div>
                 <h1>Ondernemer detail: {formatOndernemerName(ondernemer)}</h1>
                 <p>{ondernemer.erkenningsnummer}</p>
+                <a className="Link" href={`/ondernemer/${ondernemer.erkenningsnummer}/toewijzingen-afwijzingen`}>Toewijzingen/afwijzingen</a>
                 <h2>Markten</h2>
                 {ondernemer.sollicitaties
                     .filter(sollicitatie => !sollicitatie.doorgehaald)
