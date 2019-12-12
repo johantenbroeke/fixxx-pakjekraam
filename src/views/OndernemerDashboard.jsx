@@ -57,9 +57,15 @@ class OndernemerDashboard extends React.Component {
             return markt;
         });
 
+        const breadcrumbs = [];
+
         return (
             <Page messages={messages}>
-                <Header user={ondernemer} logoUrl="/dashboard/">
+                <Header
+                    user={ondernemer}
+                    breadcrumbs={breadcrumbs}
+                    logoUrl="/dashboard/"
+                >
                     <a className="Header__nav-item" href="./">
                         Mijn markten
                     </a>
