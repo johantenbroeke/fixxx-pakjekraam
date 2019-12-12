@@ -6,7 +6,7 @@ const Content = require('./components/Content');
 const OndernemerAanwezigheid = require('./components/OndernemerAanwezigheid');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
 const OndernemerMarktTile = require('./components/OndernemerMarktTile');
-const { tomorrow, today, formatDayOfWeek, getMaDiWoDoOfToday } = require('../util.ts');
+const { tomorrow, today } = require('../util.ts');
 
 class OndernemerDashboard extends React.Component {
     propTypes = {

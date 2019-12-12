@@ -7,6 +7,8 @@ const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
 const OndernemerMarktHeading = require('./components/OndernemerMarktHeading');
 
+const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
+
 class VoorkeurenPage extends React.Component {
     propTypes = {
         plaatsvoorkeuren: PropTypes.array.isRequired,
@@ -54,9 +56,15 @@ class VoorkeurenPage extends React.Component {
             row.map(plaatsId => marktPlaatsen.find(plaats => plaats.plaatsId === plaatsId)).map(plaats => plaats),
         );
 
+        const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
+
         return (
             <Page messages={this.props.messages}>
-                <Header user={ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
+                <Header
+                    user={ondernemer}
+                    logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}
+                    breadcrumbs={breadcrumbs}
+                    >
                     <a className="Header__nav-item" href={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
                         {role === 'marktmeester' ? 'Markten' : 'Mijn markten'}
                     </a>
