@@ -3,7 +3,7 @@ const MarktDetailBase = require('./components/MarktDetailBase');
 const OndernemerListAfwezig = require('./components/OndernemerListAfwezig.tsx');
 const PrintPage = require('./components/PrintPage');
 const PropTypes = require('prop-types');
-const { paginate } = require('../util');
+const { paginate, getBreadcrumbsMarkt } = require('../util');
 
 class SollicitantenPage extends React.Component {
     propTypes = {
@@ -18,6 +18,7 @@ class SollicitantenPage extends React.Component {
 
         const paginas = paginate(ondernemers, itemsOnPage);
         const paginasLists = paginate(paginas, 2);
+        const breadcrumbs = getBreadcrumbsMarkt(markt);
 
         return (
             <MarktDetailBase
@@ -27,6 +28,7 @@ class SollicitantenPage extends React.Component {
                 datum={datum}
                 type={'ondernemers'}
                 showDate={false}
+                breadcrumbs={breadcrumbs}
             >
                 {paginasLists.map((pagina, i) => (
                     <PrintPage key={i} index={i} title={`Ondernemers langdurig afgemeld: ${markt.naam}`} datum={datum}>

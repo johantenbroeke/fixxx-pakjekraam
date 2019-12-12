@@ -46,7 +46,6 @@ class MarktDetailPage extends React.Component {
         let fase = null;
         markt.kiesJeKraamFase == 'live' ? fase = null : fase = ` ${markt.kiesJeKraamFase}`;
 
-
         return (
             <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase}>
                  {/* {markt.kiesJeKraamGeblokkeerdePlaatsen ?

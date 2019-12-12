@@ -1,0 +1,21 @@
+.Breadcrumbs{
+    display: flex;
+    flex-direction: row;
+}
+
+.Breadcrumb{
+    color: $neutral-grey4;
+    text-decoration: none;
+    margin-right: 10px;
+    $self: &;
+    &__icon{
+        height: 10px;
+        fill: $neutral-grey4;
+        margin-left: 10px;
+    }
+    &:last-child{
+        #{ $self }__icon{
+            display: none;
+        }
+    }
+}

@@ -3,7 +3,7 @@ const MarktDetailBase = require('./components/MarktDetailBase');
 const OndernemerListAfwezig = require('./components/OndernemerListAfwezig.tsx');
 const PrintPage = require('./components/PrintPage');
 const PropTypes = require('prop-types');
-const { arrayToChunks } = require('../util');
+const { arrayToChunks, getBreadcrumbsMarkt } = require('../util');
 
 class afmeldingenPage extends React.Component {
     propTypes = {
@@ -22,6 +22,8 @@ class afmeldingenPage extends React.Component {
 
         const columns = arrayToChunks(vasteplaatshoudersAfgemeld, 40);
 
+        const breadcrumbs = getBreadcrumbsMarkt(markt);
+
         return (
             <MarktDetailBase
                 bodyClass="page-markt-sollicitanten page-print"
@@ -31,6 +33,7 @@ class afmeldingenPage extends React.Component {
                 buttonLabel={'afmeldingen'}
                 showDate={false}
                 type={'afmeldingen'}
+                breadcrumbs={breadcrumbs}
             >
                 <PrintPage
                     title={`Vasteplaatshouders afgemeld: ${markt.naam}`}

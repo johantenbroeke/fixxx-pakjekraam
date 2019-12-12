@@ -2,7 +2,18 @@ const LoginButton = require('./LoginButton');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-const Header = ({ user, children, logoUrl, hideLogout }) => {
+const Header = ({ user, children, logoUrl, hideLogout, breadcrumbs }) => {
+    if (!breadcrumbs) {
+        breadcrumbs = [
+            {
+                "title":"Markten",
+                "url":"/markt",
+            }
+        ];
+    }
+
+    logoUrl = '/markt/';
+
     return (
         <header className="Header">
             <div className="Header__top">
@@ -25,7 +36,16 @@ const Header = ({ user, children, logoUrl, hideLogout }) => {
             <div className="Header__bottom">
                 <div className="container">
                     <div className="container__content">
-                        <div className="Header__bottom-container">{children}</div>
+                        <div className="Header__bottom-container">
+                            <div className="Breadcrumbs">
+                                { breadcrumbs ? breadcrumbs.map((link, i) => (
+                                    <a className="Breadcrumb" href={link.url} key={i}>
+                                        {link.title}
+                                        <img className="Breadcrumb__icon" src="/images/chevron-right.svg" alt="Chevron-right"/>
+                                    </a>
+                                )) : null }
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -34,6 +54,7 @@ const Header = ({ user, children, logoUrl, hideLogout }) => {
 };
 
 Header.propTypes = {
+    breadcrumbs: PropTypes.arrayOf(PropTypes.object),
     user: PropTypes.object,
     logoUrl: PropTypes.string,
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),

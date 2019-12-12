@@ -6,7 +6,7 @@ const Content = require('./components/Content');
 const OndernemerAanwezigheid = require('./components/OndernemerAanwezigheid');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
 const OndernemerMarktTile = require('./components/OndernemerMarktTile');
-const { tomorrow, today, formatDayOfWeek, getMaDiWoDoOfToday } = require('../util.ts');
+const { tomorrow, today } = require('../util.ts');
 
 class OndernemerDashboard extends React.Component {
     propTypes = {
@@ -68,7 +68,7 @@ class OndernemerDashboard extends React.Component {
                 <Content>
                     <div className="Section Section--column">
                         <a href="https://www.amsterdam.nl/ondernemen/markt-straathandel/digitaal-indelen/" rel="noopener noreferrer" target="_blank" className="Link">Informatie over digitaal Indelen van de markt</a>
-                        <a href="/toewijzingen-afwijzingen/" rel="noopener noreferrer" target="_blank" className="Link">toewijzingen/ afwijzingen</a>
+                        <a href="/toewijzingen-afwijzingen/" className="Link">Toewijzingen/ afwijzingen</a>
                     </div>
                     <h1 className="Heading Heading--intro">Mijn markten</h1>
                     <div className="row row--responsive">

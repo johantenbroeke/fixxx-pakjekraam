@@ -1,7 +1,6 @@
 // import moment from 'moment';
 const moment = require('moment-timezone');
 
-
 export const capitalize = (s: string) => {
     return typeof s === 'string' ?
            s.charAt(0).toUpperCase() + s.slice(1) :
@@ -262,6 +261,32 @@ export const paginate = <T>(arr: T[], count: number): T[][] => {
 
         return t;
     }, []);
+};
+
+export const getBreadcrumbsOndernemer = (ondernemerName: string, erkenningsnummer: string) => {
+    return [
+        {
+            'title': 'Markten',
+            'url':  '/markt/'
+        },
+        {
+            'title': ondernemerName,
+            'url':  `/profile/${erkenningsnummer}/`
+        }
+    ];
+};
+
+export const getBreadcrumbsMarkt = (markt: any) => {
+    return [
+        {
+            'title':'Markten',
+            'url':'/markt/'
+        },
+        {
+            'title': markt.naam,
+            'url':  `/markt/${markt.id}/`
+        }
+    ];
 };
 
 export const requireOne = <T>(arg: T[] | T | null): T => {
