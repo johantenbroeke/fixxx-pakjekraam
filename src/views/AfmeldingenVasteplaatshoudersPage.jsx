@@ -11,18 +11,19 @@ class afmeldingenPage extends React.Component {
         data: PropTypes.object,
         datum: PropTypes.string,
         vasteplaatshoudersAfgemeld: PropTypes.array,
+        role: PropTypes.string,
     };
 
     render() {
         const {
            datum,
            markt,
-           vasteplaatshoudersAfgemeld
+           vasteplaatshoudersAfgemeld,
+           role
         } = this.props;
 
         const columns = arrayToChunks(vasteplaatshoudersAfgemeld, 40);
-
-        const breadcrumbs = getBreadcrumbsMarkt(markt);
+        const breadcrumbs = getBreadcrumbsMarkt(markt, role);
 
         return (
             <MarktDetailBase

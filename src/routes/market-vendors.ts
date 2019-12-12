@@ -4,6 +4,8 @@ import { internalServerErrorPage, HTTP_INTERNAL_SERVER_ERROR, httpErrorPage } fr
 
 import Indeling from '../allocation/indeling';
 
+import { KeycloakRoles } from '../permissions';
+
 export const vasteplaatshoudersPage = (req: Request, res: Response) => {
     const datum = req.params.datum;
     const type = 'vasteplaatshouders';
@@ -37,11 +39,14 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
                     return !Indeling.isAanwezig(ondernemer, aanmeldingen, new Date(datum));
                 });
 
+                const role = KeycloakRoles.MARKTMEESTER;
+
                 res.render('AfmeldingenVasteplaatshoudersPage', {
                     data,
                     vasteplaatshoudersAfgemeld: vasteplaatshoudersAfwezig,
                     markt: data.markt,
                     datum,
+                    role
                 });
             },
             internalServerErrorPage(res),
@@ -75,6 +80,7 @@ export const voorrangslijstPage = (req: Request, res: Response, next: NextFuncti
                 }
             });
 
+            const role = KeycloakRoles.MARKTMEESTER;
             const type = markt.kiesJeKraamFase;
 
             res.render('VoorrangslijstPage', {
@@ -87,6 +93,7 @@ export const voorrangslijstPage = (req: Request, res: Response, next: NextFuncti
                 type,
                 toewijzingen: toewijzingenOptional,
                 algemenevoorkeuren,
+                role
             });
         },
         internalServerErrorPage(res),
@@ -104,6 +111,7 @@ export const voorrangslijstVolledigPage = (req: Request, res: Response, next: Ne
             // const toewijzingenOptional = markt.fase === 'wenperiode' ? [] : toewijzingen;
 
             const type = 'wenperiode';
+            const role = KeycloakRoles.MARKTMEESTER;
 
             res.render('VoorrangslijstPage', {
                 ondernemers: ondernemersFiltered,
@@ -115,6 +123,7 @@ export const voorrangslijstVolledigPage = (req: Request, res: Response, next: Ne
                 type,
                 toewijzingen: [],
                 algemenevoorkeuren,
+                role
             });
         },
         internalServerErrorPage(res),

@@ -1,5 +1,6 @@
 // import moment from 'moment';
 const moment = require('moment-timezone');
+// const { formatOndernemerName } = require('./domain-knowledge.js');
 
 export const capitalize = (s: string) => {
     return typeof s === 'string' ?
@@ -263,30 +264,52 @@ export const paginate = <T>(arr: T[], count: number): T[][] => {
     }, []);
 };
 
-export const getBreadcrumbsOndernemer = (ondernemerName: string, erkenningsnummer: string) => {
-    return [
-        {
-            'title': 'Markten',
-            'url':  '/markt/'
-        },
-        {
-            'title': ondernemerName,
-            'url':  `/profile/${erkenningsnummer}/`
-        }
-    ];
+export const getBreadcrumbsOndernemer = (ondernemer: any, role: string) => {
+    if(role === 'marktmeester'){
+        return [
+            {
+                'title': 'Markten',
+                'url':  '/markt/'
+            },
+            {
+                'title': `${ondernemer.tussenvoegsels} ${ondernemer.achternaam} ${ondernemer.voorletters}`,
+                'url':  `/profile/${ondernemer.erkenningsnummer}/`
+            }
+        ];
+    } else {
+        return [
+            {
+                'title': 'Markten',
+                'url':  '/dashboard/'
+            },
+        ];
+    }
 };
 
-export const getBreadcrumbsMarkt = (markt: any) => {
-    return [
-        {
-            'title':'Markten',
-            'url':'/markt/'
-        },
-        {
-            'title': markt.naam,
-            'url':  `/markt/${markt.id}/`
-        }
-    ];
+export const getBreadcrumbsMarkt = (markt: any, role: string) => {
+    if(role === 'marktmeester'){
+        return [
+            {
+                'title':'Markten',
+                'url':'/markt/'
+            },
+            {
+                'title': markt.naam,
+                'url':  `/markt/${markt.id}/`
+            }
+        ];
+    } else {
+        return [
+            {
+                'title': 'Markten',
+                'url':  '/dashboard/'
+            },
+            {
+                'title': markt.naam,
+                'url':  `/markt-detail/${markt.id}/`
+            }
+        ];
+    }
 };
 
 export const requireOne = <T>(arg: T[] | T | null): T => {

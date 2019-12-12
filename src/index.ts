@@ -250,7 +250,12 @@ app.get(
     '/markt/:marktId/langdurig-afgemeld',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: Request, res: Response, next: NextFunction) =>
-        langdurigAfgemeld(req, res, req.params.marktId)
+        langdurigAfgemeld(
+            req,
+            res,
+            req.params.marktId,
+            KeycloakRoles.MARKTMEESTER
+        )
 );
 
 app.get(
@@ -279,9 +284,15 @@ app.get(
 
 app.get('/markt/:marktId/:datum/sollicitanten/', keycloak.protect(KeycloakRoles.MARKTMEESTER), sollicitantenPage);
 
-app.get('/markt/:marktId/:datum/voorrangslijst/', keycloak.protect(KeycloakRoles.MARKTMEESTER), voorrangslijstPage);
+app.get('/markt/:marktId/:datum/voorrangslijst/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    voorrangslijstPage
+);
 
-app.get('/markt/:marktId/:datum/voorrangslijst-volledig/', keycloak.protect(KeycloakRoles.MARKTMEESTER), voorrangslijstVolledigPage);
+app.get('/markt/:marktId/:datum/voorrangslijst-volledig/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    voorrangslijstVolledigPage
+);
 
 app.get(
     '/markt/:marktId/:datum/afmeldingen-vasteplaatshouders/',
@@ -582,14 +593,26 @@ app.get(
     '/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-    marktDetail(req, res, next, getErkenningsNummer(req)),
+    marktDetail(
+        req,
+        res,
+        next,
+        getErkenningsNummer(req),
+        KeycloakRoles.MARKTONDERNEMER
+    ),
 );
 
 app.get(
     '/ondernemer/:erkenningsNummer/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: Request, res: Response, next: NextFunction) =>
-    marktDetail(req, res, next, req.params.erkenningsNummer),
+    marktDetail(
+        req,
+        res,
+        next,
+        req.params.erkenningsNummer,
+        KeycloakRoles.MARKTMEESTER
+    ),
 );
 
 app.get(

@@ -105,9 +105,7 @@ const getUpcomingMarktDays = (startDate, endDate, daysOfWeek) =>
     getMarktDays(addDays(startDate, 1), endDate, daysOfWeek);
 
 const formatOndernemerName = ondernemer =>
-    ` ${ondernemer.tussenvoegsels} ${ondernemer.achternaam} ${ondernemer.voorletters}`.replace(/\s+/g, ' ');
-
-//
+    `${ondernemer.tussenvoegsels} ${ondernemer.achternaam} ${ondernemer.voorletters}`.replace(/\s+/g, ' ');
 
 const ondernemersToLocatieKeyValue = array =>
     array.reduce((obj, item) => {

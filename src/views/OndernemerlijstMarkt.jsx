@@ -10,15 +10,16 @@ class SollicitantenPage extends React.Component {
         markt: PropTypes.object.isRequired,
         ondernemers: PropTypes.object,
         datum: PropTypes.string,
+        role: PropTypes.string,
     };
 
     render() {
-        const { markt, ondernemers, datum } = this.props;
+        const { markt, ondernemers, datum, role } = this.props;
         const itemsOnPage = 40;
 
         const paginas = paginate(ondernemers, itemsOnPage);
         const paginasLists = paginate(paginas, 2);
-        const breadcrumbs = getBreadcrumbsMarkt(markt);
+        const breadcrumbs = getBreadcrumbsMarkt(markt, role);
 
         return (
             <MarktDetailBase

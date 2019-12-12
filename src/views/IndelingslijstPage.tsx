@@ -23,6 +23,7 @@ export type IndelingslijstenPageState = {
     datum: string;
     type: string;
     branches: IBranche[];
+    role: string;
 };
 
 export default class IndelingslijstenPage extends React.Component {
@@ -30,7 +31,7 @@ export default class IndelingslijstenPage extends React.Component {
     public render() {
 
         const props = this.props as IndelingslijstenPageState;
-        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren, branches } = props;
+        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren, branches, role } = props;
         let { toewijzingen, plaatsvoorkeuren } = props;
         const plaatsList = arrayToObject(marktplaatsen, 'plaatsId');
         const vphl = ondernemersToLocatieKeyValue(ondernemers);
@@ -53,7 +54,7 @@ export default class IndelingslijstenPage extends React.Component {
             return t;
         }, {});
 
-        const breadcrumbs = getBreadcrumbsMarkt(markt);
+        const breadcrumbs = getBreadcrumbsMarkt(markt, role);
 
         return (
             <MarktDetailBase

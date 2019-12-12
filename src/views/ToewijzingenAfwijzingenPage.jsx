@@ -61,7 +61,7 @@ class ToewijzingenAfwijzingenPage extends React.Component {
             return marktFound ? marktFound.afkorting : '';
         }
 
-        const breadcrumbs = getBreadcrumbsOndernemer(formatOndernemerName(ondernemer), ondernemer.erkenningsnummer);
+        const breadcrumbs = getBreadcrumbsOndernemer(ondernemer, role);
 
         return (
             <Page messages={this.props.messages}>

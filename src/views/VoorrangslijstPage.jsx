@@ -21,6 +21,7 @@ class VoorrangslijstPage extends React.Component {
         user: PropTypes.object,
         toewijzingen: PropTypes.array.isRequired,
         algemenevoorkeuren: PropTypes.array,
+        role: PropTypes.string,
     };
 
     render() {
@@ -34,6 +35,7 @@ class VoorrangslijstPage extends React.Component {
             user,
             toewijzingen,
             algemenevoorkeuren,
+            role
         } = this.props;
         let { ondernemers } = this.props;
         const aLijstSollNummers = aLijst.map(ondernemer => ondernemer.sollicitatieNummer);
@@ -102,7 +104,7 @@ class VoorrangslijstPage extends React.Component {
             return t;
         }, {});
 
-        const breadcrumbs = getBreadcrumbsMarkt(markt);
+        const breadcrumbs = getBreadcrumbsMarkt(markt, role);
 
         return (
             <MarktDetailBase

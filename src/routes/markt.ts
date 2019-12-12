@@ -22,6 +22,7 @@ export const langdurigAfgemeld = (
     req: Request,
     res: Response,
     marktId: string,
+    role: string
 ) => {
     return Promise.all([
         getMarkt(marktId),
@@ -31,6 +32,7 @@ export const langdurigAfgemeld = (
         res.render('OndernemerlijstMarkt', {
             markt,
             ondernemers,
+            role,
         });
     })
     .catch( e => {
@@ -43,11 +45,11 @@ export const marktDetail = (
     res: Response,
     next: NextFunction,
     erkenningsNummer: string,
+    role: string,
 ): void => {
 
     const marktId = req.params.marktId;
     const query = req.query;
-
     const messages = getQueryErrors(req.query);
 
     Promise.all([
@@ -79,6 +81,7 @@ export const marktDetail = (
                     toewijzingen,
                     afwijzingen,
                     algemeneVoorkeur,
+                    role
                 });
             },
             internalServerErrorPage(res),
