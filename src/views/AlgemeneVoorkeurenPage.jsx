@@ -5,6 +5,7 @@ const AlgemeneVoorkeurenForm = require('./components/AlgemeneVoorkeurenForm.jsx'
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
+const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
 
 class AlgemeneVoorkeurenPage extends React.Component {
     propTypes = {
@@ -22,15 +23,21 @@ class AlgemeneVoorkeurenPage extends React.Component {
     };
 
     render() {
-        const { ondernemer, messages, role } = this.props;
+        const { ondernemer, messages, role, markt } = this.props;
         let { branches } = this.props;
 
         branches = branches.filter(branche => branche.brancheId !== 'bak');
         branches = branches.sort((a, b) => a.brancheId - b.brancheId);
 
+        const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
+
         return (
             <Page messages={messages}>
-                <Header user={ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
+                <Header
+                    user={ondernemer}
+                    logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}
+                    breadcrumbs={breadcrumbs}
+                    >
                     <a className="Header__nav-item" href={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
                         {role === 'marktmeester' ? 'Markten' : 'Mijn markten'}
                     </a>

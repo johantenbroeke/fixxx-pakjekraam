@@ -14,9 +14,13 @@ class AanmeldPage extends React.Component {
     };
 
     render() {
+        const breadcrumbs = [{
+            "title":"ondernemer",
+            "url":"/ondernemer"
+        }];
         return (
             <Page>
-                <Header />
+                <Header breadcrumbs={breadcrumbs} />
                 <Content>
                     <AanmeldForm
                         aanmeldingen={this.props.aanmeldingen}

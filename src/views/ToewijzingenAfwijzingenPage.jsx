@@ -5,6 +5,8 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
 const moment = require('moment');
+const { formatOndernemerName } = require('../domain-knowledge');
+const { getBreadcrumbsOndernemer } = require('../util');
 
 class ToewijzingenAfwijzingenPage extends React.Component {
     propTypes = {
@@ -59,15 +61,11 @@ class ToewijzingenAfwijzingenPage extends React.Component {
             return marktFound ? marktFound.afkorting : '';
         }
 
+        const breadcrumbs = getBreadcrumbsOndernemer(ondernemer, role);
+
         return (
             <Page messages={this.props.messages}>
-                <Header user={ondernemer} logoUrl="/markt/">
-                    { role === 'marktmeester' ?
-                        <a className="Header__nav-item" href={`/profile/${ondernemer.erkenningsnummer}`}>
-                            Profile
-                        </a> :
-                        <a className="Header__nav-item" href={`/dashboard/`}>Mijn markten</a>
-                    }
+                <Header user={ondernemer} breadcrumbs={breadcrumbs}>
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>

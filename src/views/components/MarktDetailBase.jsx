@@ -8,18 +8,17 @@ const MarktDayLink = require('./MarktDayLink');
 const MarktDetailHeader = require('./MarktDetailHeader');
 const PrintButton = require('./PrintButton');
 
-const MarktDetailBase = ({ children, bodyClass, title, markt, type, datum, buttonLabel, showDate, fase }) => {
+const MarktDetailBase = ({ children, bodyClass, title, markt, type, datum, buttonLabel, showDate, fase, breadcrumbs }) => {
     const relativeDatum = d => {
         return formatDayOfWeek(d) + ', ' + new Date(d).getDate() + ' ' + formatMonth(d);
     };
 
+    console.log(breadcrumbs);
+
+
     return (
         <Page bodyClass={bodyClass}>
-            <Header>
-                <a className="Header__nav-item" href="/markt/">
-                    Markten
-                </a>
-            </Header>
+            <Header breadcrumbs={breadcrumbs} />
             <MarktDetailHeader>
                 {showDate && (
                     <MarktDayLink markt={markt} offsetDate={new Date(datum).toISOString()} direction={-1} type={type} />
@@ -52,6 +51,7 @@ MarktDetailBase.propTypes = {
     type: PropTypes.string,
     buttonLabel: PropTypes.string,
     showDate: PropTypes.bool,
+    breadcrumbs: PropTypes.arrayOf(PropTypes.object),
 };
 
 module.exports = MarktDetailBase;

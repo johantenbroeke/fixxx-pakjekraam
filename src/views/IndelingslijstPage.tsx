@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes, { ValidationMap } from 'prop-types';
 import MarktDetailBase from './components/MarktDetailBase';
 import { ondernemersToLocatieKeyValue, obstakelsToLocatieKeyValue } from '../domain-knowledge.js';
-import { arrayToObject } from '../util';
+import { arrayToObject, getBreadcrumbsMarkt } from '../util';
 import IndelingslijstGroup from './components/IndelingslijstGroup';
 import PrintPage from './components/PrintPage';
 import Street from './components/Street';
@@ -23,6 +23,7 @@ export type IndelingslijstenPageState = {
     datum: string;
     type: string;
     branches: IBranche[];
+    role: string;
 };
 
 export default class IndelingslijstenPage extends React.Component {
@@ -30,7 +31,7 @@ export default class IndelingslijstenPage extends React.Component {
     public render() {
 
         const props = this.props as IndelingslijstenPageState;
-        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren, branches } = props;
+        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren, branches, role } = props;
         let { toewijzingen, plaatsvoorkeuren } = props;
         const plaatsList = arrayToObject(marktplaatsen, 'plaatsId');
         const vphl = ondernemersToLocatieKeyValue(ondernemers);
@@ -53,6 +54,8 @@ export default class IndelingslijstenPage extends React.Component {
             return t;
         }, {});
 
+        const breadcrumbs = getBreadcrumbsMarkt(markt, role);
+
         return (
             <MarktDetailBase
                 bodyClass="page-markt-indelingslijst page-print"
@@ -61,6 +64,7 @@ export default class IndelingslijstenPage extends React.Component {
                 type={type}
                 datum={datum}
                 showDate={true}
+                breadcrumbs={breadcrumbs}
             >
                 {paginas.map((page, j) => (
                     <PrintPage
