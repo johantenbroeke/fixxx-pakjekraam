@@ -13,9 +13,13 @@ class MarktenPage extends React.Component {
     };
 
     render() {
+        const breadcrumbs = [];
         return (
             <Page>
-                <Header user={this.props.user} />
+                <Header
+                    user={this.props.user}
+                    breadcrumbs={breadcrumbs}
+                />
                 <Content>
                     <h1 className="h1">Markten</h1>
                     <MarktList markten={this.props.markten} />

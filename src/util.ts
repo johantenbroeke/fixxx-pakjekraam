@@ -279,7 +279,7 @@ export const getBreadcrumbsOndernemer = (ondernemer: any, role: string) => {
     } else {
         return [
             {
-                'title': 'Markten',
+                'title': 'Mijn markten',
                 'url':  '/dashboard/'
             },
         ];
@@ -301,7 +301,7 @@ export const getBreadcrumbsMarkt = (markt: any, role: string) => {
     } else {
         return [
             {
-                'title': 'Markten',
+                'title': 'Mijn markten',
                 'url':  '/dashboard/'
             },
             {

@@ -217,13 +217,12 @@ class PlaatsvoorkeurenForm extends React.Component {
                     <div className="Fieldset">
                         <h2 className="Fieldset__header">Plaatsvoorkeuren</h2>
                         <span className="Fieldset__sub-header">U kunt zoveel voorkeuren invullen als u wilt.</span>
+                        <div className="Icon-line">
+                            <img className="Icon-line__icon" src="/images/draggable.svg" alt="Unchecked" />
+                            <p className="Icon-line__text">Verander de volgorde van de plaatsnummers door ze op de juiste plaats te slepen.</p>
+                        </div>
+                        <h4 className="Fieldset__sub-header"><strong>Plaatsnummers</strong></h4>
                         <div className="PlaatsvoorkeurenForm__list">
-                            <div className="Icon-line">
-                                <img className="Icon-line__icon" src="/images/draggable.svg" alt="Unchecked" />
-                                <p className="Icon-line__text">Verander de volgorde van de plaatsnummers door ze op de juiste plaats te slepen.</p>
-                            </div>
-                            <h4 className="Fieldset__sub-header"><strong>Plaatsnummers</strong></h4>
-
                             {entriesSplit.map((entry, index, entriesArray) => (
                                 <div className="Draggable-list-item" id="plaatsvoorkeuren-list-item" key={entry.id}>
 
