@@ -1,21 +1,18 @@
-const PropTypes = require('prop-types');
+// const PropTypes = require('prop-types');
 const React = require('react');
 
-const PrintButton = ({ title, type, disabled }) => {
+const PrintButton = () => {
     /* eslint-disable no-script-url */
     return (
         <div className="PrintButton">
             <a href="javascript:print()" role="button" className="PrintButton__btn">
-                {title}
+                Print
             </a>
         </div>
     );
 };
 
 PrintButton.propTypes = {
-    title: PropTypes.string,
-    type: PropTypes.string,
-    disabled: PropTypes.bool,
 };
 
 module.exports = PrintButton;

@@ -4,7 +4,6 @@ import {
     getMarkten,
     getPlaatsvoorkeurenOndernemer,
     getAanmeldingenByOndernemer,
-    getToewijzingenByOndernemer,
 } from '../pakjekraam-api';
 import { internalServerErrorPage, getQueryErrors } from '../express-util';
 import { tomorrow, nextWeek } from '../util';
@@ -13,6 +12,7 @@ import { tomorrow, nextWeek } from '../util';
 
 import { getMarktenZichtbaarOndernemers } from '../model/markt.functions';
 import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
+import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 
 export const vendorDashboardPage = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
 

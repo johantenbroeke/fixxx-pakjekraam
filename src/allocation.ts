@@ -2,17 +2,18 @@ const models = require('./model/index.ts');
 import { getIndelingslijst, getDaysClosed } from './pakjekraam-api';
 
 import { flatten, tomorrow, getMaDiWoDo, toISODate } from './util';
-import { convertToewijzingForDB } from './model/allocation.functions';
-import { convertAfwijzingForDB } from './model/afwijzing.functions';
+import { convertToewijzingForDB, getToewijzingEnriched } from './model/allocation.functions';
+import { convertAfwijzingForDB, getAfwijzingEnriched } from './model/afwijzing.functions';
 // import { MMMarkt } from './makkelijkemarkt.model';
 // import { IMarkt, IMarktEnriched } from './markt.model';
 import { getMarktenEnabled, getMarktEnriched } from './model/markt.functions';
 
 import { sequelize } from './model/index';
+import { IToewijzing, IAfwijzing } from 'markt.model';
 
 const marktDate = tomorrow();
 
-const mapMarktenToToewijzingen = (markten: any) => {
+const mapMarktenToToewijzingen = (markten: any): Promise<IToewijzing[]> => {
     return markten
     .map((markt: any) =>
         markt.toewijzingen.map( (toewijzing: any) => convertToewijzingForDB(toewijzing, markt, marktDate)),
@@ -29,7 +30,7 @@ const mapMarktenToToewijzingen = (markten: any) => {
     .reduce(flatten, []);
 };
 
-const mapMarktenToAfwijzingen = (markten: any) => {
+const mapMarktenToAfwijzingen = (markten: any): Promise<IAfwijzing[]> => {
     return markten
         .map((markt: any) =>
             markt.afwijzingen.map( (afwijzing: any) => convertAfwijzingForDB(afwijzing, markt, marktDate)),
@@ -37,14 +38,13 @@ const mapMarktenToAfwijzingen = (markten: any) => {
         .reduce(flatten, []);
 };
 
-async function destroyAndCreateToewijzingenAfwijzingen(result: any) {
-
+async function destroyAndCreateToewijzingenAfwijzingen(toewijzingen: IToewijzing[], afwijzingen: IAfwijzing[]) {
     try {
         const transaction = await sequelize.transaction();
         await models.allocation.destroy({ where: { marktDate }, transaction });
         await models.afwijzing.destroy({ where: { marktDate }, transaction });
-        await models.allocation.bulkCreate(result[0], { validate: true }, transaction);
-        await models.afwijzing.bulkCreate(result[1], { validate: true }, transaction);
+        await models.allocation.bulkCreate(toewijzingen, { validate: true }, transaction);
+        await models.afwijzing.bulkCreate(afwijzingen, { validate: true }, transaction);
         await transaction.commit();
         process.exit();
     } catch(e) {
@@ -60,8 +60,6 @@ async function allocation() {
         tomorrow.setDate(tomorrow.getDate() + 1);
         const tomorrowString = toISODate(tomorrow);
         const daysClosed = await getDaysClosed();
-        console.log(daysClosed);
-        console.log(tomorrowString);
         daysClosed.includes(tomorrowString) ? console.log(`Indeling wordt niet gedraaid, ${tomorrowString} gevonden in daysClosed.json`) : runAllocation();
     } catch(e) {
         console.log(e);
@@ -86,12 +84,27 @@ async function runAllocation() {
         const maDiWoDo = getMaDiWoDo(tomorrow);
         marktenEnriched = marktenEnriched.filter( markt => markt.marktDagen.includes(maDiWoDo));
 
-        const indelingen = await Promise.all(markten.map(markt => getIndelingslijst(String(markt.id), marktDate)));
+        if (marktenEnriched.length > 0) {
 
-        const toewijzingen = await mapMarktenToToewijzingen(indelingen);
-        const afwijzingen = await mapMarktenToAfwijzingen(indelingen);
+            const indelingen = await Promise.all(marktenEnriched.map(markt => getIndelingslijst(String(markt.id), marktDate)));
 
-        await destroyAndCreateToewijzingenAfwijzingen([toewijzingen, afwijzingen]);
+            const toewijzingen = await mapMarktenToToewijzingen(indelingen);
+            const afwijzingen = await mapMarktenToAfwijzingen(indelingen);
+
+            const toewijzingenEnriched = await Promise.all(
+                toewijzingen.map(toewijzing => getToewijzingEnriched(toewijzing)
+            ));
+
+            const afwijzingenEnriched = await Promise.all(
+                afwijzingen.map(afwijzing => getAfwijzingEnriched(afwijzing)
+            ));
+
+            await destroyAndCreateToewijzingenAfwijzingen(toewijzingenEnriched, afwijzingenEnriched);
+
+        } else {
+            console.log('Geen indelingen gedraaid.');
+            process.exit();
+        }
 
     }   catch(e) {
         console.log(e);

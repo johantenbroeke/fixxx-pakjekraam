@@ -18,6 +18,27 @@ export const initAfwijzing = (sequelize: Sequelize) => {
         erkenningsNummer: {
             type: DataTypes.STRING,
         },
+        plaatsvoorkeuren: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+        },
+        anywhere: {
+            type: DataTypes.BOOLEAN,
+        },
+        minimum: {
+            type: DataTypes.INTEGER,
+        },
+        maximum: {
+            type: DataTypes.INTEGER,
+        },
+        bak: {
+            type: DataTypes.BOOLEAN,
+        },
+        eigenMaterieel: {
+            type: DataTypes.BOOLEAN,
+        },
+        brancheId: {
+            type: DataTypes.INTEGER,
+        },
     };
 
     Afwijzing.init(attributes, {

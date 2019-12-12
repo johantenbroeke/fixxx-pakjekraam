@@ -21,14 +21,12 @@ const csrfProtection = csrf({ cookie: true });
 import {
     getIndelingslijst,
     getIndelingslijstInput,
-    getIndelingVoorkeur,
     getIndelingVoorkeuren,
     getAanmeldingen,
     getPlaatsvoorkeuren,
     getBranches,
     getMarkten,
     getMarktenByDate,
-    getSollicitantenlijstInput,
 } from './pakjekraam-api';
 
 import { serverHealth, serverTime, databaseHealth, keycloakHealth, makkelijkeMarktHealth } from './routes/status';
@@ -44,7 +42,7 @@ import { marketLocationPage, updateMarketLocation } from './routes/market-locati
 import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
-import { deleteUserPage, deleteUser, publicProfilePage } from './routes/ondernemer';
+import { deleteUserPage, deleteUser, publicProfilePage, toewijzingenAfwijzingenPage } from './routes/ondernemer';
 import { langdurigAfgemeld, marktDetail } from './routes/markt';
 
 import { vasteplaatshoudersPage, sollicitantenPage, voorrangslijstPage, voorrangslijstVolledigPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
@@ -680,6 +678,30 @@ app.get('/profile/', keycloak.protect(KeycloakRoles.MARKTONDERNEMER), (req: Gran
 
 app.get('/profile/:erkenningsNummer', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) =>
     publicProfilePage(req, res, req.params.erkenningsNummer)
+);
+
+app.get(
+    '/ondernemer/:erkenningsNummer/toewijzingen-afwijzingen/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    (req: GrantedRequest, res: Response) =>
+        toewijzingenAfwijzingenPage(
+            req,
+            res,
+            req.params.erkenningsNummer,
+            KeycloakRoles.MARKTMEESTER
+        )
+);
+
+app.get(
+    '/toewijzingen-afwijzingen/',
+    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    (req: GrantedRequest, res: Response) =>
+        toewijzingenAfwijzingenPage(
+            req,
+            res,
+            getErkenningsNummer(req),
+            KeycloakRoles.MARKTONDERNEMER
+        )
 );
 
 app.get(

@@ -110,6 +110,9 @@ class PlaatsvoorkeurenForm extends React.Component {
 
         const plaatsSets = entriesSplit.map(entry => entry.plaatsId);
 
+        console.log(rows);
+
+
         const rowsFlat = rows
             .reduce((t, r) => {
                 r.map(p => t.push(p)), [];
@@ -117,6 +120,7 @@ class PlaatsvoorkeurenForm extends React.Component {
             })
             .sort((a, b) => plaatsSort(a, b, 'plaatsId'))
             .map(plaats => {
+                console.log(plaats);
                 plaats.disabled = !plaatsSets.reduce((t, set) => t.concat(set), []).includes(plaats.plaatsId);
                 return plaats;
             });
@@ -125,11 +129,6 @@ class PlaatsvoorkeurenForm extends React.Component {
         };
         const plaatsSetsJSON = () => {
             return { __html: 'var plaatsenSets = ' + JSON.stringify(plaatsSets) + ';' };
-        };
-        const marktRowsFlatJSOM = () => {
-            return {
-                __html: 'var marktRowsFlat = ' + JSON.stringify(rowsFlat) + ';',
-            };
         };
 
         const isMarktmeesterEnVph = (role === 'marktmeester' && isVast(sollicitatie.status));
@@ -220,7 +219,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         <span className="Fieldset__sub-header">U kunt zoveel voorkeuren invullen als u wilt.</span>
                         <div className="PlaatsvoorkeurenForm__list">
                             <div className="Icon-line">
-                                <img className="Icon-line__icon" src="/images/draggable.svg" alt="Unchecked"/>
+                                <img className="Icon-line__icon" src="/images/draggable.svg" alt="Unchecked" />
                                 <p className="Icon-line__text">Verander de volgorde van de plaatsnummers door ze op de juiste plaats te slepen.</p>
                             </div>
                             <h4 className="Fieldset__sub-header"><strong>Plaatsnummers</strong></h4>
@@ -376,6 +375,15 @@ class PlaatsvoorkeurenForm extends React.Component {
                     </div>
 
                     <p className="InputField InputField--submit" id="bottom-buttons">
+                        <Button
+                            label="Voorkeuren"
+                            href={
+                                role === 'marktmeester'
+                                    ? `/profile/${ondernemer.erkenningsnummer}`
+                                    : `/markt-detail/${markt.id}#plaatsvoorkeuren`
+                            }
+                            type="tertiary"
+                        />
                         <button
                             className="Button Button--secondary"
                             type="submit"
@@ -388,15 +396,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         >
                             Bewaar
                         </button>
-                        <Button
-                            label="Annuleer"
-                            href={
-                                role === 'marktmeester'
-                                    ? `/profile/${ondernemer.erkenningsnummer}`
-                                    : `/markt-detail/${markt.id}#plaatsvoorkeuren`
-                            }
-                            type="tertiary"
-                        />
+
                     </p>
                 </div>
             </Form>
