@@ -13,9 +13,6 @@ const MarktDetailBase = ({ children, bodyClass, title, markt, type, datum, butto
         return formatDayOfWeek(d) + ', ' + new Date(d).getDate() + ' ' + formatMonth(d);
     };
 
-    console.log(breadcrumbs);
-
-
     return (
         <Page bodyClass={bodyClass}>
             <Header breadcrumbs={breadcrumbs} />

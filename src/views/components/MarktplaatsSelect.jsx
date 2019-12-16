@@ -18,7 +18,7 @@ const MarktplaatsSelect = ({ id, name, markt, data, value, optional, readonly, n
                     <option
                         key={plaats.plaatsId}
                         value={plaats.plaatsId}
-                        disabled={!plaats.disabled}
+                        disabled={plaats.disabled}
                         selected={plaats.plaatsId === value}
                     >
                         {plaats.plaatsId}
