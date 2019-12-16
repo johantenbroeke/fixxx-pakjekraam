@@ -38,7 +38,7 @@ import {
 } from './routes/market-application';
 import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
 import { vendorDashboardPage } from './routes/vendor-dashboard';
-import { marketLocationPage, updateMarketLocation } from './routes/market-location';
+import { plaatsvoorkeurenPage, updatePlaatsvoorkeuren } from './routes/market-location';
 import { applicationMailPage } from './routes/mail-application';
 import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
@@ -148,7 +148,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
-    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
     res.header('X-Content-Type-Options', 'nosniff');
     res.header('X-XSS-Protection', '1; mode=block');
     res.header('X-Frame-Options', 'SAMEORIGIN');
@@ -299,24 +299,6 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     afmeldingenVasteplaatshoudersPage
 );
-
-// app.get(
-//     '/markt-detail/:erkenningsNummer/:marktId/:datum/sollicitanten/',
-//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
-//     (req: Request, res: Response) => {
-//         const datum = req.params.datum;
-//         const type = 'sollicitanten';
-
-//         getSollicitantenlijstInput(req.params.marktId, req.params.datum).then(
-//             ({ ondernemers, aanmeldingen, voorkeuren, markt }) => {
-//                 res.render('SollicitantenPage', { ondernemers, aanmeldingen, voorkeuren, markt, datum, type });
-//             },
-//             err => {
-//                 res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
-//             },
-//         );
-//     },
-// );
 
 app.get(
     '/dashboard/',
@@ -523,7 +505,7 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response) => {
-        marketLocationPage(
+        plaatsvoorkeurenPage(
             req,
             res,
             getErkenningsNummer(req),
@@ -540,7 +522,7 @@ app.post(
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        updateMarketLocation(req, res, next, req.params.marktId, getErkenningsNummer(req)),
+        updatePlaatsvoorkeuren(req, res, next, req.params.marktId, getErkenningsNummer(req)),
 );
 
 app.get(
@@ -548,7 +530,7 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response) => {
-        marketLocationPage(
+        plaatsvoorkeurenPage(
             req,
             res,
             req.params.erkenningsNummer,
@@ -565,7 +547,7 @@ app.post(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response, next: NextFunction) =>
-        updateMarketLocation(req, res, next, req.params.marktId, req.params.erkenningsNummer),
+        updatePlaatsvoorkeuren(req, res, next, req.params.marktId, req.params.erkenningsNummer),
 );
 
 

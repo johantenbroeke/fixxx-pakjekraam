@@ -15,7 +15,7 @@ class VoorkeurenPage extends React.Component {
         markten: PropTypes.array.isRequired,
         ondernemer: PropTypes.object.isRequired,
         marktPaginas: PropTypes.object,
-        marktPlaatsen: PropTypes.object,
+        marktplaatsen: PropTypes.object,
         indelingVoorkeur: PropTypes.object,
         marktDate: PropTypes.string,
         messages: PropTypes.array,
@@ -30,11 +30,8 @@ class VoorkeurenPage extends React.Component {
 
     render() {
         const {
-            marktPaginas,
-            marktPlaatsen,
+            marktplaatsen,
             indelingVoorkeur,
-            marktDate,
-            user,
             role,
             plaatsvoorkeuren,
             ondernemer,
@@ -43,18 +40,6 @@ class VoorkeurenPage extends React.Component {
             mededeling,
             csrfToken,
         } = this.props;
-        const rows = (
-            markt.rows ||
-            marktPaginas.reduce(
-                (list, pagina) => [
-                    ...list,
-                    ...pagina.indelingslijstGroup.map(group => group.plaatsList).filter(Array.isArray),
-                ],
-                [],
-            )
-        ).map(row =>
-            row.map(plaatsId => marktPlaatsen.find(plaats => plaats.plaatsId === plaatsId)).map(plaats => plaats),
-        );
 
         const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
 
@@ -85,10 +70,8 @@ class VoorkeurenPage extends React.Component {
                         ondernemer={this.props.ondernemer}
                         markt={this.props.markten[0]}
                         indelingVoorkeur={indelingVoorkeur}
-                        marktDate={marktDate}
-                        rows={rows}
                         role={role}
-                        query={this.props.query}
+                        marktplaatsen={marktplaatsen}
                         sollicitatie={sollicitatie}
                         csrfToken={csrfToken}
                     />
