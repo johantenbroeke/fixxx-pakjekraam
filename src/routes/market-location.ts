@@ -10,9 +10,10 @@ import { getQueryErrors, internalServerErrorPage, HTTP_CREATED_SUCCESS } from '.
 import { upsert } from '../sequelize-util.js';
 import { IPlaatsvoorkeurRow } from '../markt.model';
 import { getMarktEnriched } from '../model/markt.functions';
+import { getPlaatsvoorkeurenByMarktEnOndernemer } from '../model/plaatsvoorkeur.functions';
 import models from '../model/index';
 
-export const marketLocationPage = (
+export const plaatsvoorkeurenPage = (
     req: Request,
     res: Response,
     erkenningsNummer: string,
@@ -47,7 +48,7 @@ export const marketLocationPage = (
     Promise.all([
         ondernemerPromise,
         marktenPromise,
-        getPlaatsvoorkeurenOndernemer(erkenningsNummer),
+        getPlaatsvoorkeurenByMarktEnOndernemer(currentMarktId, erkenningsNummer),
         getIndelingVoorkeur(erkenningsNummer, currentMarktId),
         getMarktEnriched(currentMarktId),
         getMededelingen(),
@@ -58,8 +59,7 @@ export const marketLocationPage = (
                 ondernemer,
                 markten,
                 plaatsvoorkeuren,
-                marktPaginas: markt.paginas,
-                marktPlaatsen: markt.plaatsen,
+                marktplaatsen: markt.plaatsen,
                 indelingVoorkeur,
                 query,
                 messages,
@@ -81,7 +81,7 @@ const voorkeurenFormDataToObject = (formData: any): IPlaatsvoorkeurRow => ({
     priority: parseInt(formData.priority, 10),
 });
 
-export const updateMarketLocation = (req: Request, res: Response, next: NextFunction, marktId: string, erkenningsNummer: string) => {
+export const updatePlaatsvoorkeuren = (req: Request, res: Response, next: NextFunction, marktId: string, erkenningsNummer: string) => {
     /*
      * TODO: Form data format validation
      * TODO: Business logic validation
