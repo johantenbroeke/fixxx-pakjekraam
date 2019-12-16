@@ -65,6 +65,17 @@ export const toewijzingenAfwijzingenPage = (
         getMarktenEnabled(),
     ]).then(
         ([toewijzingen, afwijzingen, ondernemer, branches, markten]) => {
+
+            const marktenLive = markten.filter(markt => markt.kiesJeKraamFase === 'live').map( markt => markt.id);
+
+            afwijzingen = afwijzingen.filter(afwijzing => {
+                return marktenLive.includes(afwijzing.marktId);
+            });
+
+            toewijzingen = toewijzingen.filter(toewijzing => {
+                return marktenLive.includes(parseInt(toewijzing.marktId));
+            });
+
             res.render('ToewijzingenAfwijzingenPage', { toewijzingen, afwijzingen, ondernemer, role, branches, markten, messages });
         },
         err => internalServerErrorPage(res)(err),

@@ -5,7 +5,6 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
 const moment = require('moment');
-const { formatOndernemerName } = require('../domain-knowledge');
 const { getBreadcrumbsOndernemer } = require('../util');
 
 class ToewijzingenAfwijzingenPage extends React.Component {
