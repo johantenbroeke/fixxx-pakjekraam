@@ -52,8 +52,14 @@ class MarktDetailPage extends React.Component {
                  {/* {markt.kiesJeKraamGeblokkeerdePlaatsen ?
                  <p>Geblokkeerde plaatsen: {markt.kiesJeKraamGeblokkeerdePlaatsen}</p> :
                  null } */}
-                <div className="row row--responsive Section">
+                <div className="Section Section--column">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
+                    { markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
+                        <a href={`./${today()}/indelingslijst/`} className="Link">Postitie vasteplaasthouders</a> : null
+                    }
+                    { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+                        <a href={`/pdf/kaart-${markt.afkorting}.pdf`} className="Link">Kaart {markt.naam}</a> : null
+                    }
                 </div>
                 <h2 className="Heading Heading--intro">Lijsten per dag</h2>
                 <div className="row row--responsive margin-bottom">
