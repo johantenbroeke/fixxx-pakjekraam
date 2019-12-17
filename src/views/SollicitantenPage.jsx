@@ -14,10 +14,11 @@ class SollicitantenPage extends React.Component {
         datum: PropTypes.string,
         type: PropTypes.string,
         user: PropTypes.object,
+        role: PropTypes.string,
     };
 
     render() {
-        const { markt, ondernemers, aanmeldingen, voorkeuren, datum, type, user } = this.props;
+        const { markt, ondernemers, aanmeldingen, datum, type, role } = this.props;
         const itemsOnPage = 40;
         const aanmeldingenOrdered = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
 
@@ -30,6 +31,7 @@ class SollicitantenPage extends React.Component {
                 title="Sollicitanten, VKK en TVPL"
                 markt={markt}
                 datum={datum}
+                role={role}
                 type={type}
                 showDate={false}
             >

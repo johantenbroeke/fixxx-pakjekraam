@@ -35,6 +35,7 @@ class AfmeldPage extends React.Component {
                     user={this.props.ondernemer}
                     logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}
                     breadcrumbs={breadcrumbs}
+                    role={role}
                     >
                     <OndernemerProfileHeader user={this.props.ondernemer} />
                 </Header>

@@ -53,6 +53,7 @@ class VastplaatshoudersPage extends React.Component {
                                         page={pageItem}
                                         plaatsList={locatiesObject}
                                         vphl={vphl}
+                                        branches={branches}
                                         obstakelList={obstakelsObject}
                                         aanmeldingen={aanmeldingenOrdered}
                                         ondernemers={ondernemers}
