@@ -16,16 +16,15 @@ class PublicProfilePage extends React.Component {
         ondernemer: PropTypes.object,
         user: PropTypes.object.isRequired,
         messages: PropTypes.array,
+        role: PropTypes.string,
     };
 
     render(state) {
-        const { ondernemer, user, messages } = this.props;
-        const isVastSomewhere = ondernemer.sollicitaties.some(soll => isVast(soll.status));
-        const isSollicitantSomewhere = ondernemer.sollicitaties.some(soll => soll.status === 'soll');
+        const { ondernemer, role, messages } = this.props;
 
         return (
             <Page messages={messages}>
-                <Header user={ondernemer} logoUrl="/markt/">
+                <Header user={ondernemer} role={role}>
                     <a className="Header__nav-item" href="/markt/">
                         Markten
                     </a>

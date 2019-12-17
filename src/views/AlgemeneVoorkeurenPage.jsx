@@ -35,7 +35,7 @@ class AlgemeneVoorkeurenPage extends React.Component {
             <Page messages={messages}>
                 <Header
                     user={ondernemer}
-                    logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}
+                    role={role}
                     breadcrumbs={breadcrumbs}
                     >
                     <a className="Header__nav-item" href={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>

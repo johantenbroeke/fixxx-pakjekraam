@@ -35,6 +35,7 @@ class afmeldingenPage extends React.Component {
                 showDate={false}
                 type={'afmeldingen'}
                 breadcrumbs={breadcrumbs}
+                role={role}
             >
                 <PrintPage
                     title={`Vasteplaatshouders afgemeld: ${markt.naam}`}

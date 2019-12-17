@@ -17,9 +17,10 @@ export const vasteplaatshoudersPage = (req: Request, res: Response) => {
 export const sollicitantenPage = (req: Request, res: Response) => {
     const datum = req.params.datum;
     const type = 'sollicitanten';
+    const role = KeycloakRoles.MARKTMEESTER;
     getSollicitantenlijstInput(req.params.marktId, req.params.datum).then(
         ({ ondernemers, aanmeldingen, voorkeuren, markt }) => {
-            res.render('SollicitantenPage', { ondernemers, aanmeldingen, voorkeuren, markt, datum, type });
+            res.render('SollicitantenPage', { ondernemers, aanmeldingen, voorkeuren, markt, datum, type, role });
         },
         internalServerErrorPage(res),
     );
@@ -32,7 +33,6 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
 
     getToewijzingslijst(marktId, datum)
         .then( data => {
-
                 const { ondernemers, aanmeldingen } = data;
                 const vasteplaatshouders = ondernemers.filter(ondernemer => ondernemer.status === 'vpl');
                 const vasteplaatshoudersAfwezig = vasteplaatshouders.filter( ondernemer => {

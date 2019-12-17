@@ -10,13 +10,14 @@ class DeleteUserPage extends React.Component {
     propTypes = {
         result: PropTypes.string,
         csrfToken: PropTypes.string,
+        role: PropTypes.string,
     };
 
     render() {
-        const { result, csrfToken } = this.props;
+        const { result, csrfToken, role } = this.props;
         return (
             <Page>
-                <Header hideLogout={true} />
+                <Header role={role} />
                 <Content>
                     <Form csrfToken={csrfToken}>
                         <h1>Verwijder ondernemerdata</h1>

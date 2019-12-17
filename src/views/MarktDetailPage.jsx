@@ -20,11 +20,12 @@ class MarktDetailPage extends React.Component {
         markt: PropTypes.object.isRequired,
         user: PropTypes.object,
         type: PropTypes.string,
+        role: PropTypes.string,
         datum: PropTypes.string,
     };
 
     render() {
-        const { markt, datum, type, user } = this.props;
+        const { markt, datum, type, role } = this.props;
         const startDate = addDays(today(), -1);
         const endDate = addDays(endOfWeek(), DAYS_IN_WEEK);
         const marktDagen = (markt.marktDagen || []).map(parseMarktDag);
@@ -47,7 +48,7 @@ class MarktDetailPage extends React.Component {
         markt.kiesJeKraamFase == 'live' ? fase = null : fase = ` ${markt.kiesJeKraamFase}`;
 
         return (
-            <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase}>
+            <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} role={role}>
                  {/* {markt.kiesJeKraamGeblokkeerdePlaatsen ?
                  <p>Geblokkeerde plaatsen: {markt.kiesJeKraamGeblokkeerdePlaatsen}</p> :
                  null } */}

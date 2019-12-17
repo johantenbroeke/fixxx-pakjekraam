@@ -27,6 +27,7 @@ class SollicitantenPage extends React.Component {
                 title="Ondernemers langdurig afgemeld"
                 markt={markt}
                 datum={datum}
+                role={role}
                 type={'ondernemers'}
                 showDate={false}
                 breadcrumbs={breadcrumbs}

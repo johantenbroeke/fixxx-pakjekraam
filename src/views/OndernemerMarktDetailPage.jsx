@@ -76,7 +76,7 @@ class OndernemerMarktDetailPage extends React.Component {
             <Page messages={messages}>
                 <Header
                     user={ondernemer}
-                    logoUrl="../../dashboard/"
+                    role={role}
                     breadcrumbs={breadcrumbs}
                     >
                     <OndernemerProfileHeader user={ondernemer} />

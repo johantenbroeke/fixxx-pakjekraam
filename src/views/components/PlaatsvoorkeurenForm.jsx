@@ -109,10 +109,6 @@ class PlaatsvoorkeurenForm extends React.Component {
             .map(entries => entries[0]);
 
         const plaatsSets = entriesSplit.map(entry => entry.plaatsId);
-
-        console.log(rows);
-
-
         const rowsFlat = rows
             .reduce((t, r) => {
                 r.map(p => t.push(p)), [];
@@ -120,7 +116,6 @@ class PlaatsvoorkeurenForm extends React.Component {
             })
             .sort((a, b) => plaatsSort(a, b, 'plaatsId'))
             .map(plaats => {
-                console.log(plaats);
                 plaats.disabled = !plaatsSets.reduce((t, set) => t.concat(set), []).includes(plaats.plaatsId);
                 return plaats;
             });
