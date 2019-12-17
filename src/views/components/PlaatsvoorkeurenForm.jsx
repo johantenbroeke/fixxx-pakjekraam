@@ -286,7 +286,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                                                 staan.
                                             </span>
                                         ) : (
-                                                <span>
+                                            <span>
                                                     Als mijn voorkeursplaatsen niet beschikbaar zijn, wil ik automatisch op een
                                                     losse plaats ingedeeld worden.
                                             </span>
