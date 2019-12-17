@@ -20,10 +20,11 @@ class OndernemerDashboard extends React.Component {
         toewijzingen: PropTypes.array,
         afwijzingen: PropTypes.array,
         user: PropTypes.object,
+        role: PropTypes.string,
     };
 
     render() {
-        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen } = this.props;
+        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen, role } = this.props;
 
         const sollicitaties = ondernemer.sollicitaties.filter(soll => {
             return !soll.doorgehaald && markten.map(markt => markt.id).includes(soll.markt.id);
@@ -64,7 +65,7 @@ class OndernemerDashboard extends React.Component {
                 <Header
                     user={ondernemer}
                     breadcrumbs={breadcrumbs}
-                    logoUrl="/dashboard/"
+                    role={role}
                 >
                     <a className="Header__nav-item" href="./">
                         Mijn markten

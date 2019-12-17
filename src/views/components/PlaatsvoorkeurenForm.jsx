@@ -21,8 +21,7 @@ class PlaatsvoorkeurenForm extends React.Component {
     };
 
     render() {
-        const { markt, ondernemer, marktplaatsen, indelingVoorkeur, role, sollicitatie, csrfToken } = this.props;
-        let { plaatsvoorkeuren } = this.props;
+        const { markt, ondernemer, marktplaatsen, indelingVoorkeur, role, sollicitatie, csrfToken, plaatsvoorkeuren } = this.props;
 
         const defaultVoorkeur = {
             minimum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
@@ -76,24 +75,31 @@ class PlaatsvoorkeurenForm extends React.Component {
             return plaatsen.length > 1 ? 'plaatsnummers' : 'plaatsnummer';
         };
 
-        const isMarktmeesterEnVph = (role === 'marktmeester' && isVast(sollicitatie.status));
+        const entriesFiltered = allEntries.filter(entry => entry.marktId === markt.id);
+        const entriesSplit = entriesFiltered
+            .sort((a, b) => b.priority - a.priority)
+            .reduce((t, e) => {
+                !t.includes(e.priority) && t.push(e.priority);
+                return t;
+            }, [])
+            .reduce((t, p) => {
+                t.push(entriesFiltered.filter(e => e.priority === p));
+                return t;
+            }, [])
+            .map(entries => entries[0]);
 
-        plaatsvoorkeuren = plaatsvoorkeuren.map((plaatsvoorkeur, index) => {
-                return {
-                    marktId: plaatsvoorkeur.marktId,
-                    erkenningsNummer: plaatsvoorkeur.erkenningsNummer,
-                    plaatsId: plaatsvoorkeur.plaatsId,
-                    priority: plaatsvoorkeur.priority,
-                    readonly: false,
-                    newItem: false,
-                };
+        const plaatsSets = entriesSplit.map(entry => entry.plaatsId);
+        const rowsFlat = rows
+            .reduce((t, r) => {
+                r.map(p => t.push(p)), [];
+                return t;
             })
             .sort((a, b) => b.priority - a.priority);
 
         marktplaatsen
             .sort((a, b) => plaatsSort(a, b, 'plaatsId'))
             .map(plaats => {
-                plaats.disabled = !!(plaatsvoorkeuren.find(entry => (entry.plaatsId === plaats.plaatsId)));
+                plaats.disabled = !plaatsSets.reduce((t, set) => t.concat(set), []).includes(plaats.plaatsId);
                 return plaats;
             });
 

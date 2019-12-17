@@ -72,11 +72,10 @@ export const indelingslijstPage = (req: Request, res: Response) => {
                 indelingslijst,
                 voorkeuren,
             ] = data;
-            // console.log(indelingslijst);
-            // console.log(voorkeuren);
+
             indelingslijst.plaatsvoorkeuren = indelingslijst.voorkeuren;
             indelingslijst.voorkeuren = voorkeuren;
-            // delete data.voorkeuren;
+
             return res.render('IndelingslijstPage.tsx', {
                 ...indelingslijst,
                 datum: marktDate,

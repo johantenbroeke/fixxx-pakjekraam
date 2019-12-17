@@ -10,6 +10,8 @@ import { tomorrow, nextWeek } from '../util';
 // import { parse } from '@babel/core';
 // import { promises } from 'fs';
 
+import { KeycloakRoles } from '../permissions';
+
 import { getMarktenZichtbaarOndernemers } from '../model/markt.functions';
 import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 import { getToewijzingenByOndernemer } from '../model/allocation.functions';
@@ -17,6 +19,7 @@ import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 export const vendorDashboardPage = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
 
     const messages = getQueryErrors(req.query);
+    const role = KeycloakRoles.MARKTONDERNEMER;
 
     Promise.all([
         getMarktondernemer(erkenningsNummer),
@@ -29,6 +32,7 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
         .then(
             ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen, afwijzingen ]) => {
                 res.render('OndernemerDashboard', {
+                    role,
                     ondernemer,
                     aanmeldingen,
                     markten,

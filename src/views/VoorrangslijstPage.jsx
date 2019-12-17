@@ -116,6 +116,7 @@ class VoorrangslijstPage extends React.Component {
                 breadcrumbs={breadcrumbs}
                 buttonLabel={ type === 'wenperiode' ? 'sollicitanten' : type }
                 showDate={false}
+                role={role}
             >
                 {ondernemersGrouped.map((group, i) =>
                     group.length > 0

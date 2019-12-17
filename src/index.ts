@@ -181,18 +181,6 @@ app.get('/', (req: Request, res: Response) => {
     res.render('HomePage');
 });
 
-app.get(
-    '/mail/:marktId/:marktDate/:erkenningsNummer/aanmeldingen',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    applicationMailPage,
-);
-
-// app.get(
-//     '/mail/:marktId/:marktDate/:erkenningsNummer/voorkeuren',
-//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
-//     preferencesMailPage,
-// );
-
 app.get('/email/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
     res.render('EmailPage');
 });
@@ -209,17 +197,17 @@ app.get(
     (req: Request, res: Response) => {
         return getMarktenEnabled()
             .then((markten: any) => {
-                res.render('MarktenPage', { markten });
+                res.render('MarktenPage', { markten, role: KeycloakRoles.MARKTMEESTER });
             }, internalServerErrorPage(res));
-    });
+});
 
-app.get(
-    '/environment/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    (req: Request, res: Response) => {
-        res.render('EnvironmentPage');
-    }
-);
+// app.get(
+//     '/environment/',
+//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
+//     (req: Request, res: Response) => {
+//         res.render('EnvironmentPage');
+//     }
+// );
 
 // For debug purposes:
 app.get('/markt/index.json', keycloak.protect(KeycloakRoles.MARKTBUREAU), (req: Request, res: Response) => {
@@ -241,7 +229,7 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: Request, res: Response, next: NextFunction) => {
         getMarktEnriched(req.params.marktId)
-            .then((markt: any) => res.render('MarktDetailPage', { markt }))
+            .then((markt: any) => res.render('MarktDetailPage', { markt, role: KeycloakRoles.MARKTMEESTER }))
             .catch(next);
     },
 );
@@ -282,9 +270,14 @@ app.get(
     vasteplaatshoudersPage,
 );
 
-app.get('/markt/:marktId/:datum/sollicitanten/', keycloak.protect(KeycloakRoles.MARKTMEESTER), sollicitantenPage);
+// app.get(
+//     '/markt/:marktId/:datum/sollicitanten/',
+//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
+//     sollicitantenPage
+// );
 
-app.get('/markt/:marktId/:datum/voorrangslijst/',
+app.get(
+    '/markt/:marktId/:datum/voorrangslijst/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     voorrangslijstPage
 );
@@ -682,7 +675,7 @@ app.get('/profile/', keycloak.protect(KeycloakRoles.MARKTONDERNEMER), (req: Gran
 });
 
 app.get('/profile/:erkenningsNummer', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) =>
-    publicProfilePage(req, res, req.params.erkenningsNummer)
+    publicProfilePage(req, res, req.params.erkenningsNummer, KeycloakRoles.MARKTMEESTER)
 );
 
 app.get(

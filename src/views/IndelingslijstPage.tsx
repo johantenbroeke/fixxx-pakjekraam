@@ -65,6 +65,7 @@ export default class IndelingslijstenPage extends React.Component {
                 datum={datum}
                 showDate={true}
                 breadcrumbs={breadcrumbs}
+                role={role}
             >
                 {paginas.map((page, j) => (
                     <PrintPage

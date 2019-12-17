@@ -2,7 +2,7 @@ const LoginButton = require('./LoginButton');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-const Header = ({ user, children, logoUrl, hideLogout, breadcrumbs }) => {
+const Header = ({ user, children, hideLogout, breadcrumbs, role }) => {
     if (!breadcrumbs) {
         breadcrumbs = [
             {
@@ -12,7 +12,11 @@ const Header = ({ user, children, logoUrl, hideLogout, breadcrumbs }) => {
         ];
     }
 
-    logoUrl = '/markt/';
+    let logoUrl = '/';
+    role ?
+        logoUrl = role === 'marktmeester' ?
+            '/markt/' : '/dashboard/'
+        : null;
 
     return (
         <header className="Header">
@@ -20,7 +24,7 @@ const Header = ({ user, children, logoUrl, hideLogout, breadcrumbs }) => {
                 <div className="container">
                     <div className="container__content">
                         <div className="Header__top-container">
-                            <a className="Header__logo-link" href={`${logoUrl ? logoUrl : `/`}`}>
+                            <a className="Header__logo-link" href={logoUrl}>
                                 <picture className="Header__logo">
                                     <source srcSet="/images/logo-desktop.svg" media="(min-width: 540px)" />
                                     <source srcSet="/images/logo-mobile.svg" media="(min-width: 0)" />
@@ -57,6 +61,7 @@ Header.propTypes = {
     breadcrumbs: PropTypes.arrayOf(PropTypes.object),
     user: PropTypes.object,
     logoUrl: PropTypes.string,
+    role: PropTypes.string,
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     hideLogout: PropTypes.bool,
 };
