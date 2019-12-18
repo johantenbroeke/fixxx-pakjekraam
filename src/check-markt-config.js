@@ -158,7 +158,8 @@ function determineMarketsToValidate() {
 
     // Als één van de 'root' bestanden is gewijzigd moeten alle markten gecontroleerd worden.
     // Anders enkel degenen die gewijzigde config bestanden bevatten.
-    const checkAllMarkets = intersects(changedFiles, ROOTFILES);
+    const checkAllMarkets = !changedFiles.length ||
+                            intersects(changedFiles, ROOTFILES);
 
     return checkAllMarkets ?
            allMarketSlugs :
