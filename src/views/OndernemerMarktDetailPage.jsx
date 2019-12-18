@@ -69,7 +69,6 @@ class OndernemerMarktDetailPage extends React.Component {
         const afwijzingMorgen = afwijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
 
         const absentGemeld = algemeneVoorkeur ? ( algemeneVoorkeur.absentFrom && algemeneVoorkeur.absentUntil )  : false;
-
         const breadcrumbs = getBreadcrumbsOndernemer(ondernemer, role);
 
         return (
@@ -86,6 +85,11 @@ class OndernemerMarktDetailPage extends React.Component {
                         <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
                     ) : null}
                     <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
+                    <div className="Section Section--column Section--flat-top">
+                    { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+                        <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
+                    }
+                    </div>
                     { markt.kiesJeKraamMededelingActief ? (
                         <Alert type="warning" inline={true} title={markt.kiesJeKraamMededelingTitel}>
                             {markt.kiesJeKraamMededelingTekst}
