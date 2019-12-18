@@ -173,7 +173,8 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
                     return Promise.all([
                             sendToewijzingen,
                             sendAfwijzingen,
-                            sendUitslag(markt, marktDate, toewijzingen, ondernemers)
+                            sendUitslag(markt, marktDate, toewijzingen, ondernemers, false),
+                            sendUitslag(markt, marktDate, toewijzingen, ondernemers, true)
                         ])
                         .then( result => {
                             console.log(`${result[0].length} toewijzingen verstuurd.`);
@@ -189,7 +190,7 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
     });
 });
 
-function sendUitslag(markt: any, marktDate: string, toewijzingen: any[], ondernemers: any[]) {
+function sendUitslag(markt: any, marktDate: string, toewijzingen: any[], ondernemers: any[], isKraamzetter: Boolean) {
     toewijzingen.sort( (a,b) => a.plaatsen[0] - b.plaatsen[0] );
     const subject = `${markt.naam} ${yyyyMmDdtoDDMMYYYY(marktDate)}`;
     const mailTemplate = <EmailDataUitslag
@@ -198,10 +199,11 @@ function sendUitslag(markt: any, marktDate: string, toewijzingen: any[], onderne
         ondernemers={ondernemers}
         marktDate={marktDate}
         markt={markt}
+        isKraamzetter={isKraamzetter}
     />;
     return mail({
         from: process.env.MAILER_FROM,
-        to: 'tomootes@gmail.com',
+        to: 'kiesjekraam@gmail.com',
         subject,
         react: mailTemplate,
     });

@@ -14,23 +14,26 @@ export type Properties = {
     ondernemers: any[];
     marktDate: string;
     subject: string;
+    isKraamzetter: Boolean;
 };
 
 export class EmailDataUitslag extends React.Component<Properties> {
 
     public render() {
-        const { subject, toewijzingen, ondernemers, markt, marktDate } = this.props as Properties;
+        const { subject, toewijzingen, ondernemers, markt, marktDate, isKraamzetter } = this.props as Properties;
         return (
             <EmailBase lang="nl" appName="Kies je kraam" domain="kiesjekraam.amsterdam.nl" subject={subject}>
-
                 <EmailContent>
-                    <p>Beste marktbeheerder,</p>
+                    { isKraamzetter ?
+                        <p>Beste kramenzetter,</p>:
+                        <p>Beste marktbeheerder,</p>
+                    }
                     <p>Dit is een automatische mail met de indeling van {markt.naam} op {yyyyMmDdtoDDMMYYYY(marktDate)}.</p>
                     <table className="uitslag-table">
                         <tr text-align="left">
                             <th>Plaats(en)</th>
                             <th>Soll nr.</th>
-                            <th>Naam</th>
+                            { !isKraamzetter ? <th>Naam</th> : null }
                             <th>Type</th>
                         </tr>
                         <tbody>
@@ -40,7 +43,7 @@ export class EmailDataUitslag extends React.Component<Properties> {
                                     <tr key={index}>
                                         <td>{toewijzing.plaatsen.sort((a: any, b: any) => a - b).join(', ')}</td>
                                         <td>{ondernemer.sollicitatieNummer}</td>
-                                        <td>{ondernemer.description}</td>
+                                        { !isKraamzetter ? <td>{ondernemer.description}</td> : null }
                                         <td>{ondernemer.status}</td>
                                     </tr>
                                 );
