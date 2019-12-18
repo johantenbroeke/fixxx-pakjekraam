@@ -58,7 +58,7 @@ class MarktDetailPage extends React.Component {
                         <a href={`./${today()}/indelingslijst/`} className="Link">Postitie vasteplaasthouders</a> : null
                     }
                     { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
-                        <a href={`/pdf/kaart-${markt.afkorting}.pdf`} className="Link">Kaart {markt.naam}</a> : null
+                        <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
                     }
                 </div>
                 <h2 className="Heading Heading--intro">Lijsten per dag</h2>
