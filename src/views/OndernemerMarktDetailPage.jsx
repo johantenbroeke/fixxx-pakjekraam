@@ -42,14 +42,14 @@ class OndernemerMarktDetailPage extends React.Component {
             aanmeldingen,
             messages,
             markt,
-            marktId,
             voorkeur,
             branches,
             toewijzingen,
             afwijzingen,
             mededelingen,
             algemeneVoorkeur,
-            role
+            role,
+            user
         } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
@@ -75,7 +75,7 @@ class OndernemerMarktDetailPage extends React.Component {
         return (
             <Page messages={messages}>
                 <Header
-                    user={ondernemer}
+                    user={user}
                     role={role}
                     breadcrumbs={breadcrumbs}
                     >
@@ -86,6 +86,11 @@ class OndernemerMarktDetailPage extends React.Component {
                         <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
                     ) : null}
                     <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
+                    <div className="Section Section--column Section--flat-top">
+                    { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+                        <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
+                    }
+                    </div>
                     { markt.kiesJeKraamMededelingActief ? (
                         <Alert type="warning" inline={true} title={markt.kiesJeKraamMededelingTitel}>
                             {markt.kiesJeKraamMededelingTekst}

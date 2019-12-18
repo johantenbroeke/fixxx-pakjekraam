@@ -3,7 +3,6 @@ const Page = require('./components/Page.jsx');
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const Content = require('./components/Content');
-const OndernemerAanwezigheid = require('./components/OndernemerAanwezigheid');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
 const OndernemerMarktTile = require('./components/OndernemerMarktTile');
 const { tomorrow, today } = require('../util.ts');
@@ -19,12 +18,12 @@ class OndernemerDashboard extends React.Component {
         endDate: PropTypes.string.isRequired,
         toewijzingen: PropTypes.array,
         afwijzingen: PropTypes.array,
-        user: PropTypes.object,
         role: PropTypes.string,
+        user: PropTypes.object.isRequired,
     };
 
     render() {
-        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen, role } = this.props;
+        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen, role, user } = this.props;
 
         const sollicitaties = ondernemer.sollicitaties.filter(soll => {
             return !soll.doorgehaald && markten.map(markt => markt.id).includes(soll.markt.id);
@@ -63,9 +62,9 @@ class OndernemerDashboard extends React.Component {
         return (
             <Page messages={messages}>
                 <Header
-                    user={ondernemer}
                     breadcrumbs={breadcrumbs}
                     role={role}
+                    user={user}
                 >
                     <a className="Header__nav-item" href="./">
                         Mijn markten

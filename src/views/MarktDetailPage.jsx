@@ -25,7 +25,7 @@ class MarktDetailPage extends React.Component {
     };
 
     render() {
-        const { markt, datum, type, role } = this.props;
+        const { markt, datum, type, role, user } = this.props;
         const startDate = addDays(today(), -1);
         const endDate = addDays(endOfWeek(), DAYS_IN_WEEK);
         const marktDagen = (markt.marktDagen || []).map(parseMarktDag);
@@ -48,7 +48,7 @@ class MarktDetailPage extends React.Component {
         markt.kiesJeKraamFase == 'live' ? fase = null : fase = ` ${markt.kiesJeKraamFase}`;
 
         return (
-            <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} role={role}>
+            <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} user={user} role={role}>
                  {/* {markt.kiesJeKraamGeblokkeerdePlaatsen ?
                  <p>Geblokkeerde plaatsen: {markt.kiesJeKraamGeblokkeerdePlaatsen}</p> :
                  null } */}
@@ -58,7 +58,7 @@ class MarktDetailPage extends React.Component {
                         <a href={`./${today()}/indelingslijst/`} className="Link">Postitie vasteplaasthouders</a> : null
                     }
                     { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
-                        <a href={`/pdf/kaart-${markt.afkorting}.pdf`} className="Link">Kaart {markt.naam}</a> : null
+                        <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
                     }
                 </div>
                 <h2 className="Heading Heading--intro">Lijsten per dag</h2>

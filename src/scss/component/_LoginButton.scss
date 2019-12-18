@@ -5,6 +5,7 @@
     position: relative;
     padding-left: 20px;
     &:before {
+        margin-left: -3px;
         display: inline-block;
         font-size: 16px;
         position: absolute;

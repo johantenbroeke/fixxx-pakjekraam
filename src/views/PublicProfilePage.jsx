@@ -20,11 +20,11 @@ class PublicProfilePage extends React.Component {
     };
 
     render(state) {
-        const { ondernemer, role, messages } = this.props;
+        const { ondernemer, role, messages, user } = this.props;
 
         return (
             <Page messages={messages}>
-                <Header user={ondernemer} role={role}>
+                <Header user={user} role={role}>
                     <a className="Header__nav-item" href="/markt/">
                         Markten
                     </a>

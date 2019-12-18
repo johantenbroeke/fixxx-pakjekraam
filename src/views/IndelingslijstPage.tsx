@@ -24,6 +24,7 @@ export type IndelingslijstenPageState = {
     type: string;
     branches: IBranche[];
     role: string;
+    user: object;
 };
 
 export default class IndelingslijstenPage extends React.Component {
@@ -31,7 +32,7 @@ export default class IndelingslijstenPage extends React.Component {
     public render() {
 
         const props = this.props as IndelingslijstenPageState;
-        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren, branches, role } = props;
+        const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren, branches, role, user } = props;
         let { toewijzingen, plaatsvoorkeuren } = props;
         const plaatsList = arrayToObject(marktplaatsen, 'plaatsId');
         const vphl = ondernemersToLocatieKeyValue(ondernemers);
@@ -66,6 +67,7 @@ export default class IndelingslijstenPage extends React.Component {
                 showDate={true}
                 breadcrumbs={breadcrumbs}
                 role={role}
+                user={user}
             >
                 {paginas.map((page, j) => (
                     <PrintPage

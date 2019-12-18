@@ -11,10 +11,11 @@ class SollicitantenPage extends React.Component {
         ondernemers: PropTypes.object,
         datum: PropTypes.string,
         role: PropTypes.string,
+        user: PropTypes.object,
     };
 
     render() {
-        const { markt, ondernemers, datum, role } = this.props;
+        const { markt, ondernemers, datum, role, user } = this.props;
         const itemsOnPage = 40;
 
         const paginas = paginate(ondernemers, itemsOnPage);
@@ -31,6 +32,7 @@ class SollicitantenPage extends React.Component {
                 type={'ondernemers'}
                 showDate={false}
                 breadcrumbs={breadcrumbs}
+                user={user}
             >
                 {paginasLists.map((pagina, i) => (
                     <PrintPage key={i} index={i} title={`Ondernemers langdurig afgemeld: ${markt.naam}`} datum={datum}>
