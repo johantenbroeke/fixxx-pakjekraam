@@ -99,8 +99,13 @@ function checkRootFiles( errors ) {
 }
 
 function checkMarket( errors, marketPath ) {
+    const index = {
+        locaties: indexMarktPlaatsen(`${marketPath}/locaties.json`),
+        markt: indexMarktRows(`${marketPath}/markt.json`)
+    };
+
     for (const fileName of MARKETFILES) {
-        errors = VALIDATORS[fileName](errors, `${marketPath}/${fileName}`);
+        errors = VALIDATORS[fileName](errors, `${marketPath}/${fileName}`, index);
     }
     return errors;
 }
@@ -119,13 +124,13 @@ const VALIDATORS = {
     'geografie.json': function( errors, filePath ) {
         return errors;
     },
-    'locaties.json': function( errors, filePath ) {
+    'locaties.json': function( errors, filePath, index ) {
         return errors;
     },
-    'markt.json': function( errors, filePath ) {
+    'markt.json': function( errors, filePath, index ) {
         return errors;
     },
-    'paginas.json': function( errors, filePath ) {
+    'paginas.json': function( errors, filePath, index ) {
         return errors;
     }
 };
@@ -163,6 +168,24 @@ function determineMarketsToValidate() {
 function indexAllBranches( filePath ) {
     const branches = readJSON(filePath);
     return branches.map(branche => branche.brancheId);
+}
+function indexMarktPlaatsen( filePath ) {
+    const plaatsen = readJSON(filePath, false) || [];
+    return plaatsen.map(plaats => plaats.plaatsId);
+}
+function indexMarktRows( filePath ) {
+    const markt = readJSON(filePath, false);
+    if (!markt) {
+        return {};
+    }
+
+    const index = {};
+    markt.rows.forEach((row, rowNum) => {
+        for (const plaatsId of row) {
+            index[plaatsId] = rowNum;
+        }
+    });
+    return index;
 }
 
 run();
