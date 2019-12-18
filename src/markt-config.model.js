@@ -33,3 +33,30 @@ exports.MarketBranches = function( data ) {
     }
   }, OPTIONS);
 };
+
+exports.MarketGeografie = function( data ) {
+  return validate(data, {
+    type: 'object',
+    properties: {
+      'obstakels': {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            'kraamA'   : { type: 'string', required: true },
+            'kraamB'   : { type: 'string', required: true },
+            'obstakel' : {
+              type: 'array',
+              items: {
+                type: 'string'
+                // TODO: enum by loading `obstakeltypes.json`
+              },
+              required: true
+            }
+          },
+          additionalProperties: false
+        }
+      }
+    }
+  }, OPTIONS);
+};

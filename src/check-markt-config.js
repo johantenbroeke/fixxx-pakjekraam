@@ -9,7 +9,7 @@ function flatten( a, b ) {
 function intersects( a, b ) {
     return !!a.find(value => b.includes(value));
 }
-function unique( a, b ) {
+function uniq( a, b ) {
     return a.includes(b) ? a : [...a, b];
 }
 
@@ -121,8 +121,40 @@ const VALIDATORS = {
 
         return validateFile(errors, filePath, SCHEMAS.MarketBranches, validate, false);
     },
-    'geografie.json': function( errors, filePath ) {
-        return errors;
+    'geografie.json': function( errors, filePath, index ) {
+        function validate( fileErrors, { obstakels } ) {
+            obstakels.reduce((unique, obstakel, i) => {
+                const current = [obstakel.kraamA, obstakel.kraamB].sort();
+                // Is obstakeldefinitie uniek?
+                if (!unique.find(entry => entry.join() === current.join())) {
+                    // Bestaan beide kramen in `locaties.json`?
+                    if (obstakel.kraamA && !index.locaties.includes(obstakel.kraamA)) {
+                        fileErrors.push(`DATA.obstakels[${i}].kraamA does not exist: ${obstakel.kraamA}`);
+                    }
+                    if (obstakel.kraamB && !index.locaties.includes(obstakel.kraamB)) {
+                        fileErrors.push(`DATA.obstakels[${i}].kraamB does not exist: ${obstakel.kraamB}`);
+                    }
+
+                    // Staan beide kramen in verschillende rijen in `markt.json`?
+                    if (
+                        current[0] in index.markt && current[1] in index.markt &&
+                        index.markt[current[0]] === index.markt[current[1]]
+                    ) {
+                        fileErrors.push(`DATA.obstakels[${i}] kraamA and kraamB cannot be in the same row (kraamA: ${obstakel.kraamA}, kraamB: ${obstakel.kraamB})`);
+                    }
+
+                    unique.push(current);
+                } else {
+                    fileErrors.push(`DATA.obstakels[${i}] is not unique (kraamA: ${obstakel.kraamA}, kraamB: ${obstakel.kraamB})`);
+                }
+
+                return unique;
+            }, []);
+
+            return fileErrors;
+        }
+
+        return validateFile(errors, filePath, SCHEMAS.MarketGeografie, validate, false);
     },
     'locaties.json': function( errors, filePath, index ) {
         return errors;
