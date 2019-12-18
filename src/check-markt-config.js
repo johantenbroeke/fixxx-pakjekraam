@@ -70,7 +70,14 @@ function validateFile(
     try {
         const data = readJSON(filePath);
 
-        fileErrors = schema(data).errors.map(error => error.stack);
+        fileErrors = schema(data).errors.map(error => {
+            switch (error.name) {
+                case 'enum':
+                    return `${error.property} has unknown value '${error.instance}'`;
+                default:
+                    return error.stack;
+            }
+        });
         if (typeof extraValidation === 'function') {
             fileErrors = extraValidation(fileErrors, data);
         }
