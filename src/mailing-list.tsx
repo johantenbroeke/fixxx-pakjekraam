@@ -174,7 +174,7 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
                             sendToewijzingen,
                             sendAfwijzingen,
                             sendUitslag(markt, marktDate, toewijzingen, ondernemers, false),
-                            sendUitslag(markt, marktDate, toewijzingen, ondernemers, true)
+                            // sendUitslag(markt, marktDate, toewijzingen, ondernemers, true)
                         ])
                         .then( result => {
                             console.log(`${result[0].length} toewijzingen verstuurd.`);
