@@ -13,6 +13,12 @@ const headStyle =
     '                    table{border-collapse: collapse !important;}\n' +
     '                    body{height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important;}\n' +
     '\n' +
+    '                    .uitslag-table tr th {\n' +
+    '                        text-align: left;\n' +
+    '                    }\n' +
+    '                    .uitslag-table tr td {\n' +
+    '                        padding-right: 5px;\n' +
+    '                    }\n' +
     '                    /* iOS BLUE LINKS */\n' +
     '                    a[x-apple-data-detectors] {\n' +
     '                        color: inherit !important;\n' +
