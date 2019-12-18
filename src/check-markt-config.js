@@ -27,22 +27,22 @@ function readJSON( filePath, emitError=true ) {
 }
 
 const PROJECT_DIR = path.dirname(__dirname);
-const SCHEMAS     = require('./markt-config.model.js');
 const ROOTFILES   = [
     'config/markt/branches.json',
     'config/markt/obstakeltypes.json',
     'config/markt/plaatseigenschappen.json'
 ];
 const MARKETFILES = [
-    'branches.json',
-    'geografie.json',
     'locaties.json',
     'markt.json',
+    'branches.json',
+    'geografie.json',
     'paginas.json'
 ];
 const INDEX       = {
     branches: indexAllBranches(`${PROJECT_DIR}/config/markt/branches.json`)
 };
+const SCHEMAS     = require('./markt-config.model.js')(INDEX);
 
 function run() {
     const marketSlugs = determineMarketsToValidate();
@@ -119,11 +119,16 @@ function checkMarket( errors, marketPath ) {
 const VALIDATORS = {
     'branches.json': function( errors, filePath, index ) {
         function validate( fileErrors, marketBranches ) {
-            return marketBranches.reduce((_fileErrors, { id }, i) => {
-                return !INDEX.branches.includes(id) ?
-                       _fileErrors.concat([`DATA[${i}].id branche '${id}' does not exist`]) :
-                       _fileErrors;
-            }, fileErrors);
+            marketBranches.reduce((unique, { id }, i) => {
+                if (unique.includes(id)) {
+                    fileErrors.push([`DATA[${i}] Duplicate branche '${id}'`]);
+                } else {
+                    unique.push(id);
+                }
+
+                return unique;
+            }, []);
+            return fileErrors;
         }
 
         return validateFile(errors, filePath, SCHEMAS.MarketBranches, validate, false);
@@ -164,10 +169,40 @@ const VALIDATORS = {
         return validateFile(errors, filePath, SCHEMAS.MarketGeografie, validate, false);
     },
     'locaties.json': function( errors, filePath, index ) {
-        return errors;
+        function validate( fileErrors, locaties ) {
+            locaties.reduce((unique, { plaatsId }, i) => {
+                if (unique.includes(plaatsId)) {
+                    fileErrors.push(`DATA[${i}].plaatsId is not unique: ${plaatsId}`);
+                } else {
+                    if (!(plaatsId in index.markt)) {
+                        fileErrors.push(`DATA[${i}].plaatsId does not exist in markt.json: ${plaatsId}`);
+                    }
+
+                    unique.push(plaatsId);
+                }
+
+                return unique;
+            }, []);
+
+            return fileErrors;
+        }
+
+        return validateFile(errors, filePath, SCHEMAS.MarketLocaties, validate, true);
     },
     'markt.json': function( errors, filePath, index ) {
-        return errors;
+        function validate( fileErrors, { rows } ) {
+            return rows.reduce((_fileErrors, row, i) => {
+                row.forEach((plaatsId, j) => {
+                    if (!index.locaties.includes(plaatsId)) {
+                        _fileErrors.push(`DATA.rows[${i}][${j}].plaatsId does not exist in locaties.json: ${plaatsId}`);
+                    }
+                });
+
+                return _fileErrors;
+            }, fileErrors);
+        }
+
+        return validateFile(errors, filePath, SCHEMAS.Market, validate, true);
     },
     'paginas.json': function( errors, filePath, index ) {
         return errors;
