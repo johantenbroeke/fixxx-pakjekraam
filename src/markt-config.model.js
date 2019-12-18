@@ -1,7 +1,7 @@
 const { validate } = require('jsonschema');
-const options = {
+const OPTIONS = {
   throwError   : false,
-  propertyName : '.'
+  propertyName : 'DATA'
 };
 
 exports.AllBranches = function( data ) {
@@ -16,7 +16,7 @@ exports.AllBranches = function( data ) {
       },
       additionalProperties: false
     }
-  }, options);
+  }, OPTIONS);
 };
 
 exports.MarketBranches = function( data ) {
@@ -31,5 +31,5 @@ exports.MarketBranches = function( data ) {
       },
       additionalProperties: false
     }
-  }, options);
+  }, OPTIONS);
 };

@@ -13,9 +13,17 @@ function unique( a, b ) {
     return a.includes(b) ? a : [...a, b];
 }
 
-function readJSON( filePath ) {
-    const data = fs.readFileSync(filePath, { encoding: 'utf8' });
-    return JSON.parse(String(data));
+function readJSON( filePath, emitError=true ) {
+    try {
+        const data = fs.readFileSync(filePath, { encoding: 'utf8' });
+        return JSON.parse(String(data));
+    } catch (e) {
+        if (emitError) {
+            throw e;
+        } else {
+            return undefined;
+        }
+    }
 }
 
 const PROJECT_DIR = path.dirname(__dirname);
@@ -58,21 +66,25 @@ function validateFile(
     extraValidation = null, // function
     required = true
 ) {
-    let result;
+    let fileErrors;
     try {
         const data = readJSON(filePath);
 
-        result = schema(data).errors.map(error => error.stack);
+        fileErrors = schema(data).errors.map(error => error.stack);
         if (typeof extraValidation === 'function') {
-            result = extraValidation(result, data);
+            fileErrors = extraValidation(fileErrors, data);
         }
     } catch (e) {
-        result = required ? ['File not found'] : [];
+        fileErrors = required ? ['File not found'] : [];
+    }
+
+    if (!fileErrors.length) {
+        return errors;
     }
 
     return {
         ...errors,
-        [filePath]: result
+        [filePath]: fileErrors
     };
 }
 
@@ -93,13 +105,13 @@ function checkMarket( errors, marketPath ) {
     return errors;
 }
 const VALIDATORS = {
-    'branches.json': function( errors, filePath ) {
-        function validate( result, marketBranches ) {
-            return marketBranches.reduce((_result, { id }) => {
+    'branches.json': function( errors, filePath, index ) {
+        function validate( fileErrors, marketBranches ) {
+            return marketBranches.reduce((_fileErrors, { id }, i) => {
                 return !INDEX.branches.includes(id) ?
-                       _result.concat([`brancheId not found in config/markt/branches.json: ${id}`]) :
-                       _result;
-            }, result);
+                       _fileErrors.concat([`DATA[${i}].id branche '${id}' does not exist`]) :
+                       _fileErrors;
+            }, fileErrors);
         }
 
         return validateFile(errors, filePath, SCHEMAS.MarketBranches, validate, false);
