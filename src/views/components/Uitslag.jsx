@@ -21,11 +21,9 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
     const timeInHours = getTimezoneHours();
     markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
 
-    // timeInHours = parseInt(timeInHours) + 7;
-
     return (
         <div>
-            {timeInHours > 21 && timeInHours < 24 || !markt.geopend && ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) ? (
+            {timeInHours >= 21 && timeInHours < 24 || !markt.geopend && ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Morgen ({formatDate(tomorrow)})
