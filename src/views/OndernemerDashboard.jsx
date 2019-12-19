@@ -67,9 +67,6 @@ class OndernemerDashboard extends React.Component {
                     breadcrumbs={breadcrumbs}
                     role={role}
                 >
-                    <a className="Header__nav-item" href="./">
-                        Mijn markten
-                    </a>
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
