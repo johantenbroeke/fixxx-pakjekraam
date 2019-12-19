@@ -49,6 +49,7 @@ const Header = ({ user, children, hideLogout, breadcrumbs, role }) => {
                                     </a>
                                 )) : null }
                             </div>
+                            {children}
                         </div>
                     </div>
                 </div>

@@ -38,9 +38,6 @@ class AlgemeneVoorkeurenPage extends React.Component {
                     role={role}
                     breadcrumbs={breadcrumbs}
                     >
-                    <a className="Header__nav-item" href={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
-                        {role === 'marktmeester' ? 'Markten' : 'Mijn markten'}
-                    </a>
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>

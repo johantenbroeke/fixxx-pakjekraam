@@ -25,9 +25,6 @@ class PublicProfilePage extends React.Component {
         return (
             <Page messages={messages}>
                 <Header user={ondernemer} role={role}>
-                    <a className="Header__nav-item" href="/markt/">
-                        Markten
-                    </a>
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
