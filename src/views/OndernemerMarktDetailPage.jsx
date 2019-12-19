@@ -10,7 +10,7 @@ const OndernemerMarktHeading = require('./components/OndernemerMarktHeading');
 const OndernemerMarktVoorkeuren = require('./components/OndernemerMarktVoorkeuren');
 const OndernemerMarktAanwezigheid = require('./components/OndernemerMarktAanwezigheid');
 const OndernemerMarktAlgVoorkeuren = require('./components/OndernemerMarktAlgVoorkeuren');
-const { today, tomorrow, yesterday } = require('../util.ts');
+const { today, tomorrow, getBreadcrumbsOndernemer } = require('../util.ts');
 const Alert = require('./components/Alert');
 const Uitslag = require('./components/Uitslag');
 const { filterRsvpList } = require('../domain-knowledge.js');
@@ -31,7 +31,8 @@ class OndernemerMarktDetailPage extends React.Component {
         endDate: PropTypes.string.isRequired,
         user: PropTypes.object,
         mededelingen: PropTypes.object,
-        algemeneVoorkeur: PropTypes.object
+        algemeneVoorkeur: PropTypes.object,
+        role: PropTypes.string,
     };
 
     render() {
@@ -47,7 +48,8 @@ class OndernemerMarktDetailPage extends React.Component {
             toewijzingen,
             afwijzingen,
             mededelingen,
-            algemeneVoorkeur
+            algemeneVoorkeur,
+            role
         } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
@@ -67,11 +69,15 @@ class OndernemerMarktDetailPage extends React.Component {
         const afwijzingMorgen = afwijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
 
         const absentGemeld = algemeneVoorkeur ? ( algemeneVoorkeur.absentFrom && algemeneVoorkeur.absentUntil )  : false;
+        const breadcrumbs = getBreadcrumbsOndernemer(ondernemer, role);
 
         return (
             <Page messages={messages}>
-                <Header user={ondernemer} logoUrl="../../dashboard/">
-                    <a className="Header__nav-item" href="../../dashboard/">Mijn markten</a>
+                <Header
+                    user={ondernemer}
+                    role={role}
+                    breadcrumbs={breadcrumbs}
+                    >
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
@@ -79,6 +85,11 @@ class OndernemerMarktDetailPage extends React.Component {
                         <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
                     ) : null}
                     <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
+                    <div className="Section Section--column Section--flat-top">
+                    { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+                        <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
+                    }
+                    </div>
                     { markt.kiesJeKraamMededelingActief ? (
                         <Alert type="warning" inline={true} title={markt.kiesJeKraamMededelingTitel}>
                             {markt.kiesJeKraamMededelingTekst}

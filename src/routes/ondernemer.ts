@@ -10,8 +10,10 @@ import { MMSollicitatie } from '../makkelijkemarkt.model';
 import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 import { getAllBranches } from '../pakjekraam-api';
 
+import { KeycloakRoles } from '../permissions';
+
 export const deleteUserPage = ( req: Request, res: Response, result: string, error: string, csrfToken: string ) => {
-    return res.render('DeleteUserPage', { result, error, csrfToken });
+    return res.render('DeleteUserPage', { result, error, csrfToken, role: KeycloakRoles.MARKTMEESTER });
 };
 
 export const deleteUser = (req: Request, res: Response, erkenningsNummer: string) => {
@@ -30,7 +32,7 @@ export const deleteUser = (req: Request, res: Response, erkenningsNummer: string
     });
 };
 
-export const publicProfilePage = async (req: Request, res: Response, erkenningsNummer: string) => {
+export const publicProfilePage = async (req: Request, res: Response, erkenningsNummer: string, role: string) => {
 
     const messages = getQueryErrors(req.query);
 
@@ -41,7 +43,7 @@ export const publicProfilePage = async (req: Request, res: Response, erkenningsN
         const marktenEnabledIds = marktenEnabled.map( (markt: any) => markt.id);
         ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) => marktenEnabledIds.includes(sollicitatie.markt.id) );
 
-        res.render('PublicProfilePage', { ondernemer, messages });
+        res.render('PublicProfilePage', { ondernemer, messages, role });
     } catch(err) {
         internalServerErrorPage(res);
     }
@@ -65,6 +67,17 @@ export const toewijzingenAfwijzingenPage = (
         getMarktenEnabled(),
     ]).then(
         ([toewijzingen, afwijzingen, ondernemer, branches, markten]) => {
+
+            const marktenLive = markten.filter(markt => markt.kiesJeKraamFase === 'live').map( markt => markt.id);
+
+            afwijzingen = afwijzingen.filter(afwijzing => {
+                return marktenLive.includes(afwijzing.marktId);
+            });
+
+            toewijzingen = toewijzingen.filter(toewijzing => {
+                return marktenLive.includes(parseInt(toewijzing.marktId));
+            });
+
             res.render('ToewijzingenAfwijzingenPage', { toewijzingen, afwijzingen, ondernemer, role, branches, markten, messages });
         },
         err => internalServerErrorPage(res)(err),

@@ -10,9 +10,10 @@ class HomePage extends React.Component {
     };
 
     render() {
+        const breadcrumbs = [];
         return (
             <Page>
-                <Header hideLogout={true} />
+                <Header hideLogout={true} breadcrumbs={breadcrumbs}/>
                 <Content>
                     <h2>Digitaal indelen</h2>
                     <p>

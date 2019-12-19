@@ -5,6 +5,7 @@ const AfmeldForm = require('./components/AfmeldForm.jsx');
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
+const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
 
 class AfmeldPage extends React.Component {
     propTypes = {
@@ -25,12 +26,17 @@ class AfmeldPage extends React.Component {
 
     render() {
         const { ondernemer, messages, role, markt, mededelingen } = this.props;
+
+        const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
+
         return (
             <Page messages={messages}>
-                <Header user={this.props.ondernemer} logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
-                    <a className="Header__nav-item" href={role === 'marktmeester' ? '/markt/' : '/dashboard/'}>
-                        {role === 'marktmeester' ? 'Markten' : 'Mijn markten'}
-                    </a>
+                <Header
+                    user={this.props.ondernemer}
+                    logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}
+                    breadcrumbs={breadcrumbs}
+                    role={role}
+                    >
                     <OndernemerProfileHeader user={this.props.ondernemer} />
                 </Header>
                 <Content>

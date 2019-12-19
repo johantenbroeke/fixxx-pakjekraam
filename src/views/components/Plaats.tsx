@@ -36,18 +36,13 @@ const Plaats = ({
     ondernemerGewisseld?: boolean;
 }) => {
 
-    let plaatsProps = plaats.properties || [],
-        tags = plaats.properties || [];
-    const branches = plaats.branches || [];
+    let plaatsProps = plaats.properties || [];
+    let tags = plaats.properties || [];
 
     plaatsProps = plaatsProps.filter(word => !['dubble'].includes(word));
     plaatsProps.reverse();
     tags = tags.filter(word => ['experimentele-zone', 'standwerkersplaats', 'eigen-materiaal'].includes(word));
 
-    const plaatsIds = vph && plaatsvoorkeuren[vph.erkenningsNummer] ?
-        plaatsvoorkeuren[vph.erkenningsNummer].sort((a: any, b: any) =>
-                            b.priority - a.priority).map((plaatsvoorkeur: any) =>
-                            plaatsvoorkeur.plaatsId) : [];
     const voorkeur = vph && vph.voorkeur;
 
     return (
@@ -90,8 +85,9 @@ const Plaats = ({
                     </a>
                 ) : null}
             </td>
-            <td className="Plaats__prop Plaats__prop-naam">{type === 'wenperiode' ?
-            plaatsIds.join(', ') : ''}{ondernemer ? ondernemer.description : null}</td>
+            <td className="Plaats__prop Plaats__prop-naam">
+                {ondernemer ? ondernemer.description : null}
+            </td>
             <td className="Plaats__prop Plaats__prop-status">
                 {ondernemer ? <OndernemerStatus status={ondernemer.status} size="s" /> : null}
             </td>

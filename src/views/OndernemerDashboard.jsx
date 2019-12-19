@@ -6,7 +6,7 @@ const Content = require('./components/Content');
 const OndernemerAanwezigheid = require('./components/OndernemerAanwezigheid');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
 const OndernemerMarktTile = require('./components/OndernemerMarktTile');
-const { tomorrow, today, formatDayOfWeek, getMaDiWoDoOfToday } = require('../util.ts');
+const { tomorrow, today } = require('../util.ts');
 
 class OndernemerDashboard extends React.Component {
     propTypes = {
@@ -20,10 +20,11 @@ class OndernemerDashboard extends React.Component {
         toewijzingen: PropTypes.array,
         afwijzingen: PropTypes.array,
         user: PropTypes.object,
+        role: PropTypes.string,
     };
 
     render() {
-        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen } = this.props;
+        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen, role } = this.props;
 
         const sollicitaties = ondernemer.sollicitaties.filter(soll => {
             return !soll.doorgehaald && markten.map(markt => markt.id).includes(soll.markt.id);
@@ -57,12 +58,15 @@ class OndernemerDashboard extends React.Component {
             return markt;
         });
 
+        const breadcrumbs = [];
+
         return (
             <Page messages={messages}>
-                <Header user={ondernemer} logoUrl="/dashboard/">
-                    <a className="Header__nav-item" href="./">
-                        Mijn markten
-                    </a>
+                <Header
+                    user={ondernemer}
+                    breadcrumbs={breadcrumbs}
+                    role={role}
+                >
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>

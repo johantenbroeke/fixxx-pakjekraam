@@ -10,12 +10,19 @@ class MarktenPage extends React.Component {
     propTypes = {
         markten: PropTypes.array,
         user: PropTypes.object,
+        role: PropTypes.string,
     };
 
     render() {
+        const breadcrumbs = [];
+        const { role, user } = this.props;
         return (
             <Page>
-                <Header user={this.props.user} />
+                <Header
+                    role={role}
+                    user={user}
+                    breadcrumbs={breadcrumbs}
+                />
                 <Content>
                     <h1 className="h1">Markten</h1>
                     <MarktList markten={this.props.markten} />

@@ -3,7 +3,7 @@ const MarktDetailBase = require('./components/MarktDetailBase');
 const OndernemerList = require('./components/OndernemerList.tsx');
 const PrintPage = require('./components/PrintPage');
 const PropTypes = require('prop-types');
-const { paginate } = require('../util');
+const { paginate, getBreadcrumbsMarkt } = require('../util');
 const { A_LIJST_DAYS } = require('../domain-knowledge.js');
 
 import Indeling from '../allocation/indeling';
@@ -21,6 +21,7 @@ class VoorrangslijstPage extends React.Component {
         user: PropTypes.object,
         toewijzingen: PropTypes.array.isRequired,
         algemenevoorkeuren: PropTypes.array,
+        role: PropTypes.string,
     };
 
     render() {
@@ -34,6 +35,7 @@ class VoorrangslijstPage extends React.Component {
             user,
             toewijzingen,
             algemenevoorkeuren,
+            role
         } = this.props;
         let { ondernemers } = this.props;
         const aLijstSollNummers = aLijst.map(ondernemer => ondernemer.sollicitatieNummer);
@@ -102,6 +104,8 @@ class VoorrangslijstPage extends React.Component {
             return t;
         }, {});
 
+        const breadcrumbs = getBreadcrumbsMarkt(markt, role);
+
         return (
             <MarktDetailBase
                 bodyClass="page-markt-sollicitanten page-print"
@@ -109,8 +113,10 @@ class VoorrangslijstPage extends React.Component {
                 markt={markt}
                 datum={datum}
                 type={type}
+                breadcrumbs={breadcrumbs}
                 buttonLabel={ type === 'wenperiode' ? 'sollicitanten' : type }
                 showDate={false}
+                role={role}
             >
                 {ondernemersGrouped.map((group, i) =>
                     group.length > 0

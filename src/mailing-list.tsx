@@ -3,6 +3,7 @@ import * as React from 'react';
 import { EmailWenperiode } from './views/components/email/EmailWenperiode';
 import { EmailToewijzing } from './views/components/email/EmailToewijzing';
 import { EmailAfwijzing } from './views/components/email/EmailAfwijzing';
+import { EmailDataUitslag } from './views/components/email/EmailDataUitslag';
 
 import { defer } from 'rxjs';
 import { shareReplay, tap, combineLatest } from 'rxjs/operators';
@@ -87,9 +88,7 @@ const mailAfwijzing = (afwijzingCombined: any, markt: MMMarkt) => {
                 markt={markt}
             />;
     }
-
     return sendAllocationMail(subject, mailTemplate, user.email);
-
 
 };
 
@@ -109,7 +108,9 @@ const makkelijkeMarkt$ = defer(() => checkLogin()).pipe(
 );
 
 makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]) => {
+
     return getMarktenByDate(marktDate).then(markten => {
+
         return markten
             .filter(markt => markt.kiesJeKraamFase)
             .filter(markt => markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'wenperiode')
@@ -166,18 +167,21 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
 
                     console.log('Afwijzingen combined', afwijzingenCombined ? afwijzingenCombined.length : 0);
 
-                        return Promise.all(toewijzingenCombined.map( toewijzingCombined => mailToewijzing(toewijzingCombined, markt ) ))
+                    const sendToewijzingen = Promise.all(toewijzingenCombined.map( toewijzingCombined => mailToewijzing(toewijzingCombined, markt ) ));
+                    const sendAfwijzingen = Promise.all(afwijzingenCombined.map( afwijzingCombined => mailAfwijzing(afwijzingCombined, markt ) ));
+
+                    return Promise.all([
+                            sendToewijzingen,
+                            sendAfwijzingen,
+                            sendUitslag(markt, marktDate, toewijzingen, ondernemers, false),
+                            // sendUitslag(markt, marktDate, toewijzingen, ondernemers, true)
+                        ])
                         .then( result => {
-                            console.log(`${result.length} toewijzingen verstuurd.`);
-                            return Promise.all(afwijzingenCombined.map(
-                                afwijzingCombined => mailAfwijzing(afwijzingCombined, markt )
-                            ));
-                        })
-                        .then( result => {
-                            console.log(`${result.length} afwijzingen verstuurd.`);
+                            console.log(`${result[0].length} toewijzingen verstuurd.`);
+                            console.log(`${result[1].length} afwijzingen verstuurd.`);
+                            console.log('Uitslag verstuurd naar marktbureau.');
                             process.exit(0);
                         });
-
                 })
                 .catch(e => {
                     console.log(e);
@@ -186,3 +190,21 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
     });
 });
 
+function sendUitslag(markt: any, marktDate: string, toewijzingen: any[], ondernemers: any[], isKraamzetter: Boolean) {
+    toewijzingen.sort( (a,b) => a.plaatsen[0] - b.plaatsen[0] );
+    const subject = `${markt.naam} ${yyyyMmDdtoDDMMYYYY(marktDate)}`;
+    const mailTemplate = <EmailDataUitslag
+        subject={subject}
+        toewijzingen={toewijzingen}
+        ondernemers={ondernemers}
+        marktDate={marktDate}
+        markt={markt}
+        isKraamzetter={isKraamzetter}
+    />;
+    return mail({
+        from: process.env.MAILER_FROM,
+        to: process.env.APP_ENV === 'production' ? 'Marktbureau.kiesjekraam@amsterdam.nl,kiesjekraam@gmail.com' : null,
+        subject,
+        react: mailTemplate,
+    });
+}
