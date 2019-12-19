@@ -203,7 +203,7 @@ function sendUitslag(markt: any, marktDate: string, toewijzingen: any[], onderne
     />;
     return mail({
         from: process.env.MAILER_FROM,
-        to: 'Marktbureau.Beheerders@amsterdam.nl',
+        to: process.env.APP_ENV === 'production' ? 'Marktbureau.kiesjekraam@amsterdam.nl,kiesjekraam@gmail.com' : null,
         subject,
         react: mailTemplate,
     });
