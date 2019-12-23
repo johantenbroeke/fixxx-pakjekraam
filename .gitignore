@@ -29,4 +29,3 @@ node_modules/
 *.log
 dist/
 tmp/
-data/*/test/
