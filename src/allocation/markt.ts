@@ -31,8 +31,8 @@ const Markt = {
             return [];
         }
 
-        const { rows, obstakels } = markt;
-        const row = Markt._findRowForPlaatsen(rows, plaatsIds);
+        const { obstakels } = markt;
+        const row = Markt.findRowForPlaatsen(markt, plaatsIds);
 
         return plaatsIds
         .map(plaatsId => [
@@ -77,7 +77,7 @@ const Markt = {
             return result;
         }
 
-        const { rows, obstakels } = markt;
+        const { obstakels } = markt;
         const start               = plaatsen.shift();
         let current               = start;
         let dir                   = -1;
@@ -87,7 +87,7 @@ const Markt = {
 
         while (current) {
             const currentId                   = current.plaatsId;
-            const row                         = Markt._findRowForPlaatsen(rows, [currentId]);
+            const row                         = Markt.findRowForPlaatsen(markt, [currentId]);
             const { plaatsId: nextId = null } = Markt._getAdjacent(row, currentId, dir, 1, obstakels, filter)[0] || {};
             const nextIndex                   = plaatsen.findIndex(({ plaatsId }) => plaatsId === nextId);
 
@@ -139,10 +139,12 @@ const Markt = {
     // reside in a single row, otherwise expansion to these places would be
     // impossible anyway — places in different rows are in a different physical
     // location.
-    _findRowForPlaatsen: (
-        rows: IMarktplaats[][],
+    findRowForPlaatsen: (
+        markt: IMarkt,
         plaatsIds: PlaatsId[]
     ): IMarktplaats[] => {
+        const { rows } = markt;
+
         let found = 0;
         const result = rows.find(row => {
             const result = plaatsIds.filter(id => row.find(({ plaatsId }) => plaatsId === id));
