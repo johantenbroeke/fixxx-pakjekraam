@@ -147,7 +147,7 @@ const Indeling = {
                                     .filter(({ verplicht = false }) => verplicht)
                                     .map(({ brancheId }) => brancheId);
 
-        return Indeling._isAvailable(indeling, plaats) && (
+        return Indeling._isAvailable(indeling, plaats, ondernemer) && (
             // Als de plaats is toegekend zijn verdere controles onnodig.
             Ondernemer.heeftVastePlaats(ondernemer, plaats) || !(
                 // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
@@ -319,7 +319,7 @@ const Indeling = {
         ondernemer: IMarktondernemer
     ): boolean => {
         const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
-        const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats));
+        const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats, ondernemer));
         const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
 
         return beschikbaar.length < vastePlaatsen.length || !!voorkeuren.length;
@@ -457,11 +457,27 @@ const Indeling = {
 
     _isAvailable: (
         indeling: IMarktindeling,
-        plaats: IMarktplaats
+        targetPlaats: IMarktplaats,
+        ondernemer: IMarktondernemer
     ): boolean => {
-        return !!~indeling.openPlaatsen.findIndex(({ plaatsId }) =>
-            plaatsId === plaats.plaatsId
-        );
+        return !!~indeling.openPlaatsen.findIndex(({ plaatsId }) => {
+            if (plaatsId !== targetPlaats.plaatsId) {
+                return false;
+            }
+
+            // Deze code behandeld een specifieke situatie. Het kan voorkomen dat 2 VPHs
+            // beiden willen verplaatsen, waarbij de VPH met hogere anciënniteit een plek
+            // van de andere VPH inneemt. In sommige gevallen is dit onterecht: als de latere
+            // VPH meerdere plaatsen heeft kan het zijn dat hij ondanks zijn voorkeuren bepaalde
+            // van zijn vaste plaatsen nooit zal verlaten. Die plekken mogen niet beschikbaar
+            // zijn komen voor andere VPHs.
+            //
+            // Zie ook `Ondernemer.willNeverLeave`.
+            const plaatsEigenaar = Ondernemers.getVPHFor(indeling, plaatsId);
+            return !plaatsEigenaar ||
+                   ondernemer === plaatsEigenaar ||
+                   !Ondernemer.willNeverLeave(indeling, plaatsEigenaar).includes(plaatsId);
+        });
     },
 
     _rejectOndernemer: (

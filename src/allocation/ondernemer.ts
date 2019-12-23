@@ -6,8 +6,11 @@ import {
     IMarktondernemer,
     IMarktplaats,
     IPlaatsvoorkeur,
-    IToewijzing
+    IToewijzing,
+    PlaatsId
 } from '../markt.model';
+
+import Markt from './markt';
 
 const Ondernemer = {
     canExpandInIteration: (
@@ -169,6 +172,37 @@ const Ondernemer = {
         const targetSize               = Ondernemer.getTargetSize(ondernemer);
         const currentSize              = plaatsen.length;
         return currentSize < targetSize;
+    },
+
+    // Geeft een array met plaats IDs waar deze VPH sowieso op zal staan. Dit
+    // komt enkel voor in scenario's waar alle plaatsen (vaste plaatsen + voorkeuren)
+    // zich in dezelfde marktrij bevinden en de overspanning van deze plaatsen
+    // kleiner is dan 2x het aantal minimum plaatsen. In dat geval zal er altijd
+    // een overlap van plaatsen zijn waar deze ondernemer *altijd* op zal staan.
+    //
+    // Deze plaatsen mogen niet door een andere VPH ingenomen worden, ook al wil
+    // eerstgenoemde VPH verplaatsen.
+    willNeverLeave: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): PlaatsId[] => {
+        const startSize   = Ondernemer.getStartSize(ondernemer);
+        const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
+        const voorkeurIds = voorkeuren.map(({ plaatsId }) => plaatsId);
+
+        try {
+            const row     = Markt.findRowForPlaatsen(indeling, voorkeurIds);
+            const trimmed = Markt.trimRow(row, voorkeurIds);
+            const overlap = 2 * startSize - trimmed.length;
+
+            if (overlap <= 0) {
+                return [];
+            }
+
+            return trimmed.splice((trimmed.length - overlap) / 2, overlap);
+        } catch (e) {
+            return [];
+        }
     }
 };
 

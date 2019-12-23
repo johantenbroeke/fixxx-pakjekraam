@@ -1610,4 +1610,29 @@ describe('Bugfix voor', () => {
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
     });
+
+    it('issue #619', () => {
+        // Bij twee VPHs die willen verplaatsen kan het voorkomen dat degene met een hogere
+        // anciënniteit een plaats van de ander inneemt, die vervolgens slechter af is dan
+        // zijn oorspronkelijke situatie zonder te verplaatsen.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers : [
+                { sollicitatieNummer : 1, status : 'vph', plaatsen: ['5', '6'] },
+                { sollicitatieNummer : 2, status : 'vph', plaatsen: ['2', '3'] }
+            ],
+            marktplaatsen: [
+                { plaatsId: '1' }, { plaatsId: '2' }, { plaatsId: '3' }, { plaatsId: '4' },
+                { plaatsId: '5' }, { plaatsId: '6' }
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '1', priority: FIRST_CHOICE },
+                { sollicitatieNummer: 2, plaatsId: '1', priority: FIRST_CHOICE },
+                { sollicitatieNummer: 2, plaatsId: '2', priority: SECOND_CHOICE }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['5', '6']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1', '2']);
+    });
 });

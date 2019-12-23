@@ -43,6 +43,16 @@ const Ondernemers = {
         return result.size;
     },
 
+    getVPHFor: (
+        indeling: IMarktindeling,
+        plaatsId: PlaatsId
+    ): IMarktondernemer => {
+        return indeling.ondernemers.find(ondernemer => {
+            const { plaatsen=[] } = ondernemer;
+            return plaatsen.includes(plaatsId);
+        });
+    },
+
     sort: (
         ondernemers: IMarktondernemer[],
         aLijst: IMarktondernemer[] = []
