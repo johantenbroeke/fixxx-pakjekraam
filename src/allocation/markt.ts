@@ -161,6 +161,37 @@ const Markt = {
         return result;
     },
 
+    // Helper functie voor `Ondernemer.willNeverLeave` die weer wordt gebruikt in
+    // `Indeling._isAvailable`.
+    //
+    // Maakt de gegeven `row` zo kort mogelijk waarbij alle `plaatsIds` er nog in
+    // passen. Voorbeeld:
+    //
+    // row:      1 2 3 4 5 6
+    // plaatsIds   2   4 5
+    // returns     2 3 4 5
+    trimRow: (
+        row: IMarktplaats[],
+        plaatsIds: PlaatsId[]
+    ): PlaatsId[] => {
+        row       = row.slice();
+        plaatsIds = plaatsIds.slice();
+
+        const trimmed = [];
+        let current;
+        while ((current = row.shift()) && plaatsIds.length) {
+            const index = plaatsIds.indexOf(current.plaatsId);
+            if (index > -1) {
+                plaatsIds.splice(index, 1);
+            } else if (!trimmed.length ) {
+                continue;
+            }
+            trimmed.push(current.plaatsId);
+        }
+
+        return trimmed;
+    },
+
     // Search function for `getAdjacentPlaatsen`. Loops through array index numbers
     // starting from the index of `plaatsId`. When the row is circular the element
     // index number is wrapped around (see the assignment of `current` and `next` in
