@@ -54,6 +54,7 @@ class MarktDetailPage extends React.Component {
                  null } */}
                 <div className="Section Section--column">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
+                    <a href={`./${today()}/alle-sollicitanten/`} className="Link">Alle sollicitanten</a>
                     { markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
                         <a href={`./${today()}/indelingslijst/`} className="Link">Postitie vasteplaasthouders</a> : null
                     }
@@ -80,28 +81,16 @@ class MarktDetailPage extends React.Component {
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/indelingslijst/`} className="Link">
-                                                Originele positie vasteplaatshouders
-                                            </a>
-                                        </li>
-                                        <li className="LinkList__item">
                                             <a href={`./${date}/concept-indelingslijst/`} className="Link">
-                                                Concept indelingslijst
+                                                Conceptindeling
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/voorrangslijst/`} className="Link">
-                                                {!A_LIJST_DAYS.includes(weekDayInt)
-                                                    ? `Ondernemers niet ingedeeld`
-                                                    : `A- en B lijst aanmeldingen sollicitanten`}
+                                            <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/voorrangslijst-volledig/`} className="Link">
-                                                {!A_LIJST_DAYS.includes(weekDayInt)
-                                                    ? `Alle sollicitanten`
-                                                    : `A- en B lijst alle aanmeldingen sollicitanten`}
-                                            </a>
+                                            <a href={`./${date}/alle-sollicitanten/`} className="Link">Alle sollicitanten</a>
                                         </li>
                                         <li className="LinkList__item">
                                             <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">

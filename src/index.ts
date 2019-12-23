@@ -282,7 +282,7 @@ app.get(
     voorrangslijstPage
 );
 
-app.get('/markt/:marktId/:datum/voorrangslijst-volledig/',
+app.get('/markt/:marktId/:datum/alle-sollicitanten/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     voorrangslijstVolledigPage
 );
