@@ -1621,8 +1621,8 @@ describe('Bugfix voor', () => {
                 { sollicitatieNummer : 2, status : 'vph', plaatsen: ['2', '3'] }
             ],
             marktplaatsen: [
-                { plaatsId: '1' }, { plaatsId: '2' }, { plaatsId: '3' }, { plaatsId: '4' },
-                { plaatsId: '5' }, { plaatsId: '6' }
+                '1', '2', '3', '4',
+                '5', '6'
             ],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '1', priority: FIRST_CHOICE },
