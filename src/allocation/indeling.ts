@@ -96,25 +96,27 @@ const Indeling = {
         return indeling;
     },
 
-    assignPlaatsen: (
+    allocateOndernemer: (
         indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
-        size: number
+        queue: IMarktondernemer[],
+        ondernemer: IMarktondernemer
     ): IMarktindeling => {
         try {
-            const plaatsen = indeling.openPlaatsen;
-
-            if (!plaatsen.length) {
-                throw ADJACENT_UNAVAILABLE;
-            } else if (
+            if (
                 !Ondernemer.isVast(ondernemer) &&
                 Ondernemer.isInMaxedOutBranche(indeling, ondernemer)
             ) {
                 throw BRANCHE_FULL;
             }
 
-            const { anywhere = !Ondernemer.isVast(ondernemer) } = ondernemer.voorkeur || {};
-            const bestePlaatsen = Indeling._findBestePlaatsen(indeling, ondernemer, plaatsen, size, anywhere);
+            const size = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
+
+            const {
+                anywhere = !Ondernemer.isVast(ondernemer)
+            } = ondernemer.voorkeur || {};
+            const bestePlaatsen = Indeling._findBestePlaatsen(
+                indeling, ondernemer, indeling.openPlaatsen, size, anywhere
+            );
 
             if (!bestePlaatsen.length) {
                 throw ADJACENT_UNAVAILABLE;
@@ -213,6 +215,23 @@ const Indeling = {
                !!rsvp && !!rsvp.attending;
     },
 
+    performCalculation: (
+        indeling: IMarktindeling,
+        queue: IMarktondernemer[]
+    ): IMarktindeling => {
+        indeling = Indeling.performAllocation(indeling, queue);
+        indeling = Indeling.performExpansion(indeling);
+
+        // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
+        // eerder afgewezen sollictanten opnieuw in te delen omdat deze mogelijk passen op
+        // de vrijgekomen plaatsen.
+        const rejectedQueue = indeling.afwijzingen.map(({ ondernemer }) => ondernemer);
+        indeling = Indeling.performAllocation(indeling, rejectedQueue);
+        indeling = Indeling.performExpansion(indeling);
+
+        return indeling;
+    },
+
     // - VPHs met meer dan 1 plaats krijgen deze toegewezen.
     // - VPHs met 1 plaats en sollicitanten krijgen maximaal 2 plaatsen (afhankelijk van hun
     //   voorkeuren, en de hoeveelheid beschikbare ruimte op de markt).
@@ -221,49 +240,13 @@ const Indeling = {
     // `Indeling.init` wordt gebruikt om alle aanwezige ondernemers te sorteren.
     performAllocation: (
         indeling: IMarktindeling,
-        queue: IMarktondernemer[],
-        retryRejections: boolean = true
+        queue: IMarktondernemer[]
     ): IMarktindeling => {
-        const startSizes = queue.reduce((map, ondernemer) => {
-            const size = Ondernemer.isVast(ondernemer) ?
-                         Ondernemer.getStartSize(ondernemer) :
-                         1;
-            return map.set(ondernemer, size);
-        }, new Map());
+        return queue.reduce((indeling, ondernemer, i) => {
+            const queueRemaining = queue.slice(i);
 
-        indeling = queue.reduce((indeling, ondernemer, i) => {
-            const isVast      = Ondernemer.isVast(ondernemer);
-            const { anywhere = !isVast } = ondernemer.voorkeur || {};
-
-            const totalSpots  = indeling.openPlaatsen.length;
-            const minRequired = queue.slice(i).reduce((sum, ondernemer) => {
-                return sum + startSizes.get(ondernemer);
-            }, 0);
-            const startSize  = startSizes.get(ondernemer);
-            const targetSize = Ondernemer.getTargetSize(ondernemer);
-            const happySize  = startSize === 1 ?
-                               Math.min(targetSize, 2) :
-                               startSize;
-            const size       = totalSpots > minRequired ? happySize:
-                               totalSpots > 0           ? startSize :
-                                                          0;
-
-            return Indeling.assignPlaatsen(indeling, ondernemer, size);
+            return Indeling.allocateOndernemer(indeling, queueRemaining, ondernemer);
         }, indeling);
-
-        indeling = Indeling.performExpansion(indeling);
-
-        // Probeer afwijzingen opnieuw
-        // ---------------------------
-        // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
-        // eerder afgewezen sollictanten opnieuw in te delen omdat deze mogelijk passen op
-        // de vrijgekomen plaatsen.
-        if (retryRejections) {
-            const rejectedQueue = indeling.afwijzingen.map(({ ondernemer }) => ondernemer);
-            indeling = Indeling.performAllocation(indeling, rejectedQueue, false);
-        }
-
-        return indeling;
     },
 
     // Uitbreiden gaat in iteraties: iedereen die een 3de plaats wil krijgt deze
@@ -325,6 +308,28 @@ const Indeling = {
         return beschikbaar.length < vastePlaatsen.length || !!voorkeuren.length;
     },
 
+    _calculateStartSizeFor: (
+        indeling: IMarktindeling,
+        queue: IMarktondernemer[],
+        ondernemer: IMarktondernemer
+    ): number => {
+        const isVast      = Ondernemer.isVast(ondernemer);
+        const { anywhere = !isVast } = ondernemer.voorkeur || {};
+
+        const totalSpots  = indeling.openPlaatsen.length;
+        const minRequired = queue.reduce((sum, ondernemer) => {
+            return sum + Ondernemer.getStartSize(ondernemer);
+        }, 0);
+
+        const startSize  = Ondernemer.getStartSize(ondernemer);
+        const targetSize = Ondernemer.getTargetSize(ondernemer);
+        const happySize  = startSize === 1 ? Math.min(targetSize, 2) : startSize;
+
+        return totalSpots > minRequired ? happySize :
+               totalSpots > 0           ? startSize :
+                                          0;
+    },
+
     _findBestGroup: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
@@ -332,7 +337,7 @@ const Indeling = {
         size: number = 1,
         compare?: (best: IPlaatsvoorkeur[], current: IPlaatsvoorkeur[]) => number
     ): IMarktplaats[] => {
-        const minimumSize = Math.min(size, Ondernemer.getStartSize(ondernemer));
+        const minSize = Math.min(size, Ondernemer.getMinimumSize(ondernemer));
 
         return groups.reduce((result, group) => {
             if (group.length < size) {
@@ -347,9 +352,9 @@ const Indeling = {
             }
 
             if (
-                group.length >= minimumSize &&
-                // Zolang we het maximaal aantal gewenste aantal plaatsen nog niet hebben
-                // bereikt blijven we doorzoeken.
+                group.length >= minSize &&
+                // Zolang we het maximaal aantal gewenste plaatsen nog niet hebben bereikt
+                // blijven we doorzoeken.
                 Math.min(size, group.length) > result.length
             ) {
                 // Reduceer het aantal plaatsen tot `size`.

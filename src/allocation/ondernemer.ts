@@ -76,6 +76,11 @@ const Ondernemer = {
     },
 
     getStartSize: (ondernemer: IMarktondernemer): number => {
+        return Ondernemer.isVast(ondernemer) ?
+               Ondernemer.getMinimumSize(ondernemer) :
+               1;
+    },
+    getMinimumSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] }          = ondernemer;
         let { minimum = 0, maximum = 0 } = ondernemer.voorkeur || {};
 
@@ -186,14 +191,14 @@ const Ondernemer = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): PlaatsId[] => {
-        const startSize   = Ondernemer.getStartSize(ondernemer);
+        const minSize     = Ondernemer.getMinimumSize(ondernemer);
         const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const voorkeurIds = voorkeuren.map(({ plaatsId }) => plaatsId);
 
         try {
             const row     = Markt.findRowForPlaatsen(indeling, voorkeurIds);
             const trimmed = Markt.trimRow(row, voorkeurIds);
-            const overlap = 2 * startSize - trimmed.length;
+            const overlap = 2 * minSize - trimmed.length;
 
             if (overlap <= 0) {
                 return [];

@@ -1536,12 +1536,14 @@ describe('Bugfix voor', () => {
     });
 
     it('issue #532', () => {
-        // `Ondernemer.getStartSize` gaf onterecht een waarde van 1 terug, waar een SOLL
+        // `Ondernemer.getStartSize`[1] gaf onterecht een waarde van 1 terug, waar een SOLL
         // had aangegeven minimaal 2 plaatsen te willen. In `Indeling.performExpansion`
         // werd dit minimum vervolgens wel gerespecteerd. Op dit punt was echter al bepaald
         // wat de meest geschikte plaats voor deze ondernemer was (o.b.v. voorkeuren). Dit kon
         // betekenen dat uitbreiden niet meer mogelijk was omdat aangelegen plaatsen niet
         // beschikbaar meer waren.
+        //
+        // [1] 2019-12-30: Methode verplaatst naar `Ondernemer.getMinimumSize`.
         const { toewijzingen, afwijzingen } = calc({
             ondernemers : [
                 { sollicitatieNummer : 1, status : 'soll', voorkeur : { minimum: 2, maximum: 2, anywhere : true } }
