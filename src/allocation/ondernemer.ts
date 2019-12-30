@@ -102,7 +102,7 @@ const Ondernemer = {
         }));
     },
 
-    heeftBranche: (
+    hasBranche: (
         ondernemer: IMarktondernemer,
         brancheId?: BrancheId
     ): boolean => {
@@ -112,12 +112,12 @@ const Ondernemer = {
                !!brancheIds.length;
     },
 
-    heeftEVI: (ondernemer: IMarktondernemer): boolean => {
+    hasEVI: (ondernemer: IMarktondernemer): boolean => {
         const { verkoopinrichting = [] } = ondernemer.voorkeur || {};
         return !!verkoopinrichting.length;
     },
 
-    heeftVastePlaats: (
+    hasVastePlaats: (
         ondernemer: IMarktondernemer,
         plaats: IMarktplaats
     ): boolean => {
@@ -127,7 +127,7 @@ const Ondernemer = {
         return !!ondernemer.plaatsen.includes(plaats.plaatsId);
     },
 
-    heeftVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
+    hasVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
         return Ondernemer.isVast(ondernemer) &&
                ondernemer.plaatsen &&
                ondernemer.plaatsen.length > 0;

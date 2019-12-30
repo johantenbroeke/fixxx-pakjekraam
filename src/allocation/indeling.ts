@@ -149,11 +149,11 @@ const Indeling = {
 
         return Indeling._isAvailable(indeling, plaats, ondernemer) && (
             // Als de plaats is toegekend zijn verdere controles onnodig.
-            Ondernemer.heeftVastePlaats(ondernemer, plaats) || !(
+            Ondernemer.hasVastePlaats(ondernemer, plaats) || !(
                 // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
                 verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
                 // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
-                Ondernemer.heeftEVI(ondernemer) && !plaats.verkoopinrichting ||
+                Ondernemer.hasEVI(ondernemer) && !plaats.verkoopinrichting ||
                 // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
                 !anywhere && !voorkeurIds.includes(plaats.plaatsId)
             )
@@ -171,11 +171,11 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): number => {
-        return Ondernemer.heeftVastePlaatsen(ondernemer) &&
+        return Ondernemer.hasVastePlaatsen(ondernemer) &&
                !Indeling.willMove(indeling, ondernemer)      ? 0 :
-               Ondernemer.heeftBranche(ondernemer, 'bak')    ? 1 :
-               Ondernemer.heeftEVI(ondernemer)               ? 2 :
-               Ondernemer.heeftVastePlaatsen(ondernemer)     ? 3 :
+               Ondernemer.hasBranche(ondernemer, 'bak')    ? 1 :
+               Ondernemer.hasEVI(ondernemer)               ? 2 :
+               Ondernemer.hasVastePlaatsen(ondernemer)     ? 3 :
                                                                4;
     },
 
@@ -184,7 +184,7 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): number => {
-        return Ondernemer.heeftVastePlaatsen(ondernemer) ? 1 :
+        return Ondernemer.hasVastePlaatsen(ondernemer) ? 1 :
                indeling.aLijst.includes(ondernemer)      ? 1 :
                                                            2;
     },
@@ -276,8 +276,8 @@ const Indeling = {
         const queue = indeling.toewijzingen.filter(toewijzing =>
             Ondernemer.wantsExpansion(toewijzing) && (
                 !brancheId ||
-                (brancheId === 'evi' && Ondernemer.heeftEVI(toewijzing.ondernemer)) ||
-                Ondernemer.heeftBranche(toewijzing.ondernemer, brancheId)
+                (brancheId === 'evi' && Ondernemer.hasEVI(toewijzing.ondernemer)) ||
+                Ondernemer.hasBranche(toewijzing.ondernemer, brancheId)
             )
         );
 

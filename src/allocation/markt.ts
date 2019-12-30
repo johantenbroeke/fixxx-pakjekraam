@@ -121,7 +121,7 @@ const Markt = {
                result;
     },
 
-    heeftBranche: (
+    hasBranche: (
         plaats: IMarktplaats,
         brancheId?: BrancheId
     ): boolean => {
@@ -131,7 +131,7 @@ const Markt = {
                !!brancheIds.length;
     },
 
-    heeftEVI: (plaats: IMarktplaats): boolean => {
+    hasEVI: (plaats: IMarktplaats): boolean => {
         return !!(plaats.verkoopinrichting && plaats.verkoopinrichting.length);
     },
 
