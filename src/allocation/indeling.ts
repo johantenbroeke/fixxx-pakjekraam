@@ -512,13 +512,10 @@ const Indeling = {
         // Sorteer eerst op status groep...
         const sort1 = Indeling.getStatusGroup(indeling, a) -
                       Indeling.getStatusGroup(indeling, b);
-        // ... dan op aanwezigheid in de A-lijst...
-        const sort2 = Indeling.getListGroup(indeling, a) -
-                      Indeling.getListGroup(indeling, b);
         // ... dan op anciënniteitsnummer.
-        const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
+        const sort2 = a.sollicitatieNummer - b.sollicitatieNummer;
 
-        return sort1 || sort2 || sort3;
+        return sort1 || sort2;
     }
 };
 
