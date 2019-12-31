@@ -107,11 +107,8 @@ const Indeling = {
                 throw BRANCHE_FULL;
             }
 
-            const size = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
-
-            const {
-                anywhere = !Ondernemer.isVast(ondernemer)
-            } = ondernemer.voorkeur || {};
+            const anywhere      = Ondernemer.acceptsRandomAllocation(ondernemer);
+            const size          = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(
                 indeling, ondernemer, indeling.openPlaatsen, size, anywhere
             );
@@ -311,9 +308,6 @@ const Indeling = {
         queue: IMarktondernemer[],
         ondernemer: IMarktondernemer
     ): number => {
-        const isVast      = Ondernemer.isVast(ondernemer);
-        const { anywhere = !isVast } = ondernemer.voorkeur || {};
-
         const totalSpots  = indeling.openPlaatsen.length;
         const minRequired = queue.reduce((sum, ondernemer) => {
             return sum + Ondernemer.getStartSize(ondernemer);

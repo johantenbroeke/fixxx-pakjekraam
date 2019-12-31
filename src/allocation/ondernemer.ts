@@ -13,6 +13,15 @@ import {
 import Markt from './markt';
 
 const Ondernemer = {
+    acceptsRandomAllocation: (
+        ondernemer: IMarktondernemer
+    ): boolean => {
+        const voorkeur = ondernemer.voorkeur;
+        return !voorkeur || !('anywhere' in voorkeur) ?
+               !Ondernemer.isVast(ondernemer) :
+               !!voorkeur.anywhere;
+    },
+
     canExpandInIteration: (
         indeling: IMarktindeling,
         iteration: number,
