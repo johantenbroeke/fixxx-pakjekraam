@@ -196,6 +196,10 @@ const Ondernemer = {
     //
     // Deze plaatsen mogen niet door een andere VPH ingenomen worden, ook al wil
     // eerstgenoemde VPH verplaatsen.
+    //
+    // TODO: Weinig elegante oplossing. Kan dit verenigd worden met de nieuwe code
+    //       in `Indeling.allocateOndernemer` die voorkomt dat een VPH niet op zijn
+    //       eigen plek terecht kan als zijn voorkeuren niet beschikbaar zijn?
     willNeverLeave: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer

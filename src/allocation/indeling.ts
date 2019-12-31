@@ -97,7 +97,8 @@ const Indeling = {
     allocateOndernemer: (
         indeling: IMarktindeling,
         queue: IMarktondernemer[],
-        ondernemer: IMarktondernemer
+        ondernemer: IMarktondernemer,
+        openPlaatsen: IMarktplaats[] = indeling.openPlaatsen
     ): IMarktindeling => {
         try {
             if (
@@ -110,16 +111,75 @@ const Indeling = {
             const anywhere      = Ondernemer.acceptsRandomAllocation(ondernemer);
             const size          = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(
-                indeling, ondernemer, indeling.openPlaatsen, size, anywhere
+                indeling, ondernemer, openPlaatsen, size, anywhere
             );
 
             if (!bestePlaatsen.length) {
                 throw ADJACENT_UNAVAILABLE;
             }
 
-            return bestePlaatsen.reduce((indeling, plaats) => {
-                return Toewijzing.add(indeling, ondernemer, plaats);
+            // Deel deze ondernemer op hun meest gewilde locatie in. De resulterende
+            // indeling slaan we in een andere variabele op, zodat we hem nog ongedaan
+            // kunnen maken als de toewijzing een probleem oplevert. Zie hieronder.
+            const _indeling = bestePlaatsen.reduce((result, plaats) => {
+                return Toewijzing.add(result, ondernemer, plaats);
             }, indeling);
+
+            const statusGroup = Indeling.getStatusGroup(indeling, ondernemer);
+            if (statusGroup !== 3) {
+                return _indeling;
+            }
+
+            // Dit is een VPH die wil verplaatsen. Kijk of de huidige toewijzing geen
+            // situatie oplevert waarbij een andere verplaatsende VPH wordt afgewezen:
+            // een scenario dat niet mag optreden.
+            //
+            // Check of deze ondernemer nu op vaste plaatsen van een andere VPH  staat.
+            // Is dit niet het geval, dan is er niks aan de hand.
+            const affectedVPH = bestePlaatsen
+                                .map(plaats => Ondernemers.findVPHFor(_indeling, plaats.plaatsId))
+                                .filter(vph => vph && vph.sollicitatieNummer !== ondernemer.sollicitatieNummer);
+
+            if (!affectedVPH.length) {
+                return _indeling;
+            }
+
+            // Deze ondernemer neemt een of meerdere plaatsen in van andere VPHs. We
+            // simuleren nu de verdere indeling van de VPHs om te zien of de relevante
+            // VPHs nu worden afgewezen. Als dit het geval is, dan is de huidige toewijzing
+            // niet geschikt.
+            //
+            // Deze simulatie slaan we weer in een andere variabele op. Het kan namelijk zijn
+            // dat er in deze simulatie VPHs succesvol worden toegewezen. Zouden we `_indeling`
+            // gebruiken en zijn er geen problemen, dan wordt er verder gerekend met deze
+            // indeling. Het resultaat is vervolgens dat er VPHs voor hun beurt zijn ingedeeld.
+            //
+            // Enkel de huidige ondernemer mag in deze run ingedeeld worden. In
+            // `Indeling.performAllocation` wordt de juiste volgorde van indeling bepaald.
+            //
+            // TODO: `Indeling.performAllocation` hoeft in dit geval enkel `statusGroup === 3`
+            //       door te rekenen. Deze optimalisatie toevoegen?
+            const _indeling2 = Indeling.performAllocation(_indeling, queue.slice(1));
+            const rejections = affectedVPH.reduce((result, ondernemer) => {
+                const rejection = Indeling._findRejection(_indeling2, ondernemer);
+                return rejection ? result.concat(rejection) : result;
+            }, []);
+
+            if (!rejections.length) {
+                return _indeling;
+            }
+
+            // De huidige toewijzing levert afgewezen VPHs op. We maken de toewijzing ongedaan
+            // door de oorspronkelijke indeling weer te gebruiken (die van voor de toewijzing).
+            // Vervolgens maken we de plaatsen uit de huidige toewijzing ontoegankelijk (m.u.v.
+            // hun eigen plaatsen als die er tussen zitten), en proberen de ondernemer opnieuw
+            // in te delen. Worst case scenario hier is dat deze ondernemer uiteindelijk op
+            // zijn eigen plaatsen terecht komt.
+            const offending = bestePlaatsen
+                              .filter(plaats => !Ondernemer.hasVastePlaats(ondernemer, plaats))
+                              .map(plaats => plaats.plaatsId);
+            openPlaatsen = openPlaatsen.filter(plaats => !offending.includes(plaats.plaatsId));
+            return Indeling.allocateOndernemer(indeling, queue, ondernemer, openPlaatsen);
         } catch (errorMessage) {
             return Indeling._rejectOndernemer(indeling, ondernemer, errorMessage);
         }
