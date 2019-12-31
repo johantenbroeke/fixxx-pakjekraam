@@ -21,8 +21,6 @@ import Ondernemer from './ondernemer';
 import Ondernemers from './ondernemers';
 import Toewijzing from './toewijzing';
 
-type SizeMap = Map<IMarktondernemer, number>;
-
 // Wordt gebruikt in `_findBestePlaatsen` om `IMarktplaats` object om te vormen
 // tot `IPlaatsvoorkeur` objecten met een berekend `brancheIntersectCount` getal.
 //
@@ -174,11 +172,11 @@ const Indeling = {
         ondernemer: IMarktondernemer
     ): number => {
         return Ondernemer.hasVastePlaatsen(ondernemer) &&
-               !Indeling.willMove(indeling, ondernemer)      ? 0 :
-               Ondernemer.hasBranche(ondernemer, 'bak')    ? 1 :
-               Ondernemer.hasEVI(ondernemer)               ? 2 :
-               Ondernemer.hasVastePlaatsen(ondernemer)     ? 3 :
-                                                               4;
+               !Indeling.willMove(indeling, ondernemer)   ? 0 :
+               Ondernemer.hasBranche(ondernemer, 'bak')   ? 1 :
+               Ondernemer.hasEVI(ondernemer)              ? 2 :
+               Ondernemer.hasVastePlaatsen(ondernemer)    ? 3 :
+                                                            4;
     },
 
     // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt.
@@ -223,7 +221,7 @@ const Indeling = {
         indeling = Indeling.performExpansion(indeling);
 
         // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
-        // eerder afgewezen sollictanten opnieuw in te delen omdat deze mogelijk passen op
+        // eerder afgewezen sollicitanten opnieuw in te delen omdat deze mogelijk passen op
         // de vrijgekomen plaatsen.
         const rejectedQueue = indeling.afwijzingen.map(({ ondernemer }) => ondernemer);
         indeling = Indeling.performAllocation(indeling, rejectedQueue);
@@ -478,7 +476,7 @@ const Indeling = {
             // zijn komen voor andere VPHs.
             //
             // Zie ook `Ondernemer.willNeverLeave`.
-            const plaatsEigenaar = Ondernemers.getVPHFor(indeling, plaatsId);
+            const plaatsEigenaar = Ondernemers.findVPHFor(indeling, plaatsId);
             return !plaatsEigenaar ||
                    ondernemer === plaatsEigenaar ||
                    !Ondernemer.willNeverLeave(indeling, plaatsEigenaar).includes(plaatsId);

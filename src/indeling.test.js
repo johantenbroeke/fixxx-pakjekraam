@@ -840,7 +840,7 @@ describe('Een VPH die wil verplaatsen', () => {
                 { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] },
                 { sollicitatieNummer: 3, status: 'vpl', plaatsen: ['3'] }
             ],
-            marktplaatsen: [{}, {}, {}, {}, {}],
+            marktplaatsen: ['1', '2', '3', '4', '5'],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '4', priority: FIRST_CHOICE },
                 { sollicitatieNummer: 2, plaatsId: '1', priority: FIRST_CHOICE },
