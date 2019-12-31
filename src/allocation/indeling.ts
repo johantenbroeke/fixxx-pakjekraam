@@ -452,6 +452,15 @@ const Indeling = {
         );
     },
 
+    _findRejection: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ) => {
+        return indeling.afwijzingen.find(({ erkenningsNummer }) =>
+            erkenningsNummer === ondernemer.erkenningsNummer
+        );
+    },
+
     _isAvailable: (
         indeling: IMarktindeling,
         targetPlaats: IMarktplaats,
@@ -484,11 +493,7 @@ const Indeling = {
     ): IMarktindeling => {
         indeling = Toewijzing.remove(indeling, ondernemer);
 
-        const afwijzing = indeling.afwijzingen.find(({ erkenningsNummer }) =>
-            erkenningsNummer === ondernemer.erkenningsNummer
-        );
-
-        if( !afwijzing ) {
+        if( !Indeling._findRejection(indeling, ondernemer) ) {
             indeling.afwijzingen = indeling.afwijzingen.concat({
                 marktId          : indeling.marktId,
                 marktDate        : indeling.marktDate,
