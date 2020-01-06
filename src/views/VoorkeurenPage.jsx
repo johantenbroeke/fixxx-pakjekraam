@@ -51,7 +51,9 @@ class VoorkeurenPage extends React.Component {
                     role={role}
                     breadcrumbs={breadcrumbs}
                     >
-                    <OndernemerProfileHeader user={this.props.ondernemer} />
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={this.props.ondernemer} /> : null
+                    }
                 </Header>
                 <Content>
                     <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />

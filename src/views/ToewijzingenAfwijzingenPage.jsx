@@ -66,7 +66,9 @@ class ToewijzingenAfwijzingenPage extends React.Component {
         return (
             <Page messages={this.props.messages}>
                 <Header user={user} breadcrumbs={breadcrumbs} role={role}>
-                    <OndernemerProfileHeader user={ondernemer} />
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={ondernemer} /> : null
+                    }
                 </Header>
                 <Content>
                     <h2>Toewijzingen/ afwijzingen</h2>
