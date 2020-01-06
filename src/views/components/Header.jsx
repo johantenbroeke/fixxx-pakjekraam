@@ -35,8 +35,8 @@ const Header = ({ user, children, hideLogout, breadcrumbs, role }) => {
                                 {!hideLogout ? <LoginButton user={user} /> : null}
                                 { role === 'marktmeester' ? <p className="Header__user__name">{user.name}</p> : null }
                                 { role === 'marktmeester' ? <p className="Header__user__role">Marktmeester</p> : null }
-                                { role === 'marktondernemer' ? <p className="Header__user__name">{user.preferred_username}</p> : null }
-                                { role === 'marktondernemer' ? <p className="Header__user__role">Ondernemer</p> : null }
+                                {/* { role === 'marktondernemer' ? <p className="Header__user__name">{user.preferred_username}</p> : null }
+                                { role === 'marktondernemer' ? <p className="Header__user__role">Ondernemer</p> : null } */}
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,9 @@ const Header = ({ user, children, hideLogout, breadcrumbs, role }) => {
                                         <img className="Breadcrumb__icon" src="/images/chevron-right.svg" alt="Chevron-right"/>
                                     </a>
                                 )) : null }
+
                             </div>
+                            { children }
                         </div>
                     </div>
                 </div>

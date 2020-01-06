@@ -36,6 +36,9 @@ class AfmeldPage extends React.Component {
                     role={role}
                     user={user}
                     >
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={ondernemer} /> : null
+                    }
                 </Header>
                 <Content>
                     { markt.kiesJeKraamFase ? (
