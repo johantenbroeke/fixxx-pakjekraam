@@ -42,14 +42,14 @@ class OndernemerMarktDetailPage extends React.Component {
             aanmeldingen,
             messages,
             markt,
-            marktId,
             voorkeur,
             branches,
             toewijzingen,
             afwijzingen,
             mededelingen,
             algemeneVoorkeur,
-            role
+            role,
+            user
         } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
@@ -74,7 +74,7 @@ class OndernemerMarktDetailPage extends React.Component {
         return (
             <Page messages={messages}>
                 <Header
-                    user={ondernemer}
+                    user={user}
                     role={role}
                     breadcrumbs={breadcrumbs}
                     >

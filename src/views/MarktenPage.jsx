@@ -15,7 +15,7 @@ class MarktenPage extends React.Component {
 
     render() {
         const breadcrumbs = [];
-        const { role, user } = this.props;
+        const { role, user, markten } = this.props;
         return (
             <Page>
                 <Header
@@ -25,7 +25,7 @@ class MarktenPage extends React.Component {
                 />
                 <Content>
                     <h1 className="h1">Markten</h1>
-                    <MarktList markten={this.props.markten} />
+                    <MarktList markten={markten} />
                 </Content>
             </Page>
         );

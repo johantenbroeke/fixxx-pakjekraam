@@ -20,12 +20,12 @@ class VoorkeurenPage extends React.Component {
         marktDate: PropTypes.string,
         messages: PropTypes.array,
         query: PropTypes.string,
-        user: PropTypes.object,
         role: PropTypes.object,
         markt: PropTypes.object,
         sollicitatie: PropTypes.object,
         mededeling: PropTypes.object,
         csrfToken: PropTypes.string,
+        user: PropTypes.object.isRequired
     };
 
     render() {
@@ -39,6 +39,7 @@ class VoorkeurenPage extends React.Component {
             sollicitatie,
             mededeling,
             csrfToken,
+            user
         } = this.props;
 
         const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
@@ -46,11 +47,13 @@ class VoorkeurenPage extends React.Component {
         return (
             <Page messages={this.props.messages}>
                 <Header
-                    user={ondernemer}
+                    user={user}
                     role={role}
                     breadcrumbs={breadcrumbs}
                     >
-                    <OndernemerProfileHeader user={this.props.ondernemer} />
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={this.props.ondernemer} /> : null
+                    }
                 </Header>
                 <Content>
                     <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />

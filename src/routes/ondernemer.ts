@@ -11,39 +11,52 @@ import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 import { getAllBranches } from '../pakjekraam-api';
 
 import { KeycloakRoles } from '../permissions';
+import { GrantedRequest } from 'keycloak-connect';
+import { getKeycloakUser } from '../keycloak-api';
 
-export const deleteUserPage = ( req: Request, res: Response, result: string, error: string, csrfToken: string ) => {
-    return res.render('DeleteUserPage', { result, error, csrfToken, role: KeycloakRoles.MARKTMEESTER });
+export const deleteUserPage = ( req: GrantedRequest, res: Response, result: string, error: string, csrfToken: string, role: string) => {
+    return res.render('DeleteUserPage', {
+        result,
+        error,
+        csrfToken,
+        role,
+        user: getKeycloakUser(req)
+    });
 };
 
-export const deleteUser = (req: Request, res: Response, erkenningsNummer: string) => {
+export const deleteUser = (req: GrantedRequest, res: Response, erkenningsNummer: string) => {
     Promise.all([
-        // deleteAllocationsByErkenningsnummer(erkenningsNummer),
         deletePlaatsvoorkeurenByErkenningsnummer(erkenningsNummer),
         deleteRsvpsByErkenningsnummer(erkenningsNummer),
         deleteVoorkeurenByErkenningsnummer(erkenningsNummer)
     ])
     .then( (result) => {
         const numberOfRecordsFound = result.reduce((a,b) => a + b, 0);
-        deleteUserPage(req, res, `${numberOfRecordsFound} records mbt registratienummer '${req.body.erkenningsNummer}' verwijderd`, null, req.csrfToken());
+        deleteUserPage(
+            req,
+            res,
+            `${numberOfRecordsFound} records mbt registratienummer '${req.body.erkenningsNummer}' verwijderd`,
+            null,
+            req.csrfToken(),
+            KeycloakRoles.MARKTMEESTER,
+        );
     })
     .catch( ( e: string ) => {
         internalServerErrorPage(res);
     });
 };
 
-export const publicProfilePage = async (req: Request, res: Response, erkenningsNummer: string, role: string) => {
+export const publicProfilePage = async (req: GrantedRequest, res: Response, erkenningsNummer: string, role: string) => {
 
     const messages = getQueryErrors(req.query);
 
     try {
         const ondernemer = await getMarktondernemer(erkenningsNummer);
         const marktenEnabled = await getMarktenEnabled();
-
         const marktenEnabledIds = marktenEnabled.map( (markt: any) => markt.id);
         ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) => marktenEnabledIds.includes(sollicitatie.markt.id) );
 
-        res.render('PublicProfilePage', { ondernemer, messages, role });
+        res.render('PublicProfilePage', { ondernemer, messages, role, user: getKeycloakUser(req) });
     } catch(err) {
         internalServerErrorPage(res);
     }
@@ -51,7 +64,7 @@ export const publicProfilePage = async (req: Request, res: Response, erkenningsN
 };
 
 export const toewijzingenAfwijzingenPage = (
-    req: Request,
+    req: GrantedRequest,
     res: Response,
     erkenningsNummer: string,
     role: string
@@ -78,7 +91,16 @@ export const toewijzingenAfwijzingenPage = (
                 return marktenLive.includes(parseInt(toewijzing.marktId));
             });
 
-            res.render('ToewijzingenAfwijzingenPage', { toewijzingen, afwijzingen, ondernemer, role, branches, markten, messages });
+            res.render('ToewijzingenAfwijzingenPage', {
+                toewijzingen,
+                afwijzingen,
+                ondernemer,
+                role,
+                branches,
+                markten,
+                messages,
+                user: getKeycloakUser(req)
+            });
         },
         err => internalServerErrorPage(res)(err),
     );

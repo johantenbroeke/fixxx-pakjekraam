@@ -47,7 +47,7 @@ const Toewijzing = {
     find: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
-    ) => {
+    ): IToewijzing => {
         return indeling.toewijzingen.find(toewijzing =>
             toewijzing.erkenningsNummer === ondernemer.erkenningsNummer
         );

@@ -20,11 +20,7 @@ class ProfilePage extends React.Component {
             <Page messages={this.props.messages}>
                 <Header user={this.props.user} />
                 <Content>
-                    {this.props.user.userType === 'ondernemer' ? (
-                        <OndernemerProfile user={this.props.user} ondernemer={this.props.ondernemer} />
-                    ) : (
-                        <MarktmeesterProfile user={this.props.user} />
-                    )}
+                    <OndernemerProfile user={this.props.user} ondernemer={this.props.ondernemer} />
                     <p>
                         <a href="/logout">Uitloggen</a>
                     </p>

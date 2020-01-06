@@ -12,9 +12,11 @@ import { IPlaatsvoorkeurRow } from '../markt.model';
 import { getMarktEnriched } from '../model/markt.functions';
 import { getPlaatsvoorkeurenByMarktEnOndernemer } from '../model/plaatsvoorkeur.functions';
 import models from '../model/index';
+import { getKeycloakUser } from '../keycloak-api';
+import { GrantedRequest } from 'keycloak-connect';
 
 export const plaatsvoorkeurenPage = (
-    req: Request,
+    req: GrantedRequest,
     res: Response,
     erkenningsNummer: string,
     query: any,
@@ -54,7 +56,7 @@ export const plaatsvoorkeurenPage = (
         getMededelingen(),
     ]).then(
         ([ondernemer, markten, plaatsvoorkeuren, indelingVoorkeur, markt, mededelingen]) => {
-            const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
+            const sollicitatie = ondernemer.sollicitaties.find( (soll: any) => soll.markt.id === markt.id && !soll.doorgehaald);
             res.render('VoorkeurenPage', {
                 ondernemer,
                 markten,
@@ -68,6 +70,7 @@ export const plaatsvoorkeurenPage = (
                 sollicitatie,
                 mededeling: mededelingen.plaatsVoorkeuren,
                 csrfToken,
+                user: getKeycloakUser(req)
             });
         },
         err => internalServerErrorPage(res)(err),

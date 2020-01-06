@@ -9,6 +9,8 @@ import { upsert } from '../sequelize-util.js';
 import { getMarktEnriched, getMarktenEnabled } from '../model/markt.functions';
 
 import moment from 'moment';
+import { getKeycloakUser } from '../keycloak-api';
+import { GrantedRequest } from 'keycloak-connect';
 
 export const marketApplicationPage = (
     res: Response,
@@ -30,6 +32,7 @@ export const marketApplicationPage = (
 
 
 export const attendancePage = (
+    req: GrantedRequest,
     res: Response,
     erkenningsNummer: string,
     currentMarktId: string,
@@ -70,6 +73,7 @@ export const attendancePage = (
                 role,
                 mededelingen,
                 csrfToken,
+                user: getKeycloakUser(req)
             });
         },
         err => internalServerErrorPage(res)(err),

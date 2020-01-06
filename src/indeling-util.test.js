@@ -176,3 +176,42 @@ describe('Markt.groupByAdjacent', () => {
         );
     });
 });
+
+describe('Markt.trimRow', () => {
+    function trimRow( row, plaatsIds ) {
+        row = row.map(id => ({ plaatsId: id }));
+        return Markt.trimRow(row, plaatsIds);
+    }
+
+    it('works', () => {
+        expect(
+            trimRow(['1', '2', '3', '4', '5', '6'], ['1'])
+        ).toStrictEqual(
+            ['1']
+        );
+
+        expect(
+            trimRow(['1', '2', '3', '4', '5', '6'], ['3'])
+        ).toStrictEqual(
+            ['3']
+        );
+
+        expect(
+            trimRow(['1', '2', '3', '4', '5', '6'], ['2', '4', '5'])
+        ).toStrictEqual(
+            ['2', '3', '4', '5']
+        );
+
+        expect(
+            trimRow(['1', '2', '3', '4', '5', '6'], ['1', '6'])
+        ).toStrictEqual(
+            ['1', '2', '3', '4', '5', '6']
+        );
+
+        expect(
+            trimRow(['1', '2', '3', '4', '5', '6'], ['6', '1'])
+        ).toStrictEqual(
+            ['1', '2', '3', '4', '5', '6']
+        );
+    });
+});

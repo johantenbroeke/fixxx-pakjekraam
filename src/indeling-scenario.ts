@@ -85,12 +85,16 @@ const marktScenario = (seed: IMarktScenarioStub): IMarktScenario => {
     };
 
     markt.marktplaatsen = (seed.marktplaatsen || [])
-    .map((data: IMarktplaatsStub): IMarktplaats => {
-        const plaatsId = data && data.plaatsId || String(plaatsIncrement++);
-        return {
-            plaatsId,
-            ...data
-        };
+    .map((data: IMarktplaatsStub | string): IMarktplaats => {
+        if (typeof data === 'string') {
+            return { plaatsId: data };
+        } else {
+            const plaatsId = data && data.plaatsId || String(plaatsIncrement++);
+            return {
+                plaatsId,
+                ...data
+            };
+        }
     });
 
     if (seed.rows) {

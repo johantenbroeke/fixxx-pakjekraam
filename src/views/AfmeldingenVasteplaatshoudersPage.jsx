@@ -11,7 +11,8 @@ class afmeldingenPage extends React.Component {
         data: PropTypes.object,
         datum: PropTypes.string,
         vasteplaatshoudersAfgemeld: PropTypes.array,
-        role: PropTypes.string,
+        role: PropTypes.string.isRequired,
+        user: PropTypes.object.isRequired,
     };
 
     render() {
@@ -19,7 +20,8 @@ class afmeldingenPage extends React.Component {
            datum,
            markt,
            vasteplaatshoudersAfgemeld,
-           role
+           role,
+           user
         } = this.props;
 
         const columns = arrayToChunks(vasteplaatshoudersAfgemeld, 40);
@@ -36,6 +38,7 @@ class afmeldingenPage extends React.Component {
                 type={'afmeldingen'}
                 breadcrumbs={breadcrumbs}
                 role={role}
+                user={user}
             >
                 <PrintPage
                     title={`Vasteplaatshouders afgemeld: ${markt.naam}`}

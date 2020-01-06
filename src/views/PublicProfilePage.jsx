@@ -3,11 +3,8 @@ const React = require('react');
 const Page = require('./components/Page.jsx');
 const PropTypes = require('prop-types');
 const OndernemerProfile = require('./components/OndernemerProfile.jsx');
-const MarktmeesterProfile = require('./components/MarktmeesterProfile.jsx');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
-
-const { isVast } = require('../domain-knowledge.js');
 
 const today = () => new Date().toISOString().replace(/T.+/, '');
 
@@ -20,12 +17,12 @@ class PublicProfilePage extends React.Component {
     };
 
     render(state) {
-        const { ondernemer, role, messages } = this.props;
+        const { ondernemer, role, messages, user } = this.props;
 
         return (
             <Page messages={messages}>
-                <Header user={ondernemer} role={role}>
-                    <OndernemerProfileHeader user={ondernemer} />
+                <Header user={user} role={role}>
+                    {/* <OndernemerProfileHeader user={ondernemer} /> */}
                 </Header>
                 <Content>
                     <OndernemerProfile ondernemer={ondernemer} />
