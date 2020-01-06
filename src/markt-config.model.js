@@ -26,7 +26,7 @@ module.exports = function( INDEX ) {
       items: {
         type: 'object',
         properties: {
-          'id'              : {
+          'id': {
             type: 'string',
             enum: INDEX.branches,
             required: true
@@ -53,8 +53,8 @@ module.exports = function( INDEX ) {
               'obstakel': {
                 type: 'array',
                 items: {
-                  type: 'string'
-                  // TODO: enum by loading `obstakeltypes.json`
+                  type: 'string',
+                  enum: INDEX.obstakelTypes
                 },
                 required: true
               }
@@ -88,7 +88,13 @@ module.exports = function( INDEX ) {
               enum: ['eigen-materieel']
             }
           },
-          'properties': { type: 'array' },
+          'properties': {
+            type: 'array',
+            items: {
+              type: 'string',
+              enum: INDEX.plaatsEigenschappen
+            }
+          },
           'tags': { type: 'array' }
         },
         additionalProperties: false
@@ -115,11 +121,49 @@ module.exports = function( INDEX ) {
     }, OPTIONS);
   };
 
+  const Paginas = function( data ) {
+    return validate(data, {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          'title': {
+            type: 'string',
+            required: true
+          },
+          'indelingslijstGroup': {
+            type: 'array',
+            required: true,
+            items: {
+              type: 'object',
+              properties: {
+                'class': { type: 'string' },
+                'type': { type: 'string' },
+                'title': { type: 'string' },
+                'landmarkTop': { type: 'string' },
+                'landmarkBottom': { type: 'string' },
+                'plaatsList': {
+                  type: 'array',
+                  minItem: 1,
+                  items: {
+                    type: 'string'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }, OPTIONS);
+  };
+
   return {
     AllBranches,
     MarketBranches,
     MarketGeografie,
     MarketLocaties,
-    Market
+    Market,
+    Paginas
   };
 };

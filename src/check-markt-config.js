@@ -40,7 +40,9 @@ const MARKETFILES = [
     'paginas.json'
 ];
 const INDEX       = {
-    branches: indexAllBranches(`${PROJECT_DIR}/config/markt/branches.json`)
+    branches: indexAllBranches(`${PROJECT_DIR}/config/markt/branches.json`),
+    obstakelTypes: readJSON(`${PROJECT_DIR}/config/markt/obstakeltypes.json`),
+    plaatsEigenschappen: readJSON(`${PROJECT_DIR}/config/markt/plaatseigenschappen.json`)
 };
 const SCHEMAS     = require('./markt-config.model.js')(INDEX);
 
@@ -225,7 +227,23 @@ const VALIDATORS = {
         return validateFile(errors, filePath, SCHEMAS.Market, validate, true);
     },
     'paginas.json': function( errors, filePath, index ) {
-        return errors;
+        const validate = ( fileErrors, sections ) => {
+            sections.forEach((section, i) => {
+                section.indelingslijstGroup.forEach((group, j) => {
+                    if ('plaatsList' in group) {
+                        fileErrors = group.plaatsList.reduce((_fileErrors, plaatsId, k) => {
+                            return !index.locaties.includes(plaatsId) ?
+                                   _fileErrors.concat(`DATA[${i}].indelingslijstGroup[${j}].plaatsList[${k}] does not exist in locaties.json: ${plaatsId}`) :
+                                   _fileErrors;
+                        }, fileErrors);
+                    }
+                });
+            });
+
+            return fileErrors;
+        };
+
+        return validateFile(errors, filePath, SCHEMAS.Paginas, validate, true);
     }
 };
 
