@@ -16,6 +16,9 @@ import { internalServerErrorPage } from '../express-util';
 import { getOndernemersByMarkt } from '../model/ondernemer.functions';
 import { getVoorkeurenByMarkt } from '../model/voorkeur.functions';
 import { KeycloakRoles } from '../permissions';
+import { getKeycloakUser } from '../keycloak-api';
+
+import { GrantedRequest } from 'keycloak-connect';
 
 export const getIndelingslijstData = (marktId: string, marktDate: string) =>
     Promise.all([
@@ -57,7 +60,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
     });
 
 
-export const indelingslijstPage = (req: Request, res: Response) => {
+export const indelingslijstPage = (req: GrantedRequest, res: Response) => {
     const { marktDate, marktId } = req.params;
     const type = 'concept-indelingslijst';
 
@@ -80,28 +83,40 @@ export const indelingslijstPage = (req: Request, res: Response) => {
                 ...indelingslijst,
                 datum: marktDate,
                 type,
-                role
+                role,
+                user: getKeycloakUser(req)
             });
         }, internalServerErrorPage(res));
 };
 
-export const marketAllocationPage = (req: Request, res: Response) => {
+export const marketAllocationPage = (req: GrantedRequest, res: Response) => {
 
     const { marktDate, marktId } = req.params;
     getIndelingslijstData(marktId, marktDate).then(data => {
-        res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type:'wenperiode', role: KeycloakRoles.MARKTMEESTER });
+        res.render('IndelingslijstPage.tsx', {
+            ...data,
+            datum: marktDate,
+            type:'wenperiode',
+            role: KeycloakRoles.MARKTMEESTER,
+            user: getKeycloakUser(req)
+        });
     }, internalServerErrorPage(res));
 
 };
 
 
-export const indelingPage = (req: Request, res: Response) => {
+export const indelingPage = (req: GrantedRequest, res: Response) => {
 
     const { marktDate } = req.params;
     getIndelingslijstData(req.params.marktId, marktDate)
         .then(data => {
-            res.render('IndelingslijstPage.tsx', { ...data, datum: marktDate, type: 'indeling', role: KeycloakRoles.MARKTMEESTER });
+            res.render('IndelingslijstPage.tsx', {
+                ...data,
+                datum: marktDate,
+                type: 'indeling',
+                role: KeycloakRoles.MARKTMEESTER,
+                user: getKeycloakUser(req)
+            });
         }, internalServerErrorPage(res));
-
 
 };

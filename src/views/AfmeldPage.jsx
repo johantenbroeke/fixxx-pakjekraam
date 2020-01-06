@@ -22,22 +22,23 @@ class AfmeldPage extends React.Component {
         role: PropTypes.string,
         mededelingen: PropTypes.object.isRequired,
         csrfToken: PropTypes.string,
+        user: PropTypes.object.isRequired,
     };
 
     render() {
-        const { ondernemer, messages, role, markt, mededelingen } = this.props;
-
+        const { ondernemer, messages, role, markt, mededelingen, user } = this.props;
         const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
 
         return (
             <Page messages={messages}>
                 <Header
-                    user={this.props.ondernemer}
-                    logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}
                     breadcrumbs={breadcrumbs}
                     role={role}
+                    user={user}
                     >
-                    <OndernemerProfileHeader user={this.props.ondernemer} />
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={ondernemer} /> : null
+                    }
                 </Header>
                 <Content>
                     { markt.kiesJeKraamFase ? (

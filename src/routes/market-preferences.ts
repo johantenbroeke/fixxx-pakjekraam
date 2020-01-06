@@ -9,6 +9,8 @@ import { ddmmyyyyToDate } from '../util';
 import { Voorkeur } from '../model/voorkeur.model';
 
 import moment from 'moment';
+import { getKeycloakUser } from '../keycloak-api';
+import { GrantedRequest } from 'keycloak-connect';
 
 export const algemeneVoorkeurenFormCheckForError = (body: any, role: string) => {
 
@@ -92,11 +94,10 @@ export const updateMarketPreferences = (req: Request, res: Response, next: NextF
 };
 
 export const marketPreferencesPage = (
-    req: Request,
+    req: GrantedRequest,
     res: Response,
     erkenningsNummer: string,
     marktId: string,
-    marktDate: string,
     role: string,
     csrfToken: string,
 ) => {
@@ -129,6 +130,7 @@ export const marketPreferencesPage = (
             messages,
             role,
             csrfToken,
+            user: getKeycloakUser(req)
         });
 
     }, internalServerErrorPage(res));

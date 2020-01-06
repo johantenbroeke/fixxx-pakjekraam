@@ -1,6 +1,5 @@
 // import moment from 'moment';
 const moment = require('moment-timezone');
-// const { formatOndernemerName } = require('./domain-knowledge.js');
 
 export const capitalize = (s: string) => {
     return typeof s === 'string' ?

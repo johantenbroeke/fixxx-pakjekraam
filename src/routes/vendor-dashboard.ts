@@ -15,24 +15,25 @@ import { KeycloakRoles } from '../permissions';
 import { getMarktenZichtbaarOndernemers } from '../model/markt.functions';
 import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 import { getToewijzingenByOndernemer } from '../model/allocation.functions';
+import { GrantedRequest } from 'keycloak-connect';
+import { getKeycloakUser } from '../keycloak-api';
 
-export const vendorDashboardPage = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
+export const vendorDashboardPage = (req: GrantedRequest, res: Response, next: NextFunction, erkenningsNummer: string) => {
 
     const messages = getQueryErrors(req.query);
-    const role = KeycloakRoles.MARKTONDERNEMER;
 
-    Promise.all([
-        getMarktondernemer(erkenningsNummer),
-        getMarktenZichtbaarOndernemers(),
-        getPlaatsvoorkeurenOndernemer(erkenningsNummer),
-        getAanmeldingenByOndernemer(erkenningsNummer),
-        getToewijzingenByOndernemer(erkenningsNummer),
-        getAfwijzingenByOndernemer(erkenningsNummer)
-    ])
+        Promise.all([
+            getMarktondernemer(erkenningsNummer),
+            getMarktenZichtbaarOndernemers(),
+            getPlaatsvoorkeurenOndernemer(erkenningsNummer),
+            getAanmeldingenByOndernemer(erkenningsNummer),
+            getToewijzingenByOndernemer(erkenningsNummer),
+            getAfwijzingenByOndernemer(erkenningsNummer)
+        ])
         .then(
             ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen, afwijzingen ]) => {
                 res.render('OndernemerDashboard', {
-                    role,
+                    role: KeycloakRoles.MARKTONDERNEMER,
                     ondernemer,
                     aanmeldingen,
                     markten,
@@ -42,6 +43,7 @@ export const vendorDashboardPage = (req: Request, res: Response, next: NextFunct
                     messages,
                     toewijzingen,
                     afwijzingen,
+                    user: getKeycloakUser(req)
                 });
             },
             internalServerErrorPage(res),

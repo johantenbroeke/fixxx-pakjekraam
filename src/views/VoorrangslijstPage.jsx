@@ -18,10 +18,10 @@ class VoorrangslijstPage extends React.Component {
         voorkeuren: PropTypes.object,
         datum: PropTypes.string,
         type: PropTypes.string,
-        user: PropTypes.object,
         toewijzingen: PropTypes.array.isRequired,
         algemenevoorkeuren: PropTypes.array,
         role: PropTypes.string,
+        user: PropTypes.object
     };
 
     render() {
@@ -117,6 +117,7 @@ class VoorrangslijstPage extends React.Component {
                 buttonLabel={ type === 'wenperiode' ? 'sollicitanten' : type }
                 showDate={false}
                 role={role}
+                user={user}
             >
                 {ondernemersGrouped.map((group, i) =>
                     group.length > 0

@@ -1,5 +1,6 @@
 import KeycloakAdminClient from 'keycloak-admin';
 import { requireEnv, requireOne } from './util';
+import { GrantedRequest } from 'keycloak-connect';
 
 requireEnv('IAM_URL');
 requireEnv('IAM_REALM');
@@ -33,6 +34,11 @@ export const getKeycloakAdmin = () => {
     return kcAdminClient.auth(authConfig).then(() => kcAdminClient);
 };
 
+
+export const getKeycloakUser = (req: GrantedRequest) => {
+    return req.kauth.grant.access_token.content;
+};
+
 export const userExists = (username: string): Promise<boolean> =>
     getKeycloakAdmin()
         .then(kcAdminClient => kcAdminClient.users.findOne({ username } as any))
@@ -47,5 +53,6 @@ export const getAllUsers = () => getKeycloakAdmin().then(kcAdminClient => kcAdmi
 module.exports = {
     getAllUsers,
     getKeycloakAdmin,
+    getKeycloakUser,
     userExists,
 };

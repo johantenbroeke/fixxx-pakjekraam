@@ -5,12 +5,20 @@ import { internalServerErrorPage, HTTP_INTERNAL_SERVER_ERROR, httpErrorPage } fr
 import Indeling from '../allocation/indeling';
 
 import { KeycloakRoles } from '../permissions';
+import { GrantedRequest } from 'keycloak-connect';
+import { getKeycloakUser } from '../keycloak-api';
 
-export const vasteplaatshoudersPage = (req: Request, res: Response) => {
+export const vasteplaatshoudersPage = (req: GrantedRequest, res: Response) => {
     const datum = req.params.datum;
     const type = 'vasteplaatshouders';
     getIndelingslijstInput(req.params.marktId, datum).then((data: any) => {
-        res.render('VastplaatshoudersPage', { data, datum, type });
+        res.render('VastplaatshoudersPage', {
+            data,
+            datum,
+            type,
+            role: KeycloakRoles.MARKTMEESTER,
+            user: getKeycloakUser(req)
+        });
     }, internalServerErrorPage(res));
 };
 
@@ -26,7 +34,7 @@ export const sollicitantenPage = (req: Request, res: Response) => {
     );
 };
 
-export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, next: NextFunction) => {
+export const afmeldingenVasteplaatshoudersPage = (req: GrantedRequest, res: Response, next: NextFunction) => {
 
     const datum = req.params.datum;
     const marktId = req.params.marktId;
@@ -46,7 +54,8 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
                     vasteplaatshoudersAfgemeld: vasteplaatshoudersAfwezig,
                     markt: data.markt,
                     datum,
-                    role
+                    role,
+                    user: getKeycloakUser(req)
                 });
             },
             internalServerErrorPage(res),
@@ -55,7 +64,7 @@ export const afmeldingenVasteplaatshoudersPage = (req: Request, res: Response, n
 };
 
 
-export const voorrangslijstPage = (req: Request, res: Response, next: NextFunction) => {
+export const voorrangslijstPage = (req: GrantedRequest, res: Response, next: NextFunction) => {
 
     const datum = req.params.datum;
 
@@ -93,14 +102,15 @@ export const voorrangslijstPage = (req: Request, res: Response, next: NextFuncti
                 type,
                 toewijzingen: toewijzingenOptional,
                 algemenevoorkeuren,
-                role
+                role,
+                user: getKeycloakUser(req)
             });
         },
         internalServerErrorPage(res),
     ).catch(next);
 };
 
-export const voorrangslijstVolledigPage = (req: Request, res: Response, next: NextFunction) => {
+export const voorrangslijstVolledigPage = (req: GrantedRequest, res: Response, next: NextFunction) => {
 
     const datum = req.params.datum;
 
@@ -123,7 +133,8 @@ export const voorrangslijstVolledigPage = (req: Request, res: Response, next: Ne
                 type,
                 toewijzingen: [],
                 algemenevoorkeuren,
-                role
+                role,
+                user: getKeycloakUser(req)
             });
         },
         internalServerErrorPage(res),

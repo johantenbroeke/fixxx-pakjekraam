@@ -4,7 +4,7 @@ import { getKeycloakAdmin } from '../keycloak-api';
 import { forbiddenErrorPage, internalServerErrorPage, publicErrors, getQueryErrors } from '../express-util';
 import { stringify } from 'qs';
 import { trace } from '../util';
-import { KeycloakRoles } from '../permissions.js';
+import { KeycloakRoles } from '../permissions';
 
 export const registrationPage = (req: Request, res: Response) => {
     if (req.session.activation) {

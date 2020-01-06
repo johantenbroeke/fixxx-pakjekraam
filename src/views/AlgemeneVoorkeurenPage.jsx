@@ -20,10 +20,11 @@ class AlgemeneVoorkeurenPage extends React.Component {
         role: PropTypes.string,
         messages: PropTypes.array,
         csrfToken: PropTypes.string,
+        user: PropTypes.object.isRequired
     };
 
     render() {
-        const { ondernemer, messages, role, markt } = this.props;
+        const { ondernemer, messages, role, markt, user } = this.props;
         let { branches } = this.props;
 
         branches = branches.filter(branche => branche.brancheId !== 'bak');
@@ -34,11 +35,13 @@ class AlgemeneVoorkeurenPage extends React.Component {
         return (
             <Page messages={messages}>
                 <Header
-                    user={ondernemer}
+                    user={user}
                     role={role}
                     breadcrumbs={breadcrumbs}
                     >
-                    <OndernemerProfileHeader user={ondernemer} />
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={ondernemer} /> : null
+                    }
                 </Header>
                 <Content>
                     <AlgemeneVoorkeurenForm
