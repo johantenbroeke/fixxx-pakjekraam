@@ -90,7 +90,19 @@ function validateFile(
             fileErrors = extraValidation(fileErrors, data);
         }
     } catch (e) {
-        fileErrors = required ? ['File not found'] : [];
+        switch (e.code) {
+            case 'EACCESS':
+                fileErrors = ['Read permission denied'];
+                break;
+            case 'EISDIR':
+                fileErrors = ['Expected a file, found a directory'];
+                break;
+            case 'ENOENT':
+                fileErrors = required ? ['File not found'] : [];
+                break;
+            default:
+                fileErrors = [`Unexpected error: ${e.stack || e.message}`];
+        }
     }
 
     if (!fileErrors.length) {
