@@ -55,7 +55,15 @@ function run() {
         return checkMarket(_errors, marketPath);
     }, errors);
 
-    console.log(errors);
+    if (!Object.keys(errors).length) {
+        process.exit(0);
+    }
+
+    Object.keys(errors).forEach(filePath => {
+        const fileErrors = errors[filePath];
+        console.log(`\u001b[37;1m${filePath}\u001b[0m`);
+        fileErrors.forEach(error => console.log(`  ${error}`));
+    });
     process.exit(1);
 }
 
