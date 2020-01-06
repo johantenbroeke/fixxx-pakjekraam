@@ -126,6 +126,9 @@
     ],
     "src/**/*.{ts,tsx}": [
       "tslint --type-check --project tsconfig.json --config tslint.json"
+    ],
+    "config/markt/**/*.json": [
+      "node ./src/check-markt-config.js"
     ]
   }
 }
