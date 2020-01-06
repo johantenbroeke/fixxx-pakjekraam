@@ -43,7 +43,7 @@ const Ondernemers = {
         return result.size;
     },
 
-    getVPHFor: (
+    findVPHFor: (
         indeling: IMarktindeling,
         plaatsId: PlaatsId
     ): IMarktondernemer => {

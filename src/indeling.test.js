@@ -840,7 +840,7 @@ describe('Een VPH die wil verplaatsen', () => {
                 { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] },
                 { sollicitatieNummer: 3, status: 'vpl', plaatsen: ['3'] }
             ],
-            marktplaatsen: [{}, {}, {}, {}, {}],
+            marktplaatsen: ['1', '2', '3', '4', '5'],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '4', priority: FIRST_CHOICE },
                 { sollicitatieNummer: 2, plaatsId: '1', priority: FIRST_CHOICE },
@@ -1022,6 +1022,30 @@ describe('Een VPH die wil verplaatsen', () => {
         });
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
+    });
+
+    it('raken hun eigen plaats niet kwijt als hun voorkeur niet beschikbaar is', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] },
+                { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] },
+                { sollicitatieNummer: 3, status: 'vpl', plaatsen: ['3'] }
+            ],
+            marktplaatsen: [
+                '1', '2', '3'
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '2', priority: FIRST_CHOICE },
+                { sollicitatieNummer: 2, plaatsId: '3', priority: FIRST_CHOICE },
+                { sollicitatieNummer: 3, plaatsId: '2', priority: FIRST_CHOICE }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['2']);
     });
 });
 
@@ -1536,12 +1560,14 @@ describe('Bugfix voor', () => {
     });
 
     it('issue #532', () => {
-        // `Ondernemer.getStartSize` gaf onterecht een waarde van 1 terug, waar een SOLL
+        // `Ondernemer.getStartSize`[1] gaf onterecht een waarde van 1 terug, waar een SOLL
         // had aangegeven minimaal 2 plaatsen te willen. In `Indeling.performExpansion`
         // werd dit minimum vervolgens wel gerespecteerd. Op dit punt was echter al bepaald
         // wat de meest geschikte plaats voor deze ondernemer was (o.b.v. voorkeuren). Dit kon
         // betekenen dat uitbreiden niet meer mogelijk was omdat aangelegen plaatsen niet
         // beschikbaar meer waren.
+        //
+        // [1] 2019-12-30: Methode verplaatst naar `Ondernemer.getMinimumSize`.
         const { toewijzingen, afwijzingen } = calc({
             ondernemers : [
                 { sollicitatieNummer : 1, status : 'soll', voorkeur : { minimum: 2, maximum: 2, anywhere : true } }

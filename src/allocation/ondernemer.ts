@@ -13,6 +13,15 @@ import {
 import Markt from './markt';
 
 const Ondernemer = {
+    acceptsRandomAllocation: (
+        ondernemer: IMarktondernemer
+    ): boolean => {
+        const voorkeur = ondernemer.voorkeur;
+        return !voorkeur || !('anywhere' in voorkeur) ?
+               !Ondernemer.isVast(ondernemer) :
+               !!voorkeur.anywhere;
+    },
+
     canExpandInIteration: (
         indeling: IMarktindeling,
         iteration: number,
@@ -76,6 +85,11 @@ const Ondernemer = {
     },
 
     getStartSize: (ondernemer: IMarktondernemer): number => {
+        return Ondernemer.isVast(ondernemer) ?
+               Ondernemer.getMinimumSize(ondernemer) :
+               1;
+    },
+    getMinimumSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] }          = ondernemer;
         let { minimum = 0, maximum = 0 } = ondernemer.voorkeur || {};
 
@@ -102,7 +116,7 @@ const Ondernemer = {
         }));
     },
 
-    heeftBranche: (
+    hasBranche: (
         ondernemer: IMarktondernemer,
         brancheId?: BrancheId
     ): boolean => {
@@ -112,12 +126,12 @@ const Ondernemer = {
                !!brancheIds.length;
     },
 
-    heeftEVI: (ondernemer: IMarktondernemer): boolean => {
+    hasEVI: (ondernemer: IMarktondernemer): boolean => {
         const { verkoopinrichting = [] } = ondernemer.voorkeur || {};
         return !!verkoopinrichting.length;
     },
 
-    heeftVastePlaats: (
+    hasVastePlaats: (
         ondernemer: IMarktondernemer,
         plaats: IMarktplaats
     ): boolean => {
@@ -127,7 +141,7 @@ const Ondernemer = {
         return !!ondernemer.plaatsen.includes(plaats.plaatsId);
     },
 
-    heeftVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
+    hasVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
         return Ondernemer.isVast(ondernemer) &&
                ondernemer.plaatsen &&
                ondernemer.plaatsen.length > 0;
@@ -182,18 +196,22 @@ const Ondernemer = {
     //
     // Deze plaatsen mogen niet door een andere VPH ingenomen worden, ook al wil
     // eerstgenoemde VPH verplaatsen.
+    //
+    // TODO: Weinig elegante oplossing. Kan dit verenigd worden met de nieuwe code
+    //       in `Indeling.allocateOndernemer` die voorkomt dat een VPH niet op zijn
+    //       eigen plek terecht kan als zijn voorkeuren niet beschikbaar zijn?
     willNeverLeave: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): PlaatsId[] => {
-        const startSize   = Ondernemer.getStartSize(ondernemer);
+        const minSize     = Ondernemer.getMinimumSize(ondernemer);
         const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const voorkeurIds = voorkeuren.map(({ plaatsId }) => plaatsId);
 
         try {
             const row     = Markt.findRowForPlaatsen(indeling, voorkeurIds);
             const trimmed = Markt.trimRow(row, voorkeurIds);
-            const overlap = 2 * startSize - trimmed.length;
+            const overlap = 2 * minSize - trimmed.length;
 
             if (overlap <= 0) {
                 return [];
