@@ -118,7 +118,7 @@ function checkMarket( errors, marketPath ) {
 }
 const VALIDATORS = {
     'branches.json': function( errors, filePath, index ) {
-        function validate( fileErrors, marketBranches ) {
+        const validate = ( fileErrors, marketBranches ) => {
             marketBranches.reduce((unique, { id }, i) => {
                 if (unique.includes(id)) {
                     fileErrors.push([`DATA[${i}] Duplicate branche '${id}'`]);
@@ -129,12 +129,12 @@ const VALIDATORS = {
                 return unique;
             }, []);
             return fileErrors;
-        }
+        };
 
         return validateFile(errors, filePath, SCHEMAS.MarketBranches, validate, false);
     },
     'geografie.json': function( errors, filePath, index ) {
-        function validate( fileErrors, { obstakels } ) {
+        const validate = ( fileErrors, { obstakels } ) => {
             obstakels.reduce((unique, obstakel, i) => {
                 const current = [obstakel.kraamA, obstakel.kraamB].sort();
                 // Is obstakeldefinitie uniek?
@@ -164,12 +164,12 @@ const VALIDATORS = {
             }, []);
 
             return fileErrors;
-        }
+        };
 
         return validateFile(errors, filePath, SCHEMAS.MarketGeografie, validate, false);
     },
     'locaties.json': function( errors, filePath, index ) {
-        function validate( fileErrors, locaties ) {
+        const validate = ( fileErrors, locaties ) => {
             locaties.reduce((unique, { plaatsId }, i) => {
                 if (unique.includes(plaatsId)) {
                     fileErrors.push(`DATA[${i}].plaatsId is not unique: ${plaatsId}`);
@@ -185,12 +185,12 @@ const VALIDATORS = {
             }, []);
 
             return fileErrors;
-        }
+        };
 
         return validateFile(errors, filePath, SCHEMAS.MarketLocaties, validate, true);
     },
     'markt.json': function( errors, filePath, index ) {
-        function validate( fileErrors, { rows } ) {
+        const validate = ( fileErrors, { rows } ) => {
             return rows.reduce((_fileErrors, row, i) => {
                 row.forEach((plaatsId, j) => {
                     if (!index.locaties.includes(plaatsId)) {
@@ -200,7 +200,7 @@ const VALIDATORS = {
 
                 return _fileErrors;
             }, fileErrors);
-        }
+        };
 
         return validateFile(errors, filePath, SCHEMAS.Market, validate, true);
     },
