@@ -8,6 +8,9 @@
     &--error {
         border-color: $primary-red;
     }
+    &--warning {
+        border-color: $supplement-orange;
+    }
     &--success {
         border-color: $supplement-darkgreen;
     }

@@ -39,7 +39,6 @@ import {
 import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
 import { vendorDashboardPage } from './routes/vendor-dashboard';
 import { plaatsvoorkeurenPage, updatePlaatsvoorkeuren } from './routes/market-location';
-import { allocationMailPage } from './routes/mail-allocation';
 import { activationQRPage } from './routes/activation-qr';
 import { deleteUserPage, deleteUser, publicProfilePage, toewijzingenAfwijzingenPage } from './routes/ondernemer';
 import { langdurigAfgemeld, marktDetail } from './routes/markt';
@@ -184,12 +183,6 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/email/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
     res.render('EmailPage');
 });
-
-app.get(
-    '/mail/:marktId/:marktDate/:erkenningsNummer/indeling',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    allocationMailPage,
-);
 
 app.get(
     '/markt/',

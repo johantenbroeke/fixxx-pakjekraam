@@ -357,10 +357,22 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
         return enrichOndernemersWithVoorkeuren(...result);
     });
 
+    const getMarktPlaatsenDisabled = Promise.all([
+        getMarkt(marktId),
+        getMarktplaatsen(marktId)
+    ])
+    .then( ([makkelijkemarkt, marktplaatsen]) => {
+        const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.split(',');
+        return marktplaatsen.map( plaats => {
+            geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
+            return plaats;
+        });
+    });
+
     return Promise.all([
         getMarktProperties(marktId),
         enrichedOndernemers,
-        getMarktplaatsen(marktId),
+        getMarktPlaatsenDisabled,
         getAanmeldingen(marktId, marktDate),
         getPlaatsvoorkeuren(marktId),
         getAllBranches(),
@@ -382,7 +394,6 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
             markt,
             aLijst,
         ] = args;
-
         return {
             naam: '?',
             marktId,
