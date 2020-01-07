@@ -200,7 +200,7 @@
     "no-unsafe-negation": ["error"],
     "no-unused-vars": ["off", { "args": "none", "varsIgnorePattern": "^[A-Z].+" }],
     "no-unused-labels": ["error"],
-    "no-use-before-define": ["error", { "functions": false }],
+    "no-use-before-define": ["off", { "functions": false }],
     "no-useless-call": ["error"],
     "no-useless-computed-key": ["error"],
     "no-useless-concat": ["error"],

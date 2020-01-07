@@ -278,30 +278,30 @@ export const getPlaatsvoorkeurenOndernemer = (erkenningsNummer: string): Promise
     });
 
 export const getMarktProperties = (marktId: string): Promise<IMarktProperties> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/markt.json`, {});
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/markt.json`, {});
 
 export const getBranches = (marktId: string): Promise<IBranche[]> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/branches.json`, []);
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/branches.json`, []);
 
-export const getAllBranches = (): Promise<IBranche[]> => loadJSON('./data/branches.json', []);
+export const getAllBranches = (): Promise<IBranche[]> => loadJSON('./config/markt/branches.json', []);
 
 export const getMarktplaatsen = (marktId: string): Promise<IMarktplaats[]> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/locaties.json`, []);
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/locaties.json`, []);
 
 export const getMarktPaginas = (marktId: string): Promise<IAllocationPrintout> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/paginas.json`, []);
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/paginas.json`, []);
 
 export const getMarktGeografie = (marktId: string): Promise<{ obstakels: IObstakelBetween[] }> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/geografie.json`, { obstakels: [] });
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/geografie.json`, { obstakels: [] });
 
 export const getMarktInfo = (marktId: string): Promise<IMarktInfo> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/info.json`);
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/info.json`);
 
 export const getMededelingen = (): Promise<any> =>
-    loadJSON('./data/mededelingen.json', {});
+    loadJSON('./config/markt/mededelingen.json', {});
 
 export const getDaysClosed = (): Promise<any> =>
-    loadJSON('./data/daysClosed.json', {});
+    loadJSON('./config/markt/daysClosed.json', {});
 
 
 /*
@@ -357,10 +357,22 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
         return enrichOndernemersWithVoorkeuren(...result);
     });
 
+    const getMarktPlaatsenDisabled = Promise.all([
+        getMarkt(marktId),
+        getMarktplaatsen(marktId)
+    ])
+    .then( ([makkelijkemarkt, marktplaatsen]) => {
+        const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.split(',');
+        return marktplaatsen.map( plaats => {
+            geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
+            return plaats;
+        });
+    });
+
     return Promise.all([
         getMarktProperties(marktId),
         enrichedOndernemers,
-        getMarktplaatsen(marktId),
+        getMarktPlaatsenDisabled,
         getAanmeldingen(marktId, marktDate),
         getPlaatsvoorkeuren(marktId),
         getAllBranches(),
@@ -382,7 +394,6 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
             markt,
             aLijst,
         ] = args;
-
         return {
             naam: '?',
             marktId,
@@ -540,7 +551,7 @@ export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
 export const getMarkten = () =>
     getMakkelijkeMarkten();
         // Only show markten for which JSON data with location info exists
-        // .then(markten => markten.filter(markt => fs.existsSync(`data/${slugifyMarkt(markt.id)}/markt.json`)));
+        // .then(markten => markten.filter(markt => fs.existsSync(`config/markt/${slugifyMarkt(markt.id)}/markt.json`)));
 
 export const getMarktenByDate = (marktDate: string) => {
 
