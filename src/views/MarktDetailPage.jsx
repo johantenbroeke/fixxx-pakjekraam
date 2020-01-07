@@ -12,6 +12,7 @@ const {
 const React = require('react');
 const PropTypes = require('prop-types');
 const MarktDetailBase = require('./components/MarktDetailBase');
+const AlertLine = require('./components/AlertLine');
 const today = () => new Date().toISOString().replace(/T.+/, '');
 const { getUpcomingMarktDays, parseMarktDag, A_LIJST_DAYS } = require('../domain-knowledge.js');
 
@@ -49,9 +50,6 @@ class MarktDetailPage extends React.Component {
 
         return (
             <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} user={user} role={role}>
-                 {/* {markt.kiesJeKraamGeblokkeerdePlaatsen ?
-                 <p>Geblokkeerde plaatsen: {markt.kiesJeKraamGeblokkeerdePlaatsen}</p> :
-                 null } */}
                 <div className="Section Section--column">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
                     { markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
@@ -61,6 +59,15 @@ class MarktDetailPage extends React.Component {
                         <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
                     }
                 </div>
+                {markt.kiesJeKraamGeblokkeerdePlaatsen ?
+                    <AlertLine
+                        type="warning"
+                        title="Geblokkeerde plaatsen"
+                        titleSmall={true}
+                        message={`Plaatsen: ${markt.kiesJeKraamGeblokkeerdePlaatsen}`}
+                        inline={true}
+                    /> : null
+                }
                 <h2 className="Heading Heading--intro">Lijsten per dag</h2>
                 <div className="row row--responsive margin-bottom">
                     <div className="col-1-2 margin-bottom">

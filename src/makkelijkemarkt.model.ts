@@ -26,6 +26,7 @@ export interface MMMarkt {
     standaardKraamAfmeting: number;
     extraMetersMogelijk: boolean;
     kiesJeKraamFase: string;
+    kiesJeKraamGeblokkeerdePlaatsen: string;
     aanwezigeOpties: {
         '3mKramen': boolean;
         '4mKramen': boolean;

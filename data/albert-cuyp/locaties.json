@@ -1,7 +1,7 @@
 [
-  { "plaatsId": "2", "inactive": true },
-  { "plaatsId": "4", "inactive": true },
-  { "plaatsId": "6", "inactive": true },
+  { "plaatsId": "2" },
+  { "plaatsId": "4" },
+  { "plaatsId": "6" },
   { "plaatsId": "8" },
   { "plaatsId": "10" },
   { "plaatsId": "12" },
