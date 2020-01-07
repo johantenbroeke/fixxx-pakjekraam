@@ -362,11 +362,15 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
         getMarktplaatsen(marktId)
     ])
     .then( ([makkelijkemarkt, marktplaatsen]) => {
-        const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.split(',');
-        return marktplaatsen.map( plaats => {
-            geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
-            return plaats;
-        });
+        if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
+            const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.split(',');
+            return marktplaatsen.map( plaats => {
+                geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
+                return plaats;
+            });
+        } else {
+            return marktplaatsen;
+        }
     });
 
     return Promise.all([
