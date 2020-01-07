@@ -54,8 +54,9 @@ class MarktDetailPage extends React.Component {
                  null } */}
                 <div className="Section Section--column">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
+                    <a href={`./${today()}/voorrangslijst-volledig/`} className="Link">Alle sollicitanten</a>
                     { markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
-                        <a href={`./${today()}/indelingslijst/`} className="Link">Postitie vasteplaasthouders</a> : null
+                        <a href={`./${today()}/indelingslijst/`} className="Link">Positie vasteplaasthouders</a> : null
                     }
                     { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
                         <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null

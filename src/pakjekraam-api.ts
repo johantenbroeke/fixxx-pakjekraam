@@ -7,7 +7,7 @@ import {
     getMarktondernemersByMarkt as getMarktondernemersByMarktMM,
 } from './makkelijkemarkt-api';
 import { formatOndernemerName, isVast, parseMarktDag, slugifyMarkt } from './domain-knowledge.js';
-import { numberSort, stringSort } from './util';
+import { numberSort, stringSort, getMaDiWoDo, toISODate } from './util';
 import Sequelize from 'sequelize';
 import { allocation, plaatsvoorkeur, rsvp, voorkeur } from './model/index';
 import { calcToewijzingen } from './indeling';
@@ -543,11 +543,29 @@ export const getMarkten = () =>
         // .then(markten => markten.filter(markt => fs.existsSync(`data/${slugifyMarkt(markt.id)}/markt.json`)));
 
 export const getMarktenByDate = (marktDate: string) => {
-    const day = new Date(marktDate).getDay();
 
-    return getMarkten().then(markten =>
-        markten.filter(({ marktDagen }) => marktDagen.map(parseMarktDag).includes(day)),
-    );
+    const day = new Date(marktDate);
+
+    return Promise.all([
+        getMarkten(),
+        getDaysClosed()
+    ])
+    .then(([markten, daysClosed]) => {
+            if (daysClosed.includes(marktDate)) {
+                console.log('Alle markten zijn vandaag gesloten');
+                return [];
+            } else {
+                return markten
+                    .filter(({ marktDagen }) => marktDagen.includes( getMaDiWoDo(day) ))
+                    .filter(({ kiesJeKraamGeblokkeerdePlaatsen }) => {
+                        if (!kiesJeKraamGeblokkeerdePlaatsen) {
+                            return true;
+                        } else {
+                            return !kiesJeKraamGeblokkeerdePlaatsen.split(',').includes(marktDate);
+                        }
+                    });
+            }
+    });
 };
 
 /*
