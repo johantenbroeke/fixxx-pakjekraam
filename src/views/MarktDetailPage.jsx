@@ -8,6 +8,7 @@ const {
     capitalize,
     relativeHumanDay,
     endOfWeek,
+    yyyyMmDdtoDDMMYYYY,
 } = require('../util.ts');
 const React = require('react');
 const PropTypes = require('prop-types');
@@ -66,6 +67,15 @@ class MarktDetailPage extends React.Component {
                         title="Geblokkeerde plaatsen"
                         titleSmall={true}
                         message={`Plaatsen: ${markt.kiesJeKraamGeblokkeerdePlaatsen}`}
+                        inline={true}
+                    /> : null
+                }
+                {markt.kiesJeKraamGeblokkeerdeData ?
+                    <AlertLine
+                        type="warning"
+                        title="Geblokkeerde data"
+                        titleSmall={true}
+                        message={`Data: ${markt.kiesJeKraamGeblokkeerdeData.split(',').map(date => yyyyMmDdtoDDMMYYYY(date))}`}
                         inline={true}
                     /> : null
                 }
@@ -148,7 +158,6 @@ class MarktDetailPage extends React.Component {
                             ))}
                     </div>
                 </div>
-
             </MarktDetailBase>
         );
     }

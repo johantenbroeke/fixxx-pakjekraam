@@ -11,7 +11,7 @@ import url from 'url';
 import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makkelijkemarkt-api';
 import { requireEnv, today, tomorrow } from './util';
 import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors, isAbsoluteUrl } from './express-util';
-import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
+import { getMarktEnriched, getMarktenEnabled, getMarktenByDate } from './model/markt.functions';
 import cookieParser from 'cookie-parser';
 
 import csrf from 'csurf';
@@ -26,7 +26,6 @@ import {
     getPlaatsvoorkeuren,
     getBranches,
     getMarkten,
-    getMarktenByDate,
 } from './pakjekraam-api';
 
 import { serverHealth, serverTime, databaseHealth, keycloakHealth, makkelijkeMarktHealth } from './routes/status';
