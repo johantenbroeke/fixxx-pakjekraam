@@ -5,6 +5,7 @@ const AlgemeneVoorkeurenForm = require('./components/AlgemeneVoorkeurenForm.jsx'
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
+const SollicitatieSpecs = require('./components/SollicitatieSpecs');
 const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
 
 class AlgemeneVoorkeurenPage extends React.Component {
@@ -31,6 +32,7 @@ class AlgemeneVoorkeurenPage extends React.Component {
         branches = branches.sort((a, b) => a.brancheId - b.brancheId);
 
         const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
+        const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
         return (
             <Page messages={messages}>
@@ -44,6 +46,18 @@ class AlgemeneVoorkeurenPage extends React.Component {
                     }
                 </Header>
                 <Content>
+                    { role === 'marktmeester' ?
+                        <h2 className="Heading Heading--intro">Ondernemer</h2> : null
+                    }
+                    { role === 'marktmeester' ?
+                        <OndernemerProfileHeader
+                            inline={true}
+                            user={ondernemer}
+                        /> : null
+                    }
+                    { role === 'marktmeester' ?
+                        <SollicitatieSpecs sollicitatie={sollicitatie} /> : null
+                    }
                     <AlgemeneVoorkeurenForm
                         branches={branches}
                         markt={this.props.markt}

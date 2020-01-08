@@ -5,7 +5,7 @@ const PlaatsvoorkeurenForm = require('./components/PlaatsvoorkeurenForm.jsx');
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
-const OndernemerMarktHeading = require('./components/OndernemerMarktHeading');
+const SollicitatieSpecs = require('./components/SollicitatieSpecs');
 
 const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
 
@@ -56,10 +56,15 @@ class VoorkeurenPage extends React.Component {
                     }
                 </Header>
                 <Content>
-                    <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />
-                    <p>
-                        U kunt de plaatsvoorkeuren voor morgen tot 21.00 uur wijzigen.
-                    <br />
+                    { role === 'marktmeester' ?
+                        <h2 className="Heading Heading--intro">Ondernemer</h2> : null
+                    }
+                    { role === 'marktmeester' ?
+                        <OndernemerProfileHeader inline={true} user={ondernemer} /> : null
+                    }
+                    <SollicitatieSpecs sollicitatie={sollicitatie} />
+                    <h1 className="Heading Heading--intro">Plaatsvoorkeuren {markt.naam}</h1>
+                    <p>U kunt de plaatsvoorkeuren voor morgen tot 21.00 uur wijzigen.<br />
                         Wijzigt u de plaatsvoorkeuren na 21.00 uur? Dan gelden de wijzigingen voor de dagen na morgen.
                     </p>
                     { markt.kiesJeKraamFase ? (
