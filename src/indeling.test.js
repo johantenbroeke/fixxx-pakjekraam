@@ -131,6 +131,25 @@ describe('Een sollicitant op de A-lijst', () => {
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { verkoopinrichting: ['eigen-materieel'] } },
+                { sollicitatieNummer: 3, voorkeur: { verkoopinrichting: ['eigen-materieel'] } }
+            ],
+            marktplaatsen: [
+                { verkoopinrichting: ['eigen-materieel'] }, { verkoopinrichting: ['eigen-materieel'] }, {}
+            ],
+            aLijst: [
+                { sollicitatieNummer: 1 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([3]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
                 { sollicitatieNummer: 2, voorkeur: { branches: ['bak'] } },
                 { sollicitatieNummer: 3, voorkeur: { verkoopinrichting: ['eigen-materieel'] } }
             ],

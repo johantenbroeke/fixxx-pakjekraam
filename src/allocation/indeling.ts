@@ -28,6 +28,7 @@ import Toewijzing from './toewijzing';
 // `_findBestGroup` de meest geschikte set plaatsen te vinden.
 interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
     brancheScore: number;
+    eviScore: number;
     voorkeurScore: number;
 }
 
@@ -432,6 +433,7 @@ const Indeling = {
     ): IMarktplaats[] => {
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const ondernemerBrancheIds = Ondernemer.getBrancheIds(ondernemer);
+        const ondernemerEVI        = Ondernemer.hasEVI(ondernemer);
 
         // 1. Converteer geschikte plaatsen naar IPlaatsvoorkeur (zodat elke optie
         //    een `priority` heeft).
@@ -460,25 +462,27 @@ const Indeling = {
                                            intersectCount < plaatsBrancheCount         ? 2 :
                                            ondernemerBrancheCount > plaatsBrancheCount ? 3 :
                                                                                          4;
+
+            const plaatsEVI = Markt.hasEVI(plaats);
+            const eviScore = Number(ondernemerEVI) - Number(plaatsEVI) !== 0 ? 0 : 1;
+
             // De voorkeurscore betekent: hoe meer ondernemers deze plaats als voorkeur hebben
             // opgegeven, hoe hoger de score. Dit getal wordt gebruikt voor ondernemers die flexibel
             // ingedeeld willen worden. We proberen deze ondernemers op een plaats te zetten waar
             // geen of zo min mogelijk ondernemers een voorkeur voor hebben uitgesproken.
-            const voorkeurScore          = Ondernemers.countPlaatsVoorkeurenFor(indeling, plaats.plaatsId);
-
-            // TODO: Voeg verplichte branches en EVI toe, zodat flexibele ondernemers niet op een van
-            //       deze plekken komen terwijl er in de B-lijst nog ondernemers zijn die hier op willen
-            //       staan.
+            const voorkeurScore = Ondernemers.countPlaatsVoorkeurenFor(indeling, plaats.plaatsId);
 
             return {
                 ...plaats,
                 priority,
                 brancheScore,
+                eviScore,
                 voorkeurScore
             };
         })
         .sort((a, b) =>
             b.brancheScore - a.brancheScore ||
+            b.eviScore - a.eviScore ||
             b.priority - a.priority ||
             a.voorkeurScore - b.voorkeurScore
         );
@@ -499,7 +503,13 @@ const Indeling = {
                 if (bScore - aScore) {
                     return bScore - aScore;
                 }
-                // ... kijk vervolgens naar de prioriteit...
+                // ... kijk vervolgens of er een betere EVI overlap is...
+                aScore = a.map(pl => pl.eviScore).reduce(sum, 0);
+                bScore = b.map(pl => pl.eviScore).reduce(sum, 0);
+                if (bScore - aScore) {
+                    return bScore - aScore;
+                }
+                // ... kijk daarna naar de prioriteit...
                 aScore = a.map(pl => pl.priority || 0).reduce(sum, 0);
                 bScore = b.map(pl => pl.priority || 0).reduce(sum, 0);
                 if (bScore - aScore) {
