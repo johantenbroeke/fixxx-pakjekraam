@@ -14,7 +14,6 @@ import { getAfwijzingen } from './model/afwijzing.functions';
 import { retry } from './rxjs-util';
 import { getAllUsers } from './keycloak-api';
 import { checkLogin } from './makkelijkemarkt-api';
-// import { getMarktInfo } from './pakjekraam-api';
 import { getMarktenByDate } from './model/markt.functions';
 import { MMMarkt } from 'makkelijkemarkt.model';
 

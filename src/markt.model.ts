@@ -192,10 +192,6 @@ export interface IPlaatsvoorkeurRow {
 }
 
 export interface IMarktInfo {
-    telefoonnummer: string;
-    erkenningsNummer: ErkenningsNummer;
-    marktdagen: string;
-    indelingstijdstip: string;
     plaatsen?: IMarktplaats[];
     paginas: any[];
 }
