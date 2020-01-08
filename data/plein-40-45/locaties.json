@@ -111,7 +111,7 @@
   { "plaatsId": "110", "branches": ["bak"], "verkoopinrichting": ["eigen-materieel"] },
   { "plaatsId": "111", "branches": ["bak"], "verkoopinrichting": ["eigen-materieel"] },
   { "plaatsId": "112", "branches": ["bak"], "verkoopinrichting": ["eigen-materieel"] },
-  { "plaatsId": "113", "inactive": true, "branches": ["bak"], "verkoopinrichting": ["eigen-materieel"] },
+  { "plaatsId": "113", "branches": ["bak"], "verkoopinrichting": ["eigen-materieel"] },
   { "plaatsId": "114", "verkoopinrichting": ["eigen-materieel"] },
   { "plaatsId": "115", "verkoopinrichting": ["eigen-materieel"] },
   { "plaatsId": "116", "branches": ["bak"], "verkoopinrichting": ["eigen-materieel"] },
