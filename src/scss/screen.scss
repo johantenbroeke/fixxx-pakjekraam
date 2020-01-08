@@ -19,7 +19,10 @@
 @import "element/select";
 @import "element/dl";
 
-@import "component/Modal";
+
+@import "component/Alert";
+@import "component/AlertLine";
+// @import "component/Modal";
 @import "component/Breadcrumb";
 @import "component/Content";
 @import "component/Background-link-parent";
@@ -58,9 +61,9 @@
 @import "component/Link";
 @import "component/LinkList";
 @import "component/LinkSummary";
-@import "component/Alert";
-@import "component/AlertLine";
+
 @import "component/Pil";
+@import "component/SollicitatieSpecs";
 @import "component/CheckboxList";
 @import "component/PlaatsvoorkeurenForm";
 @import "component/HeaderTitleButton";

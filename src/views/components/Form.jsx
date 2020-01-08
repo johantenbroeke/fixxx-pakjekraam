@@ -8,13 +8,14 @@ class Page extends React.Component {
         decorator: PropTypes.string,
         csrfToken: PropTypes.string,
         dataAttributes: PropTypes.array,
+        className: PropTypes.string,
     };
 
     render() {
-        const { csrfToken, decorator, dataAttributes } = this.props;
+        const { csrfToken, decorator, dataAttributes, className } = this.props;
         return (
             <form
-                className="Form"
+                className={`Form ${className}`}
                 method="POST"
                 action="./"
                 encType="application/x-www-form-urlencoded"

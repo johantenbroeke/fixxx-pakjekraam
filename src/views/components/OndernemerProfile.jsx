@@ -1,8 +1,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { formatOndernemerName } = require('../../domain-knowledge.js');
-const { today } = require('../../util.ts');
-const Button = require('./Button');
+const OndernemerProfileHeader = require('./OndernemerProfileHeader');
+const SollicitatieSpecs = require('./SollicitatieSpecs');
 
 class OndernemerProfile extends React.Component {
     propTypes = {
@@ -15,17 +14,17 @@ class OndernemerProfile extends React.Component {
 
         return (
             <div>
-                <h1>Ondernemer detail: {formatOndernemerName(ondernemer)}</h1>
-                <p>{ondernemer.erkenningsnummer}</p>
+                <h2 className="Heading Heading--intro">Ondernemer</h2>
+                <OndernemerProfileHeader inline={true} user={ondernemer} />
                 <a className="Link" href={`/ondernemer/${ondernemer.erkenningsnummer}/toewijzingen-afwijzingen`}>Toewijzingen/afwijzingen</a>
-                <h2>Markten</h2>
+                <h1 className="Heading Heading--intro">Markten</h1>
                 {ondernemer.sollicitaties
                     .filter(sollicitatie => !sollicitatie.doorgehaald)
                     .map(sollicitatie => (
                         <div key={sollicitatie.markt.id} className="LinkSummary">
-                            <span>
-                                <a className="Link" href={`/markt/${sollicitatie.markt.id}/`}><strong>{sollicitatie.markt.naam}</strong></a>&nbsp;({sollicitatie.status} {sollicitatie.sollicitatieNummer})
-                            </span>
+                            <div className="LinkSummary__top">
+                                <a className="Link" href={`/markt/${sollicitatie.markt.id}/`}><strong>{sollicitatie.markt.naam}</strong></a> <SollicitatieSpecs sollicitatie={sollicitatie} />
+                            </div>
                             <div className="LinkSummary__links">
                                 <a className="LinkSummary__first-link LinkInline" href={`${vendorURL}afmelden/${sollicitatie.markt.id}/`}>aanwezigheid</a>
                                 <a className="LinkInline" href={`${vendorURL}voorkeuren/${sollicitatie.markt.id}/`}>plaatsvoorkeuren</a>

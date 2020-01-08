@@ -12,25 +12,6 @@ import moment from 'moment';
 import { getKeycloakUser } from '../keycloak-api';
 import { GrantedRequest } from 'keycloak-connect';
 
-export const marketApplicationPage = (
-    res: Response,
-    erkenningsNummer: string,
-    marktId: string,
-    query: any,
-) => {
-    Promise.all([
-        getMarktondernemer(erkenningsNummer),
-        getAanmeldingenByOndernemer(erkenningsNummer),
-        getMarkt(marktId),
-    ]).then(
-        ([ondernemer, aanmeldingen, markt]) => {
-            res.render('AanmeldPage', { ondernemer, aanmeldingen, markt, date: tomorrow() });
-        },
-        err => internalServerErrorPage(res)(err),
-    );
-};
-
-
 export const attendancePage = (
     req: GrantedRequest,
     res: Response,
