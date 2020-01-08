@@ -246,11 +246,6 @@
       "obstakel": ["loopje"]
 		},
     {
-      "kraamA": "145",
-      "kraamB": "250",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "136",
       "kraamB": "138",
       "obstakel": ["loopjediedichtmag"]
