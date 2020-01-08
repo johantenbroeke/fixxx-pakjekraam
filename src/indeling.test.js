@@ -145,9 +145,10 @@ describe('Een sollicitant op de A-lijst', () => {
             ]
         });
 
-        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
-        expect(findOndernemers(afwijzingen)).toStrictEqual([2, 3]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([3]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 
     it('krijgt voorrang over gelijkwaardige sollicitanten op de B-lijst', () => {
@@ -1094,6 +1095,49 @@ describe('Een sollicitant die ingedeeld wil worden', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+    });
+
+    it('krijgt voorkeur over andere sollicitanten op een brancheplaats als zij in deze branche opereren', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1 },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['x'] } }
+            ],
+            marktplaatsen: [
+                { branches: ['x'] }, {}
+            ],
+            branches: [
+                { brancheId: 'x', verplicht: true }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+    });
+
+    it('krijgt voorkeur over VPHs op een brancheplaats als zij in deze branche opereren', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['3'] },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['x'] } }
+            ],
+            marktplaatsen: [
+                { branches: ['x'] }, {}, {}
+            ],
+            branches: [
+                { brancheId: 'x', verplicht: true }
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '1' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 

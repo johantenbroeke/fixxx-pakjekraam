@@ -447,17 +447,19 @@ const Indeling = {
             const branches = plaats.branches || [];
             // De branche score vertegenwoordigd een ranking in manier van overlap in
             // ondernemers branches vs. plaats branches:
-            // 0. Geen overlap
-            // 1. Gedeeltelijke overlap:          ondernemer['x']      vs plaats['x', 'y']
-            // 2. Gedeeltelijk de andere kant op: ondernemer['x', 'y'] vs plaats['x']
-            // 3. Volledige overlap:              ondernemer['x', 'y'] vs plaats['x', 'y']
+            // 0. Geen overlap, maar plaats heeft wel branches
+            // 1. Geen overlap
+            // 2. Gedeeltelijke overlap:          ondernemer['x']      vs plaats['x', 'y']
+            // 3. Gedeeltelijk de andere kant op: ondernemer['x', 'y'] vs plaats['x']
+            // 4. Volledige overlap:              ondernemer['x', 'y'] vs plaats['x', 'y']
             const plaatsBrancheCount     = branches.length;
             const ondernemerBrancheCount = ondernemerBrancheIds.length;
             const intersectCount         = intersection(branches, ondernemerBrancheIds).length;
-            const brancheScore           = !intersectCount                             ? 0 :
-                                           intersectCount - plaatsBrancheCount < 0     ? 1 :
-                                           ondernemerBrancheCount > plaatsBrancheCount ? 2 :
-                                                                                         3;
+            const brancheScore           = !intersectCount && plaatsBrancheCount       ? 0 :
+                                           !intersectCount                             ? 1 :
+                                           intersectCount < plaatsBrancheCount         ? 2 :
+                                           ondernemerBrancheCount > plaatsBrancheCount ? 3 :
+                                                                                         4;
             // De voorkeurscore betekent: hoe meer ondernemers deze plaats als voorkeur hebben
             // opgegeven, hoe hoger de score. Dit getal wordt gebruikt voor ondernemers die flexibel
             // ingedeeld willen worden. We proberen deze ondernemers op een plaats te zetten waar
