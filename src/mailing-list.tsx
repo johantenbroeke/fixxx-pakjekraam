@@ -9,13 +9,13 @@ import { defer } from 'rxjs';
 import { shareReplay, tap, combineLatest } from 'rxjs/operators';
 import { mail } from './mail.js';
 import { requireEnv, tomorrow, yyyyMmDdtoDDMMYYYY, getMaDiWoDo } from './util';
-import { getMarktenByDate, getMarktondernemersByMarkt, getToewijzingen } from './pakjekraam-api';
+import { getMarktondernemersByMarkt, getToewijzingen } from './pakjekraam-api';
 import { getAfwijzingen } from './model/afwijzing.functions';
 import { retry } from './rxjs-util';
 import { getAllUsers } from './keycloak-api';
 import { checkLogin } from './makkelijkemarkt-api';
 // import { getMarktInfo } from './pakjekraam-api';
-// import { IMarktplaats, IPlaatsvoorkeur, IRSVP, IBranche } from 'markt.model';
+import { getMarktenByDate } from './model/markt.functions';
 import { MMMarkt } from 'makkelijkemarkt.model';
 
 requireEnv('MAILER_FROM');

@@ -557,32 +557,6 @@ export const getMarkten = () =>
         // Only show markten for which JSON data with location info exists
         // .then(markten => markten.filter(markt => fs.existsSync(`config/markt/${slugifyMarkt(markt.id)}/markt.json`)));
 
-export const getMarktenByDate = (marktDate: string) => {
-
-    const day = new Date(marktDate);
-
-    return Promise.all([
-        getMarkten(),
-        getDaysClosed()
-    ])
-    .then(([markten, daysClosed]) => {
-            if (daysClosed.includes(marktDate)) {
-                console.log('Alle markten zijn vandaag gesloten');
-                return [];
-            } else {
-                return markten
-                    .filter(({ marktDagen }) => marktDagen.includes( getMaDiWoDo(day) ))
-                    .filter(({ kiesJeKraamGeblokkeerdePlaatsen }) => {
-                        if (!kiesJeKraamGeblokkeerdePlaatsen) {
-                            return true;
-                        } else {
-                            return !kiesJeKraamGeblokkeerdePlaatsen.split(',').includes(marktDate);
-                        }
-                    });
-            }
-    });
-};
-
 /*
  * Vendors are allowed to attend only one market per day.
  * Check if a vendor wants to apply for a market, while on the same day it has applied for others.
