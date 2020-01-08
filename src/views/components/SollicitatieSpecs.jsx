@@ -1,10 +1,9 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 
-const OndernemerMarktHeading = ({ markt, sollicitatie }) => {
+const SollicitatieSpecs = ({ markt, sollicitatie }) => {
     return (
-        <h2 className="OndernemerMarktHeading" id={`markt-${markt.id}`}>
-            <span className="OndernemerMarktHeading__markt-naam">{markt.naam}</span>
+        <div className="SollicitatieSpecs">
             {['soll', 'vpl', 'vkk', 'overig'].includes(sollicitatie.status) ? (
                 <span className={`Pil Pil--${sollicitatie.status}`}>{sollicitatie.status}</span>
             ) : null}
@@ -14,13 +13,13 @@ const OndernemerMarktHeading = ({ markt, sollicitatie }) => {
                     plaats{sollicitatie.vastePlaatsen.length > 1 ? `en` : ``} {sollicitatie.vastePlaatsen.join(', ')}
                 </span>
             ) : null}
-        </h2>
+        </div>
     );
 };
 
-OndernemerMarktHeading.propTypes = {
+SollicitatieSpecs.propTypes = {
     sollicitatie: PropTypes.object.isRequired,
-    markt: PropTypes.object.isRequired,
+    markt: PropTypes.object,
 };
 
-module.exports = OndernemerMarktHeading;
+module.exports = SollicitatieSpecs;

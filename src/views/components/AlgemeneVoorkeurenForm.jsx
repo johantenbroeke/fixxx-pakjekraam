@@ -1,7 +1,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { formatDate, numberSort, dateToDDMMYYYY, yyyyMmDdtoDDMMYYYY } = require('../../util.ts');
-const { formatOndernemerName, parseISOMarktDag, isVast } = require('../../domain-knowledge.js');
+const { numberSort, yyyyMmDdtoDDMMYYYY } = require('../../util.ts');
+const { parseISOMarktDag, isVast } = require('../../domain-knowledge.js');
 const {
     ISO_SUNDAY,
     ISO_MONDAY,
@@ -10,12 +10,9 @@ const {
     ISO_THURSDAY,
     ISO_FRIDAY,
     ISO_SATURDAY,
-    formatISODayOfWeek,
 } = require('../../util.ts');
-const Button = require('./Button');
 const Form = require('./Form');
-const OndernemerMarktHeading = require('./OndernemerMarktHeading');
-
+const SollicitatieSpecs = require('./SollicitatieSpecs');
 
 class AlgemeneVoorkeurenForm extends React.Component {
     propTypes = {
@@ -34,8 +31,6 @@ class AlgemeneVoorkeurenForm extends React.Component {
     render() {
         const { branches, ondernemer, markt, marktId, marktDate, next, query, role, csrfToken } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
-        const nextMessage =
-            (query && query.next) || '/markt-detail/' + ondernemer.erkenningsnummer + '/' + marktId + '/';
         const defaultPlaatsCount = isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1;
         const defaultVoorkeur = {
             minimum: defaultPlaatsCount,
@@ -65,9 +60,11 @@ class AlgemeneVoorkeurenForm extends React.Component {
 
         return (
 
-            <Form csrfToken={csrfToken}>
-                <h1>Marktprofiel</h1>
-                <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
+            <Form csrfToken={csrfToken} className="Form--AlgemenevoorkeurenForm">
+                { role === 'marktondernemer' ?
+                    <SollicitatieSpecs sollicitatie={sollicitatie} markt={markt} /> : null
+                }
+                <h1 className="Heading Heading--intro">Marktprofiel {markt.naam}</h1>
                 <div className="well well--max-width">
                     <div className="Fieldset">
                         <h2 className="Fieldset__header">Wat voor koopwaar verkoopt u?</h2>
@@ -76,14 +73,6 @@ class AlgemeneVoorkeurenForm extends React.Component {
                                 <select id="brancheId" name="brancheId" className="Select">
                                     <option />
                                     {branches
-                                        // .sort((a, b) => {
-                                        //     const nameA = a.description.toLowerCase(),
-                                        //         nameB = b.description.toLowerCase();
-                                        //     if (nameA < nameB) return -1;
-                                        //     if (nameA > nameB) return 1;
-
-                                        //     return 0;
-                                        // })
                                         .map(branche => (
                                             <option
                                                 key={branche.brancheId}

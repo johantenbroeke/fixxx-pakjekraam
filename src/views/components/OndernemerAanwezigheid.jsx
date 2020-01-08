@@ -3,7 +3,7 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const OndernemerMarktVoorkeuren = require('./OndernemerMarktVoorkeuren');
 const { getMarktDays, parseMarktDag, filterRsvpList } = require('../../domain-knowledge.js');
-const OndernemerMarktHeading = require('./OndernemerMarktHeading');
+const SollicitatieSpecs = require('./SollicitatieSpecs');
 
 const OndernemerAanwezigheid = ({ ondernemer, aanmeldingen, markten, plaatsvoorkeuren, startDate, endDate }) => {
     const sollicitaties = ondernemer.sollicitaties.filter(sollicitatie => !sollicitatie.doorgehaald);
@@ -13,7 +13,6 @@ const OndernemerAanwezigheid = ({ ondernemer, aanmeldingen, markten, plaatsvoork
         const marktAanmeldingen = (aanmeldingen || []).filter(
             aanmelding => aanmelding.marktId === sollicitatie.markt.id,
         );
-
         return {
             markt,
             rsvpEntries: filterRsvpList(marktAanmeldingen, markt),
@@ -26,7 +25,7 @@ const OndernemerAanwezigheid = ({ ondernemer, aanmeldingen, markten, plaatsvoork
         <div className="OndernemerAanwezigheid">
             {entries.map(entry => (
                 <div key={entry.markt.id} className="well">
-                    <OndernemerMarktHeading markt={entry.markt} sollicitatie={entry.sollicitatie} />
+                    <SollicitatieSpecs markt={entry.markt} sollicitatie={entry.sollicitatie} />
                     <div className="row row--responsive">
                         <div className="col-1-2">
                             <OndernemerMarktAanwezigheid {...entry} />

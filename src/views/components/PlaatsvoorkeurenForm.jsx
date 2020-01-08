@@ -170,7 +170,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                     </div>
 
                     <div className="Fieldset">
-                        <h2 className="Fieldset__header">Plaatsvoorkeuren</h2>
+                        <h2 className="Fieldset__header">Plaatsen selecteren</h2>
                         <span className="Fieldset__sub-header">U kunt zoveel voorkeuren invullen als u wilt.</span>
                         <div className="Icon-line">
                             <img className="Icon-line__icon" src="/images/draggable.svg" alt="Unchecked" />
@@ -226,7 +226,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         >
                             <div className="PlaatsvoorkeurenForm__list-item" id="plaatsvoorkeuren-list-item">
                                 <h4 className="PlaatsvoorkeurenForm__list-item__heading Fieldset__sub-header">
-                                    Voorkeur toevoegen
+                                    Plaatsvoorkeur toevoegen
                                 </h4>
                                 <div className="well well--small">
                                     <span className="PlaatsvoorkeurenForm__list-item__label">Kies een marktplaats</span>
