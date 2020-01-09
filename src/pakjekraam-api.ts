@@ -294,15 +294,11 @@ export const getMarktPaginas = (marktId: string): Promise<IAllocationPrintout> =
 export const getMarktGeografie = (marktId: string): Promise<{ obstakels: IObstakelBetween[] }> =>
     loadJSON(`./config/markt/${slugifyMarkt(marktId)}/geografie.json`, { obstakels: [] });
 
-export const getMarktInfo = (marktId: string): Promise<IMarktInfo> =>
-    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/info.json`);
-
 export const getMededelingen = (): Promise<any> =>
     loadJSON('./config/markt/mededelingen.json', {});
 
 export const getDaysClosed = (): Promise<any> =>
     loadJSON('./config/markt/daysClosed.json', {});
-
 
 /*
  * Convert an object from Makkelijke Markt to our own type of `IMarktondernemer` object
@@ -363,7 +359,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
     ])
     .then( ([makkelijkemarkt, marktplaatsen]) => {
         if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
-            const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.split(',');
+            const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
             return marktplaatsen.map( plaats => {
                 geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
                 return plaats;
@@ -382,7 +378,6 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
         getAllBranches(),
         getMarktPaginas(marktId),
         getMarktGeografie(marktId),
-        // getMarktInfo(marktId),
         getMarkt(marktId),
         getALijst(marktId, marktDate),
     ]).then(args => {

@@ -945,9 +945,5 @@
   {
     "plaatsId": "249",
     "branches": ["401-experimentele-zone"]
-  },
-  {
-		"plaatsId": "250",
-		"branches": ["402-promotieplaats"]
   }
 ]
