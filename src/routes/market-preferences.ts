@@ -37,7 +37,8 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
 
     const { absentFrom, absentUntil, erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
 
-    const anywhere = !!body.anywhere;
+    const anywhere = JSON.parse(body.anywhere);
+
     const minimum = typeof body.minimum === 'string' ? parseInt(body.minimum, 10) || null : null;
     const maximum = typeof body.maximum === 'string' ? parseInt(body.maximum, 10) || null : null;
 
@@ -72,8 +73,8 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
 export const updateMarketPreferences = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string, role: string) => {
 
     const data = algemeneVoorkeurenFormData(req.body);
-
     const formError = algemeneVoorkeurenFormCheckForError(req.body, role);
+
     if (formError !== null) {
         return res.redirect(`./?error=${formError}`);
     }

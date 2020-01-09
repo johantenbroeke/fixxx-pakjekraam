@@ -51,7 +51,6 @@ class AlgemeneVoorkeurenForm extends React.Component {
 
         let weekDays = [ISO_MONDAY, ISO_TUESDAY, ISO_WEDNESDAY, ISO_THURSDAY, ISO_FRIDAY, ISO_SATURDAY, ISO_SUNDAY];
 
-        // TODO: When `markt` is available, filter `weekDays` to exclude days on which the market is not held.
         if (markt && markt.marktDagen) {
             weekDays = markt.marktDagen.map(parseISOMarktDag);
         }
@@ -186,7 +185,7 @@ class AlgemeneVoorkeurenForm extends React.Component {
                         />
                         <input type="hidden" name="marktId" defaultValue={marktId} />
                         <input type="hidden" name="marktDate" defaultValue={marktDate} />
-                        <input type="hidden" name="anywhere" defaultValue={voorkeur.anywhere !== false && 'on'} />
+                        <input type="hidden" name="anywhere" defaultValue={voorkeur.anywhere} />
                         <a
                             className="Button Button--tertiary"
                             href={`${
