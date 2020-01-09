@@ -70,7 +70,8 @@
     "branches": ["403-standwerker"]
   },
   {
-    "plaatsId": "20"
+    "plaatsId": "20",
+    "properties": ["boom"]
   },
   {
     "plaatsId": "21"
@@ -172,14 +173,14 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "113",
-    "properties": ["boom"]
+    "plaatsId": "113"
   },
   {
     "plaatsId": "114"
   },
   {
-    "plaatsId": "115"
+    "plaatsId": "115",
+    "properties": ["boom"]
   },
   {
     "plaatsId": "116"
@@ -632,8 +633,7 @@
     "properties": ["electra"]
   },
   {
-    "plaatsId": "331",
-    "tags": ["standwerkersplaats"]
+    "plaatsId": "331"
   },
   {
     "plaatsId": "332"
