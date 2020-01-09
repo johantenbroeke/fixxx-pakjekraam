@@ -35,10 +35,12 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "10"
+    "plaatsId": "10",
+    "properties": ["electra"]
   },
   {
-    "plaatsId": "11"
+    "plaatsId": "11",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "12"
@@ -87,10 +89,12 @@
     "plaatsId": "25"
   },
   {
-    "plaatsId": "26"
+    "plaatsId": "26",
+    "properties": ["electra"]
   },
   {
-    "plaatsId": "27"
+    "plaatsId": "27",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "28",
@@ -150,7 +154,8 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "108"
+    "plaatsId": "108",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "109"
@@ -159,7 +164,8 @@
     "plaatsId": "110"
   },
   {
-    "plaatsId": "111"
+    "plaatsId": "111",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "112",
@@ -205,7 +211,8 @@
     "plaatsId": "124"
   },
   {
-    "plaatsId": "125"
+    "plaatsId": "125",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "126",
@@ -215,7 +222,8 @@
     "plaatsId": "127"
   },
   {
-    "plaatsId": "128"
+    "plaatsId": "128",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "129",
@@ -274,7 +282,8 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "145"
+    "plaatsId": "145",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "146"
@@ -283,7 +292,8 @@
     "plaatsId": "147"
   },
   {
-    "plaatsId": "148"
+    "plaatsId": "148",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "149",
@@ -336,10 +346,12 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "210"
+    "plaatsId": "210",
+    "properties": ["electra"]
   },
   {
-    "plaatsId": "211"
+    "plaatsId": "211",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "212",
@@ -401,7 +413,8 @@
     "plaatsId": "229"
   },
   {
-    "plaatsId": "230"
+    "plaatsId": "230",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "231",
@@ -411,7 +424,8 @@
     "plaatsId": "232"
   },
   {
-    "plaatsId": "233"
+    "plaatsId": "233",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "234"
@@ -484,7 +498,8 @@
     "plaatsId": "254"
   },
   {
-    "plaatsId": "255"
+    "plaatsId": "255",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "256"
@@ -544,10 +559,12 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "310"
+    "plaatsId": "310",
+    "properties": ["electra"]
   },
   {
-    "plaatsId": "311"
+    "plaatsId": "311",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "312"
@@ -611,7 +628,8 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "330"
+    "plaatsId": "330",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "331",
@@ -621,7 +639,8 @@
     "plaatsId": "332"
   },
   {
-    "plaatsId": "333"
+    "plaatsId": "333",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "334"
@@ -674,7 +693,8 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "349"
+    "plaatsId": "349",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "350"
@@ -684,7 +704,8 @@
     "properties": ["boom"]
   },
   {
-    "plaatsId": "352"
+    "plaatsId": "352",
+    "properties": ["electra"]
   },
   {
     "plaatsId": "353"
