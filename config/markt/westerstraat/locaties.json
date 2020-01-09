@@ -3,7 +3,9 @@
     "plaatsId": "1"
   },
   {
-    "plaatsId": "2"
+    "plaatsId": "2",
+    "branches": ["bak"],
+    "verkoopinrichting": ["eigen-materieel"]
   },
   {
     "plaatsId": "3",
@@ -11,6 +13,8 @@
   },
   {
     "plaatsId": "4",
+    "branches": ["bak"],
+    "verkoopinrichting": ["eigen-materieel"],
     "properties": ["lantaarnpaal"]
   },
   {
@@ -60,7 +64,8 @@
     "plaatsId": "18"
   },
   {
-    "plaatsId": "19"
+    "plaatsId": "19",
+    "branches": ["403-standwerker"]
   },
   {
     "plaatsId": "20"
@@ -113,201 +118,6 @@
     "properties": ["lantaarnpaal"]
   },
   {
-    "plaatsId": "35"
-  },
-  {
-    "plaatsId": "36"
-  },
-  {
-    "plaatsId": "37"
-  },
-  {
-    "plaatsId": "38"
-  },
-  {
-    "plaatsId": "39"
-  },
-  {
-    "plaatsId": "40"
-  },
-  {
-    "plaatsId": "41"
-  },
-  {
-    "plaatsId": "42"
-  },
-  {
-    "plaatsId": "43"
-  },
-  {
-    "plaatsId": "44"
-  },
-  {
-    "plaatsId": "45"
-  },
-  {
-    "plaatsId": "46"
-  },
-  {
-    "plaatsId": "47"
-  },
-  {
-    "plaatsId": "48"
-  },
-  {
-    "plaatsId": "49"
-  },
-  {
-    "plaatsId": "50"
-  },
-  {
-    "plaatsId": "51"
-  },
-  {
-    "plaatsId": "52"
-  },
-  {
-    "plaatsId": "53"
-  },
-  {
-    "plaatsId": "54"
-  },
-  {
-    "plaatsId": "55"
-  },
-  {
-    "plaatsId": "56"
-  },
-  {
-    "plaatsId": "57"
-  },
-  {
-    "plaatsId": "58"
-  },
-  {
-    "plaatsId": "59"
-  },
-  {
-    "plaatsId": "60"
-  },
-  {
-    "plaatsId": "61"
-  },
-  {
-    "plaatsId": "62"
-  },
-  {
-    "plaatsId": "63"
-  },
-  {
-    "plaatsId": "64"
-  },
-  {
-    "plaatsId": "65"
-  },
-  {
-    "plaatsId": "66"
-  },
-  {
-    "plaatsId": "67"
-  },
-  {
-    "plaatsId": "68"
-  },
-  {
-    "plaatsId": "69"
-  },
-  {
-    "plaatsId": "70"
-  },
-  {
-    "plaatsId": "71"
-  },
-  {
-    "plaatsId": "72"
-  },
-  {
-    "plaatsId": "73"
-  },
-  {
-    "plaatsId": "74"
-  },
-  {
-    "plaatsId": "75"
-  },
-  {
-    "plaatsId": "76"
-  },
-  {
-    "plaatsId": "77"
-  },
-  {
-    "plaatsId": "78"
-  },
-  {
-    "plaatsId": "79"
-  },
-  {
-    "plaatsId": "80"
-  },
-  {
-    "plaatsId": "81"
-  },
-  {
-    "plaatsId": "82"
-  },
-  {
-    "plaatsId": "83"
-  },
-  {
-    "plaatsId": "84"
-  },
-  {
-    "plaatsId": "85"
-  },
-  {
-    "plaatsId": "86"
-  },
-  {
-    "plaatsId": "87"
-  },
-  {
-    "plaatsId": "88"
-  },
-  {
-    "plaatsId": "89"
-  },
-  {
-    "plaatsId": "90"
-  },
-  {
-    "plaatsId": "91"
-  },
-  {
-    "plaatsId": "92"
-  },
-  {
-    "plaatsId": "93"
-  },
-  {
-    "plaatsId": "94"
-  },
-  {
-    "plaatsId": "95"
-  },
-  {
-    "plaatsId": "96"
-  },
-  {
-    "plaatsId": "97"
-  },
-  {
-    "plaatsId": "98"
-  },
-  {
-    "plaatsId": "99"
-  },
-  {
     "plaatsId": "100"
   },
   {
@@ -316,6 +126,8 @@
   },
   {
     "plaatsId": "102",
+    "branches": ["bak"],
+    "verkoopinrichting": ["eigen-materieel"],
     "properties": ["lantaarnpaal"]
   },
   {
@@ -323,6 +135,8 @@
   },
   {
     "plaatsId": "104",
+    "branches": ["bak"],
+    "verkoopinrichting": ["eigen-materieel"],
     "properties": ["boom"]
   },
   {
@@ -425,7 +239,7 @@
   },
   {
     "plaatsId": "135",
-    "tags": ["promo"],
+    "branches": ["402-promotieplaats"],
     "properties": ["boom"]
   },
   {
@@ -449,7 +263,7 @@
   },
   {
     "plaatsId": "142",
-    "tags": ["standwerkersplaats"]
+    "branches": ["403-standwerker"]
   },
   {
     "plaatsId": "143",
@@ -487,151 +301,12 @@
     "plaatsId": "152"
   },
   {
-    "plaatsId": "153"
-  },
-  {
-    "plaatsId": "154"
-  },
-  {
-    "plaatsId": "155"
-  },
-  {
-    "plaatsId": "156"
-  },
-  {
-    "plaatsId": "157"
-  },
-  {
-    "plaatsId": "158"
-  },
-  {
-    "plaatsId": "159"
-  },
-  {
-    "plaatsId": "160"
-  },
-  {
-    "plaatsId": "161"
-  },
-  {
-    "plaatsId": "162"
-  },
-  {
-    "plaatsId": "163"
-  },
-  {
-    "plaatsId": "164"
-  },
-  {
-    "plaatsId": "165"
-  },
-  {
-    "plaatsId": "166"
-  },
-  {
-    "plaatsId": "167"
-  },
-  {
-    "plaatsId": "168"
-  },
-  {
-    "plaatsId": "169"
-  },
-  {
-    "plaatsId": "170"
-  },
-  {
-    "plaatsId": "171"
-  },
-  {
-    "plaatsId": "172"
-  },
-  {
-    "plaatsId": "173"
-  },
-  {
-    "plaatsId": "174"
-  },
-  {
-    "plaatsId": "175"
-  },
-  {
-    "plaatsId": "176"
-  },
-  {
-    "plaatsId": "177"
-  },
-  {
-    "plaatsId": "178"
-  },
-  {
-    "plaatsId": "179"
-  },
-  {
-    "plaatsId": "180"
-  },
-  {
-    "plaatsId": "181"
-  },
-  {
-    "plaatsId": "182"
-  },
-  {
-    "plaatsId": "183"
-  },
-  {
-    "plaatsId": "184"
-  },
-  {
-    "plaatsId": "185"
-  },
-  {
-    "plaatsId": "186"
-  },
-  {
-    "plaatsId": "187"
-  },
-  {
-    "plaatsId": "188"
-  },
-  {
-    "plaatsId": "189"
-  },
-  {
-    "plaatsId": "190"
-  },
-  {
-    "plaatsId": "191"
-  },
-  {
-    "plaatsId": "192"
-  },
-  {
-    "plaatsId": "193"
-  },
-  {
-    "plaatsId": "194"
-  },
-  {
-    "plaatsId": "195"
-  },
-  {
-    "plaatsId": "196"
-  },
-  {
-    "plaatsId": "197"
-  },
-  {
-    "plaatsId": "198"
-  },
-  {
-    "plaatsId": "199"
-  },
-  {
     "plaatsId": "200"
   },
   {
     "plaatsId": "201",
+    "branches": ["bak"],
+    "verkoopinrichting": ["eigen-materieel"],
     "properties": ["lantaarnpaal"]
   },
   {
@@ -792,7 +467,7 @@
   },
   {
     "plaatsId": "250",
-    "branches": ["promo"],
+    "branches": ["402-promotieplaats"],
     "properties": ["boom"]
   },
   {
@@ -833,119 +508,6 @@
   },
   {
     "plaatsId": "262"
-  },
-  {
-    "plaatsId": "263",
-    "properties": ["lantaarnpaal"]
-  },
-  {
-    "plaatsId": "264",
-    "properties": ["lantaarnpaal"]
-  },
-  {
-    "plaatsId": "265"
-  },
-  {
-    "plaatsId": "266"
-  },
-  {
-    "plaatsId": "267"
-  },
-  {
-    "plaatsId": "268"
-  },
-  {
-    "plaatsId": "269"
-  },
-  {
-    "plaatsId": "270"
-  },
-  {
-    "plaatsId": "271"
-  },
-  {
-    "plaatsId": "272"
-  },
-  {
-    "plaatsId": "273"
-  },
-  {
-    "plaatsId": "274"
-  },
-  {
-    "plaatsId": "275"
-  },
-  {
-    "plaatsId": "276"
-  },
-  {
-    "plaatsId": "277"
-  },
-  {
-    "plaatsId": "278"
-  },
-  {
-    "plaatsId": "279"
-  },
-  {
-    "plaatsId": "280"
-  },
-  {
-    "plaatsId": "281"
-  },
-  {
-    "plaatsId": "282"
-  },
-  {
-    "plaatsId": "283"
-  },
-  {
-    "plaatsId": "284"
-  },
-  {
-    "plaatsId": "285"
-  },
-  {
-    "plaatsId": "286"
-  },
-  {
-    "plaatsId": "287"
-  },
-  {
-    "plaatsId": "288"
-  },
-  {
-    "plaatsId": "289"
-  },
-  {
-    "plaatsId": "290"
-  },
-  {
-    "plaatsId": "291"
-  },
-  {
-    "plaatsId": "292"
-  },
-  {
-    "plaatsId": "293"
-  },
-  {
-    "plaatsId": "294"
-  },
-  {
-    "plaatsId": "295"
-  },
-  {
-    "plaatsId": "296"
-  },
-  {
-    "plaatsId": "297"
-  },
-  {
-    "plaatsId": "298"
-  },
-  {
-    "plaatsId": "299"
   },
   {
     "plaatsId": "300"
@@ -1006,7 +568,7 @@
   },
   {
     "plaatsId": "317",
-    "tags": ["standwerkersplaats"]
+    "branches": ["403-standwerker"]
   },
   {
     "plaatsId": "318"
