@@ -89,7 +89,7 @@ const Plaats = ({
                 {ondernemer ? ondernemer.description : null}
             </td>
             <td className="Plaats__prop Plaats__prop-status">
-                {ondernemer ? <OndernemerStatus status={ondernemer.status} size="s" /> : null}
+                {ondernemer ? <OndernemerStatus status={ondernemer.status} /> : null}
             </td>
         </tr>
     );

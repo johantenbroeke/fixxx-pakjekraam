@@ -37,6 +37,9 @@ export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurR
 
     const { absentFrom, absentUntil, erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
 
+    console.log(body);
+
+
     const anywhere = !!body.anywhere;
     const minimum = typeof body.minimum === 'string' ? parseInt(body.minimum, 10) || null : null;
     const maximum = typeof body.maximum === 'string' ? parseInt(body.maximum, 10) || null : null;

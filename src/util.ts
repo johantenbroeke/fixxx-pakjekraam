@@ -35,6 +35,8 @@ export const THURSDAY = 4;
 export const FRIDAY = 5;
 export const SATURDAY = 6;
 
+export const EXP_ZONE = '?';
+
 export const LF = '\n';
 
 export const monthName = [
