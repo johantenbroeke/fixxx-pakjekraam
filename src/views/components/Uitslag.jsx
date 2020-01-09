@@ -18,8 +18,7 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
     });
 
     markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
-    let timeInHours = getTimezoneHours();
-    timeInHours = timeInHours + 6;
+    const timeInHours = getTimezoneHours();
 
     return (
         <div>
