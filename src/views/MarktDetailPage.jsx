@@ -47,6 +47,11 @@ class MarktDetailPage extends React.Component {
         let fase = null;
         markt.kiesJeKraamFase == 'live' ? fase = null : fase = ` ${markt.kiesJeKraamFase}`;
 
+        const datesThisWeek = dates.filter(({ date }) => new Date(date) < nextVrijday);
+        console.log(datesThisWeek.length);
+        const datesNextWeek = dates.filter(({ date }) => new Date(date) >= nextVrijday);
+        console.log(datesNextWeek.length);
+
         return (
             <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} role={role}>
                  {/* {markt.kiesJeKraamGeblokkeerdePlaatsen ?
@@ -62,12 +67,45 @@ class MarktDetailPage extends React.Component {
                         <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
                     }
                 </div>
-                <h2 className="Heading Heading--intro">Lijsten per dag</h2>
+                <h2 className="Heading Heading--intro">Lijsten per marktdag</h2>
                 <div className="row row--responsive margin-bottom">
+                    { datesThisWeek.length > 0 ?
                     <div className="col-1-2 margin-bottom">
                         <h4>Deze week</h4>
-                        {dates
-                            .filter(({ date }) => new Date(date) < nextVrijday)
+                        {datesThisWeek.map(({ date, day, month, weekDay, relativeDay, weekDayInt }) => (
+                                <div key={date} className="well">
+                                    <strong>
+                                        {relativeDay !== '' && capitalize(relativeDay) + ', '}{' '}
+                                        {relativeDay !== '' ? weekDay : capitalize(weekDay)} {day} {month}
+                                    </strong>
+                                    <ul className="LinkList">
+                                    <li className="LinkList__item">
+                                            <a href={`./${date}/indeling/`} className="Link">
+                                                Indeling
+                                            </a>
+                                        </li>
+                                        <li className="LinkList__item">
+                                            <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                Conceptindeling
+                                            </a>
+                                        </li>
+                                        <li className="LinkList__item">
+                                            <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                            </a>
+                                        </li>
+                                        <li className="LinkList__item">
+                                            <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
+                                                Afmeldingen vasteplaatshouders
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            ))}
+                    </div> : null }
+                    { datesNextWeek.length > 0 ?
+                    <div className="col-1-2">
+                        <h4>Volgende week</h4>
+                        {datesNextWeek
                             .map(({ date, day, month, weekDay, relativeDay, weekDayInt }) => (
                                 <div key={date} className="well">
                                     <strong>
@@ -90,9 +128,6 @@ class MarktDetailPage extends React.Component {
                                             </a>
                                         </li>
                                         <li className="LinkList__item">
-                                            <a href={`./${date}/alle-sollicitanten/`} className="Link">Alle sollicitanten</a>
-                                        </li>
-                                        <li className="LinkList__item">
                                             <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
                                                 Afmeldingen vasteplaatshouders
                                             </a>
@@ -100,36 +135,8 @@ class MarktDetailPage extends React.Component {
                                     </ul>
                                 </div>
                             ))}
-                    </div>
-                    <div className="col-1-2">
-                        <h4>Volgende week</h4>
-                        {dates
-                            .filter(({ date }) => new Date(date) >= nextVrijday)
-                            .map(({ date, day, month, weekDay, relativeDay, weekDayInt }) => (
-                                <div key={date} className="well">
-                                    <strong>
-                                        {relativeDay !== '' && capitalize(relativeDay) + ', '}{' '}
-                                        {relativeDay !== '' ? weekDay : capitalize(weekDay)} {day} {month}
-                                    </strong>
-                                    <ul className="LinkList">
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
-                                                Afmeldingen vasteplaatshouders
-                                            </a>
-                                        </li>
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/voorrangslijst/`} className="Link">
-                                                {!A_LIJST_DAYS.includes(weekDayInt)
-                                                    ? `Aanmeldingen sollicitanten`
-                                                    : `A- en B lijst aanmeldingen sollicitanten`}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            ))}
-                    </div>
+                    </div> : null }
                 </div>
-
             </MarktDetailBase>
         );
     }
