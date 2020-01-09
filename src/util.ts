@@ -120,8 +120,8 @@ export const getTimezoneTime = (): Date => {
     return moment().tz('Europe/Amsterdam').format();
 };
 
-export const getTimezoneHours = (): String => {
-    return moment( getTimezoneTime() ).format('H');
+export const getTimezoneHours = (): Number => {
+    return parseInt(moment( getTimezoneTime() ).format('H'));
 };
 
 export const tomorrow = (): string => addDays(Date.now(), 1);
