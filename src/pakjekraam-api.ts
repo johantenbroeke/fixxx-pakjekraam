@@ -359,7 +359,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
     ])
     .then( ([makkelijkemarkt, marktplaatsen]) => {
         if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
-            const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.split(',');
+            const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
             return marktplaatsen.map( plaats => {
                 geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
                 return plaats;
