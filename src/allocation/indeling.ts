@@ -11,6 +11,7 @@ import {
 } from '../markt.model';
 
 import {
+    compareProperty,
     intersection,
     intersects,
     sum
@@ -211,7 +212,7 @@ const Indeling = {
                 // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
                 verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
                 // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
-                Ondernemer.hasEVI(ondernemer) && !plaats.verkoopinrichting ||
+                Ondernemer.hasEVI(ondernemer) && !Markt.hasEVI(plaats) ||
                 // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
                 !anywhere && !voorkeurIds.includes(plaats.plaatsId)
             )
@@ -223,8 +224,7 @@ const Indeling = {
     // 1. Ondernemers die willen bakken (kan ook een VPH zijn die wil verplaatsen).
     // 2. Ondernemers met een EVI (kan ook een VPH zijn die wil verplaatsen).
     // 3. VPHs die willen/moeten verplaatsen.
-    // 4. Sollicitanten in een branche.
-    // 5. Sollicitanten zonder branche (in principe niet de bedoeling).
+    // 4. Sollicitanten.
     getStatusGroup: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
@@ -243,8 +243,8 @@ const Indeling = {
         ondernemer: IMarktondernemer
     ): number => {
         return Ondernemer.hasVastePlaatsen(ondernemer) ? 1 :
-               indeling.aLijst.includes(ondernemer)      ? 1 :
-                                                           2;
+               indeling.aLijst.includes(ondernemer)    ? 1 :
+                                                         2;
     },
 
     isAanwezig: (
@@ -496,31 +496,11 @@ const Indeling = {
             ondernemer,
             groups,
             size,
-            (a: IPlaatsvoorkeurPlus[], b: IPlaatsvoorkeurPlus[]) => {
-                // Kijk eerst of er een betere branche overlap is...
-                let aScore = a.map(pl => pl.brancheScore).reduce(sum, 0);
-                let bScore = b.map(pl => pl.brancheScore).reduce(sum, 0);
-                if (bScore - aScore) {
-                    return bScore - aScore;
-                }
-                // ... kijk vervolgens of er een betere EVI overlap is...
-                aScore = a.map(pl => pl.eviScore).reduce(sum, 0);
-                bScore = b.map(pl => pl.eviScore).reduce(sum, 0);
-                if (bScore - aScore) {
-                    return bScore - aScore;
-                }
-                // ... kijk daarna naar de prioriteit...
-                aScore = a.map(pl => pl.priority || 0).reduce(sum, 0);
-                bScore = b.map(pl => pl.priority || 0).reduce(sum, 0);
-                if (bScore - aScore) {
-                    return bScore - aScore;
-                }
-                // ... en als laatste naar het aantal ondernemers die deze plaats
-                // als voorkeur hebben.
-                aScore = a.map(pl => pl.voorkeurScore || 0).reduce(sum, 0);
-                bScore = b.map(pl => pl.voorkeurScore || 0).reduce(sum, 0);
-                return aScore - bScore;
-            }
+            (a: IPlaatsvoorkeurPlus[], b: IPlaatsvoorkeurPlus[]) =>
+                compareProperty(b, a, 'brancheScore') ||
+                compareProperty(b, a, 'eviScore') ||
+                compareProperty(b, a, 'priority') ||
+                compareProperty(a, b, 'voorkeurScore')
         );
     },
 

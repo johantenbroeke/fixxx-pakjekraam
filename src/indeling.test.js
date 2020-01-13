@@ -127,7 +127,7 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
 });
 
 describe('Een sollicitant op de A-lijst', () => {
-    it('krijgt voorrang over alle sollicitanten op de B-lijst', () => {
+    it('krijgt voorrang over EVI- en verplichte branche sollicitanten op de B-lijst', () => {
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
