@@ -113,7 +113,7 @@ const Indeling = {
             const anywhere      = Ondernemer.acceptsRandomAllocation(ondernemer);
             const size          = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(
-                indeling, ondernemer, openPlaatsen, size, anywhere
+                indeling, queue, ondernemer, openPlaatsen, size, anywhere
             );
 
             if (!bestePlaatsen.length) {
@@ -230,11 +230,11 @@ const Indeling = {
         ondernemer: IMarktondernemer
     ): number => {
         return Ondernemer.hasVastePlaatsen(ondernemer) &&
-               !Indeling.willMove(indeling, ondernemer)   ? 0 :
-               Ondernemer.hasBranche(ondernemer, 'bak')   ? 1 :
-               Ondernemer.hasEVI(ondernemer)              ? 2 :
-               Ondernemer.hasVastePlaatsen(ondernemer)    ? 3 :
-                                                            4;
+               !Indeling.willMove(indeling, ondernemer)              ? 0 :
+               Ondernemer.hasVerplichteBranche(indeling, ondernemer) ? 1 :
+               Ondernemer.hasEVI(ondernemer)                         ? 2 :
+               Ondernemer.hasVastePlaatsen(ondernemer)               ? 3 :
+                                                                       4;
     },
 
     // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt.
@@ -320,11 +320,12 @@ const Indeling = {
             )
         );
 
-        indeling = queue.reduce((indeling, toewijzing) => {
-            const { ondernemer } = toewijzing;
+        const remainingQueue = queue.map(({ ondernemer }) => ondernemer);
+        queue.forEach((toewijzing, i) => {
+            const { ondernemer, plaatsen } = toewijzing;
 
-            const openAdjacent = Markt.getAdjacentPlaatsen(indeling, toewijzing.plaatsen, 1);
-            const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, ondernemer, openAdjacent, 1, true);
+            const openAdjacent = Markt.getAdjacentPlaatsen(indeling, plaatsen, 1);
+            const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, remainingQueue, ondernemer, openAdjacent, 1, true);
 
             // Nog voordat we controleren of deze ondernemer in deze iteratie eigenlijk wel kan
             // uitbreiden (zie `canExpandInIteration` in de `else`) bekijken we of er wel een
@@ -335,17 +336,17 @@ const Indeling = {
                 const { plaatsen } = Toewijzing.find(indeling, ondernemer);
                 const { minimum = 0 } = ondernemer.voorkeur || {};
 
-                return minimum > plaatsen.length ?
-                       Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE) :
-                       indeling;
-            } else {
-                return Ondernemer.canExpandInIteration(indeling, iteration, toewijzing) ?
-                       Toewijzing.add(indeling, ondernemer, uitbreidingPlaats) :
-                       indeling;
+                if (minimum > plaatsen.length) {
+                    indeling = Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE);
+                    remainingQueue.splice(i, 1);
+                }
+            } else if (Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
+                indeling = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
+                remainingQueue.splice(i, 1);
             }
-        }, indeling);
+        });
 
-        return queue.length && iteration < indeling.expansionLimit ?
+        return indeling.openPlaatsen.length && remainingQueue.length && iteration < indeling.expansionLimit ?
                Indeling.performExpansion(indeling, brancheId, ++iteration) :
                indeling;
     },
@@ -426,6 +427,7 @@ const Indeling = {
 
     _findBestePlaatsen: (
         indeling: IMarktindeling,
+        queue: IMarktondernemer[],
         ondernemer: IMarktondernemer,
         openPlaatsen: IMarktplaats[],
         size: number = 1,
@@ -434,6 +436,10 @@ const Indeling = {
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const ondernemerBrancheIds = Ondernemer.getBrancheIds(ondernemer);
         const ondernemerEVI        = Ondernemer.hasEVI(ondernemer);
+        // Deze twee worden gebruikt om te bepalen of we een `brancheScore` en/of `eviScore`
+        // moeten uitrekenen voor deze plaats.
+        const relevantBranches     = Ondernemers.getRelevantBranches(indeling, queue);
+        const eviCount             = Ondernemers.countEVIs(indeling, queue);
 
         // 1. Converteer geschikte plaatsen naar IPlaatsvoorkeur (zodat elke optie
         //    een `priority` heeft).
@@ -441,12 +447,13 @@ const Indeling = {
         const plaatsen = <IPlaatsvoorkeurPlus[]> openPlaatsen
         .map(plaats => {
             const voorkeur = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId);
-            // De vaste plaatsen hebben geen prioriteit, maar moeten wel boven gewone plaatsen
+
+            // De vaste plaatsen hebben een `priority` van 0, maar moeten wel boven gewone plaatsen
             // komen in de sortering. Een priority -1 verstoort de sortering, dus doen we `+1`
             // voor alle voorkeursplaatsen, maken we de vaste plaatsen `1`, en krijgen gewone
             // plaatsen priority `0`.
             const priority = voorkeur ? voorkeur.priority+1 || 1 : 0;
-            const branches = plaats.branches || [];
+
             // De branche score vertegenwoordigd een ranking in manier van overlap in
             // ondernemers branches vs. plaats branches:
             // 0. Geen overlap, maar plaats heeft wel branches
@@ -454,6 +461,7 @@ const Indeling = {
             // 2. Gedeeltelijke overlap:          ondernemer['x']      vs plaats['x', 'y']
             // 3. Gedeeltelijk de andere kant op: ondernemer['x', 'y'] vs plaats['x']
             // 4. Volledige overlap:              ondernemer['x', 'y'] vs plaats['x', 'y']
+            const branches               = intersection(plaats.branches || [], relevantBranches);
             const plaatsBrancheCount     = branches.length;
             const ondernemerBrancheCount = ondernemerBrancheIds.length;
             const intersectCount         = intersection(branches, ondernemerBrancheIds).length;
@@ -463,8 +471,14 @@ const Indeling = {
                                            ondernemerBrancheCount > plaatsBrancheCount ? 3 :
                                                                                          4;
 
-            const plaatsEVI = Markt.hasEVI(plaats);
-            const eviScore = Number(ondernemerEVI) - Number(plaatsEVI) !== 0 ? 0 : 1;
+            // Voor de EVI score geldt, hoe hoger de score, hoe beter de match:
+            // 0. Er zijn geen EVI ondernemers meer die ingedeeld moeten worden, of de plaats heeft
+            //    een EVI maar de ondernemer niet. De ondernemer met een EVI maar de plaats zonder
+            //    kan niet voorkomen: deze plaatsen komen niet door `Indeling.canBeAssignedTo`.
+            // 1. Ondernemer + plaats is een match. Beide geen EVI, of beide wel.
+            const plaatsEVI  = Markt.hasEVI(plaats);
+            const eviCompare = Number(ondernemerEVI) - Number(plaatsEVI);
+            const eviScore   = !eviCount || eviCompare ? 0 : 1;
 
             // De voorkeurscore betekent: hoe meer ondernemers deze plaats als voorkeur hebben
             // opgegeven, hoe hoger de score. Dit getal wordt gebruikt voor ondernemers die flexibel
@@ -481,9 +495,9 @@ const Indeling = {
             };
         })
         .sort((a, b) =>
+            b.priority - a.priority ||
             b.brancheScore - a.brancheScore ||
             b.eviScore - a.eviScore ||
-            b.priority - a.priority ||
             a.voorkeurScore - b.voorkeurScore
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)

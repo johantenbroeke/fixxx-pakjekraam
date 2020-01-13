@@ -146,6 +146,14 @@ const Ondernemer = {
                ondernemer.plaatsen.length > 0;
     },
 
+    hasVerplichteBranche: (
+        markt: IMarkt,
+        ondernemer: IMarktondernemer
+    ): boolean => {
+        const branches = Ondernemer.getBranches(markt, ondernemer);
+        return !!branches.find(branche => !!branche.verplicht);
+    },
+
     isInBranche: (
         ondernemer: IMarktondernemer,
         branche: IBranche
