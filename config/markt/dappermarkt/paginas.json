@@ -151,7 +151,7 @@
     ]
   },
   {
-    "title": "Markt 6",
+    "title": "Markt 6 en 7",
     "indelingslijstGroup": [
       {
         "type": "street",
@@ -170,15 +170,9 @@
       {
         "type": "street",
         "title": "Zijstraat"
-      }
-    ]
-  },
-  {
-    "title": "Markt 7",
-    "indelingslijstGroup": [
+      },
       {
-        "type": "street",
-        "title": "Zijstraat"
+        "title": "Markt 7"
       },
       {
         "class": "straat-7a",
