@@ -1,18 +1,9 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { numberSort, yyyyMmDdtoDDMMYYYY } = require('../../util.ts');
-const { parseISOMarktDag, isVast } = require('../../domain-knowledge.js');
-const {
-    ISO_SUNDAY,
-    ISO_MONDAY,
-    ISO_TUESDAY,
-    ISO_WEDNESDAY,
-    ISO_THURSDAY,
-    ISO_FRIDAY,
-    ISO_SATURDAY,
-} = require('../../util.ts');
+const { yyyyMmDdtoDDMMYYYY } = require('../../util.ts');
 const Form = require('./Form');
 const SollicitatieSpecs = require('./SollicitatieSpecs');
+const { getDefaultVoorkeur } = require('../../model/voorkeur.functions');
 
 class AlgemeneVoorkeurenForm extends React.Component {
     propTypes = {
@@ -29,17 +20,10 @@ class AlgemeneVoorkeurenForm extends React.Component {
     };
 
     render() {
-        const { branches, ondernemer, markt, marktId, marktDate, next, query, role, csrfToken } = this.props;
+        const { branches, ondernemer, markt, marktId, marktDate, role, csrfToken } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
-        const defaultPlaatsCount = isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1;
-        const defaultVoorkeur = {
-            minimum: defaultPlaatsCount,
-            maximum: defaultPlaatsCount,
-            anwhere: true,
-            inactive: false,
-        };
 
-        const voorkeur = this.props.voorkeur || defaultVoorkeur;
+        const voorkeur = this.props.voorkeur || getDefaultVoorkeur(sollicitatie);
 
         if (voorkeur.absentFrom) {
             voorkeur.absentFrom = yyyyMmDdtoDDMMYYYY(voorkeur.absentFrom);
@@ -49,13 +33,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
             voorkeur.absentUntil = yyyyMmDdtoDDMMYYYY(voorkeur.absentUntil);
         }
 
-        let weekDays = [ISO_MONDAY, ISO_TUESDAY, ISO_WEDNESDAY, ISO_THURSDAY, ISO_FRIDAY, ISO_SATURDAY, ISO_SUNDAY];
+        console.log(voorkeur);
 
-        if (markt && markt.marktDagen) {
-            weekDays = markt.marktDagen.map(parseISOMarktDag);
-        }
-
-        weekDays.sort(numberSort);
 
         return (
 
@@ -111,40 +90,6 @@ class AlgemeneVoorkeurenForm extends React.Component {
                             <label htmlFor="inrichting">Ja, ik kom met een eigen verkoopwagen/eigen materiaal.</label>
                         </p>
                     </div>
-                    <div className="hidden">
-                        <h2 className="Fieldset__header">Hoeveel plaatsen hebt u echt nodig?</h2>
-                        <p className="InputField InputField--number">
-                            <label htmlFor="minimum" className="Label">
-                                Minimaal aantal kramen:
-                            </label>
-                            <input
-                                name="minimum"
-                                id="minimum"
-                                type="number"
-                                defaultValue={voorkeur.minimum}
-                                className="Input Input--small"
-                                width={5}
-                            />
-                        </p>
-                    </div>
-                    <div className="hidden">
-                        <h2 className="Fieldset__header">
-                            Als er ruimte is, hoeveel plaatsen zou je graag in totaal willen?
-                        </h2>
-                        <p className="InputField InputField--number">
-                            <label htmlFor="maximum" className="Label">
-                                Maximaal aantal kramen:
-                            </label>
-                            <input
-                                name="maximum"
-                                id="maximum"
-                                type="number"
-                                defaultValue={voorkeur.maximum}
-                                className="Input Input--small"
-                                width={5}
-                            />
-                        </p>
-                    </div>
                     { role == 'marktmeester' ? (
                         <div className={`Fieldset Fieldset--highlighted`}>
                             <p className="Fieldset__highlight-text">Functie speciaal voor marktmeesters! Alleen aanpassen als je weet wat je doet.</p>
@@ -186,6 +131,8 @@ class AlgemeneVoorkeurenForm extends React.Component {
                         <input type="hidden" name="marktId" defaultValue={marktId} />
                         <input type="hidden" name="marktDate" defaultValue={marktDate} />
                         <input type="hidden" name="anywhere" defaultValue={voorkeur.anywhere} />
+                        <input type="hidden" name="minimum" defaultValue={voorkeur.minimum} />
+                        <input type="hidden" name="maximum" defaultValue={voorkeur.maximum} />
                         <a
                             className="Button Button--tertiary"
                             href={`${
