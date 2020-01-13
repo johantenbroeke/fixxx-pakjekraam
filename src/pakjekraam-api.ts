@@ -6,17 +6,15 @@ import {
     getMarktondernemers as getMarktondernemersMM,
     getMarktondernemersByMarkt as getMarktondernemersByMarktMM,
 } from './makkelijkemarkt-api';
-import { formatOndernemerName, isVast, parseMarktDag, slugifyMarkt } from './domain-knowledge.js';
-import { numberSort, stringSort, getMaDiWoDo, toISODate } from './util';
+import { formatOndernemerName, isVast, slugifyMarkt } from './domain-knowledge.js';
+import { numberSort, stringSort } from './util';
 import Sequelize from 'sequelize';
 import { allocation, plaatsvoorkeur, rsvp, voorkeur } from './model/index';
 import { calcToewijzingen } from './indeling';
-// import { getVoorkeurenByMarkt } from './model/voorkeur.functions';
 
 import {
     IMarkt,
     IBranche,
-    IMarktInfo,
     IMarktProperties,
     IMarktondernemer,
     IMarktondernemerVoorkeur,
@@ -552,20 +550,3 @@ export const getMarkten = () =>
         // Only show markten for which JSON data with location info exists
         // .then(markten => markten.filter(markt => fs.existsSync(`config/markt/${slugifyMarkt(markt.id)}/markt.json`)));
 
-/*
- * Vendors are allowed to attend only one market per day.
- * Check if a vendor wants to apply for a market, while on the same day it has applied for others.
- */
-export const isConflictingApplication = (existing: IRSVP[], application: IRSVP): IRSVP[] =>
-    // TODO: In addition to `attending`, check the vendors 'default days' and `isVast()`
-    application.attending
-        ? existing
-            .filter(a => String(a.marktId) !== String(application.marktId))
-            .filter(a => a.marktDate === application.marktDate)
-            .filter(a => a.attending !== null && !!a.attending)
-        : [];
-
-export const getConflictingApplications = (application: IRSVP): Promise<IRSVP[]> =>
-    getAanmeldingenByOndernemer(application.erkenningsNummer).then(existing =>
-        isConflictingApplication(existing, application),
-    );

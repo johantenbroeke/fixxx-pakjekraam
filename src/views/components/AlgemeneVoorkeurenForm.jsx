@@ -33,9 +33,6 @@ class AlgemeneVoorkeurenForm extends React.Component {
             voorkeur.absentUntil = yyyyMmDdtoDDMMYYYY(voorkeur.absentUntil);
         }
 
-        console.log(voorkeur);
-
-
         return (
 
             <Form csrfToken={csrfToken} className="Form--AlgemenevoorkeurenForm">
