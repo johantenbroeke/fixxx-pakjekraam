@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { addDays, MONDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, requireEnv } from './util';
-import { MMMarkt, MMOndernemerStandalone, MMSollicitatieStandalone, MMOndernemer } from './makkelijkemarkt.model';
+import { MMMarkt, MMOndernemerStandalone, MMSollicitatieStandalone, MMOndernemer, MMSollicitatie } from './makkelijkemarkt.model';
 
 const packageJSON = require('../package.json');
 const axios = require('axios');
@@ -86,6 +86,13 @@ export const getMarkt = (marktId: string): Promise<MMMarkt> =>
 
 export const getMarkten = (): Promise<MMMarkt[]> =>
     apiBase('markt/').then(response => response.data);
+
+export const getSollicitatiesByOndernemer = (erkenningsNummer: string): Promise<MMSollicitatie[]> =>
+    getMarktondernemer(erkenningsNummer)
+        .then( (ondernemer: MMOndernemerStandalone) => {
+            return ondernemer.sollicitaties;
+        });
+
 
 export const getMarktondernemersByMarkt = (marktId: string): Promise<MMSollicitatieStandalone[]> => {
     const recursiveCall = ((p: number, total: any[]): any => {
