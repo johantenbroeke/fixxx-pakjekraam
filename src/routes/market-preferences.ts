@@ -5,8 +5,9 @@ import models from '../model/index';
 import { internalServerErrorPage, HTTP_CREATED_SUCCESS, getQueryErrors } from '../express-util';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import { getAllBranches } from '../pakjekraam-api';
-import { ddmmyyyyToDate } from '../util';
+
 import { Voorkeur } from '../model/voorkeur.model';
+import { voorkeurenFormData } from '../model/voorkeur.functions';
 
 import moment from 'moment';
 import { getKeycloakUser } from '../keycloak-api';
@@ -33,46 +34,10 @@ export const algemeneVoorkeurenFormCheckForError = (body: any, role: string) => 
     return error;
 };
 
-export const algemeneVoorkeurenFormData = (body: any): IMarktondernemerVoorkeurRow => {
-
-    const { absentFrom, absentUntil, erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
-
-    const anywhere = JSON.parse(body.anywhere);
-
-    const minimum = typeof body.minimum === 'string' ? parseInt(body.minimum, 10) || null : null;
-    const maximum = typeof body.maximum === 'string' ? parseInt(body.maximum, 10) || null : null;
-
-    let absentFromDate = null;
-    let absentUntilDate = null;
-
-    if (absentFrom) {
-        absentFromDate = ddmmyyyyToDate(absentFrom);
-    }
-
-    if (absentUntil) {
-        absentUntilDate = ddmmyyyyToDate(absentUntil);
-    }
-
-    const voorkeur = {
-        erkenningsNummer,
-        marktId: marktId || null,
-        marktDate: marktDate || null,
-        anywhere,
-        minimum,
-        maximum,
-        brancheId: brancheId || null,
-        parentBrancheId: parentBrancheId || null,
-        inrichting: inrichting || null,
-        absentFrom: absentFromDate || null,
-        absentUntil: absentUntilDate || null,
-    };
-
-    return voorkeur;
-};
-
 export const updateMarketPreferences = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string, role: string) => {
 
-    const data = algemeneVoorkeurenFormData(req.body);
+
+    const data = voorkeurenFormData(req.body);
     const formError = algemeneVoorkeurenFormCheckForError(req.body, role);
 
     if (formError !== null) {

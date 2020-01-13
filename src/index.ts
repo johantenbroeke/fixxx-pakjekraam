@@ -537,27 +537,6 @@ app.post(
         updatePlaatsvoorkeuren(req, res, next, req.params.marktId, req.params.erkenningsNummer),
 );
 
-
-app.get(
-    '/algemene-voorkeuren/:marktId/markt-voorkeuren.json',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
-    (req: Request, res: Response) => {
-        getIndelingVoorkeuren(req.params.marktId)
-            .then(jsonPage(res), internalServerErrorPage(res));
-    },
-);
-
-app.get(
-    '/algemene-voorkeuren/:marktId/:marktDate/markt-voorkeuren.json',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
-    (req: Request, res: Response) => {
-        getIndelingVoorkeuren(req.params.marktId, req.params.marktDate).then(
-            jsonPage(res),
-            internalServerErrorPage(res),
-        );
-    },
-);
-
 app.get(
     '/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
