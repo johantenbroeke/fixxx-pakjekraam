@@ -79,7 +79,6 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
      * TODO: Business logic validation
      */
 
-
     const responses = data.rsvp.map(
         (rsvp): IRSVP => ({
             ...rsvp,
@@ -107,6 +106,11 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
 
             if (conflictingApplication.length > 0 || conflictingSollicitaties.length > 0 ) {
 
+                // Hide other messages when there is a conflicting sollicitatie
+                if (conflictingSollicitaties.length > 0) {
+                    conflictingApplication = [];
+                }
+
                 const messagesApplication = conflictingApplication
                     .map(application => {
                         const marktnaam = markten.find(markt => markt.id === parseInt(application.marktId)).naam;
@@ -114,12 +118,12 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
                     });
 
                 const messagesSollicitaties = conflictingSollicitaties
-                .map(sollicitatie => {
-                    // const marktnaam = markten.find(markt => markt.id === sollicitatie.markt.id).naam;
-                    return `U bent vasteplaatshouder op <strong>${sollicitatie.markt.naam}</strong>. Tevens bent u hier niet afgemeld. Inschrijven voor meerdere markten is niet mogelijk.`;
-                });
+                    .map(sollicitatie => {
+                        return `U bent vasteplaatshouder op ${sollicitatie.markt.naam} en u bent hier niet afgemeld. Inschrijven voor meerdere markten op dezelfde dag(en) is niet mogelijk.`;
+                    });
 
-                const messages = [ ...messagesApplication, ...messagesSollicitaties ];
+                const messages = messagesApplication.concat(messagesSollicitaties);
+
                 res.redirect(`./?error=${messages}`);
             } else {
                 Promise.all(
