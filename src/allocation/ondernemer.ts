@@ -48,10 +48,9 @@ const Ondernemer = {
         const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheIds.reduce((branches, brancheId) => {
             const branche = markt.branches.find(b => b.brancheId === brancheId);
-            if (branche) {
-                branches.push(branche);
-            }
-            return branches;
+            return branche ?
+                   branches.concat(branche) :
+                   branches;
         }, []);
     },
 
@@ -145,6 +144,14 @@ const Ondernemer = {
         return Ondernemer.isVast(ondernemer) &&
                ondernemer.plaatsen &&
                ondernemer.plaatsen.length > 0;
+    },
+
+    hasVerplichteBranche: (
+        markt: IMarkt,
+        ondernemer: IMarktondernemer
+    ): boolean => {
+        const branches = Ondernemer.getBranches(markt, ondernemer);
+        return !!branches.find(branche => !!branche.verplicht);
     },
 
     isInBranche: (

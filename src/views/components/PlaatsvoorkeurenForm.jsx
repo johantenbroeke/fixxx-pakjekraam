@@ -24,14 +24,7 @@ class PlaatsvoorkeurenForm extends React.Component {
         const { markt, ondernemer, marktplaatsen, indelingVoorkeur, role, sollicitatie, csrfToken } = this.props;
         let { plaatsvoorkeuren } = this.props;
 
-        const defaultVoorkeur = {
-            minimum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
-            maximum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
-            anywhere: !isVast(sollicitatie.status),
-            inactive: false,
-        };
-
-        const voorkeur = indelingVoorkeur || defaultVoorkeur;
+        const voorkeur = indelingVoorkeur || getDefaultVoorkeur(sollicitatie);
 
         let minimumCount = null;
         if (role === 'marktmeester') {

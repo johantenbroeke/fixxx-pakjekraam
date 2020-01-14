@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-import { getAanmeldingenByOndernemer, getConflictingApplications, getMededelingen } from '../pakjekraam-api';
+import { getAanmeldingenByOndernemer, getMededelingen } from '../pakjekraam-api';
 import { httpErrorPage, internalServerErrorPage, HTTP_CREATED_SUCCESS, HTTP_FORBIDDEN_ERROR, getQueryErrors } from '../express-util';
 import models from '../model/index';
 import { flatten, nextWeek, LF, tomorrow } from '../util';
 import { IRSVP } from '../markt.model';
 import { upsert } from '../sequelize-util.js';
 import { getMarktEnriched, getMarktenEnabled } from '../model/markt.functions';
+import { getConflictingApplications, getConflictingSollicitaties } from '../model/rsvp.functions';
 
 import moment from 'moment';
 import { getKeycloakUser } from '../keycloak-api';
@@ -78,6 +79,7 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
      * TODO: Business logic validation
      */
 
+
     const responses = data.rsvp.map(
         (rsvp): IRSVP => ({
             ...rsvp,
@@ -91,23 +93,35 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
             return conflicts.reduce(flatten, []);
         });
 
+    const getConflictingSollicitatiesPromise = Promise.all(responses.map(getConflictingSollicitaties))
+    .then(conflicts => {
+            return conflicts.reduce(flatten, []);
+        });
+
     Promise.all([
         getConflictingApplicationsPromise,
+        getConflictingSollicitatiesPromise,
         getMarktenEnabled()
     ])
-        .then(([conflicts, markten]) => {
+        .then(([conflictingApplication, conflictingSollicitaties, markten]) => {
 
-            if (conflicts.length > 0) {
-                const messages = conflicts
+            if (conflictingApplication.length > 0 || conflictingSollicitaties.length > 0 ) {
+
+                const messagesApplication = conflictingApplication
                     .map(application => {
                         const marktnaam = markten.find(markt => markt.id === parseInt(application.marktId)).naam;
                         return `U hebt zich al aangemeld voor <strong> ${marktnaam} </strong> op ${moment(application.marktDate).format('DD-MM-YYYY')}. Inschrijven voor meerdere markten is niet mogelijk.`;
                     });
-                res.redirect(`./?error=${messages}`);
 
+                const messagesSollicitaties = conflictingSollicitaties
+                .map(sollicitatie => {
+                    // const marktnaam = markten.find(markt => markt.id === sollicitatie.markt.id).naam;
+                    return `U bent vasteplaatshouder op <strong>${sollicitatie.markt.naam}</strong>. Tevens bent u hier niet afgemeld. Inschrijven voor meerdere markten is niet mogelijk.`;
+                });
+
+                const messages = [ ...messagesApplication, ...messagesSollicitaties ];
+                res.redirect(`./?error=${messages}`);
             } else {
-                // TODO: Redirect with success code
-                // TODO: Use `Sequelize.transaction`
                 Promise.all(
                     responses.map(response => {
                         const { marktId, marktDate } = response;
