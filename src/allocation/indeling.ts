@@ -63,7 +63,7 @@ const Indeling = {
             openPlaatsen,
             expansionLimit,
 
-            voorkeuren      : [...markt.voorkeuren],
+            voorkeuren      : [],
             afwijzingen     : [],
             toewijzingen    : []
         };
@@ -72,8 +72,7 @@ const Indeling = {
         // staan ondernemers soms dubbel in de lijst (miscommunicatie tussen Mercato en
         // Makkelijke Markt), dus dubbelingen moeten eruit gefilterd worden.
         //
-        // De sortering die hier plaatsvindt is van groot belang voor alle hierop
-        // volgende code.
+        // De sortering vindt plaats nadat `indeling.voorkeuren` is gevuld (hieronder).
         indeling.ondernemers = markt.ondernemers
         .reduce((result, ondernemer) => {
             if (
@@ -87,11 +86,23 @@ const Indeling = {
             }
 
             return result;
-        }, [])
-        .sort((a, b) => Indeling._compareOndernemers(indeling, a, b));
+        }, []);
 
-        // TODO: Verwijder voorkeuren uit `indeling.voorkeuren` van ondernemers die niet in
-        //       `indeling.ondernemers` zitten.
+        // Verwijder voorkeuren van ondernemers die niet aanwezig zijn, omdat deze voorkeuren
+        // worden gebruikt om te
+        const index = indeling.ondernemers.reduce((result: any, ondernemer) => {
+            return result.set(ondernemer.erkenningsNummer, true);
+        }, new Map());
+        indeling.voorkeuren = markt.voorkeuren.filter(({ erkenningsNummer }) =>
+            index.has(erkenningsNummer)
+        );
+
+        // Deze sortering kan pas plaatsvinden nadat `indeling.voorkeuren` gevuld is, omdat
+        // `_compareOndernemers` gebruikt maakt van deze array. De sortering is van groot
+        // belang voor de gehele indeling..
+        indeling.ondernemers.sort((a, b) =>
+            Indeling._compareOndernemers(indeling, a, b)
+        );
 
         return indeling;
     },
@@ -159,8 +170,9 @@ const Indeling = {
             // Enkel de huidige ondernemer mag in deze run ingedeeld worden. In
             // `Indeling.performAllocation` wordt de juiste volgorde van indeling bepaald.
             //
-            // TODO: `Indeling.performAllocation` hoeft in dit geval enkel `statusGroup === 3`
-            //       door te rekenen. Deze optimalisatie toevoegen?
+            // TODO: `Indeling.performAllocation` hoeft in dit geval enkel ondernemers in
+            //       `statusGroup === 3` mee te nemen in de berekening. Deze optimalisatie
+            //       toevoegen?
             const _indeling2 = Indeling.performAllocation(_indeling, queue.slice(1));
             const rejections = affectedVPH.reduce((result, ondernemer) => {
                 const rejection = Indeling._findRejection(_indeling2, ondernemer);
