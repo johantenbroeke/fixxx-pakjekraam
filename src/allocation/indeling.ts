@@ -115,7 +115,7 @@ const Indeling = {
     ): IMarktindeling => {
         try {
             if (
-                !Ondernemer.isVast(ondernemer) &&
+                !Ondernemer.hasVastePlaatsen(ondernemer) &&
                 Ondernemer.isInMaxedOutBranche(indeling, ondernemer)
             ) {
                 throw BRANCHE_FULL;
@@ -346,7 +346,7 @@ const Indeling = {
             // ruimte op voor andere ondernemers.
             if (!uitbreidingPlaats) {
                 const { plaatsen } = Toewijzing.find(indeling, ondernemer);
-                const { minimum = 0 } = ondernemer.voorkeur || {};
+                const minimum = Ondernemer.getMinimumSize(ondernemer);
 
                 if (minimum > plaatsen.length) {
                     indeling = Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE);
@@ -370,6 +370,12 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): boolean => {
+        // Sollicitanten met een tijdelijke vaste plaats mogen niet verplaatsen.
+        // Zie ook `Ondernemer.getPlaatsVoorkeuren`.
+        if (Ondernemer.isExperimenteel(ondernemer)) {
+            return false;
+        }
+
         const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
         const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats, ondernemer));
         const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);
