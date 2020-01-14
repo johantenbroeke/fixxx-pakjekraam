@@ -180,6 +180,15 @@ export const max = (a: number, b: number): number => Math.max(a, b);
 export const flatten = <T>(a: T[] = [], b: T[] = []): T[] => [...(a || []), ...(b || [])];
 export const unique = <T>(a: T[], b: T): T[] => a.includes(b) ? a : [...a, b];
 
+export const compareProperty = (
+    a: any[],
+    b: any[],
+    property: string
+) => {
+    return a.map(({ [property]: p }) => p).reduce(sum, 0) -
+           b.map(({ [property]: p }) => p).reduce(sum, 0);
+};
+
 // General
 // -------
 export const arrayToObject = <T, K extends keyof T>(array: T[], keyField: K): { [index: string]: T } => {
