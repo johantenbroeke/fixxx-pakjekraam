@@ -59,18 +59,25 @@ const Ondernemer = {
         ondernemer: IMarktondernemer,
         includeVastePlaatsen: boolean = true
     ): IPlaatsvoorkeur[] => {
-        // Merge de vaste plaatsen van deze ondernemer...
         const vastePlaatsen = Ondernemer.getVastePlaatsen(markt, ondernemer);
-        // ...met hun verplaatsingsvoorkeuren. Sorteer aflopend op prioriteit...
-        const voorkeuren = [
-            ...(includeVastePlaatsen ? vastePlaatsen : []),
-            ...markt.voorkeuren.filter(({ erkenningsNummer }) => erkenningsNummer === ondernemer.erkenningsNummer)
-        ].sort((a, b) =>
-            (b.priority || 0) - (a.priority || 0)
+
+        // Een sollicitant met een tijdelijke vaste plaats mag geen voorkeuren opgeven,
+        // dus deze moeten genegeerd worden.
+        if (Ondernemer.isExperimenteel(ondernemer) && vastePlaatsen.length) {
+            return vastePlaatsen;
+        }
+
+        // Merge de vaste plaatsen van deze ondernemer met hun verplaatsingsvoorkeuren.
+        // Sorteer aflopend op prioriteit en haal de dubbeling eruit. Als `includeVastePlaatsen`
+        // `false` is moeten die ook uit het resultaat gefilterd worden: het kan namelijk
+        // zijn dat een ondernemer zijn eigen plaatsen ook nog als voorkeur heeft opgegeven.
+        const voorkeuren = markt.voorkeuren.filter(({ erkenningsNummer }) =>
+            erkenningsNummer === ondernemer.erkenningsNummer
         );
-        // ...en elimineer duplicaten na sortering. Als `includeVastePlaatsen === false`
-        // dan worden ook de vaste plaatsen uit de voorkeuren gehaald.
-        return voorkeuren.reduce((unique, voorkeur) => {
+        return (includeVastePlaatsen ? vastePlaatsen : [])
+        .concat(voorkeuren)
+        .sort((a, b) => (b.priority || 0) - (a.priority || 0))
+        .reduce((unique, voorkeur) => {
             if (
                 !unique.find(({ plaatsId }) => plaatsId === voorkeur.plaatsId) && (
                     includeVastePlaatsen ||
@@ -84,7 +91,7 @@ const Ondernemer = {
     },
 
     getStartSize: (ondernemer: IMarktondernemer): number => {
-        return Ondernemer.isVast(ondernemer) ?
+        return Ondernemer.isVast(ondernemer) || Ondernemer.isExperimenteel(ondernemer) ?
                Ondernemer.getMinimumSize(ondernemer) :
                1;
     },
@@ -92,12 +99,25 @@ const Ondernemer = {
         const { plaatsen = [] }          = ondernemer;
         let { minimum = 0, maximum = 0 } = ondernemer.voorkeur || {};
 
+        // Ondernemers met een tijdelijke vaste plaats mogen hun minimum aantal plaatsen
+        // niet zelf instellen.
+        if (Ondernemer.isExperimenteel(ondernemer)) {
+            return plaatsen.length;
+        }
+
         minimum  = minimum || Math.max(plaatsen.length, 1);
         maximum  = maximum || minimum;
         return Math.min(minimum, maximum);
     },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] } = ondernemer;
+
+        // Ondernemers met een tijdelijke vaste plaats mogen geen maximum aantal gewenste
+        // plaatsen instellen.
+        if (Ondernemer.isExperimenteel(ondernemer)) {
+            return plaatsen.length;
+        }
+
         const { minimum = 1, maximum = 0 } = ondernemer.voorkeur || {};
         return maximum || Math.max(plaatsen.length, minimum, 1);
     },
@@ -141,8 +161,7 @@ const Ondernemer = {
     },
 
     hasVastePlaatsen: (ondernemer: IMarktondernemer): boolean => {
-        return Ondernemer.isVast(ondernemer) &&
-               ondernemer.plaatsen &&
+        return ondernemer.plaatsen &&
                ondernemer.plaatsen.length > 0;
     },
 
@@ -152,6 +171,11 @@ const Ondernemer = {
     ): boolean => {
         const branches = Ondernemer.getBranches(markt, ondernemer);
         return !!branches.find(branche => !!branche.verplicht);
+    },
+
+    isExperimenteel: (ondernemer: IMarktondernemer): boolean => {
+        // TODO: Remove '?' status when MakkelijkeMarkt is updated.
+        return ondernemer.status === '?' || ondernemer.status === 'exp';
     },
 
     isInBranche: (
