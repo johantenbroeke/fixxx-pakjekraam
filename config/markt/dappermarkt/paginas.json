@@ -210,6 +210,15 @@
       {
         "type": "street",
         "title": "Reinwardtstraat"
+      }
+    ]
+  },
+  {
+    "title": "Markt 9",
+    "indelingslijstGroup": [
+      {
+        "type": "street",
+        "title": "Reinwardtstraat"
       },
       {
         "class": "straat-9a",
@@ -220,15 +229,10 @@
         "class": "straat-9b",
         "plaatsList": ["233", "235", "237", "239", "241", "243", "245", "247", "249"],
         "title": ""
-      }
-    ]
-  },
-  {
-    "title": "Dapperplein/Zijstraat",
-    "indelingslijstGroup": [
+      },
       {
         "type": "street",
-        "title": "Dapperplein/Zijstraat"
+        "title": "Dapperplein/ Zijstraat"
       },
 
       {
