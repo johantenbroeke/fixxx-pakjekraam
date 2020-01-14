@@ -3,9 +3,8 @@ import { RSVP } from './rsvp.model';
 import { IRSVP } from 'markt.model';
 
 import { MMSollicitatie } from '../makkelijkemarkt.model';
-import { getSollicitatiesByOndernemer } from '../makkelijkemarkt-api';
+import { getSollicitatiesByMarktFases } from '../makkelijkemarkt-api';
 import { isVast } from '../domain-knowledge';
-import { takeWhile } from 'rxjs/operators';
 
 export const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<IRSVP[]> =>
     rsvp
@@ -56,10 +55,10 @@ export const isConflictingSollicitatie = (aanmeldingen: IRSVP[], sollicitaties: 
 };
 
 export const getConflictingSollicitaties = (application: IRSVP): Promise<MMSollicitatie[]> =>
-    Promise.all([getAanmeldingenByOndernemer(application.erkenningsNummer), getSollicitatiesByOndernemer(application.erkenningsNummer)])
-        .then( ([aanmeldingen, sollicitaties]) =>
-            isConflictingSollicitatie(aanmeldingen, sollicitaties, application)
-        );
+    Promise.all([getAanmeldingenByOndernemer(application.erkenningsNummer), getSollicitatiesByMarktFases(application.erkenningsNummer, ['activate','wenperiode','live'])])
+        .then( ([aanmeldingen, sollicitaties]) => {
+            return isConflictingSollicitatie(aanmeldingen, sollicitaties, application);
+        });
 
 
 export const getConflictingApplications = (application: IRSVP): Promise<IRSVP[]> =>

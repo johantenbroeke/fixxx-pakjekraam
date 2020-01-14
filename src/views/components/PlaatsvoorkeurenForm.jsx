@@ -1,11 +1,11 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { formatOndernemerName, plaatsSort, isVast } = require('../../domain-knowledge.js');
-const { flatten } = require('../../util.ts');
+const { plaatsSort, isVast } = require('../../domain-knowledge.js');
 const MarktplaatsSelect = require('./MarktplaatsSelect');
 const Button = require('./Button');
 const Form = require('./Form');
 
+const { getDefaultVoorkeur } = require('../../model/voorkeur.functions');
 
 class PlaatsvoorkeurenForm extends React.Component {
     propTypes = {
