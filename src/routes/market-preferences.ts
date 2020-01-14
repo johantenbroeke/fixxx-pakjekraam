@@ -36,7 +36,6 @@ export const algemeneVoorkeurenFormCheckForError = (body: any, role: string) => 
 
 export const updateMarketPreferences = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string, role: string) => {
 
-
     const data = voorkeurenFormData(req.body);
     const formError = algemeneVoorkeurenFormCheckForError(req.body, role);
 
