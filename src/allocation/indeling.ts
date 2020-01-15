@@ -321,15 +321,10 @@ const Indeling = {
     // aangeboden alvorens iedereen die een 4de plaats wil hiertoe de kans krijgt.
     performExpansion: (
         indeling: IMarktindeling,
-        brancheId: BrancheId = undefined,
         iteration: number = 2
     ): IMarktindeling => {
         const queue = indeling.toewijzingen.filter(toewijzing =>
-            Ondernemer.wantsExpansion(toewijzing) && (
-                !brancheId ||
-                (brancheId === 'evi' && Ondernemer.hasEVI(toewijzing.ondernemer)) ||
-                Ondernemer.hasBranche(toewijzing.ondernemer, brancheId)
-            )
+            Ondernemer.wantsExpansion(toewijzing)
         );
 
         const remainingQueue = queue.map(({ ondernemer }) => ondernemer);
@@ -359,7 +354,7 @@ const Indeling = {
         });
 
         return indeling.openPlaatsen.length && remainingQueue.length && iteration < indeling.expansionLimit ?
-               Indeling.performExpansion(indeling, brancheId, ++iteration) :
+               Indeling.performExpansion(indeling, ++iteration) :
                indeling;
     },
 
