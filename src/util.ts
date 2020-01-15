@@ -1,6 +1,5 @@
 // import moment from 'moment';
 const moment = require('moment-timezone');
-// const { formatOndernemerName } = require('./domain-knowledge.js');
 
 export const capitalize = (s: string) => {
     return typeof s === 'string' ?
@@ -121,8 +120,8 @@ export const getTimezoneTime = (): Date => {
     return moment().tz('Europe/Amsterdam').format();
 };
 
-export const getTimezoneHours = (): String => {
-    return moment( getTimezoneTime() ).format('H');
+export const getTimezoneHours = (): Number => {
+    return parseInt(moment( getTimezoneTime() ).format('H'));
 };
 
 export const tomorrow = (): string => addDays(Date.now(), 1);
@@ -180,6 +179,15 @@ export const sum = (a: number, b: number): number => a + b;
 export const max = (a: number, b: number): number => Math.max(a, b);
 export const flatten = <T>(a: T[] = [], b: T[] = []): T[] => [...(a || []), ...(b || [])];
 export const unique = <T>(a: T[], b: T): T[] => a.includes(b) ? a : [...a, b];
+
+export const compareProperty = (
+    a: any[],
+    b: any[],
+    property: string
+) => {
+    return a.map(({ [property]: p }) => p).reduce(sum, 0) -
+           b.map(({ [property]: p }) => p).reduce(sum, 0);
+};
 
 // General
 // -------

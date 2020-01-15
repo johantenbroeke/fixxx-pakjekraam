@@ -1,4 +1,3 @@
-const OndernemerMarktHeading = require('./OndernemerMarktHeading');
 const Form = require('./Form');
 const React = require('react');
 const PropTypes = require('prop-types');
@@ -73,14 +72,14 @@ class AfmeldForm extends React.Component {
                     defaultValue={ondernemer.erkenningsnummer}
                     type="hidden"
                 />
-                <OndernemerMarktHeading markt={markt} sollicitatie={sollicitatie} />
+                <h1 className="Heading Heading--intro">Aanwezigheid {markt.naam}</h1>
                 {isVast(sollicitatie.status) ? (
                     <span className="Fieldset__subtitle">
                         Vink uit op welke dagen u (of uw vervanger) niet op deze markt staat.
                     </span>
                 ) : (
-                        <span className="Fieldset__subtitle">
-                            Vink aan op welke dagen u (of uw vervanger) naar de markt wilt komen.
+                    <span className="Fieldset__subtitle">
+                        Vink aan op welke dagen u (of uw vervanger) naar de markt wilt komen.
                     </span>
                     )}
                 {weekAanmeldingen.map((week, i) => (

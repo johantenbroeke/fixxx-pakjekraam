@@ -8,10 +8,12 @@ const {
     capitalize,
     relativeHumanDay,
     endOfWeek,
+    yyyyMmDdtoDDMMYYYY,
 } = require('../util.ts');
 const React = require('react');
 const PropTypes = require('prop-types');
 const MarktDetailBase = require('./components/MarktDetailBase');
+const AlertLine = require('./components/AlertLine');
 const today = () => new Date().toISOString().replace(/T.+/, '');
 const { getUpcomingMarktDays, parseMarktDag, A_LIJST_DAYS } = require('../domain-knowledge.js');
 
@@ -25,7 +27,7 @@ class MarktDetailPage extends React.Component {
     };
 
     render() {
-        const { markt, datum, type, role } = this.props;
+        const { markt, datum, type, role, user } = this.props;
         const startDate = addDays(today(), -1);
         const endDate = addDays(endOfWeek(), DAYS_IN_WEEK);
         const marktDagen = (markt.marktDagen || []).map(parseMarktDag);
@@ -48,19 +50,35 @@ class MarktDetailPage extends React.Component {
         markt.kiesJeKraamFase == 'live' ? fase = null : fase = ` ${markt.kiesJeKraamFase}`;
 
         return (
-            <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} role={role}>
-                 {/* {markt.kiesJeKraamGeblokkeerdePlaatsen ?
-                 <p>Geblokkeerde plaatsen: {markt.kiesJeKraamGeblokkeerdePlaatsen}</p> :
-                 null } */}
+            <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} user={user} role={role}>
                 <div className="Section Section--column">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
+                    <a href={`./${today()}/voorrangslijst-volledig/`} className="Link">Alle sollicitanten</a>
                     { markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
-                        <a href={`./${today()}/indelingslijst/`} className="Link">Postitie vasteplaasthouders</a> : null
+                        <a href={`./${today()}/indelingslijst/`} className="Link">Positie vasteplaasthouders</a> : null
                     }
                     { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
                         <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
                     }
                 </div>
+                {markt.kiesJeKraamGeblokkeerdePlaatsen ?
+                    <AlertLine
+                        type="warning"
+                        title="Geblokkeerde plaatsen"
+                        titleSmall={true}
+                        message={`Plaatsen: ${markt.kiesJeKraamGeblokkeerdePlaatsen}`}
+                        inline={true}
+                    /> : null
+                }
+                {markt.kiesJeKraamGeblokkeerdeData ?
+                    <AlertLine
+                        type="warning"
+                        title="Geblokkeerde data"
+                        titleSmall={true}
+                        message={`Data: ${markt.kiesJeKraamGeblokkeerdeData.split(',').map(date => yyyyMmDdtoDDMMYYYY(date))}`}
+                        inline={true}
+                    /> : null
+                }
                 <h2 className="Heading Heading--intro">Lijsten per dag</h2>
                 <div className="row row--responsive margin-bottom">
                     <div className="col-1-2 margin-bottom">
@@ -140,7 +158,6 @@ class MarktDetailPage extends React.Component {
                             ))}
                     </div>
                 </div>
-
             </MarktDetailBase>
         );
     }

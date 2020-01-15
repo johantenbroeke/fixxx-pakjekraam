@@ -5,6 +5,8 @@ const AfmeldForm = require('./components/AfmeldForm.jsx');
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
+const SollicitatieSpecs = require('./components/SollicitatieSpecs');
+
 const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
 
 class AfmeldPage extends React.Component {
@@ -22,27 +24,36 @@ class AfmeldPage extends React.Component {
         role: PropTypes.string,
         mededelingen: PropTypes.object.isRequired,
         csrfToken: PropTypes.string,
+        user: PropTypes.object.isRequired,
     };
 
     render() {
-        const { ondernemer, messages, role, markt, mededelingen } = this.props;
-
+        const { ondernemer, messages, role, markt, mededelingen, user } = this.props;
         const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
+        const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
         return (
             <Page messages={messages}>
                 <Header
-                    user={this.props.ondernemer}
-                    logoUrl={role === 'marktmeester' ? '/markt/' : '/dashboard/'}
                     breadcrumbs={breadcrumbs}
                     role={role}
+                    user={user}
                     >
-                    <OndernemerProfileHeader user={this.props.ondernemer} />
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={ondernemer} /> : null
+                    }
                 </Header>
                 <Content>
                     { markt.kiesJeKraamFase ? (
                         <p className="Paragraph Paragraph--first" dangerouslySetInnerHTML={{ __html: mededelingen.aanwezigheid[markt.kiesJeKraamFase] }} />
                     ) : null }
+                    { role === 'marktmeester' ?
+                        <h2 className="Heading Heading--intro">Ondernemer</h2> : null
+                    }
+                    { role === 'marktmeester' ?
+                        <OndernemerProfileHeader inline={true} user={ondernemer} sollicitatie={sollicitatie} /> : null
+                    }
+                    <SollicitatieSpecs sollicitatie={sollicitatie} />
                     <AfmeldForm
                         aanmeldingen={this.props.aanmeldingen}
                         date={this.props.date}

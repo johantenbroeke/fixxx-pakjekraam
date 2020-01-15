@@ -1,11 +1,11 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { formatOndernemerName, plaatsSort, isVast } = require('../../domain-knowledge.js');
-const { flatten } = require('../../util.ts');
+const { plaatsSort, isVast } = require('../../domain-knowledge.js');
 const MarktplaatsSelect = require('./MarktplaatsSelect');
 const Button = require('./Button');
 const Form = require('./Form');
 
+const { getDefaultVoorkeur } = require('../../model/voorkeur.functions');
 
 class PlaatsvoorkeurenForm extends React.Component {
     propTypes = {
@@ -24,14 +24,7 @@ class PlaatsvoorkeurenForm extends React.Component {
         const { markt, ondernemer, marktplaatsen, indelingVoorkeur, role, sollicitatie, csrfToken } = this.props;
         let { plaatsvoorkeuren } = this.props;
 
-        const defaultVoorkeur = {
-            minimum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
-            maximum: isVast(sollicitatie.status) ? sollicitatie.vastePlaatsen.length : 1,
-            anywhere: !isVast(sollicitatie.status),
-            inactive: false,
-        };
-
-        const voorkeur = indelingVoorkeur || defaultVoorkeur;
+        const voorkeur = indelingVoorkeur || getDefaultVoorkeur(sollicitatie);
 
         let minimumCount = null;
         if (role === 'marktmeester') {
@@ -170,7 +163,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                     </div>
 
                     <div className="Fieldset">
-                        <h2 className="Fieldset__header">Plaatsvoorkeuren</h2>
+                        <h2 className="Fieldset__header">Plaatsen selecteren</h2>
                         <span className="Fieldset__sub-header">U kunt zoveel voorkeuren invullen als u wilt.</span>
                         <div className="Icon-line">
                             <img className="Icon-line__icon" src="/images/draggable.svg" alt="Unchecked" />
@@ -226,7 +219,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         >
                             <div className="PlaatsvoorkeurenForm__list-item" id="plaatsvoorkeuren-list-item">
                                 <h4 className="PlaatsvoorkeurenForm__list-item__heading Fieldset__sub-header">
-                                    Voorkeur toevoegen
+                                    Plaatsvoorkeur toevoegen
                                 </h4>
                                 <div className="well well--small">
                                     <span className="PlaatsvoorkeurenForm__list-item__label">Kies een marktplaats</span>

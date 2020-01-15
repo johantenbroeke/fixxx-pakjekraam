@@ -6,17 +6,15 @@ import {
     getMarktondernemers as getMarktondernemersMM,
     getMarktondernemersByMarkt as getMarktondernemersByMarktMM,
 } from './makkelijkemarkt-api';
-import { formatOndernemerName, isVast, parseMarktDag, slugifyMarkt } from './domain-knowledge.js';
+import { formatOndernemerName, isVast, slugifyMarkt } from './domain-knowledge.js';
 import { numberSort, stringSort } from './util';
 import Sequelize from 'sequelize';
 import { allocation, plaatsvoorkeur, rsvp, voorkeur } from './model/index';
 import { calcToewijzingen } from './indeling';
-// import { getVoorkeurenByMarkt } from './model/voorkeur.functions';
 
 import {
     IMarkt,
     IBranche,
-    IMarktInfo,
     IMarktProperties,
     IMarktondernemer,
     IMarktondernemerVoorkeur,
@@ -278,31 +276,27 @@ export const getPlaatsvoorkeurenOndernemer = (erkenningsNummer: string): Promise
     });
 
 export const getMarktProperties = (marktId: string): Promise<IMarktProperties> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/markt.json`, {});
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/markt.json`, {});
 
 export const getBranches = (marktId: string): Promise<IBranche[]> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/branches.json`, []);
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/branches.json`, []);
 
-export const getAllBranches = (): Promise<IBranche[]> => loadJSON('./data/branches.json', []);
+export const getAllBranches = (): Promise<IBranche[]> => loadJSON('./config/markt/branches.json', []);
 
 export const getMarktplaatsen = (marktId: string): Promise<IMarktplaats[]> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/locaties.json`, []);
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/locaties.json`, []);
 
 export const getMarktPaginas = (marktId: string): Promise<IAllocationPrintout> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/paginas.json`, []);
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/paginas.json`, []);
 
 export const getMarktGeografie = (marktId: string): Promise<{ obstakels: IObstakelBetween[] }> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/geografie.json`, { obstakels: [] });
-
-export const getMarktInfo = (marktId: string): Promise<IMarktInfo> =>
-    loadJSON(`./data/${slugifyMarkt(marktId)}/info.json`);
+    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/geografie.json`, { obstakels: [] });
 
 export const getMededelingen = (): Promise<any> =>
-    loadJSON('./data/mededelingen.json', {});
+    loadJSON('./config/markt/mededelingen.json', {});
 
 export const getDaysClosed = (): Promise<any> =>
-    loadJSON('./data/daysClosed.json', {});
-
+    loadJSON('./config/markt/daysClosed.json', {});
 
 /*
  * Convert an object from Makkelijke Markt to our own type of `IMarktondernemer` object
@@ -357,16 +351,31 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
         return enrichOndernemersWithVoorkeuren(...result);
     });
 
+    const getMarktPlaatsenDisabled = Promise.all([
+        getMarkt(marktId),
+        getMarktplaatsen(marktId)
+    ])
+    .then( ([makkelijkemarkt, marktplaatsen]) => {
+        if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
+            const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
+            return marktplaatsen.map( plaats => {
+                geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
+                return plaats;
+            });
+        } else {
+            return marktplaatsen;
+        }
+    });
+
     return Promise.all([
         getMarktProperties(marktId),
         enrichedOndernemers,
-        getMarktplaatsen(marktId),
+        getMarktPlaatsenDisabled,
         getAanmeldingen(marktId, marktDate),
         getPlaatsvoorkeuren(marktId),
         getAllBranches(),
         getMarktPaginas(marktId),
         getMarktGeografie(marktId),
-        // getMarktInfo(marktId),
         getMarkt(marktId),
         getALijst(marktId, marktDate),
     ]).then(args => {
@@ -382,7 +391,6 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
             markt,
             aLijst,
         ] = args;
-
         return {
             naam: '?',
             marktId,
@@ -540,30 +548,5 @@ export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
 export const getMarkten = () =>
     getMakkelijkeMarkten();
         // Only show markten for which JSON data with location info exists
-        // .then(markten => markten.filter(markt => fs.existsSync(`data/${slugifyMarkt(markt.id)}/markt.json`)));
+        // .then(markten => markten.filter(markt => fs.existsSync(`config/markt/${slugifyMarkt(markt.id)}/markt.json`)));
 
-export const getMarktenByDate = (marktDate: string) => {
-    const day = new Date(marktDate).getDay();
-
-    return getMarkten().then(markten =>
-        markten.filter(({ marktDagen }) => marktDagen.map(parseMarktDag).includes(day)),
-    );
-};
-
-/*
- * Vendors are allowed to attend only one market per day.
- * Check if a vendor wants to apply for a market, while on the same day it has applied for others.
- */
-export const isConflictingApplication = (existing: IRSVP[], application: IRSVP): IRSVP[] =>
-    // TODO: In addition to `attending`, check the vendors 'default days' and `isVast()`
-    application.attending
-        ? existing
-            .filter(a => String(a.marktId) !== String(application.marktId))
-            .filter(a => a.marktDate === application.marktDate)
-            .filter(a => a.attending !== null && !!a.attending)
-        : [];
-
-export const getConflictingApplications = (application: IRSVP): Promise<IRSVP[]> =>
-    getAanmeldingenByOndernemer(application.erkenningsNummer).then(existing =>
-        isConflictingApplication(existing, application),
-    );

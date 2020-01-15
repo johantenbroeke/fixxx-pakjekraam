@@ -8,26 +8,24 @@ import { EmailDataUitslag } from './views/components/email/EmailDataUitslag';
 import { defer } from 'rxjs';
 import { shareReplay, tap, combineLatest } from 'rxjs/operators';
 import { mail } from './mail.js';
-import { requireEnv, tomorrow, yyyyMmDdtoDDMMYYYY } from './util';
-import { getMarktenByDate, getMarktondernemersByMarkt, getToewijzingen } from './pakjekraam-api';
+import { requireEnv, tomorrow, yyyyMmDdtoDDMMYYYY, getMaDiWoDo } from './util';
+import { getMarktondernemersByMarkt, getToewijzingen } from './pakjekraam-api';
 import { getAfwijzingen } from './model/afwijzing.functions';
 import { retry } from './rxjs-util';
 import { getAllUsers } from './keycloak-api';
 import { checkLogin } from './makkelijkemarkt-api';
-// import { getMarktInfo } from './pakjekraam-api';
-// import { IMarktplaats, IPlaatsvoorkeur, IRSVP, IBranche } from 'markt.model';
+import { getMarktenByDate } from './model/markt.functions';
 import { MMMarkt } from 'makkelijkemarkt.model';
 
 requireEnv('MAILER_FROM');
 
 const marktDate = tomorrow();
-
-console.log(process.env);
+const alternativeEmail = 'kiesjekraam@gmail.com';
 
 const sendAllocationMail = (subject: string, mailTemplate: JSX.Element, emailaddress: string) => {
     return mail({
         from: process.env.MAILER_FROM,
-        to: (process.env.APP_ENV === 'acceptance') || (process.env.APP_ENV === 'development') ? 'tomootes@gmail.com,eva@tiltshift.nl' : emailaddress,
+        to: (process.env.APP_ENV === 'acceptance') || (process.env.APP_ENV === 'development') ? alternativeEmail : emailaddress,
         subject,
         react: mailTemplate,
     });
@@ -174,12 +172,16 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
                             sendToewijzingen,
                             sendAfwijzingen,
                             sendUitslag(markt, marktDate, toewijzingen, ondernemers, false),
-                            // sendUitslag(markt, marktDate, toewijzingen, ondernemers, true)
+                            markt.kiesJeKraamEmailKramenzetter ? sendUitslag(markt, marktDate, toewijzingen, ondernemers, true) : null,
                         ])
                         .then( result => {
                             console.log(`${result[0].length} toewijzingen verstuurd.`);
                             console.log(`${result[1].length} afwijzingen verstuurd.`);
-                            console.log('Uitslag verstuurd naar marktbureau.');
+                            console.log(`Resultaat versturen uitslag naar marktbureau: ${result[2].message}`);
+                            console.log( markt.kiesJeKraamEmailKramenzetter ?
+                                `Resultaat versturen uitslag naar kraamzetter: ${result[3].message}` :
+                                'Geen emailadres kramenzetter in makkelijke markt'
+                            );
                             process.exit(0);
                         });
                 })
@@ -201,9 +203,15 @@ function sendUitslag(markt: any, marktDate: string, toewijzingen: any[], onderne
         markt={markt}
         isKraamzetter={isKraamzetter}
     />;
+    let to = null;
+    if (process.env.APP_ENV === 'production') {
+        isKraamzetter ? markt.kiesJeKraamEmailKramenzetter : 'Marktbureau.kiesjekraam@amsterdam.nl,kiesjekraam@gmail.com';
+    } else {
+        to = alternativeEmail;
+    }
     return mail({
         from: process.env.MAILER_FROM,
-        to: process.env.APP_ENV === 'production' ? 'Marktbureau.kiesjekraam@amsterdam.nl,kiesjekraam@gmail.com' : null,
+        to,
         subject,
         react: mailTemplate,
     });

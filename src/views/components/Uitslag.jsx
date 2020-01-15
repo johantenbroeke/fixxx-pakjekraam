@@ -4,7 +4,6 @@ const AlertLine = require('./AlertLine');
 const { formatDate, getMaDiWoDoOfToday, getCurrentTime, getTimezoneTime, getTimezoneHours } = require('../../util.ts');
 import { printAfwijzingReason } from '../../model/afwijzing.functions';
 
-
 const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen, ondernemer, afwijzingVandaag, afwijzingMorgen }) => {
     function plaatsenDuiding(plaatsen) {
         if (plaatsen.length == 1) {
@@ -18,12 +17,12 @@ const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, 
         return sollicitatieOndernemer.markt.id == markt.id && !sollicitatieOndernemer.doorgehaald;
     });
 
-    const timeInHours = getTimezoneHours();
     markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
+    const timeInHours = getTimezoneHours();
 
     return (
         <div>
-            {timeInHours >= 21 && timeInHours < 24 || !markt.geopend && ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) ? (
+            {timeInHours >= 21 || !markt.geopend && ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) ? (
                 <div className="OndernemerMarktTile__update-row">
                     <h4 className="OndernemerMarktTile__update-row__heading">
                         Morgen ({formatDate(tomorrow)})

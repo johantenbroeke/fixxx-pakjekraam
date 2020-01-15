@@ -6,10 +6,11 @@ import { convertToewijzingForDB, getToewijzingEnriched } from './model/allocatio
 import { convertAfwijzingForDB, getAfwijzingEnriched } from './model/afwijzing.functions';
 // import { MMMarkt } from './makkelijkemarkt.model';
 // import { IMarkt, IMarktEnriched } from './markt.model';
-import { getMarktenEnabled, getMarktEnriched } from './model/markt.functions';
+import { getMarktenByDate } from './model/markt.functions';
 
 import { sequelize } from './model/index';
 import { IToewijzing, IAfwijzing } from 'markt.model';
+import { MMMarkt } from 'makkelijkemarkt.model';
 
 const marktDate = tomorrow();
 
@@ -72,21 +73,14 @@ async function runAllocation() {
 
     try {
 
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
+        let markten = await getMarktenByDate(marktDate);
 
-        const markten = await getMarktenEnabled();
-        let marktenEnriched = await Promise.all(markten.map(markt => getMarktEnriched(String(markt.id))));
+        markten = markten.filter(markt => markt.kiesJeKraamFase)
+            .filter( (markt: MMMarkt) => markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'wenperiode');
 
-        marktenEnriched = marktenEnriched.filter( markt => markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'wenperiode');
-        // If maDiWoDo of tomorrow in included in marktDagen, the allocation wil run
+        if (markten.length > 0) {
 
-        const maDiWoDo = getMaDiWoDo(tomorrow);
-        marktenEnriched = marktenEnriched.filter( markt => markt.marktDagen.includes(maDiWoDo));
-
-        if (marktenEnriched.length > 0) {
-
-            const indelingen = await Promise.all(marktenEnriched.map(markt => getIndelingslijst(String(markt.id), marktDate)));
+            const indelingen = await Promise.all(markten.map( (markt: MMMarkt) => getIndelingslijst(String(markt.id), marktDate)));
 
             const toewijzingen = await mapMarktenToToewijzingen(indelingen);
             const afwijzingen = await mapMarktenToAfwijzingen(indelingen);

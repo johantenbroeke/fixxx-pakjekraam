@@ -1,9 +1,16 @@
 import {
+    BrancheId,
     DeelnemerStatus,
     IMarktindeling,
     IMarktondernemer,
     PlaatsId
 } from '../markt.model';
+
+import {
+    intersection
+} from '../util';
+
+import Ondernemer from './ondernemer';
 
 const STATUS_PRIORITIES = [
     DeelnemerStatus.SOLLICITANT,
@@ -29,6 +36,15 @@ const Ondernemers = {
         return sort1 || sort2 || sort3;
     },
 
+    countEVIs: (
+        indeling: IMarktindeling,
+        ondernemers: IMarktondernemer[]
+    ): number => {
+        return ondernemers.reduce((count, ondernemer) => {
+            return Ondernemer.hasEVI(ondernemer) ? ++count : count;
+        }, 0);
+    },
+
     countPlaatsVoorkeurenFor: (
         indeling: IMarktindeling,
         plaatsId: PlaatsId
@@ -41,6 +57,28 @@ const Ondernemers = {
         }, new Map());
 
         return result.size;
+    },
+
+    findVPHFor: (
+        indeling: IMarktindeling,
+        plaatsId: PlaatsId
+    ): IMarktondernemer => {
+        return indeling.ondernemers.find(ondernemer => {
+            const { plaatsen=[] } = ondernemer;
+            return plaatsen.includes(plaatsId);
+        });
+    },
+
+    getRelevantBranches: (
+        indeling: IMarktindeling,
+        ondernemers: IMarktondernemer[]
+    ): BrancheId[] => {
+        const marktBranches = indeling.branches.map(({ brancheId }) => brancheId);
+
+        return ondernemers.reduce((brancheIds, ondernemer) => {
+            const ondernemerBranches = Ondernemer.getBrancheIds(ondernemer);
+            return brancheIds.concat(intersection(marktBranches, ondernemerBranches));
+        }, []);
     },
 
     sort: (

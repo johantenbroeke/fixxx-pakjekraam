@@ -127,18 +127,36 @@ describe('Een ondernemer die ingedeeld wil worden', () => {
 });
 
 describe('Een sollicitant op de A-lijst', () => {
-    it('krijgt voorrang over alle sollicitanten op de B-lijst', () => {
+    it('krijgt voorrang over EVI- en verplichte branche sollicitanten op de B-lijst', () => {
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
-                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'] } },
+                { sollicitatieNummer: 2, voorkeur: { verkoopinrichting: ['eigen-materieel'] } },
                 { sollicitatieNummer: 3, voorkeur: { verkoopinrichting: ['eigen-materieel'] } }
             ],
             marktplaatsen: [
-                { branches: ['bak'] }, { verkoopinrichting: ['eigen-materieel'] }, {}
+                { verkoopinrichting: ['eigen-materieel'] }, { verkoopinrichting: ['eigen-materieel'] }, {}
+            ],
+            aLijst: [
+                { sollicitatieNummer: 1 }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([2, 3]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['a'] } },
+                { sollicitatieNummer: 3, voorkeur: { verkoopinrichting: ['eigen-materieel'] } }
+            ],
+            marktplaatsen: [
+                { branches: ['a'] }, { verkoopinrichting: ['eigen-materieel'] }, {}
             ],
             branches: [
-                { brancheId: 'bak', verplicht: true }
+                { brancheId: 'a', verplicht: true }
             ],
             aLijst: [
                 { sollicitatieNummer: 1 }
@@ -487,35 +505,39 @@ describe('Een VPH die ingedeeld wil worden', () => {
     });
 });
 
-describe('Een ondernemer die wil bakken', () => {
-    it('kan enkel op een bakplaats staan', () => {
-        const { toewijzingen, afwijzingen } = calc({
+describe('Een ondernemer in een verplichte branche (bijv. bak)', () => {
+    it('kan enkel op een brancheplek staan', () => {
+        var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
-                { sollicitatieNummer: 1, voorkeur: { branches: ['bak'] } },
+                { sollicitatieNummer: 1, voorkeur: { branches: ['a'] } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['b'] } }
             ],
             marktplaatsen: [
-                {}
+                {}, { branches: ['b'] }
             ],
             branches: [
-                { brancheId: 'bak', verplicht: true }
+                { brancheId: 'a', verplicht: true },
+                { brancheId: 'b', verplicht: true }
             ]
         });
 
-        expect(findOndernemers(toewijzingen)).toStrictEqual([]);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
     });
 
-    it('komt op de meest geschikte bakplaats te staan', () => {
-        // Branche overlap is hier belangrijker dan de prioritering van de ondernemer.
+    it('komt op de meest geschikte brancheplaats te staan', () => {
+        // Branche overlap is belangrijker dan de prioritering van de ondernemer.
        var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
-                { sollicitatieNummer: 1, voorkeur: { branches: ['bak', 'x'] } },
+                { sollicitatieNummer: 1, voorkeur: { branches: ['a', 'b'] } },
             ],
             marktplaatsen: [
-                { branches: ['bak'] }, { branches: ['bak', 'x'] }
+                { branches: ['a'] }, { branches: ['a', 'b'] }
             ],
             branches: [
-                { brancheId: 'bak', verplicht: true }
+                { brancheId: 'a', verplicht: true },
+                { brancheId: 'b' }
             ],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '1' }
@@ -526,15 +548,41 @@ describe('Een ondernemer die wil bakken', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
 
+        // Een branche overlap waarbij de plaats meer branches heeft dan de ondernemer
+        // betekent ook dat de plaats minder geschikt is voor deze ondernemer.
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
-                { sollicitatieNummer: 1, voorkeur: { branches: ['bak'] } },
+                { sollicitatieNummer: 1, voorkeur: { branches: ['a'] } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['b'] } },
             ],
             marktplaatsen: [
-                { branches: ['bak'] }, { branches: ['bak', 'x'] }
+                { branches: ['a'] }, { branches: ['a', 'b'] }
             ],
             branches: [
-                { brancheId: 'bak', verplicht: true }
+                { brancheId: 'a', verplicht: true },
+                { brancheId: 'b' }
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '2' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+
+        // De betere branche overlap met plaats 1 is hier niet relevant, omdat er geen
+        // ondernemers in branche `x` zijn.
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { branches: ['a'] } },
+            ],
+            marktplaatsen: [
+                { branches: ['a'] }, { branches: ['a', 'b'] }
+            ],
+            branches: [
+                { brancheId: 'a', verplicht: true },
+                { brancheId: 'b' }
             ],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '2' }
@@ -543,19 +591,46 @@ describe('Een ondernemer die wil bakken', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
-    });
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
 
-    it('kan niet uitbreiden naar een niet-bak plaats', () => {
-        const { toewijzingen, afwijzingen } = calc({
+        // Met 3 branche plaatsen en 1 branche ondernemer zonder voorkeur, probeer hem/haar op
+        // een brancheplek in te delen waar zo min mogelijk voorkeuren voor zijn.
+        var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
-                { sollicitatieNummer: 1, voorkeur: { branches: ['bak'], minimum: 2 } },
+                { sollicitatieNummer: 1 },
+                { sollicitatieNummer: 2 },
+                { sollicitatieNummer: 3, voorkeur: { branches: ['x'] } },
             ],
             marktplaatsen: [
-                { branches: ['bak'] }, {}
+                {}, {}, { branches: ['x'] }, { branches: ['x'] }, { branches: ['x'] }
             ],
             branches: [
-                { brancheId: 'bak', verplicht: true }
+                { brancheId: 'x', verplicht: true }
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '3', priority: 1 },
+                { sollicitatieNummer: 2, plaatsId: '5', priority: 1 }
+
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['5']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['4']);
+    });
+
+    it('kan niet uitbreiden naar een niet-branche plaats', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { branches: ['a'], minimum: 2 } },
+            ],
+            marktplaatsen: [
+                { branches: ['a'] }, {}
+            ],
+            branches: [
+                { brancheId: 'a', verplicht: true }
             ]
         });
 
@@ -563,17 +638,17 @@ describe('Een ondernemer die wil bakken', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
     });
 
-    it('wordt afgewezen als er geen bakplaatsen meer beschikbaar zijn', () => {
+    it('wordt afgewezen als er geen brancheplaatsen meer beschikbaar zijn', () => {
        const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
-                { sollicitatieNummer: 1, voorkeur: { branches: ['bak'] } },
-                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'] } }
+                { sollicitatieNummer: 1, voorkeur: { branches: ['a'] } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['a'] } }
             ],
             marktplaatsen: [
-                { branches: ['bak'] }, {}
+                { branches: ['a'] }, {}
             ],
             branches: [
-                { brancheId: 'bak', verplicht: true }
+                { brancheId: 'a', verplicht: true }
             ]
         });
 
@@ -585,17 +660,17 @@ describe('Een ondernemer die wil bakken', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] },
-                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'] } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['a'] } },
             ],
             marktplaatsen: [
-                {}, { branches: ['bak'] }
+                {}, { branches: ['a'] }
+            ],
+            branches: [
+                { brancheId: 'a', verplicht: true }
             ],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '2' },
                 { sollicitatieNummer: 2, plaatsId: '2' }
-            ],
-            branches: [
-                { brancheId: 'bak', verplicht: true }
             ]
         });
 
@@ -605,20 +680,20 @@ describe('Een ondernemer die wil bakken', () => {
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
     });
 
-    it('krijgt voorrang boven niet bakkende sollicitanten', () => {
-        // Altijd eerst bakplaatsen proberen vullen met bakkende ondernemers.
+    it('krijgt voorrang boven sollicitanten niet in een verplichte branche', () => {
+        // Altijd eerst brancheplaatsen proberen vullen met branche ondernemers.
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
-                { sollicitatieNummer: 1, voorkeur: { branches: ['bak'], maximum: 2 } },
-                { sollicitatieNummer: 2, voorkeur: { branches: ['bak'], maximum: 2 } },
+                { sollicitatieNummer: 1, voorkeur: { branches: ['a'], maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['a'], maximum: 2 } },
                 { sollicitatieNummer: 3 }
             ],
             marktplaatsen: [
-                { branches: ['bak'] }, { branches: ['bak'] }, { branches: ['bak'] },
+                { branches: ['a'] }, { branches: ['a'] }, { branches: ['a'] },
                 {}, {}
             ],
             branches: [
-                { brancheId: 'bak', verplicht: true }
+                { brancheId: 'a', verplicht: true }
             ]
         });
 
@@ -653,6 +728,9 @@ describe('Een ondernemer met een EVI', () => {
             ],
             marktplaatsen: [
                 { verkoopinrichting: ['eigen-materieel'] }, { branches: ['x'], verkoopinrichting: ['eigen-materieel'] }
+            ],
+            branches: [
+                { brancheId: 'x' }
             ],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '1' }
@@ -840,7 +918,7 @@ describe('Een VPH die wil verplaatsen', () => {
                 { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] },
                 { sollicitatieNummer: 3, status: 'vpl', plaatsen: ['3'] }
             ],
-            marktplaatsen: [{}, {}, {}, {}, {}],
+            marktplaatsen: ['1', '2', '3', '4', '5'],
             voorkeuren: [
                 { sollicitatieNummer: 1, plaatsId: '4', priority: FIRST_CHOICE },
                 { sollicitatieNummer: 2, plaatsId: '1', priority: FIRST_CHOICE },
@@ -1023,6 +1101,30 @@ describe('Een VPH die wil verplaatsen', () => {
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['4', '5']);
     });
+
+    it('raken hun eigen plaats niet kwijt als hun voorkeur niet beschikbaar is', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1'] },
+                { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['2'] },
+                { sollicitatieNummer: 3, status: 'vpl', plaatsen: ['3'] }
+            ],
+            marktplaatsen: [
+                '1', '2', '3'
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '2', priority: FIRST_CHOICE },
+                { sollicitatieNummer: 2, plaatsId: '3', priority: FIRST_CHOICE },
+                { sollicitatieNummer: 3, plaatsId: '2', priority: FIRST_CHOICE }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['2']);
+    });
 });
 
 describe('Een sollicitant die ingedeeld wil worden', () => {
@@ -1070,6 +1172,49 @@ describe('Een sollicitant die ingedeeld wil worden', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+    });
+
+    it('krijgt voorkeur over andere sollicitanten op een brancheplaats als zij in deze branche opereren', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1 },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['x'] } }
+            ],
+            marktplaatsen: [
+                { branches: ['x'] }, {}
+            ],
+            branches: [
+                { brancheId: 'x', verplicht: true }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+    });
+
+    it('krijgt voorkeur over VPHs op een brancheplaats als zij in deze branche opereren', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['3'] },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['x'] } }
+            ],
+            marktplaatsen: [
+                { branches: ['x'] }, {}, {}
+            ],
+            branches: [
+                { brancheId: 'x', verplicht: true }
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '1' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 
@@ -1536,12 +1681,14 @@ describe('Bugfix voor', () => {
     });
 
     it('issue #532', () => {
-        // `Ondernemer.getStartSize` gaf onterecht een waarde van 1 terug, waar een SOLL
+        // `Ondernemer.getStartSize`[1] gaf onterecht een waarde van 1 terug, waar een SOLL
         // had aangegeven minimaal 2 plaatsen te willen. In `Indeling.performExpansion`
         // werd dit minimum vervolgens wel gerespecteerd. Op dit punt was echter al bepaald
         // wat de meest geschikte plaats voor deze ondernemer was (o.b.v. voorkeuren). Dit kon
         // betekenen dat uitbreiden niet meer mogelijk was omdat aangelegen plaatsen niet
         // beschikbaar meer waren.
+        //
+        // [1] 2019-12-30: Methode verplaatst naar `Ondernemer.getMinimumSize`.
         const { toewijzingen, afwijzingen } = calc({
             ondernemers : [
                 { sollicitatieNummer : 1, status : 'soll', voorkeur : { minimum: 2, maximum: 2, anywhere : true } }
@@ -1609,5 +1756,30 @@ describe('Bugfix voor', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+    });
+
+    it('issue #619', () => {
+        // Bij twee VPHs die willen verplaatsen kan het voorkomen dat degene met een hogere
+        // anciënniteit een plaats van de ander inneemt, die vervolgens slechter af is dan
+        // zijn oorspronkelijke situatie zonder te verplaatsen.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers : [
+                { sollicitatieNummer : 1, status : 'vph', plaatsen: ['5', '6'] },
+                { sollicitatieNummer : 2, status : 'vph', plaatsen: ['2', '3'] }
+            ],
+            marktplaatsen: [
+                '1', '2', '3', '4',
+                '5', '6'
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '1', priority: FIRST_CHOICE },
+                { sollicitatieNummer: 2, plaatsId: '1', priority: FIRST_CHOICE },
+                { sollicitatieNummer: 2, plaatsId: '2', priority: SECOND_CHOICE }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['5', '6']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1', '2']);
     });
 });

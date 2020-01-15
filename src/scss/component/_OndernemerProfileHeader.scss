@@ -3,6 +3,8 @@
     display: flex;
     flex-direction: row-reverse;
     text-align: right;
+    $self: &;
+
     &__profile-photo {
         margin-left: 10px;
     }
@@ -23,5 +25,22 @@
         &__id-label {
             display: inline-block;
         }
+        &--inline{
+            margin: $gutter-sm 0;
+        }
     }
+
+    &--inline{
+        flex-direction: row;
+        text-align: left;
+        margin-bottom: $gutter;
+        #{ $self }__profile-photo {
+            margin: 0 $gutter-sm 0 0;
+        }
+    }
+
+    .SollicitatieSpecs{
+        width: 100%;
+    }
+
 }

@@ -5,6 +5,7 @@ const AlgemeneVoorkeurenForm = require('./components/AlgemeneVoorkeurenForm.jsx'
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
+const SollicitatieSpecs = require('./components/SollicitatieSpecs');
 const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
 
 class AlgemeneVoorkeurenPage extends React.Component {
@@ -20,27 +21,43 @@ class AlgemeneVoorkeurenPage extends React.Component {
         role: PropTypes.string,
         messages: PropTypes.array,
         csrfToken: PropTypes.string,
+        user: PropTypes.object.isRequired
     };
 
     render() {
-        const { ondernemer, messages, role, markt } = this.props;
+        const { ondernemer, messages, role, markt, user } = this.props;
         let { branches } = this.props;
 
         branches = branches.filter(branche => branche.brancheId !== 'bak');
         branches = branches.sort((a, b) => a.brancheId - b.brancheId);
 
         const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
+        const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
         return (
             <Page messages={messages}>
                 <Header
-                    user={ondernemer}
+                    user={user}
                     role={role}
                     breadcrumbs={breadcrumbs}
                     >
-                    <OndernemerProfileHeader user={ondernemer} />
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={ondernemer} /> : null
+                    }
                 </Header>
                 <Content>
+                    { role === 'marktmeester' ?
+                        <h2 className="Heading Heading--intro">Ondernemer</h2> : null
+                    }
+                    { role === 'marktmeester' ?
+                        <OndernemerProfileHeader
+                            inline={true}
+                            user={ondernemer}
+                        /> : null
+                    }
+                    { role === 'marktmeester' ?
+                        <SollicitatieSpecs sollicitatie={sollicitatie} /> : null
+                    }
                     <AlgemeneVoorkeurenForm
                         branches={branches}
                         markt={this.props.markt}

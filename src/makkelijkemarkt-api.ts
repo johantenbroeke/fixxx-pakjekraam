@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { addDays, MONDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, requireEnv } from './util';
-import { MMMarkt, MMOndernemerStandalone, MMSollicitatieStandalone, MMOndernemer } from './makkelijkemarkt.model';
+import { MMMarkt, MMOndernemerStandalone, MMSollicitatieStandalone, MMOndernemer, MMSollicitatie } from './makkelijkemarkt.model';
 
 const packageJSON = require('../package.json');
 const axios = require('axios');
@@ -11,6 +11,8 @@ import { upsert } from './sequelize-util.js';
 const MILLISECONDS_IN_SECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_HOUR = 60;
+
+import { convertSollicitatieToOndernemer as convertSollicitatie } from './model/ondernemer.functions';
 
 requireEnv('API_URL');
 requireEnv('API_MMAPPKEY');
@@ -86,6 +88,23 @@ export const getMarkt = (marktId: string): Promise<MMMarkt> =>
 
 export const getMarkten = (): Promise<MMMarkt[]> =>
     apiBase('markt/').then(response => response.data);
+
+export const getSollicitatiesByOndernemer = (erkenningsNummer: string): Promise<MMSollicitatie[]> =>
+    getMarktondernemer(erkenningsNummer)
+        .then( (ondernemer: MMOndernemerStandalone) => {
+            return ondernemer.sollicitaties.filter(sollictatie => !sollictatie.doorgehaald);
+        });
+
+export const getSollicitatiesByMarktFases = (erkenningsNummer: string, fases: string[]) =>
+    Promise.all([
+        getSollicitatiesByOndernemer(erkenningsNummer),
+        getMarkten(),
+    ])
+    .then(([sollicitaties, markten]) => {
+        const marktenByFase = markten.filter( markt => fases.includes(markt.kiesJeKraamFase) ).map(markt => markt.id);
+        return sollicitaties.filter( soll => marktenByFase.includes(soll.markt.id) );
+    });
+
 
 export const getMarktondernemersByMarkt = (marktId: string): Promise<MMSollicitatieStandalone[]> => {
     const recursiveCall = ((p: number, total: any[]): any => {

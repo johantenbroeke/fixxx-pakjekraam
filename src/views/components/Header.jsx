@@ -13,10 +13,9 @@ const Header = ({ user, children, hideLogout, breadcrumbs, role }) => {
     }
 
     let logoUrl = '/';
-    role ?
-        logoUrl = role === 'marktmeester' ?
-            '/markt/' : '/dashboard/'
-        : null;
+    if (role) {
+        logoUrl = role === 'marktmeester' ? '/markt/' : '/dashboard/';
+    }
 
     return (
         <header className="Header">
@@ -32,7 +31,13 @@ const Header = ({ user, children, hideLogout, breadcrumbs, role }) => {
                                 </picture>
                             </a>
                             <h1 className="Header__heading">Kies je kraam</h1>
-                            <div>{!hideLogout ? <LoginButton user={user} /> : null}</div>
+                            <div className="Header__user">
+                                {!hideLogout ? <LoginButton user={user} /> : null}
+                                { role === 'marktmeester' ? <p className="Header__user__name">{user.name}</p> : null }
+                                { role === 'marktmeester' ? <p className="Header__user__role">Marktmeester</p> : null }
+                                {/* { role === 'marktondernemer' ? <p className="Header__user__name">{user.preferred_username}</p> : null }
+                                { role === 'marktondernemer' ? <p className="Header__user__role">Ondernemer</p> : null } */}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -48,8 +53,9 @@ const Header = ({ user, children, hideLogout, breadcrumbs, role }) => {
                                         <img className="Breadcrumb__icon" src="/images/chevron-right.svg" alt="Chevron-right"/>
                                     </a>
                                 )) : null }
+
                             </div>
-                            {children}
+                            { children }
                         </div>
                     </div>
                 </div>

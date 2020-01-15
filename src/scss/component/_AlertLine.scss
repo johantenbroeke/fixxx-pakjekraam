@@ -1,12 +1,16 @@
 .AlertLine {
     padding-left: 17px;
     border-left: 2px solid $neutral-grey3;
+    margin: $gutter-sm 0;
 
     &--default {
         border-color: $primary-darkblue;
     }
     &--error {
         border-color: $primary-red;
+    }
+    &--warning {
+        border-color: $supplement-orange;
     }
     &--success {
         border-color: $supplement-darkgreen;

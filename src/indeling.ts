@@ -13,23 +13,22 @@ import Ondernemer from './allocation/ondernemer';
 
 export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
     let indeling = Indeling.init(markt);
-    const { ondernemers } = indeling;
 
     // Als er een A-lijst is, deel deze ondernemers eerst volledig in...
     if (indeling.aLijst.length) {
-        const aListQueue = ondernemers.filter(ondernemer =>
+        const aListQueue = indeling.ondernemers.filter(ondernemer =>
             Indeling.getListGroup(indeling, ondernemer) === 1
         );
-        indeling = Indeling.performAllocation(indeling, aListQueue);
+        indeling = Indeling.performCalculation(indeling, aListQueue);
     }
 
     // ... en probeer daarna de andere ondernemers nog een plaats te geven.
     // Indien er geen A-lijst is voor deze dag deelt dit stuk alle ondernemers in.
-    const bListQueue = ondernemers.filter(ondernemer =>
+    const bListQueue = indeling.ondernemers.filter(ondernemer =>
         !indeling.aLijst.length ||
         Indeling.getListGroup(indeling, ondernemer) === 2
     );
-    indeling = Indeling.performAllocation(indeling, bListQueue);
+    indeling = Indeling.performCalculation(indeling, bListQueue);
 
     return indeling;
 };

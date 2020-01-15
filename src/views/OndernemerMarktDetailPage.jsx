@@ -4,9 +4,8 @@ const Page = require('./components/Page.jsx');
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const Content = require('./components/Content');
-const OndernemerAanwezigheid = require('./components/OndernemerAanwezigheid');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
-const OndernemerMarktHeading = require('./components/OndernemerMarktHeading');
+const SollicitatieSpecs = require('./components/SollicitatieSpecs');
 const OndernemerMarktVoorkeuren = require('./components/OndernemerMarktVoorkeuren');
 const OndernemerMarktAanwezigheid = require('./components/OndernemerMarktAanwezigheid');
 const OndernemerMarktAlgVoorkeuren = require('./components/OndernemerMarktAlgVoorkeuren');
@@ -42,14 +41,14 @@ class OndernemerMarktDetailPage extends React.Component {
             aanmeldingen,
             messages,
             markt,
-            marktId,
             voorkeur,
             branches,
             toewijzingen,
             afwijzingen,
             mededelingen,
             algemeneVoorkeur,
-            role
+            role,
+            user
         } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
@@ -74,27 +73,40 @@ class OndernemerMarktDetailPage extends React.Component {
         return (
             <Page messages={messages}>
                 <Header
-                    user={ondernemer}
+                    user={user}
                     role={role}
                     breadcrumbs={breadcrumbs}
                     >
                     <OndernemerProfileHeader user={ondernemer} />
                 </Header>
                 <Content>
-                    { markt.kiesJeKraamFase ? (
-                        <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
-                    ) : null}
-                    <OndernemerMarktHeading sollicitatie={sollicitatie} markt={markt} />
+                    <h1 className="Heading Heading--intro">{markt.naam}</h1>
                     <div className="Section Section--column Section--flat-top">
                     { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
                         <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
                     }
                     </div>
+                    { markt.kiesJeKraamFase ? (
+                        <p dangerouslySetInnerHTML={{ __html: mededelingen.marktDetail[markt.kiesJeKraamFase] }} />
+                    ) : null}
                     { markt.kiesJeKraamMededelingActief ? (
                         <Alert type="warning" inline={true} title={markt.kiesJeKraamMededelingTitel}>
                             {markt.kiesJeKraamMededelingTekst}
                         </Alert>
                     ) : null }
+                    <SollicitatieSpecs sollicitatie={sollicitatie} markt={markt} />
+                    <Uitslag
+                        ondernemer={ondernemer}
+                        today={today()}
+                        tomorrow={tomorrow()}
+                        markt={markt}
+                        toewijzingVandaag={toewijzingVandaag}
+                        toewijzingMorgen={toewijzingMorgen}
+                        afwijzingVandaag={afwijzingVandaag}
+                        afwijzingMorgen={afwijzingMorgen}
+                        aanmeldingVandaag={aanmeldingVandaag}
+                        aanmeldingMorgen={aanmeldingMorgen}
+                    />
                     { absentGemeld ? (
                         <Alert type="warning" inline={true}>
                             <span>
@@ -110,19 +122,6 @@ class OndernemerMarktDetailPage extends React.Component {
                             </span>
                         </Alert>
                     ) : null }
-
-                    <Uitslag
-                        ondernemer={ondernemer}
-                        today={today()}
-                        tomorrow={tomorrow()}
-                        markt={markt}
-                        toewijzingVandaag={toewijzingVandaag}
-                        toewijzingMorgen={toewijzingMorgen}
-                        afwijzingVandaag={afwijzingVandaag}
-                        afwijzingMorgen={afwijzingMorgen}
-                        aanmeldingVandaag={aanmeldingVandaag}
-                        aanmeldingMorgen={aanmeldingMorgen}
-                    />
 
                     <div className="row row--responsive">
                         <div className="col-1-2">

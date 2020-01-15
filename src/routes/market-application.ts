@@ -1,35 +1,20 @@
 import { NextFunction, Request, Response } from 'express';
 import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-import { getAanmeldingenByOndernemer, getConflictingApplications, getMededelingen } from '../pakjekraam-api';
+import { getAanmeldingenByOndernemer, getMededelingen } from '../pakjekraam-api';
 import { httpErrorPage, internalServerErrorPage, HTTP_CREATED_SUCCESS, HTTP_FORBIDDEN_ERROR, getQueryErrors } from '../express-util';
 import models from '../model/index';
 import { flatten, nextWeek, LF, tomorrow } from '../util';
 import { IRSVP } from '../markt.model';
 import { upsert } from '../sequelize-util.js';
 import { getMarktEnriched, getMarktenEnabled } from '../model/markt.functions';
+import { getConflictingApplications, getConflictingSollicitaties } from '../model/rsvp.functions';
 
 import moment from 'moment';
-
-export const marketApplicationPage = (
-    res: Response,
-    erkenningsNummer: string,
-    marktId: string,
-    query: any,
-) => {
-    Promise.all([
-        getMarktondernemer(erkenningsNummer),
-        getAanmeldingenByOndernemer(erkenningsNummer),
-        getMarkt(marktId),
-    ]).then(
-        ([ondernemer, aanmeldingen, markt]) => {
-            res.render('AanmeldPage', { ondernemer, aanmeldingen, markt, date: tomorrow() });
-        },
-        err => internalServerErrorPage(res)(err),
-    );
-};
-
+import { getKeycloakUser } from '../keycloak-api';
+import { GrantedRequest } from 'keycloak-connect';
 
 export const attendancePage = (
+    req: GrantedRequest,
     res: Response,
     erkenningsNummer: string,
     currentMarktId: string,
@@ -70,6 +55,7 @@ export const attendancePage = (
                 role,
                 mededelingen,
                 csrfToken,
+                user: getKeycloakUser(req)
             });
         },
         err => internalServerErrorPage(res)(err),
@@ -106,23 +92,40 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
             return conflicts.reduce(flatten, []);
         });
 
+    const getConflictingSollicitatiesPromise = Promise.all(responses.map(getConflictingSollicitaties))
+    .then(conflicts => {
+            return conflicts.reduce(flatten, []);
+        });
+
     Promise.all([
         getConflictingApplicationsPromise,
+        getConflictingSollicitatiesPromise,
         getMarktenEnabled()
     ])
-        .then(([conflicts, markten]) => {
+        .then(([conflictingApplication, conflictingSollicitaties, markten]) => {
 
-            if (conflicts.length > 0) {
-                const messages = conflicts
+            if (conflictingApplication.length > 0 || conflictingSollicitaties.length > 0 ) {
+
+                // Hide other messages when there is a conflicting sollicitatie
+                if (conflictingSollicitaties.length > 0) {
+                    conflictingApplication = [];
+                }
+
+                const messagesApplication = conflictingApplication
                     .map(application => {
                         const marktnaam = markten.find(markt => markt.id === parseInt(application.marktId)).naam;
                         return `U hebt zich al aangemeld voor <strong> ${marktnaam} </strong> op ${moment(application.marktDate).format('DD-MM-YYYY')}. Inschrijven voor meerdere markten is niet mogelijk.`;
                     });
-                res.redirect(`./?error=${messages}`);
 
+                const messagesSollicitaties = conflictingSollicitaties
+                    .map(sollicitatie => {
+                        return `U bent vasteplaatshouder op ${sollicitatie.markt.naam} en u bent hier niet afgemeld. Inschrijven voor meerdere markten op dezelfde dag(en) is niet mogelijk.`;
+                    });
+
+                const messages = messagesApplication.concat(messagesSollicitaties);
+
+                res.redirect(`./?error=${messages}`);
             } else {
-                // TODO: Redirect with success code
-                // TODO: Use `Sequelize.transaction`
                 Promise.all(
                     responses.map(response => {
                         const { marktId, marktDate } = response;

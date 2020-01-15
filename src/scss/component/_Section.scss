@@ -1,11 +1,12 @@
 .Section{
     margin: $gutter 0;
-
     &--column{
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
     }
-
+    &--flat-top{
+        margin-top: 0;
+    }
 }

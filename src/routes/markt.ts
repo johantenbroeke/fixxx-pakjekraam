@@ -4,6 +4,7 @@ import { getVoorkeurByMarktEnOndernemer } from '../model/voorkeur.functions';
 import { getAfwijzingenByOndernemerAndMarkt } from '../model/afwijzing.functions';
 
 import { NextFunction, Request, Response } from 'express';
+import { GrantedRequest } from 'keycloak-connect';
 
 import { getMarktondernemer } from '../makkelijkemarkt-api';
 import {
@@ -15,14 +16,16 @@ import {
     getMededelingen,
 } from '../pakjekraam-api';
 
+import { getKeycloakUser } from '../keycloak-api';
+
 import { internalServerErrorPage, getQueryErrors } from '../express-util';
 
 
 export const langdurigAfgemeld = (
-    req: Request,
+    req: GrantedRequest,
     res: Response,
     marktId: string,
-    role: string
+    role: string,
 ) => {
     return Promise.all([
         getMarkt(marktId),
@@ -33,6 +36,7 @@ export const langdurigAfgemeld = (
             markt,
             ondernemers,
             role,
+            user: getKeycloakUser(req)
         });
     })
     .catch( e => {
@@ -41,7 +45,7 @@ export const langdurigAfgemeld = (
 };
 
 export const marktDetail = (
-    req: Request,
+    req: GrantedRequest,
     res: Response,
     next: NextFunction,
     erkenningsNummer: string,
@@ -52,18 +56,18 @@ export const marktDetail = (
     const query = req.query;
     const messages = getQueryErrors(req.query);
 
-    Promise.all([
-        getMarktondernemer(erkenningsNummer),
-        getPlaatsvoorkeurenOndernemer(erkenningsNummer),
-        getAanmeldingenByOndernemerEnMarkt(marktId, erkenningsNummer),
-        getMarkt(marktId),
-        getIndelingVoorkeur(erkenningsNummer, req.params.marktId),
-        getAllBranches(),
-        getMededelingen(),
-        getToewijzingenByOndernemerEnMarkt(marktId, erkenningsNummer),
-        getAfwijzingenByOndernemerAndMarkt(marktId, erkenningsNummer),
-        getVoorkeurByMarktEnOndernemer(marktId, erkenningsNummer)
-    ])
+        Promise.all([
+            getMarktondernemer(erkenningsNummer),
+            getPlaatsvoorkeurenOndernemer(erkenningsNummer),
+            getAanmeldingenByOndernemerEnMarkt(marktId, erkenningsNummer),
+            getMarkt(marktId),
+            getIndelingVoorkeur(erkenningsNummer, req.params.marktId),
+            getAllBranches(),
+            getMededelingen(),
+            getToewijzingenByOndernemerEnMarkt(marktId, erkenningsNummer),
+            getAfwijzingenByOndernemerAndMarkt(marktId, erkenningsNummer),
+            getVoorkeurByMarktEnOndernemer(marktId, erkenningsNummer)
+        ])
         .then(
             ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, plaatsvoorkeur, branches, mededelingen, toewijzingen, afwijzingen, algemeneVoorkeur]) => {
                 res.render('OndernemerMarktDetailPage', {
@@ -81,7 +85,8 @@ export const marktDetail = (
                     toewijzingen,
                     afwijzingen,
                     algemeneVoorkeur,
-                    role
+                    role,
+                    user: getKeycloakUser(req)
                 });
             },
             internalServerErrorPage(res),

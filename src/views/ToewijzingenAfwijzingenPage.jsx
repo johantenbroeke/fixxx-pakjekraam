@@ -16,10 +16,11 @@ class ToewijzingenAfwijzingenPage extends React.Component {
         branches: PropTypes.array,
         markten: PropTypes.array,
         messages: PropTypes.array,
+        user: PropTypes.object.isRequired
     };
 
     render() {
-        const { toewijzingen, afwijzingen, ondernemer, role, branches, markten } = this.props;
+        const { toewijzingen, afwijzingen, ondernemer, role, branches, markten, user } = this.props;
 
         toewijzingen.map(toewijzing => {
             toewijzing.type = 'toew.';
@@ -64,11 +65,19 @@ class ToewijzingenAfwijzingenPage extends React.Component {
 
         return (
             <Page messages={this.props.messages}>
-                <Header user={ondernemer} breadcrumbs={breadcrumbs} role={role}>
-                    <OndernemerProfileHeader user={ondernemer} />
+                <Header user={user} breadcrumbs={breadcrumbs} role={role}>
+                    { role === 'marktondernemer' ?
+                        <OndernemerProfileHeader user={ondernemer}  /> : null
+                    }
                 </Header>
                 <Content>
-                    <h2>Toewijzingen/ afwijzingen</h2>
+                    { role === 'marktmeester' ?
+                        <h2 className="Heading Heading--intro">Ondernemer</h2> : null
+                    }
+                    { role === 'marktmeester' ?
+                        <OndernemerProfileHeader inline={true} user={ondernemer} /> : null
+                    }
+                    <h1 className="Heading Heading--intro">Toewijzingen/afwijzingen</h1>
                     <div className="Table Table__responsive Table--toewijzingen-afwijzingen">
                         <table className="Table__table">
                             <tr>

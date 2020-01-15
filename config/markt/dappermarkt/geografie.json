@@ -10,11 +10,6 @@
       "kraamB": "5",
       "obstakel": ["loopje"]
 		},
-		{
-      "kraamA": "7",
-      "kraamB": "9",
-      "obstakel": ["loopjediedichtmag"]
-    },
     {
       "kraamA": "9",
       "kraamB": "11",
@@ -240,11 +235,6 @@
       "kraamB": "126",
       "obstakel": ["loopje"]
 		},
-		{
-      "kraamA": "123",
-      "kraamB": "125",
-      "obstakel": ["loopje"]
-		},
     {
       "kraamA": "128",
       "kraamB": "130",
@@ -255,11 +245,6 @@
       "kraamB": "134",
       "obstakel": ["loopje"]
 		},
-    {
-      "kraamA": "145",
-      "kraamB": "250",
-      "obstakel": ["loopje"]
-    },
     {
       "kraamA": "136",
       "kraamB": "138",
