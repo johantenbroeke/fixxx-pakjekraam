@@ -38,7 +38,6 @@ class VoorrangslijstPage extends React.Component {
             role
         } = this.props;
         let { ondernemers } = this.props;
-        const aLijstSollNummers = aLijst.map(ondernemer => ondernemer.sollicitatieNummer);
         const aLijstErkenningsNummers = aLijst.map(ondernemer => ondernemer.erkenningsnummer);
         const aLijstDay = A_LIJST_DAYS.includes(new Date(datum).getDay());
 
