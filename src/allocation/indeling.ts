@@ -115,7 +115,7 @@ const Indeling = {
     ): IMarktindeling => {
         try {
             if (
-                !Ondernemer.isVast(ondernemer) &&
+                !Ondernemer.hasVastePlaatsen(ondernemer) &&
                 Ondernemer.isInMaxedOutBranche(indeling, ondernemer)
             ) {
                 throw BRANCHE_FULL;
@@ -321,15 +321,10 @@ const Indeling = {
     // aangeboden alvorens iedereen die een 4de plaats wil hiertoe de kans krijgt.
     performExpansion: (
         indeling: IMarktindeling,
-        brancheId: BrancheId = undefined,
         iteration: number = 2
     ): IMarktindeling => {
         const queue = indeling.toewijzingen.filter(toewijzing =>
-            Ondernemer.wantsExpansion(toewijzing) && (
-                !brancheId ||
-                (brancheId === 'evi' && Ondernemer.hasEVI(toewijzing.ondernemer)) ||
-                Ondernemer.hasBranche(toewijzing.ondernemer, brancheId)
-            )
+            Ondernemer.wantsExpansion(toewijzing)
         );
 
         const remainingQueue = queue.map(({ ondernemer }) => ondernemer);
@@ -346,7 +341,7 @@ const Indeling = {
             // ruimte op voor andere ondernemers.
             if (!uitbreidingPlaats) {
                 const { plaatsen } = Toewijzing.find(indeling, ondernemer);
-                const { minimum = 0 } = ondernemer.voorkeur || {};
+                const minimum = Ondernemer.getMinimumSize(ondernemer);
 
                 if (minimum > plaatsen.length) {
                     indeling = Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE);
@@ -359,7 +354,7 @@ const Indeling = {
         });
 
         return indeling.openPlaatsen.length && remainingQueue.length && iteration < indeling.expansionLimit ?
-               Indeling.performExpansion(indeling, brancheId, ++iteration) :
+               Indeling.performExpansion(indeling, ++iteration) :
                indeling;
     },
 
@@ -370,6 +365,12 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): boolean => {
+        // Sollicitanten met een tijdelijke vaste plaats mogen niet verplaatsen.
+        // Zie ook `Ondernemer.getPlaatsVoorkeuren`.
+        if (Ondernemer.isExperimenteel(ondernemer)) {
+            return false;
+        }
+
         const vastePlaatsen = Ondernemer.getVastePlaatsen(indeling, ondernemer);
         const beschikbaar = vastePlaatsen.filter(plaats => Indeling._isAvailable(indeling, plaats, ondernemer));
         const voorkeuren = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer, false);

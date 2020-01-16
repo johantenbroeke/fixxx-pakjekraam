@@ -25,7 +25,10 @@ export enum VerkoopinrichtingType {
 export enum DeelnemerStatus {
     VASTE_PLAATS = 'vpl',
     TIJDELIJKE_VASTE_PLAATS = 'vkk',
-    SOLLICITANT = 'soll'
+    SOLLICITANT = 'soll',
+    EXPERIMENTAL = 'exp',
+    // TODO: Remove after MakkelijkeMarkt update.
+    EXPERIMENTAL_TEMP = '?'
 }
 
 export interface IMarktProperties {

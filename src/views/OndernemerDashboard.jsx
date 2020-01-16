@@ -18,12 +18,13 @@ class OndernemerDashboard extends React.Component {
         endDate: PropTypes.string.isRequired,
         toewijzingen: PropTypes.array,
         afwijzingen: PropTypes.array,
+        daysClosed: PropTypes.array.isRequired,
         role: PropTypes.string,
         user: PropTypes.object.isRequired,
     };
 
     render() {
-        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen, role, user } = this.props;
+        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen, role, user, daysClosed } = this.props;
 
         const sollicitaties = ondernemer.sollicitaties.filter(soll => {
             return !soll.doorgehaald && markten.map(markt => markt.id).includes(soll.markt.id);
@@ -88,6 +89,7 @@ class OndernemerDashboard extends React.Component {
                                 afwijzingMorgen={markt.afwijzingMorgen}
                                 today={today()}
                                 tomorrow={tomorrow()}
+                                daysClosed={daysClosed}
                             />
                         ))}
                     </div>
