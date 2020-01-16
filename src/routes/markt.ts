@@ -3,7 +3,7 @@ import { getOndernemersLangdurigAfgemeldByMarkt } from '../model/ondernemer.func
 import { getVoorkeurByMarktEnOndernemer } from '../model/voorkeur.functions';
 import { getAfwijzingenByOndernemerAndMarkt } from '../model/afwijzing.functions';
 
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { GrantedRequest } from 'keycloak-connect';
 
 import { getMarktondernemer } from '../makkelijkemarkt-api';
@@ -14,6 +14,7 @@ import {
     getAanmeldingenByOndernemerEnMarkt,
     getPlaatsvoorkeurenOndernemer,
     getMededelingen,
+    getDaysClosed,
 } from '../pakjekraam-api';
 
 import { getKeycloakUser } from '../keycloak-api';
@@ -66,10 +67,11 @@ export const marktDetail = (
             getMededelingen(),
             getToewijzingenByOndernemerEnMarkt(marktId, erkenningsNummer),
             getAfwijzingenByOndernemerAndMarkt(marktId, erkenningsNummer),
-            getVoorkeurByMarktEnOndernemer(marktId, erkenningsNummer)
+            getVoorkeurByMarktEnOndernemer(marktId, erkenningsNummer),
+            getDaysClosed()
         ])
         .then(
-            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, plaatsvoorkeur, branches, mededelingen, toewijzingen, afwijzingen, algemeneVoorkeur]) => {
+            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, plaatsvoorkeur, branches, mededelingen, toewijzingen, afwijzingen, algemeneVoorkeur, daysClosed]) => {
                 res.render('OndernemerMarktDetailPage', {
                     ondernemer,
                     plaatsvoorkeuren,
@@ -86,6 +88,7 @@ export const marktDetail = (
                     afwijzingen,
                     algemeneVoorkeur,
                     role,
+                    daysClosed,
                     user: getKeycloakUser(req)
                 });
             },

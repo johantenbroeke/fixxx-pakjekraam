@@ -1,7 +1,6 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 const Button = require('./Button');
-const AlertLine = require('./AlertLine');
 const Uitslag = require('./Uitslag.jsx');
 
 const OndernemerMarktTile = ({
@@ -15,6 +14,7 @@ const OndernemerMarktTile = ({
     today,
     ondernemer,
     tomorrow,
+    daysClosed
 }) => {
     return (
         <div className="OndernemerMarktTile well background-link-parent col-1-2">
@@ -32,6 +32,7 @@ const OndernemerMarktTile = ({
                 toewijzingMorgen={toewijzingMorgen}
                 afwijzingVandaag={afwijzingVandaag}
                 afwijzingMorgen={afwijzingMorgen}
+                daysClosed={daysClosed}
             />
         </div>
     );
@@ -51,5 +52,6 @@ OndernemerMarktTile.propTypes = {
     aanmeldingen: PropTypes.object,
     today: PropTypes.string,
     tomorrow: PropTypes.string,
+    daysClosed: PropTypes.array,
 };
 module.exports = OndernemerMarktTile;

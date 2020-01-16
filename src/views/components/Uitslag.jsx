@@ -1,102 +1,47 @@
 const PropTypes = require('prop-types');
 const React = require('react');
-const AlertLine = require('./AlertLine');
-const { formatDate, getMaDiWoDoOfToday, getCurrentTime, getTimezoneTime, getTimezoneHours } = require('../../util.ts');
-import { printAfwijzingReason } from '../../model/afwijzing.functions';
+const UitslagTile = require('./UitslagTile');
+const { getMaDiWoDo } = require('../../util.ts');
 
-const Content = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen, ondernemer, afwijzingVandaag, afwijzingMorgen }) => {
-    function plaatsenDuiding(plaatsen) {
-        if (plaatsen.length == 1) {
-            return `Plaats: ${plaatsen.join(', ')}`;
-        } else {
-            return `Plaatsen: ${plaatsen.join(', ')}`;
-        }
-    }
-
+const Component = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen, ondernemer, afwijzingVandaag, afwijzingMorgen, daysClosed }) => {
     const sollicitatie = ondernemer.sollicitaties.find(sollicitatieOndernemer => {
         return sollicitatieOndernemer.markt.id == markt.id && !sollicitatieOndernemer.doorgehaald;
     });
 
-    markt.geopend = markt.marktDagen.includes(getMaDiWoDoOfToday());
-    const timeInHours = getTimezoneHours();
+    const openToday = markt.marktDagen.includes(getMaDiWoDo( new Date(today) ));
+    const openTomorrow = markt.marktDagen.includes(getMaDiWoDo( new Date(tomorrow) ));
 
     return (
-        <div>
-            {timeInHours >= 21 || !markt.geopend && ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) ? (
-                <div className="OndernemerMarktTile__update-row">
-                    <h4 className="OndernemerMarktTile__update-row__heading">
-                        Morgen ({formatDate(tomorrow)})
-                        { (aanmeldingMorgen && aanmeldingMorgen.attending && sollicitatie.status == 'soll') ||
-                        ((!aanmeldingMorgen || aanmeldingMorgen.attending) && sollicitatie.status == 'vpl') ? (
-                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--aangemeld"> aangemeld</span>
-                        ) : (
-                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--niet-aangemeld"> niet aangemeld</span>
-                        )}
-                    </h4>
-                    { toewijzingMorgen && markt.kiesJeKraamFase === 'live' ? (
-                        <AlertLine
-                            type="success"
-                            title="Ingedeeld"
-                            titleSmall={true}
-                            message={plaatsenDuiding(toewijzingMorgen.plaatsen)}
-                            inline={true}
-                        />
-                    ) : afwijzingMorgen && markt.kiesJeKraamFase === 'live' ? (
-                        <AlertLine
-                            type="default"
-                            title="Afgewezen"
-                            titleSmall={true}
-                            message={`${afwijzingMorgen.reasonCode ? printAfwijzingReason(afwijzingMorgen.reasonCode) : 'Het is niet gelukt u in te delen.'}`}
-                            inline={true}
-                        />
-                    ) : markt.kiesJeKraamFase === 'live' ? (
-                        <span> Geen toewijzing/ afwijzing </span>
-                    ) : null }
-                </div>
-            ) : null }
-            {timeInHours >= 0 && timeInHours < 18 && markt.geopend && ( markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ) ? (
-                <div className="OndernemerMarktTile__update-row">
-                    <h4 className="OndernemerMarktTile__update-row__heading">
-                        Vandaag ({formatDate(today)})
-                        { (aanmeldingVandaag && aanmeldingVandaag.attending && sollicitatie.status == 'soll') ||
-                        ((!aanmeldingVandaag || aanmeldingVandaag.attending) && sollicitatie.status == 'vpl') ? (
-                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--aangemeld">
-                                {' '}
-                                aangemeld
-                            </span>
-                        ) : (
-                            <span className="OndernemerMarktTile__update-row__status OndernemerMarktTile__update-row__status--niet-aangemeld">
-                                {' '}
-                                niet aangemeld
-                            </span>
-                        )}
-                    </h4>
-                    {toewijzingVandaag && markt.kiesJeKraamFase === 'live' ? (
-                        <AlertLine
-                            type="success"
-                            title="Ingedeeld"
-                            titleSmall={true}
-                            message={ plaatsenDuiding(toewijzingVandaag.plaatsen) }
-                            inline={true}
-                        />
-                    ) : afwijzingVandaag && markt.kiesJeKraamFase === 'live' ? (
-                        <AlertLine
-                            type="default"
-                            title="Afgewezen"
-                            titleSmall={true}
-                            message={`${afwijzingVandaag.reasonCode ? printAfwijzingReason(afwijzingVandaag.reasonCode) : 'Het is niet gelukt u in te delen.'}`}
-                            inline={true}
-                        />
-                    ) : markt.kiesJeKraamFase === 'live' ? (
-                        <span> Geen toewijzing/ afwijzing </span>
-                    ) : null }
-                </div>
-            ) : null}
+        <div className="row row--responsive">
+            {markt.kiesJeKraamFase !== 'activatie' || markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+                <UitslagTile
+                    title={"Vandaag"}
+                    markt={markt}
+                    open={openToday}
+                    date={today}
+                    sollicitatie={sollicitatie}
+                    aanmelding={aanmeldingVandaag}
+                    toewijzing={toewijzingVandaag}
+                    afwijzing={afwijzingVandaag}
+                    daysClosed={daysClosed}
+                /> : null}
+            {markt.kiesJeKraamFase !== 'activatie' || markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+                <UitslagTile
+                    title={"Morgen"}
+                    markt={markt}
+                    open={openTomorrow}
+                    date={tomorrow}
+                    sollicitatie={sollicitatie}
+                    aanmelding={aanmeldingMorgen}
+                    toewijzing={toewijzingMorgen}
+                    afwijzing={afwijzingMorgen}
+                    daysClosed={daysClosed}
+                /> : null}
         </div>
     );
 };
 
-Content.propTypes = {
+Component.propTypes = {
     today: PropTypes.string,
     tomorrow: PropTypes.string,
     markt: PropTypes.object,
@@ -107,6 +52,7 @@ Content.propTypes = {
     toewijzingMorgen: PropTypes.object,
     afwijzingVandaag: PropTypes.object,
     afwijzingMorgen: PropTypes.object,
+    daysClosed: PropTypes.array.isRequired,
 };
 
-module.exports = Content;
+module.exports = Component;

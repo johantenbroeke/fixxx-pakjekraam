@@ -56,11 +56,6 @@ export const formatISODayOfWeek = (day: number) => ISO_WEEK_DAYS[day];
 export const formatDayOfWeek = (date: string) => WEEK_DAYS[new Date(date).getDay()];
 export const formatMonth = (date: string) => monthName[new Date(date).getMonth()];
 
-export const getMaDiWoDoOfToday = () => {
-    const dayOfWeek = WEEK_DAYS[new Date().getDay()];
-    return dayOfWeek.substring(0,2);
-};
-
 export const getMaDiWoDo = (date: Date) => {
     const dayOfWeek = WEEK_DAYS[date.getDay()];
     return dayOfWeek.substring(0,2);
@@ -129,7 +124,6 @@ export const yesterday = (): string => addDays(Date.now(), -1);
 
 export const endOfWeek = (): string => {
     const date = new Date();
-
     return addDays(date.getTime(), DAYS_IN_WEEK - date.getDay());
 };
 
