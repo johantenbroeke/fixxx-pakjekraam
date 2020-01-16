@@ -20,6 +20,8 @@ $support-focus: #fec813;
 $support-invalid: #ec0000;
 $support-valid: #00a03c;
 
+$primary-darkblue-light: scale-color($primary-darkblue, $lightness: 91%);
+
 /**** Fonts ****/
 /** breadcrumb **/
 $breadcrumb-font-size: 14px;

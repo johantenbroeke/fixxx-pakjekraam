@@ -36,7 +36,7 @@ import {
     handleAttendanceUpdate
 } from './routes/market-application';
 import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
-import { vendorDashboardPage } from './routes/vendor-dashboard';
+import { dashboardPage } from './routes/dashboard';
 import { plaatsvoorkeurenPage, updatePlaatsvoorkeuren } from './routes/market-location';
 import { activationQRPage } from './routes/activation-qr';
 import { deleteUserPage, deleteUser, publicProfilePage, toewijzingenAfwijzingenPage } from './routes/ondernemer';
@@ -289,7 +289,7 @@ app.get(
     '/dashboard/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
-        vendorDashboardPage(req, res, next, getErkenningsNummer(req));
+        dashboardPage(req, res, next, getErkenningsNummer(req));
     },
 );
 
