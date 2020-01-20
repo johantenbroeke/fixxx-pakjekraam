@@ -1,6 +1,10 @@
 .UitslagTile{
     background: $primary-darkblue-light;
     padding: $gutter;
+    &__result{
+        line-height: 1;
+        margin:  $gutter-xs 0 0;
+    }
     &__datum{
         display: flex;
         flex-direction: column;
