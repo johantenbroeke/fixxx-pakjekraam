@@ -4,13 +4,13 @@ $ondernemerStatusHeightSmall: 15px;
 .OndernemerStatus {
     @include fontBold;
     color: $primary-white;
-    font-size: $fs-30;
+    font-size: 9px;
     z-index: 1;
     position: relative;
     display: inline-block;
     overflow: hidden;
-    line-height: $ondernemerStatusHeight;
-    padding: 0 5px;
+    line-height: $ondernemerStatusHeightSmall;
+    padding: 0 4px;
     &:before {
         content: "";
         position: absolute;
@@ -19,6 +19,7 @@ $ondernemerStatusHeightSmall: 15px;
         left: 0;
         height: 0;
         border: $ondernemerStatusHeight solid $primary-black;
+        border-width: $ondernemerStatusHeightSmall;
         z-index: -1;
     }
     &--vpl:before {
@@ -27,18 +28,13 @@ $ondernemerStatusHeightSmall: 15px;
     &--soll:before {
         border-color: $supplement-darkgreen;
     }
+    &--exp:before {
+        border-color: $supplement-purple;
+    }
     &--vkk:before {
         border-color: $supplement-lightblue;
     }
     &--overig:before {
         border-color: $support-focus;
-    }
-    &--size-s {
-        font-size: 9px;
-        line-height: $ondernemerStatusHeightSmall;
-        padding: 0 4px;
-        &:before {
-            border-width: $ondernemerStatusHeightSmall;
-        }
     }
 }

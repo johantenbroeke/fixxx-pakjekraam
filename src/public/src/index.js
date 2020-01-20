@@ -212,11 +212,7 @@ function splitByArray(orgArr, valueArr) {
     },
     'voorkeur-form': function () {
       var form = this,
-        vasteplaatsCount = form.dataset.vasteplaatsCount,
         body = _closest(this, 'body'),
-        extra = form.querySelectorAll('.PlaatsvoorkeurenForm__list-item__min-extra'),
-        optional = form.querySelectorAll('.PlaatsvoorkeurenForm__list-item__optional'),
-        explain = form.querySelectorAll('.PlaatsvoorkeurenForm__list-item__explain'),
         plaatsvoorkeurenList = form.querySelectorAll('.PlaatsvoorkeurenForm__list')[0],
         redirectTo = './?error=plaatsvoorkeuren-saved',
         _submit = function (e) {
@@ -289,20 +285,6 @@ function splitByArray(orgArr, valueArr) {
           _decorate();
           body.classList.remove('in-progress');
         },
-        _clearElem = function (elem) {
-          while (elem.firstChild) {
-            elem.removeChild(elem.firstChild);
-          }
-        },
-        _addKraamCount = function (elem, kraamCount) {
-          var j;
-          for (j = 0; j < kraamCount; j++) {
-
-            var kraam = document.createElement('span');
-            kraam.classList.add('kraam');
-            elem.appendChild(kraam);
-          }
-        },
         _formChange = function (e) {
           if (e) {
             _submit();
@@ -315,12 +297,15 @@ function splitByArray(orgArr, valueArr) {
             _formChange();
           };
 
-          Sortable.create(plaatsvoorkeurenList, {
-            animation: 150,  // ms, animation speed moving items when sorting, `0` — without animation
-            easing: "cubic-bezier(1, 0, 0, 1)", // Easing for animation. Defaults to null. See https://easings.net/ for examples.
-            handle: ".Draggable-list-item__handle",
-            onEnd,
-          });
+          if (plaatsvoorkeurenList) {
+            Sortable.create(plaatsvoorkeurenList, {
+              animation: 150,  // ms, animation speed moving items when sorting, `0` — without animation
+              easing: "cubic-bezier(1, 0, 0, 1)", // Easing for animation. Defaults to null. See https://easings.net/ for examples.
+              handle: ".Draggable-list-item__handle",
+              onEnd,
+            });
+          }
+
 
           var minimumElements = form.querySelectorAll('[name="minimum"]');
           for (var i = 0; i < minimumElements.length; i++) {
@@ -334,10 +319,14 @@ function splitByArray(orgArr, valueArr) {
           }
 
           var selectNew = form.querySelectorAll('.Select--MarktplaatsSelect')[0];
-          selectNew.addEventListener('change', _formChange);
+          if (selectNew) {
+            selectNew.addEventListener('change', _formChange);
+          }
 
           var selectAnywhere = form.querySelectorAll('#anywhere')[0];
-          selectAnywhere.addEventListener('change', _formChange);
+          if (selectAnywhere) {
+            selectAnywhere.addEventListener('change', _formChange);
+          }
 
         }
       _init();
