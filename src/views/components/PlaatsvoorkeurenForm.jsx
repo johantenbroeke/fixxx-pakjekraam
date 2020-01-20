@@ -1,6 +1,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const { plaatsSort, isVast } = require('../../domain-knowledge.js');
+const { plaatsSort, isVast, isVastOfExp, isExp } = require('../../domain-knowledge.js');
 const MarktplaatsSelect = require('./MarktplaatsSelect');
 const Button = require('./Button');
 const Form = require('./Form');
