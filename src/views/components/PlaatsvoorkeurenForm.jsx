@@ -37,10 +37,10 @@ class PlaatsvoorkeurenForm extends React.Component {
                     : 3;
         }
 
-        const minimumDisabled = sollicitatie.status === 'vpl' && role !== 'marktmeester';
+        const minimumDisabled = isVastOfExp(sollicitatie.status) && role !== 'marktmeester';
 
         const minimumChecked = i => {
-            if (isVast(sollicitatie.status) && role !== 'marktmeester') {
+            if (isVastOfExp(sollicitatie.status) && role !== 'marktmeester') {
                 if (sollicitatie.vastePlaatsen.length === i + 1) {
                     return true;
                 } else {
@@ -69,7 +69,7 @@ class PlaatsvoorkeurenForm extends React.Component {
             return plaatsen.length > 1 ? 'plaatsnummers' : 'plaatsnummer';
         };
 
-        const isMarktmeesterEnVph = (role === 'marktmeester' && isVast(sollicitatie.status));
+        const isMarktmeesterEnVph = (role === 'marktmeester' && isVastOfExp(sollicitatie.status));
 
         plaatsvoorkeuren = plaatsvoorkeuren.map((plaatsvoorkeur, index) => {
                 return {
@@ -110,10 +110,10 @@ class PlaatsvoorkeurenForm extends React.Component {
                             <p className="Fieldset__highlight-text">Verouderde functie! Alleen aanpassen als je weet wat je doet.</p> : null
                         }
                         <h2 className="Fieldset__header">
-                            {isVast(sollicitatie.status) ? `Uw vaste ${plaatsenDuiding(sollicitatie.vastePlaatsen)}` : 'Aantal plaatsen'}
+                            {isVastOfExp(sollicitatie.status) ? `Uw vaste ${plaatsenDuiding(sollicitatie.vastePlaatsen)}` : 'Aantal plaatsen'}
                         </h2>
                         <span className="Fieldset__sub-header">
-                            {isVast(sollicitatie.status)
+                            {isVastOfExp(sollicitatie.status)
                                 ? `${plaatsNummerDuiding(sollicitatie.vastePlaatsen)}: ${sollicitatie.vastePlaatsen.join(', ')}`
                                 : <span>Hoeveel plaatsen hebt u <strong>echt nodig</strong>?</span>
                             }
@@ -162,6 +162,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         </div>
                     </div>
 
+                    { !isExp(sollicitatie.status) ?
                     <div className="Fieldset">
                         <h2 className="Fieldset__header">Plaatsen selecteren</h2>
                         <span className="Fieldset__sub-header">U kunt zoveel voorkeuren invullen als u wilt.</span>
@@ -249,7 +250,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                         </div>
 
                         {/* Dit veld willen we alleen laten zien aan marktmeesters en sollicitanten */}
-                        {role == 'marktmeester' || !isVast(sollicitatie.status) ? (
+                        {role == 'marktmeester' || !isVastOfExp(sollicitatie.status) ? (
                             <div className={`Fieldset ${isMarktmeesterEnVph ? 'Fieldset--highlighted' : null}`}>
                                 {isMarktmeesterEnVph ?
                                     <p className="Fieldset__highlight-text">Verouderde functie! Alleen aanpassen als je weet wat je doet.</p> : null
@@ -267,7 +268,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                                         defaultChecked={voorkeur.anywhere}
                                     />
                                     <label htmlFor="anywhere">
-                                        {isVast(sollicitatie.status) ? (
+                                        {isVastOfExp(sollicitatie.status) ? (
                                             <span>
                                                 Ja, ik wil liever kunnen vergroten dan alleen op mijn eigen plaats(en)
                                                 staan.
@@ -283,6 +284,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                             </div>
                         ) : null}
                     </div>
+                    : null }
 
                     <p className="InputField InputField--submit" id="bottom-buttons">
                         <Button

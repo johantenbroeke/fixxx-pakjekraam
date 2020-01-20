@@ -4,6 +4,7 @@ import { getVoorkeurByMarktEnOndernemer  } from './voorkeur.functions';
 import { getPlaatsvoorkeurenByMarktEnOndernemer  } from './plaatsvoorkeur.functions';
 
 import { Allocation } from './allocation.model';
+import { groupAllocationRows } from '../pakjekraam-api';
 
 export const deleteAllocationsByErkenningsnummer = (erkenningsNummer: string) =>
     allocation.destroy({ where: { erkenningsNummer } });
@@ -54,6 +55,14 @@ const toewijzingenPerDatum = (toewijzingen: IToewijzing[], row: Allocation): ITo
     }
 
 };
+
+export const getToewijzingenByMarktAndDate = (marktId: string, marktDate: string): Promise<IToewijzing[]> =>
+    allocation
+        .findAll<Allocation>({
+            where: { marktId, marktDate },
+            raw: true,
+        })
+        .then(toewijzingen => toewijzingen.reduce(groupAllocationRows, []));
 
 export const getToewijzingenByOndernemer = (erkenningsNummer: string): Promise<IToewijzing[]> =>
         allocation

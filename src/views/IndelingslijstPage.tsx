@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes, { ValidationMap } from 'prop-types';
 import MarktDetailBase from './components/MarktDetailBase';
 import { ondernemersToLocatieKeyValue, obstakelsToLocatieKeyValue } from '../domain-knowledge.js';
 import { arrayToObject, getBreadcrumbsMarkt } from '../util';

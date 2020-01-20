@@ -12,7 +12,7 @@ const OndernemerMarktAlgVoorkeuren = require('./components/OndernemerMarktAlgVoo
 const { today, tomorrow, getBreadcrumbsOndernemer } = require('../util.ts');
 const Alert = require('./components/Alert');
 const Uitslag = require('./components/Uitslag');
-const { filterRsvpList } = require('../domain-knowledge.js');
+const { filterRsvpList, isExp } = require('../domain-knowledge.js');
 
 class OndernemerMarktDetailPage extends React.Component {
     propTypes = {
@@ -144,6 +144,7 @@ class OndernemerMarktDetailPage extends React.Component {
                                 voorkeur={voorkeur}
                                 branches={branches}
                             />
+                            { !isExp(sollicitatie.status) ?
                             <OndernemerMarktVoorkeuren
                                 ondernemer={ondernemer}
                                 markt={markt}
@@ -151,7 +152,8 @@ class OndernemerMarktDetailPage extends React.Component {
                                 plaatsvoorkeuren={plaatsvoorkeuren}
                                 voorkeur={voorkeur}
                                 sollicitatie={sollicitatie}
-                            />
+                            /> : null
+                            }
                         </div>
                     </div>
                 </Content>

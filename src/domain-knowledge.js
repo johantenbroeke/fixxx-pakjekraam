@@ -11,10 +11,9 @@ const {
     SUNDAY,
     MILLISECONDS_IN_DAY,
     DAYS_IN_WEEK,
+    EXP_ZONE,
     toISODate,
     addDays,
-    today,
-    nextWeek,
     endOfWeek,
     stringSort,
     getMaDiWoDo,
@@ -68,6 +67,8 @@ const A_LIJST_DAYS = [FRIDAY, SATURDAY, SUNDAY];
 const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDagen[dag] : -1);
 
 const isVast = status => status === 'vpl' || status === 'vkk';
+const isExp = status => status === EXP_ZONE;
+const isVastOfExp = status => status === 'vpl' || status === 'vkk' || status === EXP_ZONE;
 
 const getMarktDaysOndernemer = (startDate, endDate, marktdagen) => {
     const start = Date.parse(startDate);
@@ -211,6 +212,8 @@ module.exports = {
     parseMarktDag,
     parseISOMarktDag,
     isVast,
+    isExp,
+    isVastOfExp,
     getMarktDays,
     getMarktDaysOndernemer,
     getUpcomingMarktDays,

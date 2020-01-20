@@ -21,7 +21,6 @@ import { getKeycloakUser } from '../keycloak-api';
 
 import { internalServerErrorPage, getQueryErrors } from '../express-util';
 
-
 export const langdurigAfgemeld = (
     req: GrantedRequest,
     res: Response,

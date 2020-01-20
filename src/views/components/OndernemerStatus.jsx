@@ -1,15 +1,18 @@
 const PropTypes = require('prop-types');
 const React = require('react');
+const { EXP_ZONE } = require('../../util.ts');
 
-const OndernemerStatus = ({ status, size }) => {
+const OndernemerStatus = ({ status }) => {
+    const statusClass = `OndernemerStatus--${status}`;
     return (
-        <span className={`OndernemerStatus OndernemerStatus--${status} OndernemerStatus--size-${size}`}>{status}</span>
+        <span className={`OndernemerStatus ${status === EXP_ZONE ? 'OndernemerStatus--exp' : statusClass}`}>
+            { status === EXP_ZONE ? 'exp' : status }
+        </span>
     );
 };
 
 OndernemerStatus.propTypes = {
     status: PropTypes.string.isRequired,
-    size: PropTypes.string,
 };
 
 module.exports = OndernemerStatus;
