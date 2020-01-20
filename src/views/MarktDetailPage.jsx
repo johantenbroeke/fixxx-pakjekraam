@@ -49,6 +49,12 @@ class MarktDetailPage extends React.Component {
         let fase = null;
         markt.kiesJeKraamFase == 'live' ? fase = null : fase = ` ${markt.kiesJeKraamFase}`;
 
+        const datesThisWeek = dates.filter(({ date }) => new Date(date) < nextVrijday);
+        const datesNextWeek = dates.filter(({ date }) => new Date(date) >= nextVrijday);
+
+        console.log(datesThisWeek);
+
+
         return (
             <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} user={user} role={role}>
                 <div className="Section Section--column">
@@ -57,7 +63,7 @@ class MarktDetailPage extends React.Component {
                     { markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
                         <a href={`./${today()}/indelingslijst/`} className="Link">Positie vasteplaasthouders</a> : null
                     }
-                    { markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+                    {markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
                         <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null
                     }
                 </div>
@@ -81,82 +87,168 @@ class MarktDetailPage extends React.Component {
                 }
                 <h2 className="Heading Heading--intro">Lijsten per dag</h2>
                 <div className="row row--responsive margin-bottom">
-                    <div className="col-1-2 margin-bottom">
-                        <h4>Deze week</h4>
-                        {dates
-                            .filter(({ date }) => new Date(date) < nextVrijday)
-                            .map(({ date, day, month, weekDay, relativeDay, weekDayInt }) => (
+                    {datesThisWeek.length > 0 ?
+                        <div className="col-1-2 margin-bottom">
+                            <h4>Deze week</h4>
+                            {datesThisWeek.map(({ date, day, month, weekDay, relativeDay }, index) => (
                                 <div key={date} className="well">
                                     <strong>
                                         {relativeDay !== '' && capitalize(relativeDay) + ', '}{' '}
                                         {relativeDay !== '' ? weekDay : capitalize(weekDay)} {day} {month}
                                     </strong>
-                                    <ul className="LinkList">
-                                    <li className="LinkList__item">
-                                            <a href={`./${date}/indeling/`} className="Link">
-                                                Indeling
-                                            </a>
-                                        </li>
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/indelingslijst/`} className="Link">
-                                                Originele positie vasteplaatshouders
-                                            </a>
-                                        </li>
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/concept-indelingslijst/`} className="Link">
-                                                Concept indelingslijst
-                                            </a>
-                                        </li>
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/voorrangslijst/`} className="Link">
-                                                {!A_LIJST_DAYS.includes(weekDayInt)
-                                                    ? `Ondernemers niet ingedeeld`
-                                                    : `A- en B lijst aanmeldingen sollicitanten`}
-                                            </a>
-                                        </li>
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/voorrangslijst-volledig/`} className="Link">
-                                                {!A_LIJST_DAYS.includes(weekDayInt)
-                                                    ? `Alle sollicitanten`
-                                                    : `A- en B lijst alle aanmeldingen sollicitanten`}
-                                            </a>
-                                        </li>
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
-                                                Afmeldingen vasteplaatshouders
-                                            </a>
-                                        </li>
-                                    </ul>
+                                    {markt.kiesJeKraamFase === 'voorbereiding' ?
+                                        <ul className="LinkList">
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                    Conceptindeling
+                                                </a>
+                                            </li>
+                                        </ul> : null
+                                    }
+                                    {markt.kiesJeKraamFase === 'activatie' ?
+                                        <ul className="LinkList">
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                    Conceptindeling
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
+                                                    Afmeldingen vasteplaatshouders
+                                                </a>
+                                            </li>
+                                        </ul> : null
+                                    }
+                                    {markt.kiesJeKraamFase === 'wenperiode' ?
+                                        <ul className="LinkList">
+                                            {index === 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/indeling/`} className="Link">Indeling</a>
+                                                </li> : null
+                                            }
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                    Conceptindeling
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
+                                                    Afmeldingen vasteplaatshouders
+                                                </a>
+                                            </li>
+                                        </ul> : null
+                                    }
+                                    {markt.kiesJeKraamFase === 'live' ?
+                                        <ul className="LinkList">
+                                            {index === 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/indeling/`} className="Link">Indeling</a>
+                                                </li> : null
+                                            }
+                                            {index > 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                        Conceptindeling
+                                                </a>
+                                                </li> : null
+                                            }
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
+                                                    Afmeldingen vasteplaatshouders
+                                                </a>
+                                            </li>
+                                        </ul> : null
+                                    }
                                 </div>
                             ))}
-                    </div>
-                    <div className="col-1-2">
-                        <h4>Volgende week</h4>
-                        {dates
-                            .filter(({ date }) => new Date(date) >= nextVrijday)
-                            .map(({ date, day, month, weekDay, relativeDay, weekDayInt }) => (
+                        </div> : null}
+                    {datesNextWeek.length > 0 ?
+                        <div className="col-1-2">
+                            <h4>Volgende week</h4>
+                            {datesThisWeek.map(({ date, day, month, weekDay, relativeDay }, index) => (
                                 <div key={date} className="well">
                                     <strong>
                                         {relativeDay !== '' && capitalize(relativeDay) + ', '}{' '}
                                         {relativeDay !== '' ? weekDay : capitalize(weekDay)} {day} {month}
                                     </strong>
-                                    <ul className="LinkList">
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
-                                                Afmeldingen vasteplaatshouders
-                                            </a>
-                                        </li>
-                                        <li className="LinkList__item">
-                                            <a href={`./${date}/voorrangslijst/`} className="Link">
-                                                {!A_LIJST_DAYS.includes(weekDayInt)
-                                                    ? `Aanmeldingen sollicitanten`
-                                                    : `A- en B lijst aanmeldingen sollicitanten`}
-                                            </a>
-                                        </li>
-                                    </ul>
+                                    {markt.kiesJeKraamFase === 'voorbereiding' ?
+                                        <ul className="LinkList">
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                    Conceptindeling
+                                                </a>
+                                            </li>
+                                        </ul> : null
+                                    }
+                                    {markt.kiesJeKraamFase === 'activatie' ?
+                                        <ul className="LinkList">
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                    Conceptindeling
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
+                                                    Afmeldingen vasteplaatshouders
+                                                </a>
+                                            </li>
+                                        </ul> : null
+                                    }
+                                    {markt.kiesJeKraamFase === 'wenperiode' ?
+                                        <ul className="LinkList">
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                    Conceptindeling
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
+                                                    Afmeldingen vasteplaatshouders
+                                                </a>
+                                            </li>
+                                        </ul> : null
+                                    }
+                                    {markt.kiesJeKraamFase === 'live' ?
+                                        <ul className="LinkList">
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/concept-indelingslijst/`} className="Link">
+                                                    Conceptindeling
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                                </a>
+                                            </li>
+                                            <li className="LinkList__item">
+                                                <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
+                                                    Afmeldingen vasteplaatshouders
+                                                </a>
+                                            </li>
+                                        </ul> : null
+                                    }
                                 </div>
                             ))}
-                    </div>
+                        </div> : null}
                 </div>
             </MarktDetailBase>
         );

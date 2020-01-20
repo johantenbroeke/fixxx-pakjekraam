@@ -40,6 +40,10 @@ class VoorrangslijstPage extends React.Component {
         let { ondernemers } = this.props;
         const aLijstSollNummers = aLijst.map(ondernemer => ondernemer.sollicitatieNummer);
         const aLijstErkenningsNummers = aLijst.map(ondernemer => ondernemer.erkenningsnummer);
+
+        console.log(new Date(datum).getDay());
+
+
         const aLijstDay = A_LIJST_DAYS.includes(new Date(datum).getDay());
 
         const itemsOnPage = 40;
@@ -86,10 +90,10 @@ class VoorrangslijstPage extends React.Component {
 
         const titleBase = type === 'wenperiode' ? 'Alle sollicitanten' : 'Ondernemers niet ingedeeld';
         const titles = [
-            `${titleBase} ${aLijstDay ? ', A lijst' : ''} aangemeld: ${markt.naam}`,
-            `${titleBase} ${aLijstDay ? ', A lijst' : ''} niet aangemeld: ${markt.naam}`,
-            `${titleBase} ${aLijstDay ? ', B lijst' : ''} aangemeld: ${markt.naam}`,
-            `${titleBase} ${aLijstDay ? ', B lijst' : ''} niet aangemeld: ${markt.naam}`,
+            `${titleBase}${aLijstDay ? ', A lijst' : ''} aangemeld: ${markt.naam}`,
+            `${titleBase}${aLijstDay ? ', A lijst' : ''} niet aangemeld: ${markt.naam}`,
+            `${titleBase}${aLijstDay ? ', B lijst' : ''} aangemeld: ${markt.naam}`,
+            `${titleBase}${aLijstDay ? ', B lijst' : ''} niet aangemeld: ${markt.naam}`,
         ];
         const plaatsvoorkeuren = voorkeuren.reduce((t, voorkeur) => {
             if (!t[voorkeur.erkenningsNummer]) {
