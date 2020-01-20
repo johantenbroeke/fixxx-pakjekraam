@@ -19,7 +19,7 @@ const Component = ({ open, date, aanmelding, sollicitatie, title, markt, toewijz
 
     const dateInDaysClosed = daysClosed.includes(date);
     const dateInGeblokeerdeData = markt.kiesJeKraamGeblokkeerdeData ?
-        markt.kiesJeKraamGeblokkeerdeData.replace(/\s+/g, '').split(',').includes(date):
+        markt.kiesJeKraamGeblokkeerdeData.replace(/\s+/g, '').split(',').includes(date) :
         false;
 
     const marktGesloten = dateInDaysClosed || dateInGeblokeerdeData;
@@ -27,18 +27,21 @@ const Component = ({ open, date, aanmelding, sollicitatie, title, markt, toewijz
     return (
         <div className="col-1-2 UitslagTile">
             <div className="UitslagTile__datum">
-                <h4 className="UitslagTile__datum__heading">{title} {formatDate(date)}</h4>
+                <p className="UitslagTile__datum__heading">{title} {formatDate(date)}</p>
                 {open && !(marktGesloten && !aangemeld) ?
-                    <h3 className={`UitslagTile__datum__aanwezigheid ${aangemeld ? `UitslagTile__datum__aanwezigheid--aangemeld` : null}`}>
+                    <h4 className={`UitslagTile__datum__aanwezigheid ${aangemeld ? `UitslagTile__datum__aanwezigheid--aangemeld` : null}`}>
                         {aangemeld ? (
                             "Aangemeld"
                         ) : (
-                            "Niet aangemeld"
-                        )}
-                    </h3>
-                : null }
+                                "Niet aangemeld"
+                            )}
+                    </h4>
+                    : null }
+                {!open ?
+                     <h4 className="UitslagTile__datum__aanwezigheid">Geen marktdag</h4>
+                : null}
             </div>
-            { marktGesloten ?
+            {marktGesloten ?
                 <AlertLine
                     type="warning"
                     // title="Er is vandaag geen markt"
@@ -46,7 +49,7 @@ const Component = ({ open, date, aanmelding, sollicitatie, title, markt, toewijz
                     message={"Er is vandaag geen markt"}
                     inline={true}
                 />
-            : null }
+                : null}
             {toewijzing && markt.kiesJeKraamFase === 'live' && !marktGesloten ?
                 <AlertLine
                     type="success"
@@ -63,7 +66,7 @@ const Component = ({ open, date, aanmelding, sollicitatie, title, markt, toewijz
                     message={`${afwijzing.reasonCode ? printAfwijzingReason(afwijzing.reasonCode) : 'Het is niet gelukt u in te delen.'}`}
                     inline={true}
                 /> : null}
-            { open && !toewijzing && !afwijzing && aangemeld && markt.kiesJeKraamFase === 'live' && !marktGesloten ?
+            {open && !toewijzing && !afwijzing && aangemeld && markt.kiesJeKraamFase === 'live' && !marktGesloten ?
                 <p className="UitslagTile__text">Er is (nog) geen indeling</p> : null
             }
         </div>
