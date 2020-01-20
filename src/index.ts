@@ -42,7 +42,14 @@ import { activationQRPage } from './routes/activation-qr';
 import { deleteUserPage, deleteUser, publicProfilePage, toewijzingenAfwijzingenPage } from './routes/ondernemer';
 import { langdurigAfgemeld, marktDetail } from './routes/markt';
 
-import { vasteplaatshoudersPage, voorrangslijstPage, voorrangslijstVolledigPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
+import {
+    vasteplaatshoudersPage,
+    voorrangslijstPage,
+    voorrangslijstVolledigPage,
+    afmeldingenVasteplaatshoudersPage,
+    sollicitantentAanwezigheidLijst,
+    alleOndernemersAanwezigheidLijst,
+} from './routes/markt-marktmeester';
 import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
 import { getKeycloakUser } from './keycloak-api';
 import { KeycloakRoles } from './permissions';
@@ -262,12 +269,6 @@ app.get(
     vasteplaatshoudersPage,
 );
 
-// app.get(
-//     '/markt/:marktId/:datum/sollicitanten/',
-//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
-//     sollicitantenPage
-// );
-
 app.get(
     '/markt/:marktId/:datum/voorrangslijst/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
@@ -277,6 +278,16 @@ app.get(
 app.get('/markt/:marktId/:datum/alle-sollicitanten/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     voorrangslijstVolledigPage
+);
+
+app.get('/markt/:marktId/:datum/alle-sollicitanten/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    sollicitantentAanwezigheidLijst
+);
+
+app.get('/markt/:marktId/:datum/alle-ondernemers/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    alleOndernemersAanwezigheidLijst
 );
 
 app.get(

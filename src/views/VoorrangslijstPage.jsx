@@ -118,7 +118,7 @@ class VoorrangslijstPage extends React.Component {
                 datum={datum}
                 type={type}
                 breadcrumbs={breadcrumbs}
-                buttonLabel={ type === 'wenperiode' ? 'sollicitanten' : type }
+                printButton={true}
                 showDate={false}
                 role={role}
                 user={user}

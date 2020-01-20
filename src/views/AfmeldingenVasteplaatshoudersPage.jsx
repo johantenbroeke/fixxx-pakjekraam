@@ -33,7 +33,7 @@ class afmeldingenPage extends React.Component {
                 title="Afmeldingen vasteplaatshouders"
                 markt={markt}
                 datum={datum}
-                buttonLabel={'afmeldingen'}
+                printButton={true}
                 showDate={false}
                 type={'afmeldingen'}
                 breadcrumbs={breadcrumbs}
