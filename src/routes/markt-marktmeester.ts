@@ -1,12 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
-import { getIndelingslijstInput, getSollicitantenlijstInput, getVoorrangslijstInput, getToewijzingslijst } from '../pakjekraam-api';
-import { internalServerErrorPage, HTTP_INTERNAL_SERVER_ERROR, httpErrorPage } from '../express-util';
+import {
+    getIndelingslijstInput,
+    getSollicitantenlijstInput,
+    getVoorrangslijstInput,
+    getToewijzingslijst,
+    getMarktondernemersByMarkt,
+    getIndelingVoorkeuren,
+} from '../pakjekraam-api';
+import { internalServerErrorPage } from '../express-util';
 
 import Indeling from '../allocation/indeling';
 
 import { KeycloakRoles } from '../permissions';
 import { GrantedRequest } from 'keycloak-connect';
 import { getKeycloakUser } from '../keycloak-api';
+
+import { getMarkt } from '../model/markt.functions';
+import { getAanmeldingenByMarktAndDate } from '../model/rsvp.functions';
+import { getToewijzingenByMarktAndDate } from '../model/allocation.functions';
+import { getPlaatsvoorkeurenByMarkt } from '../model/plaatsvoorkeur.functions';
 
 export const vasteplaatshoudersPage = (req: GrantedRequest, res: Response) => {
     const datum = req.params.datum;
@@ -140,3 +152,99 @@ export const voorrangslijstVolledigPage = (req: GrantedRequest, res: Response, n
         internalServerErrorPage(res),
     ).catch(next);
 };
+
+export const alleSollicitantenPage = (req: GrantedRequest, res: Response, next: NextFunction) => {
+
+    const datum = req.params.datum;
+    const marktId = req.params.marktId;
+
+    Promise.all([
+        getMarktondernemersByMarkt(marktId),
+        getAanmeldingenByMarktAndDate(marktId, datum),
+        getPlaatsvoorkeurenByMarkt(marktId),
+        getMarkt(marktId),
+        getToewijzingenByMarktAndDate(marktId, datum),
+        getIndelingVoorkeuren(marktId),
+    ]).then(([ondernemers, aanmeldingen, plaatsvoorkeuren, markt, toewijzingen, algemenevoorkeuren]) => {
+
+            const role = KeycloakRoles.MARKTMEESTER;
+            res.render('AanwezigheidLijst', {
+                ondernemers: ondernemers.filter(ondernemer => ondernemer.status !== 'vpl' ),
+                aanmeldingen,
+                plaatsvoorkeuren,
+                toewijzingen,
+                markt,
+                datum,
+                role,
+                user: getKeycloakUser(req),
+                algemenevoorkeuren,
+            });
+        },
+        internalServerErrorPage(res),
+    ).catch(next);
+};
+
+export const sollicitantentAanwezigheidLijst = (req: GrantedRequest, res: Response, next: NextFunction) => {
+
+    const datum = req.params.datum;
+    const marktId = req.params.marktId;
+
+    Promise.all([
+        getMarktondernemersByMarkt(marktId),
+        getAanmeldingenByMarktAndDate(marktId, datum),
+        getPlaatsvoorkeurenByMarkt(marktId),
+        getMarkt(marktId),
+        getToewijzingenByMarktAndDate(marktId, datum),
+        getIndelingVoorkeuren(marktId),
+    ]).then(([ondernemers, aanmeldingen, plaatsvoorkeuren, markt, toewijzingen, algemenevoorkeuren]) => {
+
+            const role = KeycloakRoles.MARKTMEESTER;
+            res.render('AanwezigheidLijst', {
+                ondernemers: ondernemers.filter(ondernemer => ondernemer.status !== 'vpl' ),
+                aanmeldingen,
+                plaatsvoorkeuren,
+                toewijzingen,
+                markt,
+                datum,
+                role,
+                user: getKeycloakUser(req),
+                algemenevoorkeuren,
+                title: 'Alle sollicitanten'
+            });
+        },
+        internalServerErrorPage(res),
+    ).catch(next);
+};
+
+export const alleOndernemersAanwezigheidLijst = (req: GrantedRequest, res: Response, next: NextFunction) => {
+
+    const datum = req.params.datum;
+    const marktId = req.params.marktId;
+
+    Promise.all([
+        getMarktondernemersByMarkt(marktId),
+        getAanmeldingenByMarktAndDate(marktId, datum),
+        getPlaatsvoorkeurenByMarkt(marktId),
+        getMarkt(marktId),
+        getToewijzingenByMarktAndDate(marktId, datum),
+        getIndelingVoorkeuren(marktId),
+    ]).then(([ondernemers, aanmeldingen, plaatsvoorkeuren, markt, toewijzingen, algemenevoorkeuren]) => {
+
+            const role = KeycloakRoles.MARKTMEESTER;
+            res.render('AanwezigheidLijst', {
+                ondernemers,
+                aanmeldingen,
+                plaatsvoorkeuren,
+                toewijzingen,
+                markt,
+                datum,
+                role,
+                user: getKeycloakUser(req),
+                algemenevoorkeuren,
+                title: 'Alle ondernemers'
+            });
+        },
+        internalServerErrorPage(res),
+    ).catch(next);
+};
+

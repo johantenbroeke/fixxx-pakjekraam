@@ -76,7 +76,7 @@ const toewijzingenPerDatum = (toewijzingen: IToewijzing[], row: Allocation): ITo
 
 };
 
-const groupAllocationRows = (toewijzingen: IToewijzing[], row: Allocation): IToewijzing[] => {
+export const groupAllocationRows = (toewijzingen: IToewijzing[], row: Allocation): IToewijzing[] => {
 
     const { marktId, marktDate, erkenningsNummer } = row;
 
