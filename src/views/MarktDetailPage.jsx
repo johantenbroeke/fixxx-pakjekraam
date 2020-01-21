@@ -52,14 +52,11 @@ class MarktDetailPage extends React.Component {
         const datesThisWeek = dates.filter(({ date }) => new Date(date) < nextVrijday);
         const datesNextWeek = dates.filter(({ date }) => new Date(date) >= nextVrijday);
 
-        console.log(datesThisWeek);
-
-
         return (
             <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} user={user} role={role}>
                 <div className="Section Section--column">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
-                    <a href={`./${today()}/voorrangslijst-volledig/`} className="Link">Alle sollicitanten</a>
+                    <a href={`./${today()}/alle-sollicitanten/`} className="Link">Alle sollicitanten</a>
                     { markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
                         <a href={`./${today()}/indelingslijst/`} className="Link">Positie vasteplaasthouders</a> : null
                     }
@@ -177,7 +174,7 @@ class MarktDetailPage extends React.Component {
                     {datesNextWeek.length > 0 ?
                         <div className="col-1-2">
                             <h4>Volgende week</h4>
-                            {datesThisWeek.map(({ date, day, month, weekDay, relativeDay }, index) => (
+                            {datesNextWeek.map(({ date, day, month, weekDay, relativeDay }, index) => (
                                 <div key={date} className="well">
                                     <strong>
                                         {relativeDay !== '' && capitalize(relativeDay) + ', '}{' '}
