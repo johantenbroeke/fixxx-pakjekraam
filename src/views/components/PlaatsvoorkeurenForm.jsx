@@ -174,19 +174,15 @@ class PlaatsvoorkeurenForm extends React.Component {
                         <div className="PlaatsvoorkeurenForm__list">
                             {plaatsvoorkeuren.map((entry, index) => (
                                 <div className="Draggable-list-item" id="plaatsvoorkeuren-list-item" key={entry.id}>
-
                                     <div className="Draggable-list-item__handle">
                                         <div className="Draggable-list-item__handle__bar"></div>
                                         <div className="Draggable-list-item__handle__bar"></div>
                                     </div>
-
                                     <div className="Draggable-list-item__left">
-
                                         <span className="Draggable-list-item__label">
                                             <strong>{entry.plaatsId}</strong>
                                         </span>
                                     </div>
-
                                     <input
                                         type="hidden"
                                         name={`plaatsvoorkeuren[${index}][marktId]`}
@@ -195,7 +191,7 @@ class PlaatsvoorkeurenForm extends React.Component {
                                     <input
                                         type="hidden"
                                         name={`plaatsvoorkeuren[${index}][priority]`}
-                                        defaultValue={entry.priority || plaatsvoorkeuren.length - index}
+                                        defaultValue={plaatsvoorkeuren.length - index}
                                     />
                                     <input
                                         type="hidden"
