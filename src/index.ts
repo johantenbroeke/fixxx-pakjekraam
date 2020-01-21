@@ -277,11 +277,6 @@ app.get(
 
 app.get('/markt/:marktId/:datum/alle-sollicitanten/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    voorrangslijstVolledigPage
-);
-
-app.get('/markt/:marktId/:datum/alle-sollicitanten/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
     sollicitantentAanwezigheidLijst
 );
 
