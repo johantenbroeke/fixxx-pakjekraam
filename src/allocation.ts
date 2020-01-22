@@ -4,8 +4,6 @@ import { getIndelingslijst, getDaysClosed } from './pakjekraam-api';
 import { flatten, tomorrow, today, toISODate } from './util';
 import { convertToewijzingForDB, getToewijzingEnriched } from './model/allocation.functions';
 import { convertAfwijzingForDB, getAfwijzingEnriched } from './model/afwijzing.functions';
-// import { MMMarkt } from './makkelijkemarkt.model';
-// import { IMarkt, IMarktEnriched } from './markt.model';
 import { getMarktenByDate } from './model/markt.functions';
 
 import { sequelize } from './model/index';
@@ -55,13 +53,17 @@ async function destroyAndCreateToewijzingenAfwijzingen(toewijzingen: IToewijzing
 }
 
 async function allocation() {
-
     try {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         const tomorrowString = toISODate(tomorrow);
         const daysClosed = await getDaysClosed();
-        daysClosed.includes(tomorrowString) ? console.log(`Indeling wordt niet gedraaid, ${tomorrowString} gevonden in daysClosed.json`) : runAllocation();
+
+        if (daysClosed.includes(tomorrowString)) {
+            console.log(`Indeling wordt niet gedraaid, ${tomorrowString} gevonden in daysClosed.json`);
+        } else {
+            runAllocation();
+        }
     } catch(e) {
         console.log(e);
         process.exit();

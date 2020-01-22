@@ -53,7 +53,7 @@ module.exports = {
         console.log(e);
       });
     }
-    
+
     try {
 
       // VOORKEUREN
@@ -66,7 +66,7 @@ module.exports = {
       let deletedAllocations = await deleteIfInOndernemersTeVerwijderen('allocation')
       console.log(`Allocations deleted: ${deletedAllocations.length}`);
       let changesAllocation = await stripErkenningsNummerFromDots('allocation')
-      console.log(`Changes done: ${changesAllocation.length}`);      
+      console.log(`Changes done: ${changesAllocation.length}`);
 
       // PLAATSVOORKEUREN
       let deletedPlaatsvoorkeuren = await deleteIfInOndernemersTeVerwijderen('plaatsvoorkeur')
@@ -85,10 +85,10 @@ module.exports = {
       await transaction.rollback();
       throw err;
     }
-    
+
   },
 
-  async down(queryInterface, Sequelize) {   
+  async down(queryInterface, Sequelize) {
 
   },
 
