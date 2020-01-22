@@ -56,8 +56,10 @@ class MarktDetailPage extends React.Component {
             <MarktDetailBase bodyClass="page-markt-detail" datum={datum} type={type} markt={markt} fase={fase} user={user} role={role}>
                 <div className="Section Section--column">
                     <a href={`./langdurig-afgemeld/`} className="Link">Ondernemers langdurig afgemeld</a>
-                    <a href={`./${today()}/alle-sollicitanten/`} className="Link">Alle sollicitanten</a>
-                    { markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
+                    {markt.kiesJeKraamFase !== 'wenperiode' ?
+                        <a href={`./${today()}/alle-sollicitanten/`} className="Link">Alle sollicitanten</a> : null
+                    }
+                    {markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
                         <a href={`./${today()}/indelingslijst/`} className="Link">Positie vasteplaasthouders</a> : null
                     }
                     {markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
@@ -110,7 +112,8 @@ class MarktDetailPage extends React.Component {
                                                 </a>
                                             </li>
                                             <li className="LinkList__item">
-                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                                <a href={`./${date}/voorrangslijst/`} className="Link">
+                                                    Ondernemers niet ingedeeld
                                                 </a>
                                             </li>
                                             <li className="LinkList__item">
@@ -127,15 +130,29 @@ class MarktDetailPage extends React.Component {
                                                     <a href={`./${date}/indeling/`} className="Link">Indeling</a>
                                                 </li> : null
                                             }
+                                            {index === 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/ondernemers-niet-ingedeeld/`} className="Link">Ondernemers niet ingedeeld
+                                                    </a>
+                                                </li> : null
+                                            }
                                             <li className="LinkList__item">
                                                 <a href={`./${date}/concept-indelingslijst/`} className="Link">
                                                     Conceptindeling
                                                 </a>
                                             </li>
-                                            <li className="LinkList__item">
-                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                            {index === 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/voorrangslijst/`} className="Link">
+                                                        Voorrangslijst
                                                 </a>
-                                            </li>
+                                                </li> : null}
+                                            {index > 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/alle-sollicitanten/`} className="Link">
+                                                        Alle sollicitanten
+                                                </a>
+                                                </li> : null}
                                             <li className="LinkList__item">
                                                 <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
                                                     Afmeldingen vasteplaatshouders
@@ -154,13 +171,29 @@ class MarktDetailPage extends React.Component {
                                                 <li className="LinkList__item">
                                                     <a href={`./${date}/concept-indelingslijst/`} className="Link">
                                                         Conceptindeling
-                                                </a>
+                                                    </a>
                                                 </li> : null
                                             }
-                                            <li className="LinkList__item">
-                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
-                                                </a>
-                                            </li>
+                                            {index === 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/ondernemers-niet-ingedeeld/`} className="Link">Ondernemers niet ingedeeld
+                                                    </a>
+                                                </li> : null
+                                            }
+                                            {index === 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/voorrangslijst/`} className="Link">
+                                                        Voorrangslijst
+                                                    </a>
+                                                </li> : null
+                                            }
+                                            {index > 0 ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/alle-sollicitanten/`} className="Link">
+                                                        Alle sollicitanten
+                                                    </a>
+                                                </li> : null
+                                            }
                                             <li className="LinkList__item">
                                                 <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
                                                     Afmeldingen vasteplaatshouders
@@ -215,7 +248,8 @@ class MarktDetailPage extends React.Component {
                                                 </a>
                                             </li>
                                             <li className="LinkList__item">
-                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
+                                                <a href={`./${date}/alle-sollicitanten/`} className="Link">
+                                                    Alle sollicitanten
                                                 </a>
                                             </li>
                                             <li className="LinkList__item">
@@ -230,16 +264,17 @@ class MarktDetailPage extends React.Component {
                                             <li className="LinkList__item">
                                                 <a href={`./${date}/concept-indelingslijst/`} className="Link">
                                                     Conceptindeling
-                                                </a>
+                                            </a>
                                             </li>
                                             <li className="LinkList__item">
-                                                <a href={`./${date}/voorrangslijst/`} className="Link">Ondernemers niet ingedeeld
-                                                </a>
+                                                <a href={`./${date}/alle-sollicitanten/`} className="Link">
+                                                    Alle sollicitanten
+                                            </a>
                                             </li>
                                             <li className="LinkList__item">
                                                 <a href={`./${date}/afmeldingen-vasteplaatshouders/`} className="Link">
                                                     Afmeldingen vasteplaatshouders
-                                                </a>
+                                            </a>
                                             </li>
                                         </ul> : null
                                     }
