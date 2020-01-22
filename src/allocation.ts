@@ -10,7 +10,7 @@ import { sequelize } from './model/index';
 import { IToewijzing, IAfwijzing } from 'markt.model';
 import { MMMarkt } from 'makkelijkemarkt.model';
 
-const marktDate = today();
+const marktDate = tomorrow();
 
 const mapMarktenToToewijzingen = (markten: any): Promise<IToewijzing[]> => {
     return markten
