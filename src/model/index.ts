@@ -9,6 +9,7 @@ import { initPlaatsvoorkeur } from './plaatsvoorkeur.sequelize';
 import { initSession } from './session.sequelize';
 import { initVoorkeur } from './voorkeur.sequelize';
 import { initAfwijzing } from './afwijzing.sequelize';
+import { initLog } from './log';
 import { requireEnv } from '../util';
 
 requireEnv('DATABASE_URL');
@@ -30,6 +31,7 @@ export const plaatsvoorkeur = initPlaatsvoorkeur(sequelize);
 export const session = initSession(sequelize);
 export const voorkeur = initVoorkeur(sequelize);
 export const afwijzing = initAfwijzing(sequelize);
+export const log = initLog(sequelize);
 
 export default {
     allocation,
@@ -40,4 +42,5 @@ export default {
     session,
     voorkeur,
     afwijzing,
+    log,
 };
