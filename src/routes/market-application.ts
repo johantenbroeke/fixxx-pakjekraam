@@ -3,7 +3,7 @@ import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import { getAanmeldingenByOndernemer, getMededelingen } from '../pakjekraam-api';
 import { httpErrorPage, internalServerErrorPage, HTTP_CREATED_SUCCESS, HTTP_FORBIDDEN_ERROR, getQueryErrors } from '../express-util';
 import models from '../model/index';
-import { flatten, nextWeek, LF, tomorrow } from '../util';
+import { flatten, nextWeek, LF, today } from '../util';
 import { IRSVP } from '../markt.model';
 import { upsert } from '../sequelize-util.js';
 import { getMarktEnriched, getMarktenEnabled } from '../model/markt.functions';
@@ -48,7 +48,7 @@ export const attendancePage = (
                 aanmeldingen,
                 markten,
                 markt,
-                startDate: tomorrow(),
+                startDate: today(),
                 endDate: nextWeek(),
                 currentMarktId,
                 query,

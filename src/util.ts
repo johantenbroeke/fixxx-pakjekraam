@@ -114,7 +114,7 @@ export const addMinutesTime = (offsetDate: string | number, minutes: number): Da
 };
 
 export const getTimezoneTime = (): Date => {
-    return moment().tz('Europe/Amsterdam').format();
+    return moment().tz('Europe/Amsterdam');
 };
 
 export const getTimezoneHours = (): Number => {

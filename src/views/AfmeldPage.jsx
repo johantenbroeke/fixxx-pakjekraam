@@ -1,7 +1,7 @@
 const Content = require('./components/Content');
 const React = require('react');
 const Page = require('./components/Page.jsx');
-const AfmeldForm = require('./components/AfmeldForm.jsx');
+const AanwezigheidsForm = require('./components/AanwezigheidsForm.jsx');
 const PropTypes = require('prop-types');
 const Header = require('./components/Header');
 const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
@@ -54,13 +54,11 @@ class AfmeldPage extends React.Component {
                         <OndernemerProfileHeader inline={true} user={ondernemer} sollicitatie={sollicitatie} /> : null
                     }
                     <SollicitatieSpecs sollicitatie={sollicitatie} />
-                    <AfmeldForm
+                    <AanwezigheidsForm
                         aanmeldingen={this.props.aanmeldingen}
                         date={this.props.date}
                         ondernemer={this.props.ondernemer}
                         markten={this.props.markten}
-                        startDate={this.props.startDate}
-                        endDate={this.props.endDate}
                         currentMarktId={this.props.currentMarktId}
                         query={this.props.query}
                         role={this.props.role}

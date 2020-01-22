@@ -7,10 +7,14 @@ const {
     endOfWeek,
     addDays,
     getTimezoneTime,
-    addMinutesTime,
-    MINUTES_IN_HOUR
+    toISODate,
 } = require('../../util.ts');
-const { filterRsvpList, isVast } = require('../../domain-knowledge.js');
+const {
+    indelingstijdstipInMinutes,
+    INDELING_DAG_OFFSET,
+    filterRsvpList,
+    isVast
+} = require('../../domain-knowledge.js');
 
 class AfmeldForm extends React.Component {
     propTypes = {
@@ -26,24 +30,28 @@ class AfmeldForm extends React.Component {
     };
 
     render() {
-        const { markten, ondernemer, currentMarktId, query, role, aanmeldingen, csrfToken } = this.props;
+        const { markten, ondernemer, currentMarktId, role, aanmeldingen, csrfToken } = this.props;
+
         const sollicitatie = ondernemer.sollicitaties.find(
             soll => !soll.doorgehaald && String(soll.markt.id) === currentMarktId,
         );
 
         const markt = markten.find(m => String(m.id) === currentMarktId);
-
-        // I know, 4 is a weird number, you would expect 3 because (24:00 - 21:00 = 3:00)
-        // but the function gets back to non-timezone so we need to add 1 hour
-        const OFFSET = 4;
         const timezoneTime = getTimezoneTime();
-        // Offset is set to trick the filterRsvpList() function its tomorrow already at nine.
-        const timePlusOffsetHours = addMinutesTime(timezoneTime, MINUTES_IN_HOUR * OFFSET);
+        const minutesInAdvance = (( 24 * 60 ) - indelingstijdstipInMinutes());
 
+        timezoneTime.add(minutesInAdvance, 'minutes');
+        timezoneTime.add(INDELING_DAG_OFFSET, 'days');
+
+        if (role === 'marktmeester') {
+            timezoneTime.subtract(INDELING_DAG_OFFSET, 'days');
+        }
+
+        const startDate = timezoneTime.format('YYYY-MM-DD');
         const rsvpEntries = filterRsvpList(
             aanmeldingen.filter(aanmelding => aanmelding.marktId === markt.id),
             markt,
-            role === 'marktmeester' ? timePlusOffsetHours : addDays(timePlusOffsetHours, 1),
+            startDate
         );
 
         const weekAanmeldingen = rsvpEntries.reduce(
