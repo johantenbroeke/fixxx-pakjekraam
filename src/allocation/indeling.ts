@@ -90,7 +90,7 @@ const Indeling = {
 
         // Verwijder voorkeuren van ondernemers die niet aanwezig zijn, omdat deze voorkeuren
         // worden gebruikt om te
-        const index = indeling.ondernemers.reduce((result: any, ondernemer) => {
+        const index = indeling.ondernemers.reduce((result, ondernemer) => {
             return result.set(ondernemer.erkenningsNummer, true);
         }, new Map());
         indeling.voorkeuren = markt.voorkeuren.filter(({ erkenningsNummer }) =>
