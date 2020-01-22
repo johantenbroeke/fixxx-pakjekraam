@@ -9,7 +9,13 @@ import {
 import { formatOndernemerName, isVast, slugifyMarkt } from './domain-knowledge.js';
 import { numberSort, stringSort } from './util';
 import Sequelize from 'sequelize';
-import { allocation, plaatsvoorkeur, rsvp, voorkeur } from './model/index';
+import {
+    allocation,
+    plaatsvoorkeur,
+    rsvp,
+    voorkeur,
+    log
+} from './model/index';
 import { calcToewijzingen } from './indeling';
 
 import {
@@ -421,8 +427,15 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
     });
 };
 
-export const getIndelingslijst = (marktId: string, date: string) =>
+export const getIndelingslijst = (marktId: string, date: string, logInput: boolean = false) =>
     getIndelingslijstInput(marktId, date).then(data => {
+        if (logInput) {
+            log.create({
+                level: 'debug',
+                msg: `Marktindeling voor '${data.markt.naam}' (${marktId}) op ${date}`,
+                meta: data
+            });
+        }
 
         const logMessage = `Marktindeling berekenen: ${data.markt.naam}`;
         console.time(logMessage);

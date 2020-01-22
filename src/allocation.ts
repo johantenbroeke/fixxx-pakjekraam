@@ -68,7 +68,7 @@ async function allocate() {
         }
 
         const indelingen = await Promise.all(markten.map((markt: MMMarkt) =>
-            getIndelingslijst(String(markt.id), marktDate))
+            getIndelingslijst(String(markt.id), marktDate, true))
         );
 
         const toewijzingen = await mapMarktenToToewijzingen(indelingen);
