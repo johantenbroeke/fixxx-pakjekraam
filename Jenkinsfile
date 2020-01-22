@@ -63,12 +63,13 @@ node {
             sh 'echo SOURCE_COMMIT := $commit_id >> .build'
             println commit_id
             echo 'end git version'
-            def image = docker.build("build.app.amsterdam.nl:5000/${PROJECTNAME}:${env.BUILD_NUMBER}")
+            image = docker.build("build.app.amsterdam.nl:5000/${PROJECTNAME}:${env.BUILD_NUMBER}")
             image.push()
 
         }
     }
 }
+
 
 // Acceptance branch, fetch the container, label with acceptance and deploy to acceptance.
 if (BRANCH == "${ACCEPTANCE_BRANCH}") {
