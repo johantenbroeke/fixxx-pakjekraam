@@ -42,7 +42,7 @@ const Component = ({ open, date, aanmelding, sollicitatie, title, markt, toewijz
                 : null}
             </div>
             {marktGesloten ?
-                <h4 className="UitslagTile__datum__aanwezigheid UitslagTile__datum__aanwezigheid--gesloten">Geen markt</h4>
+                <h4 className="UitslagTile__datum__aanwezigheid">Geen markt</h4>
                 : null}
             {toewijzing && markt.kiesJeKraamFase === 'live' && !marktGesloten ?
                 <AlertLine
