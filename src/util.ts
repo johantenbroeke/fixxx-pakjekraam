@@ -113,7 +113,7 @@ export const addMinutesTime = (offsetDate: string | number, minutes: number): Da
     return moment(dateNewTime).tz('Europe/Amsterdam').format();
 };
 
-export const getTimezoneTime = (): Date => {
+export const getTimezoneTime = (): any => {
     return moment().tz('Europe/Amsterdam');
 };
 

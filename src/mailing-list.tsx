@@ -8,7 +8,8 @@ import { EmailDataUitslag } from './views/components/email/EmailDataUitslag';
 import { defer } from 'rxjs';
 import { shareReplay, tap, combineLatest } from 'rxjs/operators';
 import { mail } from './mail.js';
-import { requireEnv, today, yyyyMmDdtoDDMMYYYY, getMaDiWoDo } from './util';
+import { requireEnv, yyyyMmDdtoDDMMYYYY, getTimezoneTime } from './util';
+import { INDELING_DAG_OFFSET } from './domain-knowledge.js';
 import { getMarktondernemersByMarkt, getToewijzingen } from './pakjekraam-api';
 import { getAfwijzingen } from './model/afwijzing.functions';
 import { retry } from './rxjs-util';
@@ -19,7 +20,10 @@ import { MMMarkt } from 'makkelijkemarkt.model';
 
 requireEnv('MAILER_FROM');
 
-const marktDate = today();
+const timezoneTime = getTimezoneTime();
+timezoneTime.add(INDELING_DAG_OFFSET, 'days');
+const marktDate = timezoneTime.format('YYYY-MM-DD');
+
 const alternativeEmail = 'kiesjekraam@gmail.com';
 
 const sendAllocationMail = (subject: string, mailTemplate: JSX.Element, emailaddress: string) => {

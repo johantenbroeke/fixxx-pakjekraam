@@ -44,7 +44,7 @@ class AfmeldForm extends React.Component {
         timezoneTime.add(INDELING_DAG_OFFSET, 'days');
 
         if (role === 'marktmeester') {
-            timezoneTime.subtract(INDELING_DAG_OFFSET, 'days');
+            timezoneTime.subtract(1, 'days');
         }
 
         const startDate = timezoneTime.format('YYYY-MM-DD');
