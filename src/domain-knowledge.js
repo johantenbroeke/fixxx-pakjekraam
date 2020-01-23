@@ -64,6 +64,15 @@ const isoMarktDagen = {
 
 const A_LIJST_DAYS = [FRIDAY, SATURDAY, SUNDAY];
 
+const INDELINGSTIJDSTIP = '21:00';
+const INDELING_DAG_OFFSET = 1;
+
+const indelingstijdstipInMinutes = () => {
+    const hours = parseInt(INDELINGSTIJDSTIP.split(":", 1), 10);
+    const minutes = parseInt(INDELINGSTIJDSTIP.split(":", 2)[1], 10);
+    return ((60 * hours) + minutes );
+};
+
 const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDagen[dag] : -1);
 
 const isVast = status => status === 'vpl' || status === 'vkk';
@@ -207,6 +216,8 @@ module.exports = {
     REIGERSBOS_ID,
     TUSSEN_MEER_ID,
     A_LIJST_DAYS,
+    INDELINGSTIJDSTIP,
+    INDELING_DAG_OFFSET,
     formatOndernemerName,
     slugifyMarkt,
     parseMarktDag,
@@ -215,6 +226,7 @@ module.exports = {
     isExp,
     isVastOfExp,
     getMarktDays,
+    indelingstijdstipInMinutes,
     getMarktDaysOndernemer,
     getUpcomingMarktDays,
     ondernemersToLocatieKeyValue,

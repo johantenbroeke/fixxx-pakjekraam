@@ -14,8 +14,6 @@ class OndernemerDashboard extends React.Component {
         markten: PropTypes.array,
         plaatsvoorkeuren: PropTypes.array,
         messages: PropTypes.array,
-        startDate: PropTypes.string.isRequired,
-        endDate: PropTypes.string.isRequired,
         toewijzingen: PropTypes.array,
         afwijzingen: PropTypes.array,
         daysClosed: PropTypes.array.isRequired,
