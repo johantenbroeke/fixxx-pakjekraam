@@ -10,8 +10,6 @@ const SollicitatieSpecs = require('./components/SollicitatieSpecs');
 const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
 const { INDELINGSTIJDSTIP } = require('../domain-knowledge.js');
 
-console.log(INDELINGSTIJDSTIP);
-
 class VoorkeurenPage extends React.Component {
     propTypes = {
         plaatsvoorkeuren: PropTypes.array.isRequired,
