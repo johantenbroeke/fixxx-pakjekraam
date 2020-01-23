@@ -8,7 +8,7 @@ import { EmailDataUitslag } from './views/components/email/EmailDataUitslag';
 import { defer } from 'rxjs';
 import { shareReplay, tap, combineLatest } from 'rxjs/operators';
 import { mail } from './mail.js';
-import { requireEnv, tomorrow, yyyyMmDdtoDDMMYYYY, getMaDiWoDo } from './util';
+import { requireEnv, today, yyyyMmDdtoDDMMYYYY, getMaDiWoDo } from './util';
 import { getMarktondernemersByMarkt, getToewijzingen } from './pakjekraam-api';
 import { getAfwijzingen } from './model/afwijzing.functions';
 import { retry } from './rxjs-util';
@@ -19,7 +19,7 @@ import { MMMarkt } from 'makkelijkemarkt.model';
 
 requireEnv('MAILER_FROM');
 
-const marktDate = tomorrow();
+const marktDate = today();
 const alternativeEmail = 'kiesjekraam@gmail.com';
 
 const sendAllocationMail = (subject: string, mailTemplate: JSX.Element, emailaddress: string) => {

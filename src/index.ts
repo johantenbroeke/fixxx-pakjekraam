@@ -208,21 +208,6 @@ app.get(
 //     }
 // );
 
-// For debug purposes:
-app.get('/markt/index.json', keycloak.protect(KeycloakRoles.MARKTBUREAU), (req: Request, res: Response) => {
-    getMarkten().then(jsonPage(res));
-});
-
-// For debug purposes:
-app.get('/markt/today.json', keycloak.protect(KeycloakRoles.MARKTBUREAU), (req: Request, res: Response) => {
-    getMarktenByDate(today()).then(jsonPage(res));
-});
-
-// For debug purposes:
-app.get('/markt/tomorrow.json', keycloak.protect(KeycloakRoles.MARKTBUREAU), (req: Request, res: Response) => {
-    getMarktenByDate(tomorrow()).then(jsonPage(res));
-});
-
 app.get(
     '/markt/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),

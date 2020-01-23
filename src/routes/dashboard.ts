@@ -39,8 +39,6 @@ export const dashboardPage = (req: GrantedRequest, res: Response, next: NextFunc
                     aanmeldingen,
                     markten,
                     plaatsvoorkeuren,
-                    startDate: tomorrow(),
-                    endDate: nextWeek(),
                     messages,
                     toewijzingen,
                     afwijzingen,
