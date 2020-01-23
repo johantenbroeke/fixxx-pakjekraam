@@ -162,7 +162,6 @@ class PlaatsvoorkeurenForm extends React.Component {
                         </div>
                     </div>
 
-                    { !isExp(sollicitatie.status) ?
                     <div className="Fieldset">
                         <h2 className="Fieldset__header">Plaatsen selecteren</h2>
                         <span className="Fieldset__sub-header">U kunt zoveel voorkeuren invullen als u wilt.</span>
@@ -280,7 +279,6 @@ class PlaatsvoorkeurenForm extends React.Component {
                             </div>
                         ) : null}
                     </div>
-                    : null }
 
                     <p className="InputField InputField--submit" id="bottom-buttons">
                         <Button

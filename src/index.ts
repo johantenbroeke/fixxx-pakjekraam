@@ -9,9 +9,9 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import url from 'url';
 import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makkelijkemarkt-api';
-import { requireEnv, today, tomorrow } from './util';
-import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors, isAbsoluteUrl } from './express-util';
-import { getMarktEnriched, getMarktenEnabled, getMarktenByDate } from './model/markt.functions';
+import { requireEnv } from './util';
+import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, getQueryErrors, isAbsoluteUrl } from './express-util';
+import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
 import cookieParser from 'cookie-parser';
 
 import csrf from 'csurf';
@@ -21,7 +21,6 @@ const csrfProtection = csrf({ cookie: true });
 import {
     getIndelingslijst,
     getIndelingslijstInput,
-    getIndelingVoorkeuren,
     getAanmeldingen,
     getPlaatsvoorkeuren,
     getBranches,
