@@ -105,19 +105,24 @@ export const updatePlaatsvoorkeuren = (req: Request, res: Response, next: NextFu
     const ignoreEmptyVoorkeur = (voorkeur: IPlaatsvoorkeurRow) => !!voorkeur.plaatsId;
 
     const insertFormData = () => {
-        console.log(`${req.body.plaatsvoorkeuren.length} (nieuwe) voorkeuren opslaan...`);
+        if (req.body.plaatsvoorkeuren) {
+            console.log(`${req.body.plaatsvoorkeuren.length} (nieuwe) voorkeuren opslaan...`);
+            console.log(req.body.plaatsvoorkeuren);
+            const voorkeuren = req.body.plaatsvoorkeuren
+                .map(voorkeurenFormDataToObject)
+                .map(
+                    (plaatsvoorkeur: IPlaatsvoorkeurRow): IPlaatsvoorkeurRow => ({
+                        ...plaatsvoorkeur,
+                        erkenningsNummer,
+                    }),
+                )
+                .filter(ignoreEmptyVoorkeur);
 
-        const voorkeuren = req.body.plaatsvoorkeuren
-            .map(voorkeurenFormDataToObject)
-            .map(
-                (plaatsvoorkeur: IPlaatsvoorkeurRow): IPlaatsvoorkeurRow => ({
-                    ...plaatsvoorkeur,
-                    erkenningsNummer,
-                }),
-            )
-            .filter(ignoreEmptyVoorkeur);
+            return models.plaatsvoorkeur.bulkCreate(voorkeuren);
+        } else {
+            return null;
+        }
 
-        return models.plaatsvoorkeur.bulkCreate(voorkeuren);
     };
 
     const insertAlgVoorkeurFormData = () => {

@@ -1,0 +1,44 @@
+.UitslagTile{
+    background: $primary-darkblue-light;
+    padding: $gutter;
+    &__result{
+        line-height: 1;
+        margin:  $gutter-xs 0 0;
+    }
+    &__datum{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        &__heading, &__aanwezigheid{
+            margin: 0;
+        }
+        &__heading{
+            font-size: 1rem;
+            line-height: 1;
+            margin-right: $gutter-xs;
+        }
+        &__aanwezigheid{
+            line-height: 1;
+            margin:  $gutter-xs 0 0;
+            &--aangemeld{
+                color: green;
+            }
+            &--gesloten{
+                color: darken($supplement-orange, 5%);
+            }
+        }
+    }
+    .AlertLine{
+        margin: 8px 0 0;
+    }
+
+    &:last-child{
+        margin-bottom: 0;
+    }
+
+    &__text{
+        margin: $gutter-xs 0 0;
+        // line-height: 1;
+    }
+
+}

@@ -8,13 +8,16 @@
 
     &__heading {
         margin: $gutter-sm 0;
-        font-size: 20px;
         @media screen and (min-width: $screenMedium) {
         }
     }
 
     .Button{
         margin-bottom: 0;
+    }
+
+    .UitslagTile{
+        margin-top: $gutter-sm;
     }
 
 

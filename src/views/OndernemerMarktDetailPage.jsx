@@ -12,7 +12,7 @@ const OndernemerMarktAlgVoorkeuren = require('./components/OndernemerMarktAlgVoo
 const { today, tomorrow, getBreadcrumbsOndernemer } = require('../util.ts');
 const Alert = require('./components/Alert');
 const Uitslag = require('./components/Uitslag');
-const { filterRsvpList } = require('../domain-knowledge.js');
+const { filterRsvpList, isExp } = require('../domain-knowledge.js');
 
 class OndernemerMarktDetailPage extends React.Component {
     propTypes = {
@@ -32,6 +32,7 @@ class OndernemerMarktDetailPage extends React.Component {
         mededelingen: PropTypes.object,
         algemeneVoorkeur: PropTypes.object,
         role: PropTypes.string,
+        daysClosed: PropTypes.array.isRequired,
     };
 
     render() {
@@ -48,7 +49,8 @@ class OndernemerMarktDetailPage extends React.Component {
             mededelingen,
             algemeneVoorkeur,
             role,
-            user
+            user,
+            daysClosed
         } = this.props;
         const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
 
@@ -106,6 +108,7 @@ class OndernemerMarktDetailPage extends React.Component {
                         afwijzingMorgen={afwijzingMorgen}
                         aanmeldingVandaag={aanmeldingVandaag}
                         aanmeldingMorgen={aanmeldingMorgen}
+                        daysClosed={daysClosed}
                     />
                     { absentGemeld ? (
                         <Alert type="warning" inline={true}>
@@ -141,6 +144,7 @@ class OndernemerMarktDetailPage extends React.Component {
                                 voorkeur={voorkeur}
                                 branches={branches}
                             />
+                            { !isExp(sollicitatie.status) ?
                             <OndernemerMarktVoorkeuren
                                 ondernemer={ondernemer}
                                 markt={markt}
@@ -148,7 +152,8 @@ class OndernemerMarktDetailPage extends React.Component {
                                 plaatsvoorkeuren={plaatsvoorkeuren}
                                 voorkeur={voorkeur}
                                 sollicitatie={sollicitatie}
-                            />
+                            /> : null
+                            }
                         </div>
                     </div>
                 </Content>

@@ -15,6 +15,15 @@ export const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<I
         .then(aanmeldingen => aanmeldingen);
 
 
+export const getAanmeldingenByMarktAndDate = (marktId: string, marktDate: string): Promise<IRSVP[]> =>
+    rsvp
+        .findAll<RSVP>({
+            where: { marktId, marktDate },
+            raw: true,
+        })
+        .then(aanmeldingen => aanmeldingen);
+
+
 export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) =>
     rsvp.destroy({ where: { erkenningsNummer } });
 

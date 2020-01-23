@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { getMarktondernemer } from '../makkelijkemarkt-api';
 import {
-    getMarkten,
     getPlaatsvoorkeurenOndernemer,
     getAanmeldingenByOndernemer,
+    getDaysClosed
 } from '../pakjekraam-api';
 import { internalServerErrorPage, getQueryErrors } from '../express-util';
 import { tomorrow, nextWeek } from '../util';
@@ -18,7 +18,7 @@ import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 import { GrantedRequest } from 'keycloak-connect';
 import { getKeycloakUser } from '../keycloak-api';
 
-export const vendorDashboardPage = (req: GrantedRequest, res: Response, next: NextFunction, erkenningsNummer: string) => {
+export const dashboardPage = (req: GrantedRequest, res: Response, next: NextFunction, erkenningsNummer: string) => {
 
     const messages = getQueryErrors(req.query);
 
@@ -28,10 +28,11 @@ export const vendorDashboardPage = (req: GrantedRequest, res: Response, next: Ne
             getPlaatsvoorkeurenOndernemer(erkenningsNummer),
             getAanmeldingenByOndernemer(erkenningsNummer),
             getToewijzingenByOndernemer(erkenningsNummer),
-            getAfwijzingenByOndernemer(erkenningsNummer)
+            getAfwijzingenByOndernemer(erkenningsNummer),
+            getDaysClosed()
         ])
         .then(
-            ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen, afwijzingen ]) => {
+            ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen, afwijzingen, daysClosed ]) => {
                 res.render('OndernemerDashboard', {
                     role: KeycloakRoles.MARKTONDERNEMER,
                     ondernemer,
@@ -43,7 +44,8 @@ export const vendorDashboardPage = (req: GrantedRequest, res: Response, next: Ne
                     messages,
                     toewijzingen,
                     afwijzingen,
-                    user: getKeycloakUser(req)
+                    user: getKeycloakUser(req),
+                    daysClosed,
                 });
             },
             internalServerErrorPage(res),

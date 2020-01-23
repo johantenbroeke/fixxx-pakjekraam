@@ -36,13 +36,20 @@ import {
     handleAttendanceUpdate
 } from './routes/market-application';
 import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
-import { vendorDashboardPage } from './routes/vendor-dashboard';
+import { dashboardPage } from './routes/dashboard';
 import { plaatsvoorkeurenPage, updatePlaatsvoorkeuren } from './routes/market-location';
 import { activationQRPage } from './routes/activation-qr';
 import { deleteUserPage, deleteUser, publicProfilePage, toewijzingenAfwijzingenPage } from './routes/ondernemer';
 import { langdurigAfgemeld, marktDetail } from './routes/markt';
 
-import { vasteplaatshoudersPage, voorrangslijstPage, voorrangslijstVolledigPage, afmeldingenVasteplaatshoudersPage } from './routes/market-vendors';
+import {
+    vasteplaatshoudersPage,
+    voorrangslijstPage,
+    ondernemersNietIngedeeldPage,
+    afmeldingenVasteplaatshoudersPage,
+    sollicitantentAanwezigheidLijst,
+    alleOndernemersAanwezigheidLijst,
+} from './routes/markt-marktmeester';
 import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
 import { getKeycloakUser } from './keycloak-api';
 import { KeycloakRoles } from './permissions';
@@ -262,21 +269,26 @@ app.get(
     vasteplaatshoudersPage,
 );
 
-// app.get(
-//     '/markt/:marktId/:datum/sollicitanten/',
-//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
-//     sollicitantenPage
-// );
-
 app.get(
     '/markt/:marktId/:datum/voorrangslijst/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     voorrangslijstPage
 );
 
-app.get('/markt/:marktId/:datum/voorrangslijst-volledig/',
+app.get(
+    '/markt/:marktId/:datum/ondernemers-niet-ingedeeld/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    voorrangslijstVolledigPage
+    ondernemersNietIngedeeldPage
+);
+
+app.get('/markt/:marktId/:datum/alle-sollicitanten/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    sollicitantentAanwezigheidLijst
+);
+
+app.get('/markt/:marktId/:datum/alle-ondernemers/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    alleOndernemersAanwezigheidLijst
 );
 
 app.get(
@@ -289,7 +301,7 @@ app.get(
     '/dashboard/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
-        vendorDashboardPage(req, res, next, getErkenningsNummer(req));
+        dashboardPage(req, res, next, getErkenningsNummer(req));
     },
 );
 

@@ -35,6 +35,8 @@ export const THURSDAY = 4;
 export const FRIDAY = 5;
 export const SATURDAY = 6;
 
+export const EXP_ZONE = '?';
+
 export const LF = '\n';
 
 export const monthName = [
@@ -55,11 +57,6 @@ export const monthName = [
 export const formatISODayOfWeek = (day: number) => ISO_WEEK_DAYS[day];
 export const formatDayOfWeek = (date: string) => WEEK_DAYS[new Date(date).getDay()];
 export const formatMonth = (date: string) => monthName[new Date(date).getMonth()];
-
-export const getMaDiWoDoOfToday = () => {
-    const dayOfWeek = WEEK_DAYS[new Date().getDay()];
-    return dayOfWeek.substring(0,2);
-};
 
 export const getMaDiWoDo = (date: Date) => {
     const dayOfWeek = WEEK_DAYS[date.getDay()];
@@ -129,7 +126,6 @@ export const yesterday = (): string => addDays(Date.now(), -1);
 
 export const endOfWeek = (): string => {
     const date = new Date();
-
     return addDays(date.getTime(), DAYS_IN_WEEK - date.getDay());
 };
 
