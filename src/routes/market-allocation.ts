@@ -21,43 +21,45 @@ import { getKeycloakUser } from '../keycloak-api';
 import { GrantedRequest } from 'keycloak-connect';
 
 export const getIndelingslijstData = (marktId: string, marktDate: string) =>
-    Promise.all([
-        getOndernemersByMarkt(marktId),
-        getAanmeldingen(marktId, marktDate),
-        getMarkt(marktId),
-        getMarktPaginas(marktId),
-        getToewijzingen(marktId, marktDate),
-        getMarktGeografie(marktId),
-        getMarktplaatsen(marktId),
-        getPlaatsvoorkeuren(marktId),
-        getVoorkeurenByMarkt(marktId),
-        getAllBranches(),
-    ]).then( result => {
-        const [
-            ondernemers,
-            aanmeldingen,
-            markt,
-            paginas,
-            toewijzingen,
-            geografie,
-            marktplaatsen,
-            plaatsvoorkeuren,
-            voorkeuren,
-            branches,
-        ] = result;
-        return {
-            ondernemers,
-            aanmeldingen,
-            markt,
-            paginas,
-            toewijzingen,
-            obstakels: geografie.obstakels || [],
-            marktplaatsen,
-            plaatsvoorkeuren,
-            voorkeuren,
-            branches
-        };
-    });
+    getMarkt(marktId).then( mmarkt => {
+        return Promise.all([
+            getOndernemersByMarkt(marktId),
+            getAanmeldingen(marktId, marktDate),
+            getMarkt(marktId),
+            getMarktPaginas(mmarkt),
+            getToewijzingen(marktId, marktDate),
+            getMarktGeografie(mmarkt),
+            getMarktplaatsen(mmarkt),
+            getPlaatsvoorkeuren(marktId),
+            getVoorkeurenByMarkt(marktId),
+            getAllBranches(),
+        ]).then( result => {
+            const [
+                ondernemers,
+                aanmeldingen,
+                markt,
+                paginas,
+                toewijzingen,
+                geografie,
+                marktplaatsen,
+                plaatsvoorkeuren,
+                voorkeuren,
+                branches,
+            ] = result;
+            return {
+                ondernemers,
+                aanmeldingen,
+                markt,
+                paginas,
+                toewijzingen,
+                obstakels: geografie.obstakels || [],
+                marktplaatsen,
+                plaatsvoorkeuren,
+                voorkeuren,
+                branches
+            };
+        });
+    })
 
 
 export const indelingslijstPage = (req: GrantedRequest, res: Response) => {

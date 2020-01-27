@@ -1,12 +1,11 @@
 import {
     getALijst,
-    getMarkt,
     getMarkten as getMakkelijkeMarkten,
     getMarktondernemer as getMarktondernemerMM,
     getMarktondernemers as getMarktondernemersMM,
     getMarktondernemersByMarkt as getMarktondernemersByMarktMM,
 } from './makkelijkemarkt-api';
-import { formatOndernemerName, isVast, slugifyMarkt } from './domain-knowledge.js';
+import { formatOndernemerName, isVast } from './domain-knowledge.js';
 import { numberSort, stringSort } from './util';
 import Sequelize from 'sequelize';
 import {
@@ -38,10 +37,10 @@ import { Plaatsvoorkeur } from './model/plaatsvoorkeur.model';
 import { Voorkeur } from './model/voorkeur.model';
 import { convertSollicitatieToOndernemer as convertSollicitatie } from './model/ondernemer.functions';
 
-import { MMOndernemerStandalone } from './makkelijkemarkt.model';
+import { MMMarkt, MMOndernemerStandalone } from './makkelijkemarkt.model';
 
 import * as fs from 'fs';
-import { getMarktEnriched } from './model/markt.functions';
+import { getMarkt } from './model/markt.functions';
 
 const loadJSON = <T>(path: string, defaultValue: T = null): Promise<T> =>
     new Promise((resolve, reject) => {
@@ -278,22 +277,20 @@ export const getPlaatsvoorkeurenOndernemer = (erkenningsNummer: string): Promise
         where: { erkenningsNummer },
     });
 
-export const getMarktProperties = (marktId: string): Promise<IMarktProperties> =>
-    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/markt.json`, {});
+export const getMarktProperties = (markt: MMMarkt): Promise<IMarktProperties> =>
+    loadJSON(`./config/markt/${markt.afkorting}/markt.json`, {});
 
-export const getBranches = (marktId: string): Promise<IBranche[]> =>
-    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/branches.json`, []);
+export const getMarktplaatsen = (markt: MMMarkt): Promise<IMarktplaats[]> =>
+    loadJSON(`./config/markt/${markt.afkorting}/locaties.json`, []);
 
-export const getAllBranches = (): Promise<IBranche[]> => loadJSON('./config/markt/branches.json', []);
+export const getMarktPaginas = (markt: MMMarkt): Promise<IAllocationPrintout> =>
+    loadJSON(`./config/markt/${markt.afkorting}/paginas.json`, []);
 
-export const getMarktplaatsen = (marktId: string): Promise<IMarktplaats[]> =>
-    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/locaties.json`, []);
+export const getMarktGeografie = (markt: MMMarkt): Promise<{ obstakels: IObstakelBetween[] }> =>
+    loadJSON(`./config/markt/${markt.afkorting}/geografie.json`, { obstakels: [] });
 
-export const getMarktPaginas = (marktId: string): Promise<IAllocationPrintout> =>
-    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/paginas.json`, []);
-
-export const getMarktGeografie = (marktId: string): Promise<{ obstakels: IObstakelBetween[] }> =>
-    loadJSON(`./config/markt/${slugifyMarkt(marktId)}/geografie.json`, { obstakels: [] });
+export const getAllBranches = (): Promise<IBranche[]> =>
+    loadJSON('./config/markt/branches.json', []);
 
 export const getMededelingen = (): Promise<any> =>
     loadJSON('./config/markt/mededelingen.json', {});
@@ -346,85 +343,89 @@ export const getMarktondernemersByMarkt = (marktId: string) =>
 
 export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
 
-    const voorkeurenPromise = Voorkeur.findAll({ where: { marktId }, raw: true })
-        .then( voorkeuren => voorkeuren.map(convertVoorkeur));
+    return getMarkt(marktId).then(mmarkt => {
 
-    // Populate the `ondernemer.voorkeur` field
-    const enrichedOndernemers = Promise.all([getMarktondernemersByMarkt(marktId), voorkeurenPromise]).then( result => {
-        return enrichOndernemersWithVoorkeuren(...result);
-    });
+        const voorkeurenPromise = Voorkeur.findAll({ where: { marktId }, raw: true })
+            .then(voorkeuren => voorkeuren.map(convertVoorkeur));
 
-    const getMarktPlaatsenDisabled = Promise.all([
-        getMarkt(marktId),
-        getMarktplaatsen(marktId)
-    ])
-    .then( ([makkelijkemarkt, marktplaatsen]) => {
-        if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
-            const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
-            return marktplaatsen.map( plaats => {
-                geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
-                return plaats;
+        // Populate the `ondernemer.voorkeur` field
+        const enrichedOndernemers = Promise.all([getMarktondernemersByMarkt(marktId), voorkeurenPromise]).then(result => {
+            return enrichOndernemersWithVoorkeuren(...result);
+        });
+
+        const getMarktPlaatsenDisabled = Promise.all([
+            getMarkt(marktId),
+            getMarktplaatsen(mmarkt)
+        ]).then(([makkelijkemarkt, marktplaatsen]) => {
+                if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
+                    const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
+                    return marktplaatsen.map(plaats => {
+                        geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
+                        return plaats;
+                    });
+                } else {
+                    return marktplaatsen;
+                }
             });
-        } else {
-            return marktplaatsen;
-        }
-    });
 
-    return Promise.all([
-        getMarktProperties(marktId),
-        enrichedOndernemers,
-        getMarktPlaatsenDisabled,
-        getAanmeldingen(marktId, marktDate),
-        getPlaatsvoorkeuren(marktId),
-        getAllBranches(),
-        getMarktPaginas(marktId),
-        getMarktGeografie(marktId),
-        getMarkt(marktId),
-        getALijst(marktId, marktDate),
-    ]).then(args => {
-        const [
-            marktProperties,
-            ondernemers,
-            marktplaatsen,
-            aanmeldingen,
-            voorkeuren,
-            branches,
-            paginas,
-            geografie,
-            markt,
-            aLijst,
-        ] = args;
-        return {
-            naam: '?',
-            marktId,
-            marktDate,
-            ...marktProperties,
-            aanmeldingen,
-            voorkeuren,
-            branches,
-            ondernemers,
-            paginas,
-            obstakels: geografie.obstakels || [],
-            markt,
-            marktplaatsen,
-            aanwezigheid: aanmeldingen,
-            aLijst: aLijst.map(({ erkenningsnummer }) =>
-                ondernemers.find(({ erkenningsNummer }) => erkenningsnummer === erkenningsNummer),
-            ),
-            rows: (
-                marktProperties.rows ||
-                paginas.reduce(
-                    (list: string[][], pagina: IAllocationPrintoutPage): string[][] => [
-                        ...list,
-                        ...pagina.indelingslijstGroup
-                            .map(group => (group as IMarketRow).plaatsList)
-                            .filter(Array.isArray),
-                    ],
-                    [],
-                )
-            ).map(row => row.map(plaatsId => marktplaatsen.find(plaats => plaats.plaatsId === plaatsId))),
-        };
-    });
+        return Promise.all([
+            getMarktProperties(mmarkt),
+            enrichedOndernemers,
+            getMarktPlaatsenDisabled,
+            getAanmeldingen(marktId, marktDate),
+            getPlaatsvoorkeuren(marktId),
+            getAllBranches(),
+            getMarktPaginas(mmarkt),
+            getMarktGeografie(mmarkt),
+            getMarkt(marktId),
+            getALijst(marktId, marktDate),
+        ]).then(args => {
+            const [
+                marktProperties,
+                ondernemers,
+                marktplaatsen,
+                aanmeldingen,
+                voorkeuren,
+                branches,
+                paginas,
+                geografie,
+                markt,
+                aLijst,
+            ] = args;
+            return {
+                naam: '?',
+                marktId,
+                marktDate,
+                ...marktProperties,
+                aanmeldingen,
+                voorkeuren,
+                branches,
+                ondernemers,
+                paginas,
+                obstakels: geografie.obstakels || [],
+                markt,
+                marktplaatsen,
+                aanwezigheid: aanmeldingen,
+                aLijst: aLijst.map(({ erkenningsnummer }) =>
+                    ondernemers.find(({ erkenningsNummer }) => erkenningsnummer === erkenningsNummer),
+                ),
+                rows: (
+                    marktProperties.rows ||
+                    paginas.reduce(
+                        (list: string[][], pagina: IAllocationPrintoutPage): string[][] => [
+                            ...list,
+                            ...pagina.indelingslijstGroup
+                                .map(group => (group as IMarketRow).plaatsList)
+                                .filter(Array.isArray),
+                        ],
+                        [],
+                    )
+                ).map(row => row.map(plaatsId => marktplaatsen.find(plaats => plaats.plaatsId === plaatsId))),
+            };
+        });
+
+    })
+
 };
 
 export const getIndelingslijst = (marktId: string, date: string, logInput: boolean = false) =>
@@ -541,7 +542,7 @@ export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
         getMarktondernemersByMarkt(marktId),
         getAanmeldingen(marktId, marktDate),
         getPlaatsvoorkeuren(marktId),
-        getMarktEnriched(marktId),
+        getMarkt(marktId),
         getALijst(marktId, marktDate),
         getToewijzingen(marktId, marktDate),
         getIndelingVoorkeuren(marktId),
@@ -557,6 +558,4 @@ export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
 
 export const getMarkten = () =>
     getMakkelijkeMarkten();
-        // Only show markten for which JSON data with location info exists
-        // .then(markten => markten.filter(markt => fs.existsSync(`config/markt/${slugifyMarkt(markt.id)}/markt.json`)));
 
