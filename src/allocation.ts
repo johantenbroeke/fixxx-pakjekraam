@@ -67,7 +67,7 @@ async function allocate() {
 
         if (!markten.length) {
             console.log('Geen indelingen gedraaid.');
-            process.exit(1);
+            process.exit(0);
         }
 
         const indelingen = await Promise.all(markten.map((markt: MMMarkt) =>
