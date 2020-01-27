@@ -41,7 +41,7 @@ export const plaatsvoorkeurenPage = (
         .then(markten =>
             Promise.all(
                 (currentMarktId ? markten.filter(markt => String(markt.id) === currentMarktId) : markten).map(markt =>
-                    getMarktplaatsen(String(markt.id)).then(marktplaatsen => ({
+                    getMarktplaatsen(markt).then(marktplaatsen => ({
                         ...markt,
                         marktplaatsen,
                     })),

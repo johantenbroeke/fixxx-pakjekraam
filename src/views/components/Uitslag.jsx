@@ -13,7 +13,7 @@ const Component = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen
 
     return (
         <div className="row row--responsive">
-            {markt.kiesJeKraamFase !== 'activatie' || markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+            {markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
                 <UitslagTile
                     title={"Vandaag"}
                     markt={markt}
@@ -25,7 +25,7 @@ const Component = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen
                     afwijzing={afwijzingVandaag}
                     daysClosed={daysClosed}
                 /> : null}
-            {markt.kiesJeKraamFase !== 'activatie' || markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+            {markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
                 <UitslagTile
                     title={"Morgen"}
                     markt={markt}
