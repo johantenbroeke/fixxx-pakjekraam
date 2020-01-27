@@ -8,7 +8,7 @@ const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
 const SollicitatieSpecs = require('./components/SollicitatieSpecs');
 
 const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
-const { INDELINGSTIJDSTIP } = require('../domain-knowledge.js');
+const { INDELINGSTIJDSTIP_TEXT } = require('../domain-knowledge.js');
 
 class VoorkeurenPage extends React.Component {
     propTypes = {
@@ -65,8 +65,8 @@ class VoorkeurenPage extends React.Component {
                     }
                     <SollicitatieSpecs sollicitatie={sollicitatie} />
                     <h1 className="Heading Heading--intro">Plaatsvoorkeuren {markt.naam}</h1>
-                    <p>U kunt uw plaatsvoorkeuren tot {INDELINGSTIJDSTIP} uur wijzigen.<br/>
-                        Wijzigt u uw plaatsvoorkeuren na {INDELINGSTIJDSTIP} uur? Dan gelden de wijzigingen voor de volgende marktdag.
+                    <p>U kunt uw plaatsvoorkeuren tot {INDELINGSTIJDSTIP_TEXT} wijzigen.<br/>
+                        Wijzigt u uw plaatsvoorkeuren na {INDELINGSTIJDSTIP_TEXT}? Dan gelden de wijzigingen voor de eerstvolgende marktdag.
                     </p>
                     { markt.kiesJeKraamFase ? (
                         <p dangerouslySetInnerHTML={{ __html: mededeling[markt.kiesJeKraamFase] }} />
