@@ -32,6 +32,9 @@ export default class IndelingslijstenPage extends React.Component {
 
         const props = this.props as IndelingslijstenPageState;
         const { aanmeldingen, obstakels, marktplaatsen, ondernemers, paginas, markt, datum, type, voorkeuren, branches, role, user } = props;
+
+        console.log(markt);
+
         let { toewijzingen, plaatsvoorkeuren } = props;
         const plaatsList = arrayToObject(marktplaatsen, 'plaatsId');
         const vphl = ondernemersToLocatieKeyValue(ondernemers);
