@@ -73,6 +73,9 @@ class OndernemerDashboard extends React.Component {
                         <a href="/toewijzingen-afwijzingen/" className="Link">Toewijzingen/ afwijzingen</a>
                     </div>
                     <h1 className="Heading Heading--intro">Mijn markten</h1>
+                    { marktenPlusToewijzing.length == 0 ?
+                        <p>U hebt geen sollicitatie voor een markt die digitaal wordt ingedeeld. Klopt dit niet, neem dan contact op met de marktmeesters via 14 020 of <a href="mailto:marktbureau@amsterdam.nl">marktbureau@amsterdam.nl</a>.</p> : null
+                    }
                     <div className="row row--responsive">
                         {marktenPlusToewijzing.map((markt, index) => (
                             <OndernemerMarktTile

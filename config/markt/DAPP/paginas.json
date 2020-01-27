@@ -151,7 +151,7 @@
     ]
   },
   {
-    "title": "Markt 6",
+    "title": "Markt 6 en 7",
     "indelingslijstGroup": [
       {
         "type": "street",
@@ -167,15 +167,6 @@
         "plaatsList": ["147", "149", "151", "153", "155", "157", "159", "161", "163", "165", "167", "169"],
         "title": ""
       },
-      {
-        "type": "street",
-        "title": "Zijstraat"
-      }
-    ]
-  },
-  {
-    "title": "Markt 7",
-    "indelingslijstGroup": [
       {
         "type": "street",
         "title": "Zijstraat"
@@ -197,7 +188,7 @@
     ]
   },
   {
-    "title": "Markt 8",
+    "title": "Markt 8 en 9",
     "indelingslijstGroup": [
       {
         "type": "street",
@@ -216,15 +207,6 @@
       {
         "type": "street",
         "title": "Reinwardtstraat"
-      }
-    ]
-  },
-  {
-    "title": "Markt 9",
-    "indelingslijstGroup": [
-      {
-        "type": "street",
-        "title": "Reinwardtstraat"
       },
       {
         "class": "straat-9a",
@@ -236,6 +218,15 @@
         "plaatsList": ["233", "235", "237", "239", "241", "243", "245", "247", "249"],
         "title": ""
       },
+      {
+        "type": "street",
+        "title": "Dapperplein/ Zijstraat"
+      }
+    ]
+  },
+  {
+    "title": "Dapperplein/zijstraat",
+    "indelingslijstGroup": [
       {
         "type": "street",
         "title": "Dapperplein/ Zijstraat"

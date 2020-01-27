@@ -18,7 +18,7 @@ class ErrorPage extends React.Component {
 
         return (
             <Page>
-                <Header hideLogout={true} />
+                <Header hideLogout={false} />
                 <Content>
                     <h4>
                         Er is een fout opgetreden. <br />
