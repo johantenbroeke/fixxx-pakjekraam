@@ -245,7 +245,7 @@ app.get(
 );
 
 app.get(
-    '/markt/:marktId/:datum/voorrangslijst/',
+    '/markt/:marktId/:datum/a-b-lijst/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     voorrangslijstPage
 );
