@@ -423,9 +423,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
                 ).map(row => row.map(plaatsId => marktplaatsen.find(plaats => plaats.plaatsId === plaatsId))),
             };
         });
-
-    })
-
+    });
 };
 
 export const getIndelingslijst = (marktId: string, date: string, logInput: boolean = false) =>
