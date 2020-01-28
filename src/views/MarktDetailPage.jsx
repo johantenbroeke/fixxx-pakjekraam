@@ -25,6 +25,7 @@ class MarktDetailPage extends React.Component {
         role: PropTypes.string,
         datum: PropTypes.string,
     };
+
     render() {
         const { markt, datum, type, role, user } = this.props;
         const startDate = addDays(today(), -1);

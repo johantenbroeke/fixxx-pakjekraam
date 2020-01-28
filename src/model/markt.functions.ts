@@ -22,7 +22,7 @@ export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
                     plaatsen,
                     paginas
                 };
-            }))
+            }));
 };
 
 export const getMarkt = (marktId: string): Promise<MMMarkt> =>

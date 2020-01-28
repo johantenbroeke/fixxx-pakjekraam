@@ -59,7 +59,7 @@ export const getIndelingslijstData = (marktId: string, marktDate: string) =>
                 branches
             };
         });
-    })
+    });
 
 
 export const indelingslijstPage = (req: GrantedRequest, res: Response) => {
