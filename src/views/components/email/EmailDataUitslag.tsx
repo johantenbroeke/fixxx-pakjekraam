@@ -25,7 +25,7 @@ export class EmailDataUitslag extends React.Component<Properties> {
             <EmailBase lang="nl" appName="Kies je kraam" domain="kiesjekraam.amsterdam.nl" subject={subject}>
                 <EmailContent>
                     { isKraamzetter ?
-                        <p>Beste kramenzetter,</p>:
+                        <p>Beste heer/mevrouw,</p>:
                         <p>Beste marktbeheerder,</p>
                     }
                     <p>Dit is een automatische mail met de indeling van {markt.naam} op {yyyyMmDdtoDDMMYYYY(marktDate)}.</p>
