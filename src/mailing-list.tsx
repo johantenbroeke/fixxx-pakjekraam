@@ -209,7 +209,9 @@ function sendUitslag(markt: any, marktDate: string, toewijzingen: any[], onderne
     />;
     let to = null;
     if (process.env.APP_ENV === 'production') {
-        isKraamzetter ? markt.kiesJeKraamEmailKramenzetter : 'Marktbureau.kiesjekraam@amsterdam.nl,kiesjekraam@gmail.com';
+        isKraamzetter ?
+            to = markt.kiesJeKraamEmailKramenzetter:
+            to = 'Marktbureau.kiesjekraam@amsterdam.nl,kiesjekraam@gmail.com';
     } else {
         to = alternativeEmail;
     }
