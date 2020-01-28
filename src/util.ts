@@ -37,6 +37,8 @@ export const SATURDAY = 6;
 
 export const EXP_ZONE = '?';
 
+export const INDELINGSTYPE__AB_LIJST = 'a/b-lijst';
+
 export const LF = '\n';
 
 export const monthName = [
