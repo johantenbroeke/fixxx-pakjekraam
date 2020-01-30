@@ -106,10 +106,6 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "135",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "141",
       "kraamB": "142",
       "obstakel": ["loopje"]

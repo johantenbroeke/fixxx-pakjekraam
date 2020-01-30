@@ -9,24 +9,14 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import url from 'url';
 import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makkelijkemarkt-api';
-import { requireEnv, today, tomorrow } from './util';
-import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, jsonPage, getQueryErrors, isAbsoluteUrl } from './express-util';
-import { getMarktEnriched, getMarktenEnabled, getMarktenByDate } from './model/markt.functions';
+import { requireEnv } from './util';
+import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, getQueryErrors, isAbsoluteUrl } from './express-util';
+import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
 import cookieParser from 'cookie-parser';
 
 import csrf from 'csurf';
 
 const csrfProtection = csrf({ cookie: true });
-
-import {
-    getIndelingslijst,
-    getIndelingslijstInput,
-    getIndelingVoorkeuren,
-    getAanmeldingen,
-    getPlaatsvoorkeuren,
-    getBranches,
-    getMarkten,
-} from './pakjekraam-api';
 
 import { serverHealth, serverTime, databaseHealth, keycloakHealth, makkelijkeMarktHealth } from './routes/status';
 import { activationPage, handleActivation } from './routes/activation';
@@ -208,21 +198,6 @@ app.get(
 //     }
 // );
 
-// For debug purposes:
-app.get('/markt/index.json', keycloak.protect(KeycloakRoles.MARKTBUREAU), (req: Request, res: Response) => {
-    getMarkten().then(jsonPage(res));
-});
-
-// For debug purposes:
-app.get('/markt/today.json', keycloak.protect(KeycloakRoles.MARKTBUREAU), (req: Request, res: Response) => {
-    getMarktenByDate(today()).then(jsonPage(res));
-});
-
-// For debug purposes:
-app.get('/markt/tomorrow.json', keycloak.protect(KeycloakRoles.MARKTBUREAU), (req: Request, res: Response) => {
-    getMarktenByDate(tomorrow()).then(jsonPage(res));
-});
-
 app.get(
     '/markt/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
@@ -270,7 +245,7 @@ app.get(
 );
 
 app.get(
-    '/markt/:marktId/:datum/voorrangslijst/',
+    '/markt/:marktId/:datum/a-b-lijst/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     voorrangslijstPage
 );
@@ -322,132 +297,6 @@ app.post('/registreren', handleRegistration);
 app.get('/welkom', (req: Request, res: Response) => {
     res.render('AccountCreatedPage', {});
 });
-
-app.get(
-    '/makkelijkemarkt/api/1.1.0/markt/:marktId',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getMarkt(req.params.marktId).then(
-            markt => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(markt));
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end();
-            },
-        );
-    },
-);
-
-app.get(
-    '/makkelijkemarkt/api/1.1.0/markt/',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getMarkten().then(
-            markten => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(markten));
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end();
-            },
-        );
-    },
-);
-
-app.get(
-    '/makkelijkemarkt/api/1.1.0/marktondernemer/erkenningsnummer/:id',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getMarktondernemer(req.params.id).then(
-            ondernemer => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(ondernemer));
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end();
-            },
-        );
-    },
-);
-
-app.get(
-    '/makkelijkemarkt/api/1.1.0/lijst/week/:marktId',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getMarktondernemersByMarkt(req.params.marktId).then(
-            markten => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(markten));
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end();
-            },
-        );
-    },
-);
-
-app.get(
-    '/api/0.0.1/markt/:marktId/branches.json',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getBranches(req.params.marktId).then(
-            branches => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(branches));
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end();
-            },
-        );
-    },
-);
-
-app.get(
-    '/api/0.0.1/markt/:marktId/:date/aanmeldingen.json',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getAanmeldingen(req.params.marktId, req.params.date).then(
-            branches => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(branches));
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end();
-            },
-        );
-    },
-);
-
-app.get(
-    '/api/0.0.1/markt/:marktId/voorkeuren.json',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getPlaatsvoorkeuren(req.params.marktId).then(
-            branches => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(branches));
-            },
-            err => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end();
-            },
-        );
-    },
-);
 
 app.get(
     '/afmelden/:marktId/',
@@ -714,42 +563,6 @@ app.get(
             getErkenningsNummer(req),
             KeycloakRoles.MARKTONDERNEMER
         )
-);
-
-app.get(
-    '/markt/:marktId/:marktDate/markt.json',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getIndelingslijstInput(req.params.marktId, req.params.marktDate).then(
-            (data: any) => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(data, null, '  '));
-            },
-            (err: Error) => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
-            },
-        );
-    },
-);
-
-app.get(
-    '/markt/:marktId/:marktDate/markt-indeling.json',
-    keycloak.protect(KeycloakRoles.MARKTBUREAU),
-    (req: Request, res: Response) => {
-        getIndelingslijst(req.params.marktId, req.params.marktDate).then(
-            (markt: any) => {
-                res.set({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                });
-                res.send(JSON.stringify(markt || [], null, '  '));
-            },
-            (err: Error) => {
-                res.status(HTTP_INTERNAL_SERVER_ERROR).end(`${err}`);
-            },
-        );
-    },
 );
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

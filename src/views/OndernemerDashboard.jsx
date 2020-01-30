@@ -14,8 +14,6 @@ class OndernemerDashboard extends React.Component {
         markten: PropTypes.array,
         plaatsvoorkeuren: PropTypes.array,
         messages: PropTypes.array,
-        startDate: PropTypes.string.isRequired,
-        endDate: PropTypes.string.isRequired,
         toewijzingen: PropTypes.array,
         afwijzingen: PropTypes.array,
         daysClosed: PropTypes.array.isRequired,
@@ -75,6 +73,9 @@ class OndernemerDashboard extends React.Component {
                         <a href="/toewijzingen-afwijzingen/" className="Link">Toewijzingen/ afwijzingen</a>
                     </div>
                     <h1 className="Heading Heading--intro">Mijn markten</h1>
+                    { marktenPlusToewijzing.length == 0 ?
+                        <p>U hebt geen sollicitatie voor een markt die digitaal wordt ingedeeld. Klopt dit niet, neem dan contact op met de marktmeesters via 14 020 of <a href="mailto:marktbureau@amsterdam.nl">marktbureau@amsterdam.nl</a>.</p> : null
+                    }
                     <div className="row row--responsive">
                         {marktenPlusToewijzing.map((markt, index) => (
                             <OndernemerMarktTile

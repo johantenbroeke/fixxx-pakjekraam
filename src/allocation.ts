@@ -1,7 +1,8 @@
 const models = require('./model/index.ts');
 import { getIndelingslijst, getDaysClosed } from './pakjekraam-api';
 
-import { flatten, tomorrow, today, toISODate } from './util';
+import { flatten, getTimezoneTime } from './util';
+import { INDELING_DAG_OFFSET } from './domain-knowledge.js';
 import { convertToewijzingForDB, getToewijzingEnriched } from './model/allocation.functions';
 import { convertAfwijzingForDB, getAfwijzingEnriched } from './model/afwijzing.functions';
 import { getMarktenByDate } from './model/markt.functions';
@@ -10,7 +11,9 @@ import { sequelize } from './model/index';
 import { IToewijzing, IAfwijzing } from 'markt.model';
 import { MMMarkt } from 'makkelijkemarkt.model';
 
-const marktDate = tomorrow();
+const timezoneTime = getTimezoneTime();
+timezoneTime.add(INDELING_DAG_OFFSET, 'days');
+const marktDate = timezoneTime.format('YYYY-MM-DD');
 
 const mapMarktenToToewijzingen = (markten: any): Promise<IToewijzing[]> => {
     return markten
@@ -64,7 +67,7 @@ async function allocate() {
 
         if (!markten.length) {
             console.log('Geen indelingen gedraaid.');
-            process.exit(1);
+            process.exit(0);
         }
 
         const indelingen = await Promise.all(markten.map((markt: MMMarkt) =>

@@ -3,9 +3,11 @@ import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
 import {
     getIndelingVoorkeur,
     getMarktplaatsen,
-    getPlaatsvoorkeurenOndernemer,
     getMededelingen,
 } from '../pakjekraam-api';
+
+const { EXP_ZONE } = require('../util.ts');
+
 import { getQueryErrors, internalServerErrorPage, HTTP_CREATED_SUCCESS } from '../express-util';
 import { upsert } from '../sequelize-util.js';
 import { IPlaatsvoorkeurRow } from '../markt.model';
@@ -39,7 +41,7 @@ export const plaatsvoorkeurenPage = (
         .then(markten =>
             Promise.all(
                 (currentMarktId ? markten.filter(markt => String(markt.id) === currentMarktId) : markten).map(markt =>
-                    getMarktplaatsen(String(markt.id)).then(marktplaatsen => ({
+                    getMarktplaatsen(markt).then(marktplaatsen => ({
                         ...markt,
                         marktplaatsen,
                     })),
@@ -57,6 +59,11 @@ export const plaatsvoorkeurenPage = (
     ]).then(
         ([ondernemer, markten, plaatsvoorkeuren, indelingVoorkeur, markt, mededelingen]) => {
             const sollicitatie = ondernemer.sollicitaties.find( (soll: any) => soll.markt.id === markt.id && !soll.doorgehaald);
+            // Als iemand de status experimenteel heeft mag degene zijn plaatsvoorkeuren niet wijzigen
+            if (role === 'marktondernemer' && sollicitatie.status === EXP_ZONE) {
+                res.status(403);
+                res.send();
+            }
             res.render('VoorkeurenPage', {
                 ondernemer,
                 markten,

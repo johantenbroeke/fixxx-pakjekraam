@@ -1,14 +1,13 @@
 const {
     addDays,
     DAYS_IN_WEEK,
-    SUNDAY,
     formatDayOfWeek,
     formatMonth,
-    nextWeek,
     capitalize,
     relativeHumanDay,
     endOfWeek,
     yyyyMmDdtoDDMMYYYY,
+    INDELINGSTYPE__AB_LIJST
 } = require('../util.ts');
 const React = require('react');
 const PropTypes = require('prop-types');
@@ -16,6 +15,7 @@ const MarktDetailBase = require('./components/MarktDetailBase');
 const AlertLine = require('./components/AlertLine');
 const today = () => new Date().toISOString().replace(/T.+/, '');
 const { getUpcomingMarktDays, parseMarktDag, A_LIJST_DAYS } = require('../domain-knowledge.js');
+
 
 class MarktDetailPage extends React.Component {
     propTypes = {
@@ -28,6 +28,7 @@ class MarktDetailPage extends React.Component {
 
     render() {
         const { markt, datum, type, role, user } = this.props;
+
         const startDate = addDays(today(), -1);
         const endDate = addDays(endOfWeek(), DAYS_IN_WEEK);
         const marktDagen = (markt.marktDagen || []).map(parseMarktDag);
@@ -121,6 +122,13 @@ class MarktDetailPage extends React.Component {
                                                     Afmeldingen vasteplaatshouders
                                                 </a>
                                             </li>
+                                            { A_LIJST_DAYS.includes(new Date(date).getDay()) && markt.indelingstype === INDELINGSTYPE__AB_LIJST ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/a-b-lijst/`} className="Link">
+                                                        A/B lijst
+                                                    </a>
+                                                </li>: null
+                                            }
                                         </ul> : null
                                     }
                                     {markt.kiesJeKraamFase === 'wenperiode' ?
@@ -158,6 +166,13 @@ class MarktDetailPage extends React.Component {
                                                     Afmeldingen vasteplaatshouders
                                                 </a>
                                             </li>
+                                            { A_LIJST_DAYS.includes(new Date(date).getDay()) && markt.indelingstype === INDELINGSTYPE__AB_LIJST ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/a-b-lijst/`} className="Link">
+                                                        A/B lijst
+                                                    </a>
+                                                </li>: null
+                                            }
                                         </ul> : null
                                     }
                                     {markt.kiesJeKraamFase === 'live' ?
@@ -180,13 +195,6 @@ class MarktDetailPage extends React.Component {
                                                     </a>
                                                 </li> : null
                                             }
-                                            {index === 0 ?
-                                                <li className="LinkList__item">
-                                                    <a href={`./${date}/voorrangslijst/`} className="Link">
-                                                        Voorrangslijst
-                                                    </a>
-                                                </li> : null
-                                            }
                                             {index > 0 ?
                                                 <li className="LinkList__item">
                                                     <a href={`./${date}/alle-sollicitanten/`} className="Link">
@@ -199,6 +207,13 @@ class MarktDetailPage extends React.Component {
                                                     Afmeldingen vasteplaatshouders
                                                 </a>
                                             </li>
+                                            { A_LIJST_DAYS.includes(new Date(date).getDay()) && markt.indelingstype === INDELINGSTYPE__AB_LIJST ?
+                                                <li className="LinkList__item">
+                                                    <a href={`./${date}/a-b-lijst/`} className="Link">
+                                                        A/B lijst
+                                                    </a>
+                                                </li>: null
+                                            }
                                         </ul> : null
                                     }
                                 </div>

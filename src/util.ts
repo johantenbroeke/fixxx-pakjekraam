@@ -37,6 +37,8 @@ export const SATURDAY = 6;
 
 export const EXP_ZONE = '?';
 
+export const INDELINGSTYPE__AB_LIJST = 'a/b-lijst';
+
 export const LF = '\n';
 
 export const monthName = [
@@ -113,8 +115,8 @@ export const addMinutesTime = (offsetDate: string | number, minutes: number): Da
     return moment(dateNewTime).tz('Europe/Amsterdam').format();
 };
 
-export const getTimezoneTime = (): Date => {
-    return moment().tz('Europe/Amsterdam').format();
+export const getTimezoneTime = (): any => {
+    return moment().tz('Europe/Amsterdam');
 };
 
 export const getTimezoneHours = (): Number => {
