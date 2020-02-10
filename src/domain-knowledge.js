@@ -46,9 +46,9 @@ const isoMarktDagen = {
 
 const A_LIJST_DAYS = [FRIDAY, SATURDAY, SUNDAY];
 
-const INDELINGSTIJDSTIP = '21:00';
+const INDELINGSTIJDSTIP = '00:00';
 const INDELINGSTIJDSTIP_TEXT = '24 uur middernacht';
-const INDELING_DAG_OFFSET = 1;
+const INDELING_DAG_OFFSET = 0;
 
 const indelingstijdstipInMinutes = () => {
     const hours = parseInt(INDELINGSTIJDSTIP.split(":", 1), 10);
