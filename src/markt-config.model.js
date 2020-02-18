@@ -26,13 +26,14 @@ module.exports = function( INDEX ) {
       items: {
         type: 'object',
         properties: {
-          'id': {
+          'brancheId': {
             type: 'string',
             enum: INDEX.branches,
             required: true
           },
           'verplicht': { type: 'boolean', required: true },
-          'maximumPlaatsen': { type: 'number', minimum: 1 }
+          'maximumPlaatsen': { type: 'number', minimum: 1 },
+          'maximumToewijzingen': { type: 'number', minimum: 1 }
         },
         additionalProperties: false
       }
