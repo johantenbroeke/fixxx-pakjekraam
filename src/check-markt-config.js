@@ -141,11 +141,11 @@ function checkMarket( errors, marketPath ) {
 const VALIDATORS = {
     'branches.json': function( errors, filePath, index ) {
         const validate = ( fileErrors, marketBranches ) => {
-            marketBranches.reduce((unique, { id }, i) => {
-                if (unique.includes(id)) {
-                    fileErrors.push([`DATA[${i}] Duplicate branche '${id}'`]);
+            marketBranches.reduce((unique, { brancheId }, i) => {
+                if (unique.includes(brancheId)) {
+                    fileErrors.push([`DATA[${i}] Duplicate branche '${brancheId}'`]);
                 } else {
-                    unique.push(id);
+                    unique.push(brancheId);
                 }
 
                 return unique;
