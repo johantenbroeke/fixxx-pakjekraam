@@ -277,6 +277,9 @@ export const getPlaatsvoorkeurenOndernemer = (erkenningsNummer: string): Promise
         where: { erkenningsNummer },
     });
 
+export const getMarktBranches = (markt: MMMarkt): Promise<any> =>
+    loadJSON(`./config/markt/${markt.afkorting}/branches.json`, []);
+
 export const getMarktProperties = (markt: MMMarkt): Promise<IMarktProperties> =>
     loadJSON(`./config/markt/${markt.afkorting}/markt.json`, {});
 
@@ -375,6 +378,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
             getAanmeldingen(marktId, marktDate),
             getPlaatsvoorkeuren(marktId),
             getAllBranches(),
+            getMarktBranches(mmarkt),
             getMarktPaginas(mmarkt),
             getMarktGeografie(mmarkt),
             getMarkt(marktId),
@@ -387,11 +391,13 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
                 aanmeldingen,
                 voorkeuren,
                 branches,
+                marktBranches,
                 paginas,
                 geografie,
                 markt,
                 aLijst,
             ] = args;
+
             return {
                 naam: '?',
                 marktId,
@@ -399,16 +405,26 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
                 ...marktProperties,
                 aanmeldingen,
                 voorkeuren,
-                branches,
                 ondernemers,
                 paginas,
                 obstakels: geografie.obstakels || [],
                 markt,
                 marktplaatsen,
                 aanwezigheid: aanmeldingen,
+
+                branches: branches.reduce((result, branche) => {
+                    const marktBranche = marktBranches.find(({ brancheId }) =>
+                        brancheId === branche.brancheId
+                    );
+                    return marktBranche ?
+                           result.concat({ ...branche, ...marktBranche }) :
+                           result.concat(branche);
+                }, []),
+
                 aLijst: aLijst.map(({ erkenningsnummer }) =>
                     ondernemers.find(({ erkenningsNummer }) => erkenningsnummer === erkenningsNummer),
                 ),
+
                 rows: (
                     marktProperties.rows ||
                     paginas.reduce(
