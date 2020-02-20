@@ -200,8 +200,10 @@ const Ondernemer = {
             const brancheToewijzingen = indeling.toewijzingen.filter(({ ondernemer }) =>
                 Ondernemer.isInBranche(ondernemer, branche)
             );
-            const branchePlaatsen = brancheToewijzingen
-                                    .reduce((sum, toewijzing) => sum + toewijzing.plaatsen.length, 0);
+            const branchePlaatsen = brancheToewijzingen.reduce(
+                (sum, toewijzing) => sum + toewijzing.plaatsen.length,
+                0
+            );
 
             return maximumToewijzingen && brancheToewijzingen.length >= maximumToewijzingen ||
                    maximumPlaatsen     && branchePlaatsen >= maximumPlaatsen;

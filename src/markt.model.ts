@@ -170,7 +170,7 @@ export interface IAfwijzing {
 }
 
 export interface IBranche {
-    description: string;
+    description?: string;
     brancheId: BrancheId;
     maximumPlaatsen?: number;
     maximumToewijzingen?: number;
