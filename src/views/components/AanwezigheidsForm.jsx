@@ -141,7 +141,8 @@ class AfmeldForm extends React.Component {
                                 ? `/profile/${ondernemer.erkenningsnummer}?error=aanwezigheid-saved`
                                 : `/markt-detail/${markt.id}?error=aanwezigheid-saved#aanwezigheid`
                             }`}
-                    >Bewaren
+                    >
+                        Bewaren
                     </button>
                 </p>
             </Form>

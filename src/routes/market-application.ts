@@ -22,17 +22,13 @@ export const attendancePage = (
     role: string,
     csrfToken: string,
 ) => {
-
-    const messages = getQueryErrors(query);
-
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
-    const marktenPromise = ondernemerPromise.then(ondernemer =>
-        Promise.all(
-            ondernemer.sollicitaties
-                .map(sollicitatie => String(sollicitatie.markt.id))
-                .map(marktId => getMarkt(marktId)),
-        ),
-    );
+    const marktenPromise = ondernemerPromise.then(ondernemer => {
+        const sollicitaties = ondernemer.sollicitaties.map(sollicitatie =>
+            getMarkt(String(sollicitatie.markt.id))
+        );
+        return Promise.all(sollicitaties);
+    });
 
     return Promise.all([
         ondernemerPromise,
@@ -40,26 +36,26 @@ export const attendancePage = (
         getAanmeldingenByOndernemer(erkenningsNummer),
         getMarktEnriched(currentMarktId),
         getMededelingen()
-    ]).then(
-        ([ondernemer, markten, aanmeldingen, markt, mededelingen]) => {
-            res.render('AfmeldPage', {
-                messages,
-                ondernemer,
-                aanmeldingen,
-                markten,
-                markt,
-                startDate: today(),
-                endDate: nextWeek(),
-                currentMarktId,
-                query,
-                role,
-                mededelingen,
-                csrfToken,
-                user: getKeycloakUser(req)
-            });
-        },
-        err => internalServerErrorPage(res)(err),
-    );
+    ])
+    .then(([ondernemer, markten, aanmeldingen, markt, mededelingen]) => {
+        const messages = getQueryErrors(query);
+        res.render('AfmeldPage', {
+            messages,
+            ondernemer,
+            aanmeldingen,
+            markten,
+            markt,
+            startDate: today(),
+            endDate: nextWeek(),
+            currentMarktId,
+            query,
+            role,
+            mededelingen,
+            csrfToken,
+            user: getKeycloakUser(req)
+        });
+    })
+    .catch(err => internalServerErrorPage(res)(err));
 };
 
 export interface AttendanceUpdateFormData {
@@ -72,7 +68,12 @@ export interface AttendanceUpdateFormData {
     next: string;
 }
 
-export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFunction, erkenningsNummer: string) => {
+export const handleAttendanceUpdate = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    erkenningsNummer: string
+) => {
     const data: AttendanceUpdateFormData = req.body;
     /*
      * TODO: Form data format validation
@@ -88,62 +89,52 @@ export const handleAttendanceUpdate = (req: Request, res: Response, next: NextFu
     );
 
     const getConflictingApplicationsPromise = Promise.all(responses.map(getConflictingApplications))
-        .then(conflicts => {
-            return conflicts.reduce(flatten, []);
-        });
+    .then(conflicts => conflicts.reduce(flatten, []));
 
     const getConflictingSollicitatiesPromise = Promise.all(responses.map(getConflictingSollicitaties))
-    .then(conflicts => {
-            return conflicts.reduce(flatten, []);
-        });
+    .then(conflicts => conflicts.reduce(flatten, []));
 
     Promise.all([
         getConflictingApplicationsPromise,
         getConflictingSollicitatiesPromise,
         getMarktenEnabled()
     ])
-        .then(([conflictingApplication, conflictingSollicitaties, markten]) => {
-
-            if (conflictingApplication.length > 0 || conflictingSollicitaties.length > 0 ) {
-
-                // Hide other messages when there is a conflicting sollicitatie
-                if (conflictingSollicitaties.length > 0) {
-                    conflictingApplication = [];
-                }
-
-                const messagesApplication = conflictingApplication
-                    .map(application => {
-                        const marktnaam = markten.find(markt => markt.id === parseInt(application.marktId)).naam;
-                        return `U hebt zich al aangemeld voor <strong> ${marktnaam} </strong> op ${moment(application.marktDate).format('DD-MM-YYYY')}. Inschrijven voor meerdere markten is niet mogelijk.`;
-                    });
-
-                const messagesSollicitaties = conflictingSollicitaties
-                    .map(sollicitatie => {
-                        return `U bent vasteplaatshouder op ${sollicitatie.markt.naam} en u bent hier niet afgemeld. Inschrijven voor meerdere markten op dezelfde dag(en) is niet mogelijk.`;
-                    });
-
-                const messages = messagesApplication.concat(messagesSollicitaties);
-
-                res.redirect(`./?error=${messages}`);
-            } else {
-                Promise.all(
-                    responses.map(response => {
-                        const { marktId, marktDate } = response;
-
-                        return upsert(
-                            models.rsvp,
-                            {
-                                erkenningsNummer,
-                                marktId,
-                                marktDate,
-                            },
-                            response,
-                        );
-                    }),
-                ).then(
-                    () => res.status(HTTP_CREATED_SUCCESS).redirect(req.body.next),
-                    error => internalServerErrorPage(res)(String(error)),
-                );
+    .then(([conflictingApplication, conflictingSollicitaties, markten]) => {
+        if (conflictingApplication.length > 0 || conflictingSollicitaties.length > 0 ) {
+            // Hide other messages when there is a conflicting sollicitatie
+            if (conflictingSollicitaties.length > 0) {
+                conflictingApplication = [];
             }
-        });
+
+            const messagesApplication = conflictingApplication
+            .map(application => {
+                const marktnaam = markten.find(markt => markt.id === parseInt(application.marktId)).naam;
+                return `U hebt zich al aangemeld voor <strong> ${marktnaam} </strong> op ${moment(application.marktDate).format('DD-MM-YYYY')}. Inschrijven voor meerdere markten is niet mogelijk.`;
+            });
+
+            const messagesSollicitaties = conflictingSollicitaties
+            .map(sollicitatie => {
+                return `U bent vasteplaatshouder op ${sollicitatie.markt.naam} en u bent hier niet afgemeld. Inschrijven voor meerdere markten op dezelfde dag(en) is niet mogelijk.`;
+            });
+
+            const messages = messagesApplication.concat(messagesSollicitaties);
+
+            res.redirect(`./?error=${messages}`);
+        } else {
+            const queries = responses.map(response => {
+                const { marktId, marktDate } = response;
+
+                return upsert(
+                    models.rsvp,
+                    { erkenningsNummer, marktId, marktDate },
+                    response
+                );
+            });
+
+            Promise.all(queries).then(
+                () => res.status(HTTP_CREATED_SUCCESS).redirect(req.body.next),
+                error => internalServerErrorPage(res)(String(error))
+            );
+        }
+    });
 };
