@@ -37,7 +37,11 @@ export const getMarktenEnabled = () => {
 };
 
 export const marktZichtbaarOndernemers = (markt: any) => {
-    return (markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'activatie') && markt.kiesJeKraamActief;
+    return markt.kiesJeKraamActief && (
+        markt.kiesJeKraamFase === 'wenperiode' ||
+        markt.kiesJeKraamFase === 'live' ||
+        markt.kiesJeKraamFase === 'activatie'
+    );
 };
 
 export const getMarktenZichtbaarOndernemers = () => {

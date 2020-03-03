@@ -37,7 +37,15 @@ export const attendancePage = (
         getMarktEnriched(currentMarktId),
         getMededelingen()
     ])
-    .then(([ondernemer, markten, aanmeldingen, markt, mededelingen]) => {
+    .then(results => {
+        const [
+            ondernemer,
+            markten,
+            aanmeldingen,
+            markt,
+            mededelingen
+        ] = results;
+
         const messages = getQueryErrors(query);
         res.render('AfmeldPage', {
             messages,
