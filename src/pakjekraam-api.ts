@@ -442,23 +442,40 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
     });
 };
 
-export const getIndelingslijst = (marktId: string, date: string, logInput: boolean = false) =>
-    getIndelingslijstInput(marktId, date).then(data => {
-        if (logInput) {
-            log.create({
-                level: 'debug',
-                msg: `Marktindeling voor '${data.markt.naam}' (${marktId}) op ${date}`,
-                meta: data
-            });
-        }
+export const getIndelingslijst = (marktId: string, date: string, logInput: boolean = false) => {
+    return getIndelingslijstInput(marktId, date)
+    .then(data => {
+        data = JSON.parse(JSON.stringify(data));
 
+        if (!logInput) {
+            return data;
+        } else {
+            return log.create({
+                level: 'debug',
+                msg: `Input indelingsberekening voor '${data.markt.naam}' (${marktId}) op ${date}`,
+                meta: data
+            })
+            .then(() => data);
+        }
+    })
+    .then(data => {
         const logMessage = `Marktindeling berekenen: ${data.markt.naam}`;
         console.time(logMessage);
         const indeling = calcToewijzingen(data);
         console.timeEnd(logMessage);
 
-        return indeling;
+        if (!logInput) {
+            return indeling;
+        } else {
+            return log.create({
+                level: 'debug',
+                msg: `Output indelingsberekening voor '${data.markt.naam}' (${marktId}) op ${date}`,
+                meta: indeling
+            })
+            .then(() => indeling);
+        }
     });
+};
 
 export const getToewijzingslijst = (marktId: string, marktDate: string) =>
     // TODO: Request only necessary data, `getIndelingslijstInput` returns too much
