@@ -29,3 +29,5 @@ node_modules/
 *.log
 dist/
 tmp/
+.ash_history
+.env_prod
