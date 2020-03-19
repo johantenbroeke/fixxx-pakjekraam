@@ -13,6 +13,16 @@ import moment from 'moment';
 import { getKeycloakUser } from '../keycloak-api';
 import { GrantedRequest } from 'keycloak-connect';
 
+export interface AttendanceUpdateFormData {
+    erkenningsNummer: string;
+    rsvp: {
+        marktId: string;
+        marktDate: string;
+        attending: string;
+    }[];
+    next: string;
+}
+
 export const attendancePage = (
     req: GrantedRequest,
     res: Response,
@@ -65,16 +75,6 @@ export const attendancePage = (
     })
     .catch(err => internalServerErrorPage(res)(err));
 };
-
-export interface AttendanceUpdateFormData {
-    erkenningsNummer: string;
-    rsvp: {
-        marktId: string;
-        marktDate: string;
-        attending: string;
-    }[];
-    next: string;
-}
 
 export const handleAttendanceUpdate = (
     req: Request,

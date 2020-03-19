@@ -7,21 +7,22 @@ import { getSollicitatiesByMarktFases } from '../makkelijkemarkt-api';
 import { isVast } from '../domain-knowledge';
 
 export const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<IRSVP[]> =>
-    rsvp
-        .findAll<RSVP>({
-            where: { erkenningsNummer },
-            raw: true,
-        })
-        .then(aanmeldingen => aanmeldingen);
+    rsvp.findAll<RSVP>({
+        where: { erkenningsNummer },
+        raw: true,
+    })
+    .then(aanmeldingen => aanmeldingen);
 
 
-export const getAanmeldingenByMarktAndDate = (marktId: string, marktDate: string): Promise<IRSVP[]> =>
-    rsvp
-        .findAll<RSVP>({
-            where: { marktId, marktDate },
-            raw: true,
-        })
-        .then(aanmeldingen => aanmeldingen);
+export const getAanmeldingenByMarktAndDate = (
+    marktId: string,
+    marktDate: string
+): Promise<IRSVP[]> =>
+    rsvp.findAll<RSVP>({
+        where: { marktId, marktDate },
+        raw: true,
+    })
+    .then(aanmeldingen => aanmeldingen);
 
 
 export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) =>
@@ -31,47 +32,55 @@ export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) =>
  * Vendors are allowed to attend only one market per day.
  * Check if a vendor wants to apply for a market, while on the same day it has applied for others.
  */
-export const isConflictingApplication = (aanmeldingen: IRSVP[], application: IRSVP): IRSVP[] => {
-    if (application.attending) {
-        const conflictingAanmeldingen = aanmeldingen
-            .filter(a => String(a.marktId) !== String(application.marktId))
-            .filter(a => a.marktDate === application.marktDate)
-            .filter(a => a.attending !== null && !!a.attending);
-        return conflictingAanmeldingen;
-    } else {
+export const isConflictingApplication = (
+    aanmeldingen: IRSVP[],
+    aanmelding: IRSVP
+): IRSVP[] => {
+    if (!aanmelding.attending) {
         return [];
     }
+
+    return aanmeldingen.filter(_aanmelding =>
+        String(_aanmelding.marktId) !== String(aanmelding.marktId) &&
+        _aanmelding.marktDate === aanmelding.marktDate &&
+        _aanmelding.attending !== null && !!_aanmelding.attending
+    );
 };
 
-export const isConflictingSollicitatie = (aanmeldingen: IRSVP[], sollicitaties: MMSollicitatie[], application: IRSVP): MMSollicitatie[] => {
-
-    if (application.attending) {
-
-        const afmeldingen = aanmeldingen
-            .filter(a => !a.attending)
-            .filter(a => String(a.marktId) !== String(application.marktId))
-            .filter(a => a.marktDate === application.marktDate);
-
-        const conflictingSollicitatiesVPH = sollicitaties
-            .filter(sollicitatie => String(sollicitatie.markt.id) !== String(application.marktId))
-            .filter(sollicitatie => isVast(sollicitatie.status))
-            .filter(sollicitatie => !afmeldingen.find(afmelding => parseInt(afmelding.marktId) === sollicitatie.markt.id));
-
-        return conflictingSollicitatiesVPH;
-    } else {
+export const isConflictingSollicitatie = (
+    aanmeldingen: IRSVP[],
+    sollicitaties: MMSollicitatie[],
+    aanmelding: IRSVP
+): MMSollicitatie[] => {
+    if (!aanmelding.attending) {
         return [];
     }
+
+    const afmeldingen = aanmeldingen.filter(_aanmelding =>
+        !_aanmelding.attending &&
+        String(_aanmelding.marktId) !== String(aanmelding.marktId) &&
+        _aanmelding.marktDate === aanmelding.marktDate
+    );
+
+    return sollicitaties.filter(sollicitatie =>
+        String(sollicitatie.markt.id) !== String(aanmelding.marktId) &&
+        isVast(sollicitatie.status) &&
+        !afmeldingen.find(afmelding => parseInt(afmelding.marktId) === sollicitatie.markt.id)
+    );
 };
 
-export const getConflictingSollicitaties = (application: IRSVP): Promise<MMSollicitatie[]> =>
-    Promise.all([getAanmeldingenByOndernemer(application.erkenningsNummer), getSollicitatiesByMarktFases(application.erkenningsNummer, ['activate','wenperiode','live'])])
-        .then( ([aanmeldingen, sollicitaties]) => {
-            return isConflictingSollicitatie(aanmeldingen, sollicitaties, application);
-        });
+export const getConflictingSollicitaties = (aanmelding: IRSVP): Promise<MMSollicitatie[]> =>
+    Promise.all([
+        getAanmeldingenByOndernemer(aanmelding.erkenningsNummer),
+        getSollicitatiesByMarktFases(aanmelding.erkenningsNummer, ['activate','wenperiode','live'])
+    ])
+    .then( ([aanmeldingen, sollicitaties]) =>
+        isConflictingSollicitatie(aanmeldingen, sollicitaties, aanmelding)
+    );
 
 
-export const getConflictingApplications = (application: IRSVP): Promise<IRSVP[]> =>
-    getAanmeldingenByOndernemer(application.erkenningsNummer)
-        .then( (aanmeldingen) =>
-            isConflictingApplication(aanmeldingen, application)
-        );
+export const getConflictingApplications = (aanmelding: IRSVP): Promise<IRSVP[]> =>
+    getAanmeldingenByOndernemer(aanmelding.erkenningsNummer)
+    .then(aanmeldingen =>
+        isConflictingApplication(aanmeldingen, aanmelding)
+    );
