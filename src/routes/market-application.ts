@@ -27,6 +27,84 @@ export const attendancePage = (
     req: GrantedRequest,
     res: Response,
     erkenningsNummer: string,
+    query: any,
+    role: string,
+    csrfToken: string,
+) => {
+    const ondernemerPromise = getMarktondernemer(erkenningsNummer);
+
+    const marktenPromise = ondernemerPromise
+    .then(({ sollicitaties }) => {
+        const markten = sollicitaties.reduce((result, sollicitatie) => {
+            return !sollicitatie.doorgehaald ?
+                   result.concat(getMarkt(String(sollicitatie.markt.id))) :
+                   result;
+        }, []);
+
+        return Promise.all(markten);
+    })
+    .then(markten => {
+        return markten.filter(markt => markt.kiesJeKraamActief);
+    });
+
+    return Promise.all([
+        ondernemerPromise,
+        marktenPromise,
+        getAanmeldingenByOndernemer(erkenningsNummer),
+        getMededelingen()
+    ])
+    .then(results => {
+        const [
+            ondernemer,
+            markten,
+            aanmeldingen,
+            mededelingen
+        ] = results;
+
+        const currentWeek = moment().week();
+        const nextWeek    = moment().add(1, 'weeks').week();
+
+        const aanmeldingenPerMarkt = aanmeldingen.reduce((result, aanmelding) => {
+            const marktWeek = moment(aanmelding.marktDate).week();
+
+            if( marktWeek !== currentWeek && marktWeek !== nextWeek) {
+                return result;
+            }
+
+            const marktId = aanmelding.marktId;
+            result[marktId] = result[marktId] ?
+                              result[marktId].concat(aanmelding) :
+                              [aanmelding];
+
+            return result;
+        }, {});
+
+        const sollicitaties = ondernemer.sollicitaties.reduce((result, sollicitatie) => {
+            result[sollicitatie.markt.id] = sollicitatie;
+            return result;
+        }, {});
+
+        const messages = getQueryErrors(query);
+        res.render('AanwezigheidPage', {
+            aanmeldingenPerMarkt,
+            csrfToken,
+            markten,
+            mededelingen,
+            messages,
+            ondernemer,
+            query,
+            role,
+            sollicitaties,
+            user: getKeycloakUser(req)
+        });
+    })
+    .catch(err => internalServerErrorPage(res)(err));
+};
+
+export const marketAttendancePage = (
+    req: GrantedRequest,
+    res: Response,
+    erkenningsNummer: string,
     currentMarktId: string,
     query: any,
     role: string,
@@ -76,7 +154,7 @@ export const attendancePage = (
     .catch(err => internalServerErrorPage(res)(err));
 };
 
-export const handleAttendanceUpdate = (
+export const handleMarketAttendanceUpdate = (
     req: Request,
     res: Response,
     next: NextFunction,

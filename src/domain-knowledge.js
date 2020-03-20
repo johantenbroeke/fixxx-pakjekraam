@@ -148,8 +148,6 @@ const filterRsvpListOndernemer = (aanmeldingen, markt, startDate) => {
 };
 
 const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
-    let rsvpIndex = 0;
-
     const dates = getMarktDays(
         startDate ? startDate : addDays(Date.now(), 1),
         endDate ? endDate : addDays(endOfWeek(), DAYS_IN_WEEK),
@@ -157,11 +155,9 @@ const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
     );
 
     const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
-    // TODO: Replace non-pure `rsvpIndex` with grouping by `markt.id` afterwards
     const rsvpList = dates.map(date => ({
         date,
-        rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date),
-        index: rsvpIndex++,
+        rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date)
     }));
 
     return rsvpList;

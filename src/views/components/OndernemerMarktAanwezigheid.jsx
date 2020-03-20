@@ -10,7 +10,7 @@ const OndernemerMarktAanwezigheid = ({ markt, rsvpEntries, sollicitatie, onderne
     const lastDivider = false;
 
     const weekAanmeldingen = rsvpEntries.reduce(
-        (t, { date, rsvp, index }, i) => {
+        (t, { date, rsvp }, i) => {
             const week = new Date(date) > new Date(endOfWeek()) ? 1 : 0;
             const attending = rsvp ? rsvp.attending : sollicitatie.status === 'vkk' || sollicitatie.status === 'vpl';
             t[week].push([
