@@ -16,6 +16,7 @@ __MACOSX
 .env-acc
 .env-old
 .env-acc
+.env-prod
 docker-compose.override.yml
 docker-compose-dev.override.yml
 
