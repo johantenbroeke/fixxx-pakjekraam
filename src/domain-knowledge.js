@@ -149,7 +149,7 @@ const filterRsvpListOndernemer = (aanmeldingen, markt, startDate) => {
 
 const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
     const dates = getMarktDays(
-        startDate ? startDate : addDays(Date.now(), 1),
+        startDate ? startDate : addDays(moment().day(0).valueOf(), 0),
         endDate ? endDate : addDays(endOfWeek(), DAYS_IN_WEEK),
         (markt.marktDagen || []).map(parseMarktDag),
     );

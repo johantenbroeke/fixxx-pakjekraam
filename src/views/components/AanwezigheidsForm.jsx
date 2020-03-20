@@ -54,17 +54,18 @@ class AanwezigheidsForm extends React.Component {
         const aanmeldingenPerMarkt = markten.map(markt => {
             const aanmeldingenFiltered = filterRsvpList(
                 aanmeldingen[markt.id].filter(aanmelding => aanmelding.marktId === markt.id),
-                markt,
-                startDate
+                markt
             );
 
             const aanmeldingenPerWeek = aanmeldingenFiltered.reduce((result, { date, rsvp }) => {
-                const week = new Date(date) > new Date(endOfWeek()) ? 1 : 0;
-                const attending = rsvp ? rsvp.attending : isVast(sollicitaties[markt.id].status);
+                const week        = new Date(date) > new Date(endOfWeek()) ? 1 : 0;
+                const attending   = rsvp ? rsvp.attending : isVast(sollicitaties[markt.id].status);
+                const isInThePast = Date.parse(date) <= Date.now();
 
                 result[week].push({
                     date,
-                    attending
+                    attending,
+                    isInThePast
                 });
 
                 return result;
@@ -101,13 +102,14 @@ class AanwezigheidsForm extends React.Component {
                             {i === 0 ? 'Deze week' : 'Volgende week'}
                         </span>
                         <ul className="CheckboxList">
-                            {week.map(({ date, attending }) => (
+                            {week.map(({ date, attending, isInThePast }) => (
                                 <li key={++index}>
                                     <input type="hidden" name={`rsvp[${index}][marktId]`} defaultValue={markt.id} />
                                     <input type="hidden" name={`rsvp[${index}][marktDate]`} defaultValue={date} />
 
                                     <span className="InputField InputField--checkbox InputField--afmelden">
                                         <input
+                                            disabled={isInThePast}
                                             id={`rsvp-${index}`}
                                             name={`rsvp[${index}][attending]`}
                                             type="checkbox"
