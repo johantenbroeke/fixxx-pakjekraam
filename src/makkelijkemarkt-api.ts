@@ -86,8 +86,22 @@ const apiBase = (url: string): Promise<AxiosResponse> => {
 export const getMarktondernemers = (): Promise<MMSollicitatieStandalone[]> =>
     apiBase('koopman/').then(response => response.data);
 
-export const getMarktondernemer = (id: string): Promise<MMOndernemerStandalone> =>
-    apiBase(`koopman/erkenningsnummer/${id}`).then(response => response.data);
+export const getMarktondernemer = (id: string): Promise<MMOndernemerStandalone> => {
+    return apiBase(`koopman/erkenningsnummer/${id}`)
+    .then(response => {
+        if (!response || !response.data) {
+            return Promise.reject(Error('Ondernemer niet gevonden'));
+        }
+
+        // Filter inactieve sollicitaties, aangezien we die nooit gebruiken binnen
+        // dit systeem.
+        const ondernemer = response.data;
+        ondernemer.sollicitaties = ondernemer.sollicitaties.filter(sollicitatie =>
+            !sollicitatie.doorgehaald
+        );
+        return ondernemer;
+    });
+};
 
 export const getMarkt = (marktId: string): Promise<MMMarkt> =>
     apiBase(`markt/${marktId}`).then(response => response.data);
