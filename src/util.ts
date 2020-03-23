@@ -26,6 +26,7 @@ export const ISO_SATURDAY = 6;
 export const ISO_SUNDAY = 7;
 
 export const WEEK_DAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+export const WEEK_DAYS_SHORT = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
 
 export const SUNDAY = 0;
 export const MONDAY = 1;
@@ -58,6 +59,7 @@ export const monthName = [
 
 export const formatISODayOfWeek = (day: number) => ISO_WEEK_DAYS[day];
 export const formatDayOfWeek = (date: string) => WEEK_DAYS[new Date(date).getDay()];
+export const formatDayOfWeekShort = (date: string) => WEEK_DAYS_SHORT[new Date(date).getDay()];
 export const formatMonth = (date: string) => monthName[new Date(date).getMonth()];
 
 export const getMaDiWoDo = (date: Date) => {

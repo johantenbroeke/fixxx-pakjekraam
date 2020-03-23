@@ -5,7 +5,7 @@ const PropTypes = require('prop-types');
 const SollicitatieSpecs = require('./SollicitatieSpecs');
 
 const {
-    formatDayOfWeek,
+    formatDayOfWeekShort,
     formatDate,
     endOfWeek,
     addDays,
@@ -81,7 +81,7 @@ class AanwezigheidsForm extends React.Component {
         let index = -1;
 
         return (
-        <Form decorator="" csrfToken={csrfToken}>
+        <Form className="AanwezigheidsForm" decorator="" csrfToken={csrfToken}>
             <input
                 id="erkenningsNummer"
                 name="erkenningsNummer"
@@ -97,36 +97,30 @@ class AanwezigheidsForm extends React.Component {
                 </h1>
 
                 {aanmeldingenPerWeek.map((week, i) => (
-                    <div key={i}>
-                        <span className="OndernemerMarktAanwezigheid__divider">
-                            {i === 0 ? 'Deze week' : 'Volgende week'}
-                        </span>
-                        <ul className="CheckboxList">
-                            {week.map(({ date, attending, isInThePast }) => (
-                                <li key={++index}>
-                                    <input type="hidden" name={`rsvp[${index}][marktId]`} defaultValue={markt.id} />
-                                    <input type="hidden" name={`rsvp[${index}][marktDate]`} defaultValue={date} />
+                <>
+                <h3>{i === 0 ? 'Deze week' : 'Volgende week'}</h3>
 
-                                    <span className="InputField InputField--checkbox InputField--afmelden">
-                                        <input
-                                            disabled={isInThePast}
-                                            id={`rsvp-${index}`}
-                                            name={`rsvp[${index}][attending]`}
-                                            type="checkbox"
-                                            defaultValue="true"
-                                            defaultChecked={attending}
-                                        />
-                                        <label htmlFor={`rsvp-${index}`}>
-                                            <span className="InputField--afmelden__main">
-                                                <strong>{formatDayOfWeek(date)}</strong>
-                                            </span>
-                                            <span className="InputField--afmelden__date">{formatDate(date)}</span>
-                                        </label>
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                <div className="week">
+                {week.map(({ date, attending, isInThePast }) => (
+                    <span className="day" key={++index}>
+                        <input type="hidden" name={`rsvp[${index}][marktId]`} defaultValue={markt.id} />
+                        <input type="hidden" name={`rsvp[${index}][marktDate]`} defaultValue={date} />
+
+                        <input
+                            disabled={isInThePast}
+                            id={`rsvp-${index}`}
+                            name={`rsvp[${index}][attending]`}
+                            type="checkbox"
+                            defaultValue="true"
+                            defaultChecked={attending}
+                        />
+                        <label htmlFor={`rsvp-${index}`}>
+                            <strong>{formatDayOfWeekShort(date)}</strong>
+                        </label>
+                    </span>
+                ))}
+                </div>
+                </>
                 ))}
             </>
             ))}
