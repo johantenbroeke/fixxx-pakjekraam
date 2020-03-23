@@ -114,15 +114,17 @@ const Indeling = {
         openPlaatsen: IMarktplaats[] = indeling.openPlaatsen
     ): IMarktindeling => {
         try {
-            if (
-                !Ondernemer.hasVastePlaatsen(ondernemer) &&
-                Ondernemer.isInMaxedOutBranche(indeling, ondernemer)
-            ) {
+            const available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
+            const startSize = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
+            const size      = Ondernemer.hasVastePlaatsen(ondernemer) ?
+                              startSize :
+                              Math.min(available, startSize);
+
+            if (!Ondernemer.hasVastePlaatsen(ondernemer) && !size) {
                 throw BRANCHE_FULL;
             }
 
             const anywhere      = Ondernemer.acceptsRandomAllocation(ondernemer);
-            const size          = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(
                 indeling, queue, ondernemer, openPlaatsen, size, anywhere
             );
@@ -331,8 +333,11 @@ const Indeling = {
         queue.forEach((toewijzing, i) => {
             const { ondernemer, plaatsen } = toewijzing;
 
-            const openAdjacent = Markt.getAdjacentPlaatsen(indeling, plaatsen, 1);
-            const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, remainingQueue, ondernemer, openAdjacent, 1, true);
+            const available         = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
+            const openAdjacent      = Markt.getAdjacentPlaatsen(indeling, plaatsen, 1);
+            const uitbreidingPlaats = available ?
+                                      Indeling._findBestePlaatsen(indeling, remainingQueue, ondernemer, openAdjacent, 1, true)[0] :
+                                      null;
 
             // Nog voordat we controleren of deze ondernemer in deze iteratie eigenlijk wel kan
             // uitbreiden (zie `canExpandInIteration` in de `else`) bekijken we of er wel een
@@ -395,6 +400,39 @@ const Indeling = {
         return totalSpots > minRequired ? happySize :
                totalSpots > 0           ? startSize :
                                           0;
+    },
+
+    _countAvailablePlaatsenFor: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): number => {
+        const branches  = Ondernemer.getBranches(indeling, ondernemer);
+        const available = indeling.openPlaatsen.length;
+
+        return branches.reduce((result, branche) => {
+            if (!result) {
+                return 0;
+            }
+
+            const { maximumToewijzingen, maximumPlaatsen } = branche;
+            const brancheToewijzingen = indeling.toewijzingen.filter(({ ondernemer }) =>
+                Ondernemer.isInBranche(ondernemer, branche)
+            );
+            const branchePlaatsen = brancheToewijzingen.reduce((sum, { plaatsen }) => {
+                return sum + plaatsen.length;
+            }, 0);
+            const counts = [result];
+
+            if (maximumToewijzingen) {
+                counts.push(Math.max(0, maximumToewijzingen - brancheToewijzingen.length));
+            }
+
+            if (maximumPlaatsen) {
+                counts.push(Math.max(0, maximumPlaatsen - branchePlaatsen));
+            }
+
+            return Math.min(...counts);
+        }, available);
     },
 
     _findBestGroup: (

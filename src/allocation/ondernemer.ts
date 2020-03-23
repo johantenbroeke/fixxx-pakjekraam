@@ -32,8 +32,7 @@ const Ondernemer = {
         const targetSize  = Ondernemer.getTargetSize(ondernemer);
         const maxSize     = Math.min(targetSize, iteration);
 
-        return currentSize < maxSize &&
-               !Ondernemer.isInMaxedOutBranche(indeling, ondernemer);
+        return currentSize < maxSize;
     },
 
     getBrancheIds: (ondernemer: IMarktondernemer): BrancheId[] => {
@@ -184,30 +183,6 @@ const Ondernemer = {
     ): boolean => {
         const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheIds.includes(branche.brancheId);
-    },
-
-    isInMaxedOutBranche: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): boolean => {
-        const branches = Ondernemer.getBranches(indeling, ondernemer);
-
-        // For each branche this ondernemer is in, find out if it has already
-        // exceeded the maximum amount of toewijzingen or the maximum amount
-        // of plaatsen.
-        return !!branches.find(branche => {
-            const { maximumToewijzingen, maximumPlaatsen } = branche;
-            const brancheToewijzingen = indeling.toewijzingen.filter(({ ondernemer }) =>
-                Ondernemer.isInBranche(ondernemer, branche)
-            );
-            const branchePlaatsen = brancheToewijzingen.reduce(
-                (sum, toewijzing) => sum + toewijzing.plaatsen.length,
-                0
-            );
-
-            return maximumToewijzingen && brancheToewijzingen.length >= maximumToewijzingen ||
-                   maximumPlaatsen     && branchePlaatsen >= maximumPlaatsen;
-        });
     },
 
     isVast: (ondernemer: IMarktondernemer): boolean => {
