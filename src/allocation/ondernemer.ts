@@ -41,8 +41,8 @@ const Ondernemer = {
     },
 
     getBranches: (
-        markt: IMarkt,
-        ondernemer: IMarktondernemer
+        ondernemer: IMarktondernemer,
+        markt: IMarkt
     ): IBranche[] => {
         const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheIds.reduce((branches, brancheId) => {
@@ -168,7 +168,7 @@ const Ondernemer = {
         markt: IMarkt,
         ondernemer: IMarktondernemer
     ): boolean => {
-        const branches = Ondernemer.getBranches(markt, ondernemer);
+        const branches = Ondernemer.getBranches(ondernemer, markt);
         return !!branches.find(branche => !!branche.verplicht);
     },
 

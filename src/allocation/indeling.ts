@@ -215,7 +215,7 @@ const Indeling = {
     ): boolean => {
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const voorkeurIds          = voorkeuren.map(({ plaatsId }) => plaatsId);
-        const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);
+        const ondernemerBranches   = Ondernemer.getBranches(ondernemer, indeling);
         const verplichteBrancheIds = ondernemerBranches
                                     .filter(({ verplicht = false }) => verplicht)
                                     .map(({ brancheId }) => brancheId);
@@ -406,7 +406,7 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): number => {
-        const branches  = Ondernemer.getBranches(indeling, ondernemer);
+        const branches  = Ondernemer.getBranches(ondernemer, indeling);
         const available = indeling.openPlaatsen.length;
 
         return branches.reduce((result, branche) => {
@@ -628,10 +628,8 @@ const Indeling = {
         a: IMarktondernemer,
         b: IMarktondernemer
     ): number => {
-        // Sorteer eerst op status groep...
         const sort1 = Indeling.getStatusGroup(indeling, a) -
                       Indeling.getStatusGroup(indeling, b);
-        // ... dan op anciënniteitsnummer.
         const sort2 = a.sollicitatieNummer - b.sollicitatieNummer;
 
         return sort1 || sort2;
