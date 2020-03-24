@@ -599,7 +599,7 @@ const Indeling = {
             const plaatsEigenaar = Ondernemers.findVPHFor(indeling, plaatsId);
             return !plaatsEigenaar ||
                    ondernemer === plaatsEigenaar ||
-                   !Ondernemer.willNeverLeave(indeling, plaatsEigenaar).includes(plaatsId);
+                   !Ondernemer.willNeverLeave(plaatsEigenaar, indeling).includes(plaatsId);
         });
     },
 

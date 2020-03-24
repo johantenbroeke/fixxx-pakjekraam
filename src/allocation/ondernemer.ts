@@ -89,11 +89,6 @@ const Ondernemer = {
         }, []);
     },
 
-    getStartSize: (ondernemer: IMarktondernemer): number => {
-        return Ondernemer.isVast(ondernemer) || Ondernemer.isExperimenteel(ondernemer) ?
-               Ondernemer.getMinimumSize(ondernemer) :
-               1;
-    },
     getMinimumSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] }          = ondernemer;
         let { minimum = 0, maximum = 0 } = ondernemer.voorkeur || {};
@@ -107,6 +102,11 @@ const Ondernemer = {
         minimum  = minimum || Math.max(plaatsen.length, 1);
         maximum  = maximum || minimum;
         return Math.min(minimum, maximum);
+    },
+    getStartSize: (ondernemer: IMarktondernemer): number => {
+        return Ondernemer.isVast(ondernemer) || Ondernemer.isExperimenteel(ondernemer) ?
+               Ondernemer.getMinimumSize(ondernemer) :
+               1;
     },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] } = ondernemer;
@@ -209,8 +209,8 @@ const Ondernemer = {
     //       in `Indeling.allocateOndernemer` die voorkomt dat een VPH niet op zijn
     //       eigen plek terecht kan als zijn voorkeuren niet beschikbaar zijn?
     willNeverLeave: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
+        ondernemer: IMarktondernemer,
+        indeling: IMarktindeling
     ): PlaatsId[] => {
         const minSize     = Ondernemer.getMinimumSize(ondernemer);
         const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
