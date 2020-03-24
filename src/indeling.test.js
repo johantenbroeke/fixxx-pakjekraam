@@ -280,7 +280,9 @@ describe('Een ondernemer wordt afgewezen', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
     });
 
-    it('als het maximum aantal branche-ondernemers wordt overschreden ', () => {
+    // TODO: Deze functionaliteit wordt niet gebruikt? Momenteel niet meer
+    //       geïmplementeerd.
+    it.skip('als het maximum aantal branche-ondernemers wordt overschreden ', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } },

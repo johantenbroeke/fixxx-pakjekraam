@@ -409,29 +409,23 @@ const Indeling = {
         const branches  = Ondernemer.getBranches(ondernemer, indeling);
         const available = indeling.openPlaatsen.length;
 
-        return branches.reduce((result, branche) => {
-            if (!result) {
-                return 0;
+        return branches.reduce((finalCount, branche) => {
+            const { maximumPlaatsen } = branche;
+
+            if (!finalCount || !maximumPlaatsen) {
+                return finalCount;
             }
 
-            const { maximumToewijzingen, maximumPlaatsen } = branche;
-            const brancheToewijzingen = indeling.toewijzingen.filter(({ ondernemer }) =>
-                Ondernemer.isInBranche(ondernemer, branche)
-            );
-            const branchePlaatsen = brancheToewijzingen.reduce((sum, { plaatsen }) => {
-                return sum + plaatsen.length;
+            const branchePlaatsen = indeling.toewijzingen.reduce((brancheCount, toewijzing) => {
+                return Ondernemer.isInBranche(toewijzing.ondernemer, branche) ?
+                       brancheCount + toewijzing.plaatsen.length :
+                       brancheCount;
             }, 0);
-            const counts = [result];
 
-            if (maximumToewijzingen) {
-                counts.push(Math.max(0, maximumToewijzingen - brancheToewijzingen.length));
-            }
-
-            if (maximumPlaatsen) {
-                counts.push(Math.max(0, maximumPlaatsen - branchePlaatsen));
-            }
-
-            return Math.min(...counts);
+            return Math.min(
+                Math.max(0, maximumPlaatsen - branchePlaatsen),
+                finalCount
+            );
         }, available);
     },
 
