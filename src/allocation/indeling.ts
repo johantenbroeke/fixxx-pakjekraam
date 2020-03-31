@@ -93,6 +93,19 @@ const Indeling = {
             return result;
         }, []);
 
+        // De ondernemer objecten in de `indeling.aLijst` properties zijn exacte kopieën van de
+        // ondernemer objecten in `indeling.ondernemers`. Daar maken we hier references van, zodat
+        // we in de rest van de code simpelweg `aLijst.includes(ondernemerObj)` kunnen doen om te
+        // controleren of een ondernemer op de aLijst staat.
+        indeling.aLijst = indeling.aLijst.reduce((result, ondernemer) => {
+            const ondernemerOrig = indeling.ondernemers.find(({ erkenningsNummer }) =>
+                erkenningsNummer === ondernemer.erkenningsNummer
+            );
+            return ondernemerOrig ?
+                   result.concat(ondernemerOrig) :
+                   result;
+        }, []);
+
         // Verwijder voorkeuren van ondernemers die niet aanwezig zijn, omdat deze voorkeuren
         // worden gebruikt om te
         const index = indeling.ondernemers.reduce((result, ondernemer) => {
