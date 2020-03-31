@@ -1,6 +1,7 @@
 import {
     BrancheId,
     DeelnemerStatus,
+    IBranche,
     IMarktindeling,
     IMarktondernemer,
     PlaatsId
@@ -57,6 +58,15 @@ const Ondernemers = {
         }, new Map());
 
         return result.size;
+    },
+
+    filterByBranche: (
+        ondernemers: IMarktondernemer[],
+        branche: IBranche
+    ): IMarktondernemer[] => {
+        return ondernemers.filter(ondernemer =>
+            ondernemer.voorkeur.branches.includes(branche.brancheId)
+        );
     },
 
     findVPHFor: (

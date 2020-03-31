@@ -33,6 +33,11 @@ interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
     voorkeurScore: number;
 }
 
+enum Strategy {
+    OPTIMISTIC = 1,
+    CONSERVATIVE = 0
+}
+
 export const BRANCHE_FULL: IAfwijzingReason = {
     code: 1,
     message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld.'
@@ -114,15 +119,17 @@ const Indeling = {
         openPlaatsen: IMarktplaats[] = indeling.openPlaatsen
     ): IMarktindeling => {
         try {
-            if (
-                !Ondernemer.hasVastePlaatsen(ondernemer) &&
-                Ondernemer.isInMaxedOutBranche(indeling, ondernemer)
-            ) {
+            const available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
+            const startSize = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
+            const size      = Ondernemer.hasVastePlaatsen(ondernemer) ?
+                              startSize :
+                              Math.min(available, startSize);
+
+            if (!Ondernemer.hasVastePlaatsen(ondernemer) && !size) {
                 throw BRANCHE_FULL;
             }
 
             const anywhere      = Ondernemer.acceptsRandomAllocation(ondernemer);
-            const size          = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(
                 indeling, queue, ondernemer, openPlaatsen, size, anywhere
             );
@@ -213,7 +220,7 @@ const Indeling = {
     ): boolean => {
         const voorkeuren           = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);
         const voorkeurIds          = voorkeuren.map(({ plaatsId }) => plaatsId);
-        const ondernemerBranches   = Ondernemer.getBranches(indeling, ondernemer);
+        const ondernemerBranches   = Ondernemer.getBranches(ondernemer, indeling);
         const verplichteBrancheIds = ondernemerBranches
                                     .filter(({ verplicht = false }) => verplicht)
                                     .map(({ brancheId }) => brancheId);
@@ -331,8 +338,11 @@ const Indeling = {
         queue.forEach((toewijzing, i) => {
             const { ondernemer, plaatsen } = toewijzing;
 
-            const openAdjacent = Markt.getAdjacentPlaatsen(indeling, plaatsen, 1);
-            const [uitbreidingPlaats] = Indeling._findBestePlaatsen(indeling, remainingQueue, ondernemer, openAdjacent, 1, true);
+            const available         = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
+            const openAdjacent      = Markt.getAdjacentPlaatsen(indeling, plaatsen, 1);
+            const uitbreidingPlaats = available ?
+                                      Indeling._findBestePlaatsen(indeling, remainingQueue, ondernemer, openAdjacent, 1, true)[0] :
+                                      null;
 
             // Nog voordat we controleren of deze ondernemer in deze iteratie eigenlijk wel kan
             // uitbreiden (zie `canExpandInIteration` in de `else`) bekijken we of er wel een
@@ -378,23 +388,87 @@ const Indeling = {
         return beschikbaar.length < vastePlaatsen.length || !!voorkeuren.length;
     },
 
+    _calculateAllocationStrategy: (
+        ondernemers: IMarktondernemer[],
+        ondernemer: IMarktondernemer,
+        available: number
+    ): Strategy => {
+        const minRequired = ondernemers.reduce((sum, ondernemer) => {
+            return sum + Ondernemer.getStartSize(ondernemer);
+        }, 0);
+
+        return available > minRequired ?
+               Strategy.OPTIMISTIC :
+               Strategy.CONSERVATIVE;
+    },
+
     _calculateStartSizeFor: (
         indeling: IMarktindeling,
         queue: IMarktondernemer[],
         ondernemer: IMarktondernemer
     ): number => {
-        const totalSpots  = indeling.openPlaatsen.length;
-        const minRequired = queue.reduce((sum, ondernemer) => {
-            return sum + Ondernemer.getStartSize(ondernemer);
-        }, 0);
+        let available = indeling.openPlaatsen.length;
+        if (!available) {
+            return 0;
+        }
 
-        const startSize  = Ondernemer.getStartSize(ondernemer);
-        const targetSize = Ondernemer.getTargetSize(ondernemer);
-        const happySize  = startSize === 1 ? Math.min(targetSize, 2) : startSize;
+        const limitedBranche = Ondernemer.getMostLimitedBranche(ondernemer, indeling);
+        const startSize      = Ondernemer.getStartSize(ondernemer);
+        const targetSize     = Ondernemer.getTargetSize(ondernemer);
+        const happySize      = startSize === 1 ? Math.min(targetSize, 2) : startSize;
 
-        return totalSpots > minRequired ? happySize :
-               totalSpots > 0           ? startSize :
-                                          0;
+        // Als de markt optimistisch ingedeeld kan worden, check dan ook nog of
+        // deze ondernemer niet in een gelimiteerde branche zit. Het kan namelijk
+        // zijn dat er voor die specifieke branche wel conservatief ingedeeld moet
+        // worden.
+        let strategy = Indeling._calculateAllocationStrategy(queue, ondernemer, available);
+        if (strategy === Strategy.CONSERVATIVE) {
+            return startSize;
+        } else if (limitedBranche) {
+            available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
+            if (!available) {
+                return 0;
+            }
+
+            const ondernemers = Ondernemers.filterByBranche(queue, limitedBranche);
+            strategy = Indeling._calculateAllocationStrategy(ondernemers, ondernemer, available);
+
+            return strategy === Strategy.OPTIMISTIC ?
+                   happySize :
+                   startSize;
+        }
+
+        return happySize;
+    },
+
+    // Tel het totaal aantal nog beschikbare plaatsen op de markt voor deze ondernemer.
+    // Als zij in een (of meerdere) gelimiteerde branche(s) zitten, wordt de telling
+    // beperkt tot deze 'markt in markt'.
+    _countAvailablePlaatsenFor: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): number => {
+        const branches  = Ondernemer.getBranches(ondernemer, indeling);
+        const available = indeling.openPlaatsen.length;
+
+        return branches.reduce((finalCount, branche) => {
+            const { maximumPlaatsen } = branche;
+
+            if (!finalCount || !maximumPlaatsen) {
+                return finalCount;
+            }
+
+            const branchePlaatsen = indeling.toewijzingen.reduce((brancheCount, toewijzing) => {
+                return Ondernemer.isInBranche(toewijzing.ondernemer, branche) ?
+                       brancheCount + toewijzing.plaatsen.length :
+                       brancheCount;
+            }, 0);
+
+            return Math.min(
+                Math.max(0, maximumPlaatsen - branchePlaatsen),
+                finalCount
+            );
+        }, available);
     },
 
     _findBestGroup: (
@@ -561,7 +635,7 @@ const Indeling = {
             const plaatsEigenaar = Ondernemers.findVPHFor(indeling, plaatsId);
             return !plaatsEigenaar ||
                    ondernemer === plaatsEigenaar ||
-                   !Ondernemer.willNeverLeave(indeling, plaatsEigenaar).includes(plaatsId);
+                   !Ondernemer.willNeverLeave(plaatsEigenaar, indeling).includes(plaatsId);
         });
     },
 
@@ -590,10 +664,8 @@ const Indeling = {
         a: IMarktondernemer,
         b: IMarktondernemer
     ): number => {
-        // Sorteer eerst op status groep...
         const sort1 = Indeling.getStatusGroup(indeling, a) -
                       Indeling.getStatusGroup(indeling, b);
-        // ... dan op anciënniteitsnummer.
         const sort2 = a.sollicitatieNummer - b.sollicitatieNummer;
 
         return sort1 || sort2;
