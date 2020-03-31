@@ -33,6 +33,11 @@ interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
     voorkeurScore: number;
 }
 
+enum Strategy {
+    OPTIMISTIC = 1,
+    CONSERVATIVE = 0
+}
+
 export const BRANCHE_FULL: IAfwijzingReason = {
     code: 1,
     message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld.'
@@ -383,25 +388,62 @@ const Indeling = {
         return beschikbaar.length < vastePlaatsen.length || !!voorkeuren.length;
     },
 
+    _calculateAllocationStrategy: (
+        ondernemers: IMarktondernemer[],
+        ondernemer: IMarktondernemer,
+        available: number
+    ): Strategy => {
+        const minRequired = ondernemers.reduce((sum, ondernemer) => {
+            return sum + Ondernemer.getStartSize(ondernemer);
+        }, 0);
+
+        return available > minRequired ?
+               Strategy.OPTIMISTIC :
+               Strategy.CONSERVATIVE;
+    },
+
     _calculateStartSizeFor: (
         indeling: IMarktindeling,
         queue: IMarktondernemer[],
         ondernemer: IMarktondernemer
     ): number => {
-        const totalSpots  = indeling.openPlaatsen.length;
-        const minRequired = queue.reduce((sum, ondernemer) => {
-            return sum + Ondernemer.getStartSize(ondernemer);
-        }, 0);
+        let available = indeling.openPlaatsen.length;
+        if (!available) {
+            return 0;
+        }
 
-        const startSize  = Ondernemer.getStartSize(ondernemer);
-        const targetSize = Ondernemer.getTargetSize(ondernemer);
-        const happySize  = startSize === 1 ? Math.min(targetSize, 2) : startSize;
+        const limitedBranche = Ondernemer.getMostLimitedBranche(ondernemer, indeling);
+        const startSize      = Ondernemer.getStartSize(ondernemer);
+        const targetSize     = Ondernemer.getTargetSize(ondernemer);
+        const happySize      = startSize === 1 ? Math.min(targetSize, 2) : startSize;
 
-        return totalSpots > minRequired ? happySize :
-               totalSpots > 0           ? startSize :
-                                          0;
+        // Als de markt optimistisch ingedeeld kan worden, check dan ook nog of
+        // deze ondernemer niet in een gelimiteerde branche zit. Het kan namelijk
+        // zijn dat er voor die specifieke branche wel conservatief ingedeeld moet
+        // worden.
+        let strategy = Indeling._calculateAllocationStrategy(queue, ondernemer, available);
+        if (strategy === Strategy.CONSERVATIVE) {
+            return startSize;
+        } else if (limitedBranche) {
+            available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
+            if (!available) {
+                return 0;
+            }
+
+            const ondernemers = Ondernemers.filterByBranche(queue, limitedBranche);
+            strategy = Indeling._calculateAllocationStrategy(ondernemers, ondernemer, available);
+
+            return strategy === Strategy.OPTIMISTIC ?
+                   happySize :
+                   startSize;
+        }
+
+        return happySize;
     },
 
+    // Tel het totaal aantal nog beschikbare plaatsen op de markt voor deze ondernemer.
+    // Als zij in een (of meerdere) gelimiteerde branche(s) zitten, wordt de telling
+    // beperkt tot deze 'markt in markt'.
     _countAvailablePlaatsenFor: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer

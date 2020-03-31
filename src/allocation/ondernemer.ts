@@ -89,6 +89,19 @@ const Ondernemer = {
         }, []);
     },
 
+    getMostLimitedBranche: (
+        ondernemer: IMarktondernemer,
+        indeling: IMarktindeling
+    ): IBranche | void => {
+        const branches = Ondernemer.getBranches(ondernemer, indeling);
+        return branches.reduce((mostLimited, branche) => {
+            return !branche.maximumPlaatsen                              ? mostLimited :
+                   !mostLimited || !mostLimited.maximumPlaatsen          ? branche :
+                   branche.maximumPlaatsen < mostLimited.maximumPlaatsen ? branche :
+                                                                           mostLimited;
+        }, undefined);
+    },
+
     getMinimumSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] }          = ondernemer;
         let { minimum = 0, maximum = 0 } = ondernemer.voorkeur || {};
