@@ -11,6 +11,7 @@ const {
     addDays,
     getTimezoneTime,
     toISODate,
+    WEEK_DAYS_SHORT
 } = require('../../util.ts');
 
 const {
@@ -22,18 +23,18 @@ const {
 
 class AanwezigheidsForm extends React.Component {
     propTypes = {
-        ondernemer     : PropTypes.object.isRequired,
-        aanmeldingen   : PropTypes.array,
-        sollicitaties  : PropTypes.array.isRequired,
-        markten        : PropTypes.array.isRequired,
-        query          : PropTypes.string,
-        role           : PropTypes.string,
-        csrfToken      : PropTypes.string,
+        ondernemer           : PropTypes.object.isRequired,
+        aanmeldingenPerMarkt : PropTypes.array,
+        sollicitaties        : PropTypes.array.isRequired,
+        markten              : PropTypes.array.isRequired,
+        query                : PropTypes.string,
+        role                 : PropTypes.string,
+        csrfToken            : PropTypes.string,
     };
 
     render() {
         const {
-            aanmeldingen = [],
+            aanmeldingenPerMarkt = [],
             csrfToken,
             markten,
             ondernemer,
@@ -51,25 +52,28 @@ class AanwezigheidsForm extends React.Component {
                            .add(INDELING_DAG_OFFSET, 'days')
                            .format('YYYY-MM-DD');
 
-        const aanmeldingenPerMarkt = markten.map(markt => {
-            const aanmeldingenFiltered = filterRsvpList(
-                aanmeldingen[markt.id].filter(aanmelding => aanmelding.marktId === markt.id),
-                markt
-            );
+        const aanmeldingenPerMarktPerWeek = markten.map(markt => {
+            const aanmeldingen = aanmeldingenPerMarkt[markt.id] ?
+                                 aanmeldingenPerMarkt[markt.id].filter(({ marktId }) => marktId === markt.id) :
+                                 [];
+            const aanmeldingenPerDag = filterRsvpList(aanmeldingen, markt);
 
-            const aanmeldingenPerWeek = aanmeldingenFiltered.reduce((result, { date, rsvp }) => {
-                const week        = new Date(date) > new Date(endOfWeek()) ? 1 : 0;
+            const aanmeldingenPerWeek = aanmeldingenPerDag.reduce((result, { date, rsvp }) => {
+                date = new Date(date);
+
+                const week        = date > new Date(endOfWeek()) ? 1 : 0;
+                const weekDay     = date.getDay();
                 const attending   = rsvp ? rsvp.attending : isVast(sollicitaties[markt.id].status);
-                const isInThePast = Date.parse(date) <= Date.now();
+                const isInThePast = date <= Date.now();
 
-                result[week].push({
+                result[week][weekDay] = {
                     date,
                     attending,
                     isInThePast
-                });
+                };
 
                 return result;
-            }, [[], []]);
+            }, [{}, {}]);
 
             return {
                 markt,
@@ -89,40 +93,50 @@ class AanwezigheidsForm extends React.Component {
                 type="hidden"
             />
 
-            {aanmeldingenPerMarkt.map(({ markt, aanmeldingenPerWeek }) => (
-            <>
-                <h1 className="Heading Heading--intro">
-                    Aanwezigheid {markt.naam}
-                    <SollicitatieSpecs sollicitatie={sollicitaties[markt.id]} />
-                </h1>
+            {aanmeldingenPerMarktPerWeek.map(({ markt, aanmeldingenPerWeek }) => (
+            <div className="markt" key="{markt.id}">
+                <h2 className="Heading Heading--intro">
+                    {markt.naam} <SollicitatieSpecs sollicitatie={sollicitaties[markt.id]} />
+                </h2>
 
                 {aanmeldingenPerWeek.map((week, i) => (
-                <>
-                <h3>{i === 0 ? 'Deze week' : 'Volgende week'}</h3>
+                <div className="week" key="{i}">
+                    <h4>{i === 0 ? 'Deze week' : 'Volgende week'}</h4>
 
-                <div className="week">
-                {week.map(({ date, attending, isInThePast }) => (
-                    <span className="day" key={++index}>
-                        <input type="hidden" name={`rsvp[${index}][marktId]`} defaultValue={markt.id} />
-                        <input type="hidden" name={`rsvp[${index}][marktDate]`} defaultValue={date} />
+                    {[0, 1, 2, 3, 4, 5, 6].map(day => (
+                    day in week ?
+                        <span className="day" key={++index}>
+                            <input type="hidden" name={`rsvp[${index}][marktId]`} defaultValue={markt.id} />
+                            <input type="hidden" name={`rsvp[${index}][marktDate]`} defaultValue={week[day].date} />
 
-                        <input
-                            disabled={isInThePast}
-                            id={`rsvp-${index}`}
-                            name={`rsvp[${index}][attending]`}
-                            type="checkbox"
-                            defaultValue="true"
-                            defaultChecked={attending}
-                        />
-                        <label htmlFor={`rsvp-${index}`}>
-                            <strong>{formatDayOfWeekShort(date)}</strong>
-                        </label>
-                    </span>
-                ))}
+                            <input
+                                disabled={week[day].isInThePast}
+                                id={`rsvp-${index}`}
+                                name={`rsvp[${index}][attending]`}
+                                type="checkbox"
+                                defaultValue="true"
+                                defaultChecked={week[day].attending}
+                            />
+                            <label htmlFor={`rsvp-${index}`}>
+                                <strong>{WEEK_DAYS_SHORT[day]}</strong>
+                            </label>
+                        </span>
+                    :
+                        <span className="day" key={++index}>
+                            <input
+                                disabled="true"
+                                id={`rsvp-${index}`}
+                                type="checkbox"
+                                defaultValue="false"
+                            />
+                            <label htmlFor={`rsvp-${index}`}>
+                                <strong>{WEEK_DAYS_SHORT[day]}</strong>
+                            </label>
+                        </span>
+                    ))}
                 </div>
-                </>
                 ))}
-            </>
+            </div>
             ))}
 
             <p className="InputField InputField--submit">

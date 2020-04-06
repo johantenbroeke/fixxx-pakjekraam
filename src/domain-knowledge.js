@@ -86,12 +86,15 @@ const getMarktDays = (startDate, endDate, daysOfWeek) => {
     const end = Date.parse(endDate);
     const days = Math.max(0, (end - start) / MILLISECONDS_IN_DAY);
     const dates = [];
-    for (let i = 0, l = days; i <= l; i++) {
-        const date = new Date(start);
-        date.setDate(date.getDate() + i);
-        dates.push(date);
+
+    for (let i = 0; i <= days; i++) {
+        const date = new Date(start + i * MILLISECONDS_IN_DAY);
+        if (daysOfWeek.includes(date.getDay())) {
+            dates.push(date);
+        }
     }
-    return dates.filter(date => daysOfWeek.includes(date.getDay())).map(toISODate);
+
+    return dates.map(toISODate);
 };
 
 const getUpcomingMarktDays = (startDate, endDate, daysOfWeek) =>
@@ -154,10 +157,9 @@ const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
         (markt.marktDagen || []).map(parseMarktDag),
     );
 
-    const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
     const rsvpList = dates.map(date => ({
         date,
-        rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date)
+        rsvp: aanmeldingen.find(aanmelding => aanmelding.marktDate === date)
     }));
 
     return rsvpList;

@@ -60,16 +60,16 @@ class AanwezigheidPage extends React.Component {
                     </>
                     }
 
-                    <span className="Fieldset__subtitle">
+                    <p>
                         Een aangevinkte dag betekent dat u (of uw vervanger) aanwezig zal zijn.
-                    </span>
+                    </p>
 
                     <AanwezigheidsForm
                         date={date}
                         ondernemer={ondernemer}
                         markten={markten}
                         sollicitaties={sollicitaties}
-                        aanmeldingen={aanmeldingenPerMarkt}
+                        aanmeldingenPerMarkt={aanmeldingenPerMarkt}
                         query={query}
                         role={role}
                         csrfToken={csrfToken}

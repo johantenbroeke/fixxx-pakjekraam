@@ -1,72 +1,94 @@
 form.AanwezigheidsForm {
-    >h3 {
-        font-size: 1.25rem;
-        margin-bottom: 0.5em;
-    }
+    >div.markt {
+        display: flex;
+        flex-flow: wrap;
+        justify-content: flex-start;
 
-    >div.week {
-        >span.day {
-            // margin: 10px 10px 0 10px;
-            overflow: hidden;
-            position: relative;
+        >h2 {
+            flex: 0 0 100%;
+        }
 
-            input {
-                opacity: 0;
-                width: 0;
-                height: 0;
-                overflow: hidden;
-                position: absolute;
+        >div.week {
+            flex: 1 0 auto;
+
+            >h4 {
+                font-size: 1.25rem;
+                margin-bottom: 0.5em;
+                margin-top: 0.5em;
             }
-            input + label {
-                padding: 40px 10px 0px 10px;
-                display: inline-block;
+
+            >span.day {
+                // margin: 10px 10px 0 10px;
+                overflow: hidden;
                 position: relative;
 
-                &:before {
-                    background-color: $support-focus;
-                    bottom: 0;
-                    content: "";
-                    left: 0px;
+                input {
                     opacity: 0;
+                    width: 0;
+                    height: 0;
+                    overflow: hidden;
                     position: absolute;
-                    right: 0px;
-                    top: 0;
-                    z-index: -1;
                 }
-                &:after {
-                    content: "";
-                    position: absolute;
-                    left: 50%;
-                    margin-left: -11px;
-                    top: 8px;
-                    width: 22px;
-                    height: 22px;
-                    background-color: $primary-white;
-                    border: 1px solid $primary-black;
-                }
-            }
-            input:checked + label {
-                &:before {
-                    opacity: 1;
-                }
-                &:after {
-                    content: "";
-                    @include icon($icon-Check-Mark);
-                    position: absolute;
-                    left: 50%;
-                    margin-left: -11px;
-                    font-size: 10px;
-                    text-align: center;
-                    padding-top: 7px;
-                    color: $primary-white;
-                    background-color: $primary-black;
-                }
-            }
-            input:disabled + label {
-                opacity: 0.3;
+                input + label {
+                    padding: 40px 10px 0px 10px;
+                    display: inline-block;
+                    position: relative;
 
-                &:before {
-                    filter: saturate(70%);
+                    &:before {
+                        background-color: $neutral-grey1;
+                        bottom: 0;
+                        content: "";
+                        left: 0px;
+                        // opacity: 0;
+                        position: absolute;
+                        right: 0px;
+                        top: 0;
+                        z-index: -1;
+                    }
+                    &:after {
+                        content: "";
+                        position: absolute;
+                        left: 50%;
+                        margin-left: -11px;
+                        top: 8px;
+                        width: 22px;
+                        height: 22px;
+                        background-color: $primary-white;
+                        border: 1px solid $primary-black;
+                    }
+                }
+                input:checked + label {
+                    &:before {
+                        background-color: $support-focus;
+                        opacity: 1;
+                    }
+                    &:after {
+                        content: "";
+                        @include icon($icon-Check-Mark);
+                        position: absolute;
+                        left: 50%;
+                        margin-left: -11px;
+                        font-size: 10px;
+                        text-align: center;
+                        padding-top: 7px;
+                        color: $primary-white;
+                        background-color: $primary-black;
+                    }
+                }
+                input:disabled + label {
+                    color: $neutral-grey5;
+                    opacity: 0.4;
+
+                    &:before {
+                        filter: saturate(70%);
+                    }
+                    &:after {
+
+                    }
+                }
+                input:disabled:not(:checked) + label:after {
+                    background-color: $neutral-grey1;
+                    border: 1px solid $neutral-grey4;
                 }
             }
         }
