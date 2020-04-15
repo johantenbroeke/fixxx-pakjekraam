@@ -101,8 +101,12 @@ class AanwezigheidsForm extends React.Component {
                     {[0, 1, 2, 3, 4, 5, 6].map(day => (
                     day in week ?
                         <span className="day" key={++index}>
-                            <input type="hidden" name={`rsvp[${index}][marktId]`} defaultValue={markt.id} />
-                            <input type="hidden" name={`rsvp[${index}][marktDate]`} defaultValue={week[day].date} />
+                            <input type="hidden" name={`rsvp[${index}][marktId]`}
+                                   disabled={week[day].isInThePast} defaultValue={markt.id}
+                            />
+                            <input type="hidden" name={`rsvp[${index}][marktDate]`}
+                                   disabled={week[day].isInThePast} defaultValue={week[day].date.toISOString()}
+                            />
 
                             <input
                                 type="checkbox"
