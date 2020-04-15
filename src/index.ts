@@ -74,6 +74,7 @@ import {
 
 import {
     attendancePage,
+    handleAttendanceUpdate,
     marketAttendancePage,
     handleMarketAttendanceUpdate
 } from './routes/market-application';
@@ -432,16 +433,26 @@ app.get(
     '/aanwezigheid/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     csrfProtection,
-    (req: GrantedRequest, res: Response) => {
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
         attendancePage(
-            req,
-            res,
-            getErkenningsNummer(req),
-            req.query,
+            req, res, next,
             KeycloakRoles.MARKTONDERNEMER,
-            req.csrfToken(),
+            getErkenningsNummer(req),
+            req.csrfToken()
         );
     },
+);
+
+app.post(
+    '/aanwezigheid/',
+    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    csrfProtection,
+    (req: GrantedRequest, res: Response, next: NextFunction) =>
+        handleAttendanceUpdate(
+            req, res, next,
+            KeycloakRoles.MARKTONDERNEMER,
+            getErkenningsNummer(req)
+        )
 );
 
 app.get(
