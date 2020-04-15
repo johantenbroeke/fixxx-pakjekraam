@@ -9,14 +9,12 @@ const {
     formatDate,
     endOfWeek,
     addDays,
-    getTimezoneTime,
     toISODate,
     WEEK_DAYS_SHORT
 } = require('../../util.ts');
 
 const {
-    indelingstijdstipInMinutes,
-    INDELING_DAG_OFFSET,
+    getMarktThresholdDate,
     filterRsvpList,
     isVast
 } = require('../../domain-knowledge.js');
@@ -42,15 +40,7 @@ class AanwezigheidsForm extends React.Component {
             sollicitaties
         } = this.props;
 
-        // Door `offsetMins` bij de huidige tijd op te tellen, zal `startDate` naar morgen
-        // gaan ipv vandaag als de huidige tijd voorbij indelingstijd ligt.
-        const offsetMins = role !== 'marktmeester' ?
-                           (( 24 * 60 ) - indelingstijdstipInMinutes()) :
-                           0;
-        const startDate  = getTimezoneTime()
-                           .add(offsetMins, 'minutes')
-                           .add(INDELING_DAG_OFFSET, 'days')
-                           .format('YYYY-MM-DD');
+        const thresholdDate = getMarktThresholdDate(role);
 
         const aanmeldingenPerMarktPerWeek = markten.map(markt => {
             const aanmeldingen = aanmeldingenPerMarkt[markt.id] ?
@@ -59,12 +49,17 @@ class AanwezigheidsForm extends React.Component {
             const aanmeldingenPerDag = filterRsvpList(aanmeldingen, markt);
 
             const aanmeldingenPerWeek = aanmeldingenPerDag.reduce((result, { date, rsvp }) => {
-                date = new Date(date);
+                // Voeg de tijd toe, zodat we een datum in de huidige tijdszone krijgen.
+                // Doen we dit niet, dan wordt de datum ingesteld op UTC. Aangezien wij in de
+                // zomer op UTC+2 zitten is de datumwissel bij ons twee uur eerder. Gebruikers
+                // zouden in dit geval twee uur na de automatische indeling hun aanwezigheid nog
+                // kunnen aanpassen
+                date = new Date(date+' 00:00:00');
 
                 const week        = date > new Date(endOfWeek()) ? 1 : 0;
                 const weekDay     = date.getDay();
                 const attending   = rsvp ? rsvp.attending : isVast(sollicitaties[markt.id].status);
-                const isInThePast = date <= Date.now();
+                const isInThePast = date < thresholdDate;
 
                 result[week][weekDay] = {
                     date,

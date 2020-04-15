@@ -18,6 +18,7 @@ const {
     stringSort,
     getMaDiWoDo,
     dateToYYYYMMDD,
+    getTimezoneTime
 } = require('./util.ts');
 
 const moment = require('moment');
@@ -61,6 +62,24 @@ const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDag
 const isVast = status => status === 'vpl' || status === 'vkk';
 const isExp = status => status === EXP_ZONE;
 const isVastOfExp = status => status === 'vpl' || status === 'vkk' || status === EXP_ZONE;
+
+// Geeft de datum terug vanaf wanneer ondernemers hun aanwezigheid
+// mogen aanpassen.
+//
+// Dit betekent momenteel: Geef de datum van vandaag, tenzij de indeling
+// voor vandaag al gedraaid heeft. Dit hangt af van `INDELINGSTIJDSTIP`.
+const getMarktThresholdDate = role => {
+    // Door `offsetMins` bij de huidige tijd op te tellen, zal `startDate` naar morgen
+    // gaan ipv vandaag als de huidige tijd voorbij indelingstijd ligt.
+    const offsetMins = role !== 'marktmeester' ?
+                       (( 24 * 60 ) - indelingstijdstipInMinutes()) :
+                       0;
+    return getTimezoneTime()
+           .add(offsetMins, 'minutes')
+           .add(INDELING_DAG_OFFSET, 'days')
+           .startOf('day')
+           .toDate();
+};
 
 const getMarktDaysOndernemer = (startDate, endDate, marktdagen) => {
     const start = Date.parse(startDate);
@@ -202,6 +221,7 @@ module.exports = {
     isVastOfExp,
     getMarktDays,
     indelingstijdstipInMinutes,
+    getMarktThresholdDate,
     getMarktDaysOndernemer,
     getUpcomingMarktDays,
     ondernemersToLocatieKeyValue,
