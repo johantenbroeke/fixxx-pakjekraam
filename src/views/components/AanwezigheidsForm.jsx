@@ -110,11 +110,11 @@ class AanwezigheidsForm extends React.Component {
                             <input type="hidden" name={`rsvp[${index}][marktDate]`} defaultValue={week[day].date} />
 
                             <input
-                                disabled={week[day].isInThePast}
+                                type="checkbox"
                                 id={`rsvp-${index}`}
                                 name={`rsvp[${index}][attending]`}
-                                type="checkbox"
-                                defaultValue="true"
+                                disabled={week[day].isInThePast}
+                                defaultValue="1"
                                 defaultChecked={week[day].attending}
                             />
                             <label htmlFor={`rsvp-${index}`}>
@@ -124,10 +124,10 @@ class AanwezigheidsForm extends React.Component {
                     :
                         <span className="day" key={++index}>
                             <input
-                                disabled="true"
+                                disabled={true}
                                 id={`rsvp-${index}`}
                                 type="checkbox"
-                                defaultValue="false"
+                                defaultValue="0"
                             />
                             <label htmlFor={`rsvp-${index}`}>
                                 <strong>{WEEK_DAYS_SHORT[day]}</strong>

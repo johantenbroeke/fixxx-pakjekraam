@@ -1,19 +1,54 @@
-import { NextFunction, Request, Response } from 'express';
-import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
-import { getAanmeldingenByOndernemer, getMededelingen } from '../pakjekraam-api';
-import { httpErrorPage, internalServerErrorPage, HTTP_CREATED_SUCCESS, HTTP_FORBIDDEN_ERROR, getQueryErrors } from '../express-util';
-import models from '../model/index';
-import { flatten, nextWeek, LF, today } from '../util';
-import { IRSVP } from '../markt.model';
-import { upsert } from '../sequelize-util.js';
-import { getMarktEnriched, getMarktenEnabled } from '../model/markt.functions';
-import { getConflictingApplications, getConflictingSollicitaties } from '../model/rsvp.functions';
-
-import moment from 'moment';
-import { getKeycloakUser } from '../keycloak-api';
+import {
+    NextFunction,
+    Request,
+    Response
+} from 'express';
 import { GrantedRequest } from 'keycloak-connect';
+import moment from 'moment-timezone';
+moment.locale('nl');
 
-export interface AttendanceUpdateFormData {
+import {
+    httpErrorPage,
+    internalServerErrorPage,
+    HTTP_CREATED_SUCCESS,
+    HTTP_FORBIDDEN_ERROR,
+    getQueryErrors
+} from '../express-util';
+import { upsert } from '../sequelize-util.js';
+import {
+    flatten,
+    nextWeek,
+    LF,
+    today
+} from '../util';
+
+import { getKeycloakUser } from '../keycloak-api';
+import {
+    getMarkt,
+    getMarktondernemer
+} from '../makkelijkemarkt-api';
+import {
+    getAanmeldingenByOndernemer,
+    getMededelingen
+} from '../pakjekraam-api';
+
+import models from '../model/index';
+import { IRSVP } from '../markt.model';
+
+import {
+    getMarktEnriched,
+    getMarktenEnabled
+} from '../model/markt.functions';
+import {
+    getConflictingApplications,
+    getConflictingSollicitaties
+} from '../model/rsvp.functions';
+
+const {
+    getMarktThresholdDate
+} = require('../domain-knowledge.js');
+
+interface AttendanceFormData {
     erkenningsNummer: string;
     rsvp: {
         marktId: string;
@@ -26,10 +61,10 @@ export interface AttendanceUpdateFormData {
 export const attendancePage = (
     req: GrantedRequest,
     res: Response,
-    erkenningsNummer: string,
-    query: any,
+    next: NextFunction,
     role: string,
-    csrfToken: string,
+    erkenningsNummer: string,
+    csrfToken: string
 ) => {
     const ondernemerPromise = getMarktondernemer(erkenningsNummer);
 
@@ -84,15 +119,15 @@ export const attendancePage = (
             return result;
         }, {});
 
-        const messages = getQueryErrors(query);
+        // const messages = getQueryErrors(query);
         res.render('AanwezigheidPage', {
             aanmeldingenPerMarkt,
             csrfToken,
             markten,
             mededelingen,
-            messages,
+            // messages,
             ondernemer,
-            query,
+            // query,
             role,
             sollicitaties,
             user: getKeycloakUser(req)
@@ -160,7 +195,7 @@ export const handleMarketAttendanceUpdate = (
     next: NextFunction,
     erkenningsNummer: string
 ) => {
-    const data: AttendanceUpdateFormData = req.body;
+    const data: AttendanceFormData = req.body;
     /*
      * TODO: Form data format validation
      * TODO: Business logic validation

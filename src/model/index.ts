@@ -21,6 +21,7 @@ const config = {
     username: databaseURL.username,
     password: databaseURL.password,
     dialect: 'postgres' as Dialect,
+    timeZone: 'Europe/Amsterdam'
 };
 
 export const sequelize = new Sequelize(config.database, config.username, config.password, config);

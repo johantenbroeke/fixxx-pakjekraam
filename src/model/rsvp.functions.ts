@@ -6,33 +6,19 @@ import { MMSollicitatie } from '../makkelijkemarkt.model';
 import { getSollicitatiesByMarktFases } from '../makkelijkemarkt-api';
 import { isVast } from '../domain-knowledge';
 
-export const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<IRSVP[]> =>
-    rsvp.findAll<RSVP>({
+const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<IRSVP[]> => {
+    return rsvp.findAll<RSVP>({
         where: { erkenningsNummer },
         raw: true,
     })
     .then(aanmeldingen => aanmeldingen);
-
-
-export const getAanmeldingenByMarktAndDate = (
-    marktId: string,
-    marktDate: string
-): Promise<IRSVP[]> =>
-    rsvp.findAll<RSVP>({
-        where: { marktId, marktDate },
-        raw: true,
-    })
-    .then(aanmeldingen => aanmeldingen);
-
-
-export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) =>
-    rsvp.destroy({ where: { erkenningsNummer } });
+};
 
 /*
  * Vendors are allowed to attend only one market per day.
  * Check if a vendor wants to apply for a market, while on the same day it has applied for others.
  */
-export const isConflictingApplication = (
+const isConflictingApplication = (
     aanmeldingen: IRSVP[],
     aanmelding: IRSVP
 ): IRSVP[] => {
@@ -47,7 +33,7 @@ export const isConflictingApplication = (
     );
 };
 
-export const isConflictingSollicitatie = (
+const isConflictingSollicitatie = (
     aanmeldingen: IRSVP[],
     sollicitaties: MMSollicitatie[],
     aanmelding: IRSVP
@@ -69,14 +55,30 @@ export const isConflictingSollicitatie = (
     );
 };
 
-export const getConflictingSollicitaties = (aanmelding: IRSVP): Promise<MMSollicitatie[]> =>
-    Promise.all([
+export const getAanmeldingenByMarktAndDate = (
+    marktId: string,
+    marktDate: string
+): Promise<IRSVP[]> => {
+    return rsvp.findAll<RSVP>({
+        where: { marktId, marktDate },
+        raw: true,
+    })
+    .then(aanmeldingen => aanmeldingen);
+};
+
+export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) => {
+    return rsvp.destroy({ where: { erkenningsNummer } });
+};
+
+export const getConflictingSollicitaties = (aanmelding: IRSVP): Promise<MMSollicitatie[]> => {
+    return Promise.all([
         getAanmeldingenByOndernemer(aanmelding.erkenningsNummer),
         getSollicitatiesByMarktFases(aanmelding.erkenningsNummer, ['activate','wenperiode','live'])
     ])
     .then( ([aanmeldingen, sollicitaties]) =>
         isConflictingSollicitatie(aanmeldingen, sollicitaties, aanmelding)
     );
+};
 
 
 export const getConflictingApplications = (aanmelding: IRSVP): Promise<IRSVP[]> =>
