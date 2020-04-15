@@ -3,7 +3,7 @@ import { RSVP } from './rsvp.model';
 import { IRSVP } from 'markt.model';
 
 import { MMSollicitatie } from '../makkelijkemarkt.model';
-import { getSollicitatiesByMarktFases } from '../makkelijkemarkt-api';
+import { getSollicitatiesByOndernemer } from '../makkelijkemarkt-api';
 import { isVast } from '../domain-knowledge';
 
 const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<IRSVP[]> => {
@@ -73,16 +73,16 @@ export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) => {
 export const getConflictingSollicitaties = (aanmelding: IRSVP): Promise<MMSollicitatie[]> => {
     return Promise.all([
         getAanmeldingenByOndernemer(aanmelding.erkenningsNummer),
-        getSollicitatiesByMarktFases(aanmelding.erkenningsNummer, ['activate','wenperiode','live'])
+        getSollicitatiesByOndernemer(aanmelding.erkenningsNummer)
     ])
     .then( ([aanmeldingen, sollicitaties]) =>
         isConflictingSollicitatie(aanmeldingen, sollicitaties, aanmelding)
     );
 };
 
-
-export const getConflictingApplications = (aanmelding: IRSVP): Promise<IRSVP[]> =>
-    getAanmeldingenByOndernemer(aanmelding.erkenningsNummer)
+export const getConflictingApplications = (aanmelding: IRSVP): Promise<IRSVP[]> => {
+    return getAanmeldingenByOndernemer(aanmelding.erkenningsNummer)
     .then(aanmeldingen =>
         isConflictingApplication(aanmeldingen, aanmelding)
     );
+};
