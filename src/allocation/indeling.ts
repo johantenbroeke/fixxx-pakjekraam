@@ -73,13 +73,12 @@ const Indeling = {
             toewijzingen    : []
         };
 
-        // We willen enkel de aanwezige ondernemers, gesorteerd op prioriteit. Daarnaast
-        // staan ondernemers soms dubbel in de lijst (miscommunicatie tussen Mercato en
-        // Makkelijke Markt), dus dubbelingen moeten eruit gefilterd worden.
+        // We willen enkel de aanwezige ondernemers, zonder dubbelingen (miscommunicatie
+        // tussen Mercato en Makkelijke Markt), dus dubbelingen moeten eruit gefilterd worden.
         //
-        // De sortering vindt plaats nadat `indeling.voorkeuren` is gevuld (hieronder).
-        indeling.ondernemers = markt.ondernemers
-        .reduce((result, ondernemer) => {
+        // De sortering vindt plaats nadat `indeling.voorkeuren` is gevuld (onderaan deze
+        // functie).
+        indeling.ondernemers = markt.ondernemers.reduce((result, ondernemer) => {
             if (
                 Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate) &&
                 result.find(({ erkenningsNummer, sollicitatieNummer }) =>
@@ -92,6 +91,25 @@ const Indeling = {
 
             return result;
         }, []);
+
+        // Tijdelijke vasteplaatshouders zonder plaatsnummer hebben in de input toch plaatsnummers
+        // vanwege beperkingen in Makkelijke Markt of Mercato. Deze plaatsnummers moet weggehaald
+        // worden, maar het aantal plaatsen moet behouden blijven. Aangezien dit type ondernemer
+        // niet mag uitbreiden, kunnen we de voorkeuren hiervoor overschrijven.
+        indeling.ondernemers.forEach(ondernemer => {
+            if (Ondernemer.isTVPLZ(ondernemer)) {
+                const erkenningsNummer = ondernemer.erkenningsNummer;
+                const minimum = ondernemer.plaatsen ? ondernemer.plaatsen.length : 1;
+                const voorkeur = (ondernemer.voorkeur || { erkenningsNummer });
+
+                ondernemer.voorkeur = {
+                    ...voorkeur,
+                    maximum: Math.max(voorkeur.maximum || 0, minimum),
+                    minimum
+                };
+                ondernemer.plaatsen = [];
+            }
+        });
 
         // De ondernemer objecten in de `indeling.aLijst` properties zijn exacte kopieën van de
         // ondernemer objecten in `indeling.ondernemers`. Daar maken we hier references van, zodat
@@ -134,11 +152,11 @@ const Indeling = {
         try {
             const available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
             const startSize = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
-            const size      = Ondernemer.hasVastePlaatsen(ondernemer) ?
+            const size      = Ondernemer.isVast(ondernemer) ?
                               startSize :
                               Math.min(available, startSize);
 
-            if (!Ondernemer.hasVastePlaatsen(ondernemer) && !size) {
+            if (!Ondernemer.isVast(ondernemer) && !size) {
                 throw BRANCHE_FULL;
             }
 
@@ -257,9 +275,9 @@ const Indeling = {
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
     ): number => {
-        return Ondernemer.hasVastePlaatsen(ondernemer) ? 1 :
-               indeling.aLijst.includes(ondernemer)    ? 1 :
-                                                         2;
+        return Ondernemer.isVast(ondernemer)        ? 1 :
+               indeling.aLijst.includes(ondernemer) ? 1 :
+                                                      2;
     },
 
     isAanwezig: (
@@ -279,9 +297,10 @@ const Indeling = {
         const rsvp = aanmeldingen.find(({ erkenningsNummer }) =>
             erkenningsNummer === ondernemer.erkenningsNummer
         );
-        // Bij de indeling van VPHs worden alleen expliciete afmeldingen in beschouwing
-        // genomen. Anders wordt een VPH automatisch als aangemeld beschouwd.
-        return Ondernemer.isVast(ondernemer) ?
+        // • VPL en TVPL worden automatisch aangemeld, tenzij ze zich expliciet afgemeld hebben.
+        // • TVPLZ moet zich expliciet aanmelden. Aangezien zij geen vaste plaatsnummers hebben
+        //   volstaat een check op `hasVastePlaatsen` hier.
+        return Ondernemer.isVast(ondernemer) && Ondernemer.hasVastePlaatsen(ondernemer) ?
                !rsvp || !!rsvp.attending || rsvp.attending === null :
                !!rsvp && !!rsvp.attending;
     },

@@ -25,6 +25,7 @@ export enum VerkoopinrichtingType {
 export enum DeelnemerStatus {
     VASTE_PLAATS = 'vpl',
     TIJDELIJKE_VASTE_PLAATS = 'tvpl',
+    TIJDELIJKE_VASTE_PLAATS_Z = 'tvplz',
     TIJDELIJKE_VASTE_PLAATS_OLD = 'vkk',
     SOLLICITANT = 'soll',
     EXPERIMENTAL = 'exp',
