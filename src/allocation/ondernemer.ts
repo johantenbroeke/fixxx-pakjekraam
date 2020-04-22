@@ -186,8 +186,7 @@ const Ondernemer = {
     },
 
     isExperimenteel: (ondernemer: IMarktondernemer): boolean => {
-        // TODO: Remove '?' status when MakkelijkeMarkt is updated.
-        return ondernemer.status === '?' || ondernemer.status === 'exp';
+        return ondernemer.status === 'exp';
     },
 
     isInBranche: (
