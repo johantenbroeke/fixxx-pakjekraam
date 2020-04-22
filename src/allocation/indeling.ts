@@ -158,7 +158,7 @@ const Indeling = {
                 return Toewijzing.add(result, ondernemer, plaats);
             }, indeling);
 
-            const statusGroup = Indeling.getStatusGroup(indeling, ondernemer);
+            const statusGroup = Indeling._getStatusGroup(indeling, ondernemer);
             if (statusGroup !== 3) {
                 return _indeling;
             }
@@ -251,25 +251,8 @@ const Indeling = {
         );
     },
 
-    // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
-    // 0. VPHs die niet willen verplaatsen.
-    // 1. Ondernemers die willen bakken (kan ook een VPH zijn die wil verplaatsen).
-    // 2. Ondernemers met een EVI (kan ook een VPH zijn die wil verplaatsen).
-    // 3. VPHs die willen/moeten verplaatsen.
-    // 4. Sollicitanten.
-    getStatusGroup: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): number => {
-        return Ondernemer.hasVastePlaatsen(ondernemer) &&
-               !Indeling.willMove(indeling, ondernemer)              ? 0 :
-               Ondernemer.hasVerplichteBranche(indeling, ondernemer) ? 1 :
-               Ondernemer.hasEVI(ondernemer)                         ? 2 :
-               Ondernemer.hasVastePlaatsen(ondernemer)               ? 3 :
-                                                                       4;
-    },
-
-    // Wordt in `_compareOndernemers` als tweede sorteercriterium gebruikt.
+    // Wordt in `calcToewijzingen` gebruikt om een splitsing te maken tussen A-lijst
+    // ondernemers en de rest.
     getListGroup: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
@@ -454,6 +437,20 @@ const Indeling = {
         return happySize;
     },
 
+    _compareOndernemers: (
+        indeling: IMarktindeling,
+        a: IMarktondernemer,
+        b: IMarktondernemer
+    ): number => {
+        const sort1 = Indeling._getStatusGroup(indeling, a) -
+                      Indeling._getStatusGroup(indeling, b);
+        const sort2 = Number(Ondernemer.isVast(b)) -
+                      Number(Ondernemer.isVast(a));
+        const sort3 = a.sollicitatieNummer - b.sollicitatieNummer;
+
+        return sort1 || sort2 || sort3;
+    },
+
     // Tel het totaal aantal nog beschikbare plaatsen op de markt voor deze ondernemer.
     // Als zij in een (of meerdere) gelimiteerde branche(s) zitten, wordt de telling
     // beperkt tot deze 'markt in markt'.
@@ -627,6 +624,24 @@ const Indeling = {
         );
     },
 
+    // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
+    // 0. VPHs die niet willen verplaatsen.
+    // 1. Ondernemers die willen bakken (kan ook een VPH zijn die wil verplaatsen).
+    // 2. Ondernemers met een EVI (kan ook een VPH zijn die wil verplaatsen).
+    // 3. VPHs die willen/moeten verplaatsen.
+    // 4. Sollicitanten.
+    _getStatusGroup: (
+        indeling: IMarktindeling,
+        ondernemer: IMarktondernemer
+    ): number => {
+        return Ondernemer.hasVastePlaatsen(ondernemer) &&
+               !Indeling.willMove(indeling, ondernemer)              ? 0 :
+               Ondernemer.hasVerplichteBranche(indeling, ondernemer) ? 1 :
+               Ondernemer.hasEVI(ondernemer)                         ? 2 :
+               Ondernemer.isVast(ondernemer)                         ? 3 :
+                                                                       4;
+    },
+
     _isAvailable: (
         indeling: IMarktindeling,
         targetPlaats: IMarktplaats,
@@ -670,18 +685,6 @@ const Indeling = {
         }
 
         return indeling;
-    },
-
-    _compareOndernemers: (
-        indeling: IMarktindeling,
-        a: IMarktondernemer,
-        b: IMarktondernemer
-    ): number => {
-        const sort1 = Indeling.getStatusGroup(indeling, a) -
-                      Indeling.getStatusGroup(indeling, b);
-        const sort2 = a.sollicitatieNummer - b.sollicitatieNummer;
-
-        return sort1 || sort2;
     }
 };
 
