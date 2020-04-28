@@ -192,7 +192,8 @@ const Ondernemer = {
     },
 
     isExperimenteel: (ondernemer: IMarktondernemer): boolean => {
-        return ondernemer.status === 'exp';
+        return ondernemer.status === 'exp' ||
+               ondernemer.status === 'expf';
     },
 
     isInBranche: (

@@ -29,6 +29,7 @@ export enum DeelnemerStatus {
     TIJDELIJKE_VASTE_PLAATS_OLD = 'vkk',
     SOLLICITANT = 'soll',
     EXPERIMENTAL = 'exp',
+    EXPERIMENTAL_F = 'expf'
 }
 
 export interface IMarktProperties {

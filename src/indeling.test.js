@@ -1344,94 +1344,98 @@ describe('Een VPL die wil verplaatsen', () => {
     });
 });
 
-describe('Een sollicitant met een tijdelijke vaste plaats (exp)', () => {
+describe('Een sollicitant met een tijdelijke vaste plaats (exp of expf)', () => {
     it('moet zich aanmelden als aanwezig om ingedeeld te worden', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'exp', plaatsen: ['1'] },
-                { sollicitatieNummer: 2, status: 'exp', plaatsen: ['2'] }
+                { sollicitatieNummer: 2, status: 'exp', plaatsen: ['2'] },
+                { sollicitatieNummer: 3, status: 'expf', plaatsen: ['3'] },
+                { sollicitatieNummer: 4, status: 'expf', plaatsen: ['4'] }
             ],
-            marktplaatsen: [
-                {}, {}
-            ],
+            marktplaatsen: ['1', '2', '3', '4'],
             aanwezigheid: [
-                { sollicitatieNummer: 2, attending: true }
+                { sollicitatieNummer: 2, attending: true },
+                { sollicitatieNummer: 4, attending: true },
             ]
         });
 
         // Iemand die niet aangemeld is, wordt ook niet afgewezen — deze ondernemer komt
         // simpelweg niet voor in de berekening.
-        expect(findOndernemers(toewijzingen)).toStrictEqual([2]);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2, 4]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 4)).toStrictEqual(['4']);
     });
 
     it('wordt ingedeeld voor andere sollicitanten', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'soll' },
-                { sollicitatieNummer: 2, status: 'exp', plaatsen: ['2'] }
+                { sollicitatieNummer: 2, status: 'exp', plaatsen: ['2'] },
+                { sollicitatieNummer: 3, status: 'expf', plaatsen: ['3'] }
             ],
-            marktplaatsen: [
-                {}, {}
-            ],
+            marktplaatsen: ['1', '2', '3'],
             voorkeuren: [
-                { sollicitatieNummer: 1, plaatsId: '2' }
+                { sollicitatieNummer: 1, plaatsId: '2' },
+                { sollicitatieNummer: 1, plaatsId: '3' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['3']);
+    });
+
+    it('kan niet verplaatsen als zij een vaste plaats hebben', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'exp', plaatsen: ['1'] },
+                { sollicitatieNummer: 2, status: 'expf', plaatsen: ['3'] }
+            ],
+            marktplaatsen: ['1', '2', '3', '4'],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '2' },
+                { sollicitatieNummer: 2, plaatsId: '4' }
             ]
         });
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
     });
 
-    it('kan niet verplaatsen als zij een vaste plaats hebben', () => {
-        const { toewijzingen, afwijzingen } = calc({
-            ondernemers: [
-                { sollicitatieNummer: 1, status: 'exp', plaatsen: ['1'] }
-            ],
-            marktplaatsen: [
-                {}, {}
-            ],
-            voorkeuren: [
-                { sollicitatieNummer: 1, plaatsId: '2' }
-            ]
-        });
-
-        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
-        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
-        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
-    });
-
-    it('kan geen minimum opgeven in hun voorkeuren', () => {
+    it('kan geen minimum gewenste plaatsen opgeven in hun voorkeuren', () => {
        const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
-                { sollicitatieNummer: 1, status: 'exp', plaatsen: ['1'], voorkeur: { minimum: 2 } }
+                { sollicitatieNummer: 1, status: 'exp', plaatsen: ['1'], voorkeur: { minimum: 2 } },
+                { sollicitatieNummer: 2, status: 'expf', plaatsen: ['3'], voorkeur: { minimum: 2 } }
             ],
-            marktplaatsen: [
-                {}, {}
-            ]
+            marktplaatsen: ['1', '2', '3', '4']
         });
 
-        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
     });
 
-    it('kan geen maximum opgeven in hun voorkeuren', () => {
+    it('kan geen maximum aantal gewenste plaatsen opgeven in hun voorkeuren', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
-                { sollicitatieNummer: 1, status: 'exp', plaatsen: ['1'], voorkeur: { maximum: 2 } }
+                { sollicitatieNummer: 1, status: 'exp', plaatsen: ['1'], voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 2, status: 'exp', plaatsen: ['3'], voorkeur: { maximum: 2 } },
             ],
-            marktplaatsen: [
-                {}, {}
-            ]
+            marktplaatsen: ['1', '2', '3', '4']
         });
 
-        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
     });
 });
 
