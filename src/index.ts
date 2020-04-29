@@ -623,20 +623,6 @@ app.post(
 );
 
 app.get(
-    '/profile/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
-    (req: GrantedRequest, res: Response) => {
-    const messages = getQueryErrors(req.query);
-    getMarktondernemer(getErkenningsNummer(req)).then(ondernemer => {
-        res.render('ProfilePage', {
-            user: getKeycloakUser(req),
-            ondernemer,
-            messages,
-        });
-    });
-});
-
-app.get(
     '/profile/:erkenningsNummer',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: GrantedRequest, res: Response) =>
