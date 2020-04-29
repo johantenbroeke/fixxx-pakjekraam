@@ -74,9 +74,7 @@ import {
 
 import {
     attendancePage,
-    handleAttendanceUpdate,
-    marketAttendancePage,
-    handleMarketAttendanceUpdate
+    handleAttendanceUpdate
 } from './routes/market-application';
 
 import {
@@ -380,53 +378,30 @@ app.get('/welkom', (req: Request, res: Response) => {
 });
 
 app.get(
-    '/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
-    csrfProtection,
-    (req: GrantedRequest, res: Response) => {
-        marketAttendancePage(
-            req,
-            res,
-            getErkenningsNummer(req),
-            req.params.marktId,
-            req.query,
-            KeycloakRoles.MARKTONDERNEMER,
-            req.csrfToken(),
-        );
-    },
-);
-
-app.post(
-    '/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
-    csrfProtection,
-    (req: GrantedRequest, res: Response, next: NextFunction) =>
-        handleMarketAttendanceUpdate(req, res, next, getErkenningsNummer(req)),
-);
-
-app.get(
-    '/ondernemer/:erkenningsNummer/afmelden/:marktId/',
+    '/ondernemer/:erkenningsNummer/aanwezigheid/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
-    (req: GrantedRequest, res: Response) => {
-        marketAttendancePage(
-            req,
-            res,
-            req.params.erkenningsNummer,
-            req.params.marktId,
-            req.query,
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
+        attendancePage(
+            req, res, next,
             KeycloakRoles.MARKTMEESTER,
-            req.csrfToken(),
+            req.params.erkenningsNummer,
+            req.csrfToken()
         );
     },
 );
 
 app.post(
-    '/ondernemer/:erkenningsNummer/afmelden/:marktId/',
+    '/ondernemer/:erkenningsNummer/aanwezigheid/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
-    (req: Request, res: Response, next: NextFunction) =>
-        handleMarketAttendanceUpdate(req, res, next, req.params.erkenningsNummer),
+    (req: Request, res: Response, next: NextFunction) => {
+        handleAttendanceUpdate(
+            req, res, next,
+            KeycloakRoles.MARKTMEESTER,
+            req.params.erkenningsNummer
+        );
+    }
 );
 
 app.get(

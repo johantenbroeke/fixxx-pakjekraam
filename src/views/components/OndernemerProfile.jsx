@@ -26,7 +26,7 @@ class OndernemerProfile extends React.Component {
                                 <a className="Link" href={`/markt/${sollicitatie.markt.id}/`}><strong>{sollicitatie.markt.naam}</strong></a> <SollicitatieSpecs sollicitatie={sollicitatie} />
                             </div>
                             <div className="LinkSummary__links">
-                                <a className="LinkSummary__first-link LinkInline" href={`${vendorURL}afmelden/${sollicitatie.markt.id}/`}>aanwezigheid</a>
+                                <a className="LinkSummary__first-link LinkInline" href={`${vendorURL}aanwezigheid/`}>aanwezigheid</a>
                                 <a className="LinkInline" href={`${vendorURL}voorkeuren/${sollicitatie.markt.id}/`}>plaatsvoorkeuren</a>
                                 <a className="LinkInline" href={`${vendorURL}algemene-voorkeuren/${sollicitatie.markt.id}/`}>algemene voorkeuren</a>
                             </div>

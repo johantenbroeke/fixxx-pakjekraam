@@ -6,7 +6,7 @@ const HeaderTitleButton = require('./HeaderTitleButton');
 const { isVast, formatOndernemerName } = require('../../domain-knowledge.js');
 
 const OndernemerMarktAanwezigheid = ({ markt, rsvpEntries, sollicitatie, ondernemer, toewijzingen }) => {
-    const blockUrl = `../../afmelden/${markt.id}/`;
+    const blockUrl = `../../aanwezigheid/`;
     const lastDivider = false;
 
     const weekAanmeldingen = rsvpEntries.reduce(
