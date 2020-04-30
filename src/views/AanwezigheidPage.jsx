@@ -10,10 +10,9 @@ const { getBreadcrumbsMarkt, getBreadcrumbsOndernemer } = require('../util');
 
 class AanwezigheidPage extends React.Component {
     propTypes = {
-        aanmeldingenPerMarkt : PropTypes.object,
+        aanmeldingenPerMarktPerWeek : PropTypes.object,
         csrfToken            : PropTypes.string,
         date                 : PropTypes.string.isRequired,
-        markten              : PropTypes.array,
         mededelingen         : PropTypes.object.isRequired,
         messages             : PropTypes.array,
         ondernemer           : PropTypes.object.isRequired,
@@ -25,10 +24,9 @@ class AanwezigheidPage extends React.Component {
 
     render() {
         const {
-            aanmeldingenPerMarkt,
+            aanmeldingenPerMarktPerWeek,
             csrfToken,
             date,
-            markten,
             mededelingen,
             messages,
             ondernemer,
@@ -67,9 +65,8 @@ class AanwezigheidPage extends React.Component {
                     <AanwezigheidsForm
                         date={date}
                         ondernemer={ondernemer}
-                        markten={markten}
                         sollicitaties={sollicitaties}
-                        aanmeldingenPerMarkt={aanmeldingenPerMarkt}
+                        aanmeldingenPerMarktPerWeek={aanmeldingenPerMarktPerWeek}
                         query={query}
                         role={role}
                         csrfToken={csrfToken}

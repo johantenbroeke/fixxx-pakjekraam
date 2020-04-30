@@ -9,72 +9,28 @@ const {
     formatDate,
     endOfWeek,
     addDays,
-    toISODate,
+    toDate,
     WEEK_DAYS_SHORT
 } = require('../../util.ts');
 
-const {
-    getMarktThresholdDate,
-    filterRsvpList,
-    isVast
-} = require('../../domain-knowledge.js');
-
 class AanwezigheidsForm extends React.Component {
     propTypes = {
-        ondernemer           : PropTypes.object.isRequired,
-        aanmeldingenPerMarkt : PropTypes.array,
-        sollicitaties        : PropTypes.array.isRequired,
-        markten              : PropTypes.array.isRequired,
-        query                : PropTypes.string,
-        role                 : PropTypes.string,
-        csrfToken            : PropTypes.string,
+        ondernemer                  : PropTypes.object.isRequired,
+        aanmeldingenPerMarktPerWeek : PropTypes.array,
+        sollicitaties               : PropTypes.array.isRequired,
+        query                       : PropTypes.string,
+        role                        : PropTypes.string,
+        csrfToken                   : PropTypes.string,
     };
 
     render() {
         const {
-            aanmeldingenPerMarkt = [],
+            aanmeldingenPerMarktPerWeek = [],
             csrfToken,
-            markten,
             ondernemer,
             role,
             sollicitaties
         } = this.props;
-
-        const thresholdDate = getMarktThresholdDate(role);
-
-        const aanmeldingenPerMarktPerWeek = markten.map(markt => {
-            const aanmeldingen = aanmeldingenPerMarkt[markt.id] ?
-                                 aanmeldingenPerMarkt[markt.id].filter(({ marktId }) => marktId === markt.id) :
-                                 [];
-            const aanmeldingenPerDag = filterRsvpList(aanmeldingen, markt);
-
-            const aanmeldingenPerWeek = aanmeldingenPerDag.reduce((result, { date, rsvp }) => {
-                // Voeg de tijd toe, zodat we een datum in de huidige tijdszone krijgen.
-                // Doen we dit niet, dan wordt de datum ingesteld op UTC. Aangezien wij in de
-                // zomer op UTC+2 zitten is de datumwissel bij ons twee uur eerder. Gebruikers
-                // zouden in dit geval twee uur na de automatische indeling hun aanwezigheid nog
-                // kunnen aanpassen
-                date = new Date(date+' 00:00:00');
-
-                const week        = date > new Date(endOfWeek()) ? 1 : 0;
-                const weekDay     = date.getDay();
-                const attending   = rsvp ? rsvp.attending : isVast(sollicitaties[markt.id].status);
-                const isInThePast = date < thresholdDate;
-
-                result[week][weekDay] = {
-                    date,
-                    attending,
-                    isInThePast
-                };
-
-                return result;
-            }, [{}, {}]);
-
-            return {
-                markt,
-                aanmeldingenPerWeek
-            };
-        });
 
         // Wordt in de HTML gebruikt om de `rsvp` <input>s te nummeren.
         let index = -1;
@@ -105,7 +61,7 @@ class AanwezigheidsForm extends React.Component {
                                    disabled={week[day].isInThePast} defaultValue={markt.id}
                             />
                             <input type="hidden" name={`rsvp[${index}][marktDate]`}
-                                   disabled={week[day].isInThePast} defaultValue={week[day].date.toISOString()}
+                                   disabled={week[day].isInThePast} defaultValue={toDate(week[day].date)}
                             />
 
                             <input

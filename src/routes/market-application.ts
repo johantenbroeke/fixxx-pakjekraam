@@ -4,6 +4,7 @@ import {
     Response
 } from 'express';
 import { GrantedRequest } from 'keycloak-connect';
+
 import moment from 'moment-timezone';
 moment.locale('nl');
 
@@ -24,7 +25,6 @@ import {
 
 import { getKeycloakUser } from '../keycloak-api';
 import {
-    getMarkt,
     getMarktondernemer
 } from '../makkelijkemarkt-api';
 import {
@@ -37,11 +37,11 @@ import { IRSVP } from '../markt.model';
 
 import {
     getMarktEnriched,
-    getMarktenEnabled
+    getMarktenEnabled,
+    getMarktenForOndernemer
 } from '../model/markt.functions';
 import {
-    getConflictingApplications,
-    getConflictingSollicitaties
+    groupAanmeldingenPerMarktPerWeek
 } from '../model/rsvp.functions';
 
 const {
@@ -58,76 +58,81 @@ interface AttendanceFormData {
     next: string;
 }
 
+interface RSVPsGrouped {
+    [marktDate: string]: IRSVP[]
+}
+
+const isEqualAanmelding = (aanmelding) => {
+    return a =>
+        Number(a.marktId) === Number(aanmelding.marktId) &&
+        a.marktDate === aanmelding.marktDate;
+};
+
 export const attendancePage = (
     req: GrantedRequest,
     res: Response,
     next: NextFunction,
     role: string,
     erkenningsNummer: string,
-    csrfToken: string
+    csrfToken: string,
+    messages: object[] = [],
+    newAanmeldingen?: IRSVP[]
 ) => {
-    const ondernemerPromise = getMarktondernemer(erkenningsNummer);
-
-    const marktenPromise = ondernemerPromise
-    .then(({ sollicitaties }) => {
-        const markten = sollicitaties.reduce((result, sollicitatie) => {
-            return !sollicitatie.doorgehaald ?
-                   result.concat(getMarkt(String(sollicitatie.markt.id))) :
-                   result;
-        }, []);
-
-        return Promise.all(markten);
-    })
-    .then(markten => {
-        return markten.filter(markt => markt.kiesJeKraamActief);
-    });
+    const thresholdDate       = getMarktThresholdDate(role);
+    const ondernemerPromise   = getMarktondernemer(erkenningsNummer);
+    const marktenPromise      = ondernemerPromise.then(getMarktenForOndernemer);
+    const aanmeldingenPromise = getAanmeldingenByOndernemer(erkenningsNummer);
 
     return Promise.all([
         ondernemerPromise,
+        aanmeldingenPromise,
         marktenPromise,
-        getAanmeldingenByOndernemer(erkenningsNummer),
         getMededelingen()
     ])
-    .then(results => {
-        const [
-            ondernemer,
-            markten,
-            aanmeldingen,
-            mededelingen
-        ] = results;
-
-        const currentWeek = moment().week();
-        const nextWeek    = moment().add(1, 'weeks').week();
-
-        const aanmeldingenPerMarkt = aanmeldingen.reduce((result, aanmelding) => {
-            const marktWeek = moment(aanmelding.marktDate).week();
-
-            if( marktWeek !== currentWeek && marktWeek !== nextWeek) {
-                return result;
-            }
-
-            const marktId = aanmelding.marktId;
-            result[marktId] = result[marktId] ?
-                              result[marktId].concat(aanmelding) :
-                              [aanmelding];
-
-            return result;
-        }, {});
-
+    .then(([
+        ondernemer,
+        aanmeldingen,
+        markten,
+        mededelingen
+    ]) => {
         const sollicitaties = ondernemer.sollicitaties.reduce((result, sollicitatie) => {
             result[sollicitatie.markt.id] = sollicitatie;
             return result;
         }, {});
 
-        // const messages = getQueryErrors(query);
-        res.render('AanwezigheidPage', {
-            aanmeldingenPerMarkt,
-            csrfToken,
-            markten,
-            mededelingen,
-            // messages,
+        if (newAanmeldingen) {
+            aanmeldingen = [...aanmeldingen, ...newAanmeldingen].reduce((result, aanmelding) => {
+                const existing = result.find(isEqualAanmelding(aanmelding));
+                if (existing) {
+                    return result;
+                }
+
+                const newAanmelding = newAanmeldingen.find(isEqualAanmelding(aanmelding));
+                return newAanmelding ?
+                       result.concat(newAanmelding) :
+                       result.concat(aanmelding);
+            }, []);
+        }
+
+        return [
             ondernemer,
-            // query,
+            sollicitaties,
+            groupAanmeldingenPerMarktPerWeek(markten, sollicitaties, aanmeldingen, thresholdDate),
+            mededelingen
+        ];
+    })
+    .then(([
+        ondernemer,
+        sollicitaties,
+        aanmeldingenPerMarktPerWeek,
+        mededelingen
+    ]) => {
+        res.render('AanwezigheidPage', {
+            aanmeldingenPerMarktPerWeek,
+            csrfToken,
+            mededelingen,
+            messages,
+            ondernemer,
             role,
             sollicitaties,
             user: getKeycloakUser(req)
@@ -137,7 +142,7 @@ export const attendancePage = (
 };
 
 export const handleAttendanceUpdate = (
-    req: Request,
+    req: GrantedRequest,
     res: Response,
     next: NextFunction,
     role: string,
@@ -150,10 +155,16 @@ export const handleAttendanceUpdate = (
     const startDate = getMarktThresholdDate(role);
     const endDate   = moment().day(13).endOf('day').toDate();
 
+    // Converteer form data naar echte RSVP objecten. Deze data wordt ook
+    // doorgegeven aan de `attendencePage` call hieronder indien er een error is.
+    const rsvps: IRSVP[] = data.rsvp.map(rsvpData => ({
+        ...rsvpData,
+        erkenningsNummer,
+        attending: rsvpData.attending === '1'
+    }));
     // Groepeer alle RSVPs op datum, zodat we voor elke dag eenvoudig kunnen
     // controleren of het aantal aanmeldingen het maximum overschrijdt.
-    const rsvpsByDate: { [marktDate: string]: IRSVP[] } = data.rsvp
-    .reduce((result, rsvp) => {
+    const rsvpsByDate: RSVPsGrouped = rsvps.reduce((result, rsvp) => {
         const rsvpDate = new Date(`${rsvp.marktDate} 00:00:00`);
         if (rsvpDate < startDate || rsvpDate > endDate) {
             return result;
@@ -162,20 +173,13 @@ export const handleAttendanceUpdate = (
             result[rsvp.marktDate] = [];
         }
 
-        result[rsvp.marktDate].push({
-            ...rsvp,
-            erkenningsNummer,
-            attending: rsvp.attending === '1'
-        });
+        result[rsvp.marktDate].push(rsvp);
 
         return result;
     }, {});
 
     // Controleer per dag of het maximum wordt overschreden. Zo ja, geef dan een
     // foutmelding weer.
-    //
-    // TODO: Foutmeldingen moeten in het huidige formulier worden weergegeven,
-    //       zodat gebruikers geen data verliezen.
     getMarktondernemer(erkenningsNummer)
     .then(({ vervangers }): any => {
         const dailyMax  = vervangers.length + 1;
@@ -189,11 +193,24 @@ export const handleAttendanceUpdate = (
         }
 
         if (errorDays.length) {
-            const errorDaysString = errorDays.map(marktDate =>
-                moment(marktDate).format('dd D MMM')
+            const errorDaysPretty = errorDays.map(marktDate =>
+                moment(marktDate).format('dddd D MMM')
             );
-            const message = `U heeft teveel aanmeldingen voor de volgende marktdagen: ${errorDaysString}`;
-            res.send(message);
+            const errorMessage = {
+                code: 'error',
+                title: 'Onvoldoende vervangers',
+                message: errorDaysPretty.length === 1 ?
+                         `U heeft teveel aanmeldingen voor ${errorDaysPretty[0]}` :
+                         `U heeft teveel aanmeldingen voor: ${errorDaysPretty.join(', ')}`
+            };
+
+            attendancePage(
+                req, res, next,
+                role, erkenningsNummer,
+                req.csrfToken(),
+                [errorMessage],
+                rsvps
+            );
             return;
         }
 

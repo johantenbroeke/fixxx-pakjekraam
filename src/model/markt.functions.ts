@@ -9,7 +9,10 @@ import {
     getDaysClosed
 } from '../pakjekraam-api';
 import { IMarktEnriched } from '../markt.model';
-import { MMMarkt } from 'makkelijkemarkt.model';
+import {
+    MMMarkt,
+    MMOndernemerStandalone
+} from 'makkelijkemarkt.model';
 
 import { getMaDiWoDo } from '../util';
 
@@ -39,6 +42,17 @@ export const getMarktenEnabled = () => {
     return getMarkten()
     .then(markten => {
         return markten.filter((markt: any) => markt.kiesJeKraamActief);
+    });
+};
+
+export const getMarktenForOndernemer = (
+    ondernemer: MMOndernemerStandalone
+): Promise<MMMarkt[]> => {
+    return Promise.all(ondernemer.sollicitaties.map(sollicitatie =>
+        getMarkt(String(sollicitatie.markt.id))
+    ))
+    .then(markten => {
+        return markten.filter(markt => markt.kiesJeKraamActief);
     });
 };
 

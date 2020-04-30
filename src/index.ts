@@ -395,7 +395,7 @@ app.post(
     '/ondernemer/:erkenningsNummer/aanwezigheid/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
-    (req: Request, res: Response, next: NextFunction) => {
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
         handleAttendanceUpdate(
             req, res, next,
             KeycloakRoles.MARKTMEESTER,
