@@ -17,7 +17,6 @@ class Page extends React.Component {
             <form
                 className={`Form ${className}`}
                 method="POST"
-                action="./"
                 encType="application/x-www-form-urlencoded"
                 data-decorator={decorator}
             >

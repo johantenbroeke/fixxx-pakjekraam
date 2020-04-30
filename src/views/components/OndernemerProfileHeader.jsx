@@ -1,10 +1,9 @@
 const ProfilePhoto = require('./ProfilePhoto');
-const SollicitatieSpecs = require('./SollicitatieSpecs');
 const PropTypes = require('prop-types');
 const React = require('react');
 const { formatOndernemerName } = require('../../domain-knowledge.js');
 
-const OndernemerProfileHeader = ({ user, inline, sollicitatie }) => {
+const OndernemerProfileHeader = ({ user, inline }) => {
     return (
         <header className={`OndernemerProfileHeader ${inline ? 'OndernemerProfileHeader--inline' : null}`}>
             <div className="OndernemerProfileHeader__profile-photo">
@@ -25,7 +24,6 @@ const OndernemerProfileHeader = ({ user, inline, sollicitatie }) => {
 OndernemerProfileHeader.propTypes = {
     user: PropTypes.object.isRequired,
     inline: PropTypes.bool,
-    sollicitatie: PropTypes.object,
 };
 
 module.exports = OndernemerProfileHeader;
