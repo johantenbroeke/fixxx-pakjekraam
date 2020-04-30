@@ -58,29 +58,25 @@ export const getMarktenZichtbaarOndernemers = () => {
 };
 
 export const getMarktenByDate = (marktDate: string) => {
-
     const day = new Date(marktDate);
 
     return Promise.all([
         getMarkten(),
         getDaysClosed()
     ])
-        .then(([markten, daysClosed]) => {
-            // console.log(markten);
-            if (daysClosed.includes(marktDate)) {
-                console.log('Alle markten zijn vandaag gesloten');
-                return [];
-            } else {
-                return markten
-                    .filter(({ kiesJeKraamActief }) => kiesJeKraamActief)
-                    .filter(({ marktDagen }) => marktDagen.includes(getMaDiWoDo(day)))
-                    .filter(({ kiesJeKraamGeblokkeerdeData }) => {
-                        if (!kiesJeKraamGeblokkeerdeData) {
-                            return true;
-                        } else {
-                            return !kiesJeKraamGeblokkeerdeData.split(',').includes(marktDate);
-                        }
-                    });
-            }
-        });
+    .then(([markten, daysClosed]) => {
+        if (daysClosed.includes(marktDate)) {
+            console.log('Alle markten zijn vandaag gesloten');
+            return [];
+        } else {
+            return markten
+            .filter(({ kiesJeKraamActief, marktDagen, kiesJeKraamGeblokkeerdeData }) => {
+                return kiesJeKraamActief &&
+                       marktDagen.includes(getMaDiWoDo(day)) && (
+                           !kiesJeKraamGeblokkeerdeData ||
+                           !kiesJeKraamGeblokkeerdeData.split(',').includes(marktDate)
+                       );
+            });
+        }
+    });
 };

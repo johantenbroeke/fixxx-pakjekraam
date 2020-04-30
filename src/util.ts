@@ -135,6 +135,12 @@ export const endOfWeek = (): string => {
 
 export const nextWeek = (): string => addDays(Date.now(), DAYS_IN_WEEK);
 
+export const toDate = (dateObject: Date) => {
+    const day   = String(dateObject.getDate()).padStart(2, '0');
+    const month = String(dateObject.getMonth()+1).padStart(2, '0');
+    const year  = dateObject.getFullYear();
+    return `${year}-${month}-${day}`;
+};
 export const toISODate = (date: Date): string => date.toISOString().replace(/T.+/, '');
 
 export const ddmmyyyyToDate = (dateString: string) => {
@@ -142,13 +148,6 @@ export const ddmmyyyyToDate = (dateString: string) => {
     const month = dateString.split('-')[1];
     const year = dateString.split('-')[2];
     return new Date(parseInt(year), parseInt(month)-1, parseInt(day), 0, 0, 0);
-};
-
-export const dateToYYYYMMDD = (dateObject: Date) => {
-    const day = dateObject.getDay();
-    const month = dateObject.getMonth()+1;
-    const year = dateObject.getFullYear();
-    return `${year}-${month}-${day}`;
 };
 
 // export const dateToDDMMYYYY = (dateObject: Date) => {

@@ -17,7 +17,6 @@ const {
     endOfWeek,
     stringSort,
     getMaDiWoDo,
-    dateToYYYYMMDD,
     getTimezoneTime
 } = require('./util.ts');
 
@@ -141,34 +140,6 @@ const obstakelsToLocatieKeyValue = array =>
         return total;
     }, {});
 
-const filterRsvpListOndernemer = (aanmeldingen, markt, startDate) => {
-    let rsvpIndex = 0;
-
-    const start = moment(startDate).add(3, 'h').add(1, 'days').toDate();
-
-    let dates = getMarktDaysOndernemer(
-        start,
-        addDays(endOfWeek(), DAYS_IN_WEEK),
-        markt.marktDagen,
-    );
-
-    dates = dates.map(date => dateToYYYYMMDD(new Date(date)));
-
-    const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
-
-
-    // TODO: Replace non-pure `rsvpIndex` with grouping by `markt.id` afterwards
-    const rsvpList = dates.map( date => {
-        return {
-            date,
-            rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date),
-            index: rsvpIndex++
-        };
-    });
-
-    return rsvpList;
-};
-
 const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
     const dates = getMarktDays(
         startDate ? startDate : addDays(moment().day(0).valueOf(), 0),
@@ -227,7 +198,6 @@ module.exports = {
     ondernemersToLocatieKeyValue,
     obstakelsToLocatieKeyValue,
     filterRsvpList,
-    filterRsvpListOndernemer,
     plaatsSort,
     isErkenningsnummer,
 };
