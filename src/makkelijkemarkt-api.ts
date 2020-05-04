@@ -52,16 +52,19 @@ const apiBase = (url: string): Promise<AxiosResponse> => {
             },
         });
     };
-    const retry = (api: any) =>
-        login(api).then((res: any) => {
-                return upsert(session, {
-                    sid: mmConfig.sessionKey,
-                }, {
-                    sess: { 'token': res.data.uuid },
-                }).then(() => res.data.uuid);
-            }).then((token: string) => {
-                return getFunction(url, token);
-            });
+    const retry = (api: any) => {
+        return login(api)
+        .then((res: any) => {
+            return upsert(session, {
+                sid: mmConfig.sessionKey,
+            }, {
+                sess: { 'token': res.data.uuid },
+            }).then(() => res.data.uuid);
+        }).then((token: string) => {
+            return getFunction(url, token);
+        });
+    };
+
     api.interceptors.response.use((response: any) => {
         return response;
     }, (error: any) => {
@@ -71,17 +74,34 @@ const apiBase = (url: string): Promise<AxiosResponse> => {
             return error;
         }
     });
-    return session.findByPk(mmConfig.sessionKey).then((sessionRecord: any) => {
 
-        return sessionRecord ? getFunction(url, sessionRecord.dataValues.sess.token) : retry(api);
+    return session.findByPk(mmConfig.sessionKey)
+    .then((sessionRecord: any) => {
+        return sessionRecord ?
+               getFunction(url, sessionRecord.dataValues.sess.token) :
+               retry(api);
     });
 };
 
 export const getMarktondernemers = (): Promise<MMSollicitatieStandalone[]> =>
     apiBase('koopman/').then(response => response.data);
 
-export const getMarktondernemer = (id: string): Promise<MMOndernemerStandalone> =>
-    apiBase(`koopman/erkenningsnummer/${id}`).then(response => response.data);
+export const getMarktondernemer = (id: string): Promise<MMOndernemerStandalone> => {
+    return apiBase(`koopman/erkenningsnummer/${id}`)
+    .then(response => {
+        if (!response || !response.data) {
+            return Promise.reject(Error('Ondernemer niet gevonden'));
+        }
+
+        // Filter inactieve sollicitaties, aangezien we die nooit gebruiken binnen
+        // dit systeem.
+        const ondernemer = response.data;
+        ondernemer.sollicitaties = ondernemer.sollicitaties.filter(sollicitatie =>
+            !sollicitatie.doorgehaald
+        );
+        return ondernemer;
+    });
+};
 
 export const getMarkt = (marktId: string): Promise<MMMarkt> =>
     apiBase(`markt/${marktId}`).then(response => response.data);
@@ -89,22 +109,22 @@ export const getMarkt = (marktId: string): Promise<MMMarkt> =>
 export const getMarkten = (): Promise<MMMarkt[]> =>
     apiBase('markt/').then(response => response.data);
 
-export const getSollicitatiesByOndernemer = (erkenningsNummer: string): Promise<MMSollicitatie[]> =>
-    getMarktondernemer(erkenningsNummer)
-        .then( (ondernemer: MMOndernemerStandalone) => {
-            return ondernemer.sollicitaties.filter(sollictatie => !sollictatie.doorgehaald);
-        });
-
-export const getSollicitatiesByMarktFases = (erkenningsNummer: string, fases: string[]) =>
-    Promise.all([
-        getSollicitatiesByOndernemer(erkenningsNummer),
+export const getSollicitatiesByOndernemer = (erkenningsNummer: string): Promise<MMSollicitatie[]> => {
+    return Promise.all([
+        getMarktondernemer(erkenningsNummer),
         getMarkten(),
     ])
-    .then(([sollicitaties, markten]) => {
-        const marktenByFase = markten.filter( markt => fases.includes(markt.kiesJeKraamFase) ).map(markt => markt.id);
-        return sollicitaties.filter( soll => marktenByFase.includes(soll.markt.id) );
-    });
+    .then(([ondernemer, markten]) => {
+        const fases = ['activate','wenperiode','live'];
+        const marktenActief = markten.filter(markt => fases.includes(markt.kiesJeKraamFase))
+                                     .map(markt => markt.id);
 
+        return ondernemer.sollicitaties.filter(sollicitatie =>
+            !sollicitatie.doorgehaald &&
+            marktenActief.includes(sollicitatie.markt.id)
+        );
+    });
+};
 
 export const getMarktondernemersByMarkt = (marktId: string): Promise<MMSollicitatieStandalone[]> => {
     const recursiveCall = ((p: number, total: any[]): any => {

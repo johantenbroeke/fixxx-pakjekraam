@@ -1,9 +1,18 @@
 import {
     getMarkt as getMakkelijkeMarkt,
 } from '../makkelijkemarkt-api';
-import { getMarktProperties, getMarktPaginas, getMarktplaatsen, getMarkten, getDaysClosed } from '../pakjekraam-api';
+import {
+    getMarktProperties,
+    getMarktPaginas,
+    getMarktplaatsen,
+    getMarkten,
+    getDaysClosed
+} from '../pakjekraam-api';
 import { IMarktEnriched } from '../markt.model';
-import { MMMarkt } from 'makkelijkemarkt.model';
+import {
+    MMMarkt,
+    MMOndernemerStandalone
+} from 'makkelijkemarkt.model';
 
 import { getMaDiWoDo } from '../util';
 
@@ -31,13 +40,28 @@ export const getMarkt = (marktId: string): Promise<MMMarkt> =>
 
 export const getMarktenEnabled = () => {
     return getMarkten()
-        .then(markten => {
-            return markten.filter((markt: any) => markt.kiesJeKraamActief);
-        });
+    .then(markten => {
+        return markten.filter((markt: any) => markt.kiesJeKraamActief);
+    });
+};
+
+export const getMarktenForOndernemer = (
+    ondernemer: MMOndernemerStandalone
+): Promise<MMMarkt[]> => {
+    return Promise.all(ondernemer.sollicitaties.map(sollicitatie =>
+        getMarkt(String(sollicitatie.markt.id))
+    ))
+    .then(markten => {
+        return markten.filter(markt => markt.kiesJeKraamActief);
+    });
 };
 
 export const marktZichtbaarOndernemers = (markt: any) => {
-    return (markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'activatie') && markt.kiesJeKraamActief;
+    return markt.kiesJeKraamActief && (
+        markt.kiesJeKraamFase === 'wenperiode' ||
+        markt.kiesJeKraamFase === 'live' ||
+        markt.kiesJeKraamFase === 'activatie'
+    );
 };
 
 export const getMarktenZichtbaarOndernemers = () => {
@@ -48,29 +72,25 @@ export const getMarktenZichtbaarOndernemers = () => {
 };
 
 export const getMarktenByDate = (marktDate: string) => {
-
     const day = new Date(marktDate);
 
     return Promise.all([
         getMarkten(),
         getDaysClosed()
     ])
-        .then(([markten, daysClosed]) => {
-            // console.log(markten);
-            if (daysClosed.includes(marktDate)) {
-                console.log('Alle markten zijn vandaag gesloten');
-                return [];
-            } else {
-                return markten
-                    .filter(({ kiesJeKraamActief }) => kiesJeKraamActief)
-                    .filter(({ marktDagen }) => marktDagen.includes(getMaDiWoDo(day)))
-                    .filter(({ kiesJeKraamGeblokkeerdeData }) => {
-                        if (!kiesJeKraamGeblokkeerdeData) {
-                            return true;
-                        } else {
-                            return !kiesJeKraamGeblokkeerdeData.split(',').includes(marktDate);
-                        }
-                    });
-            }
-        });
+    .then(([markten, daysClosed]) => {
+        if (daysClosed.includes(marktDate)) {
+            console.log('Alle markten zijn vandaag gesloten');
+            return [];
+        } else {
+            return markten
+            .filter(({ kiesJeKraamActief, marktDagen, kiesJeKraamGeblokkeerdeData }) => {
+                return kiesJeKraamActief &&
+                       marktDagen.includes(getMaDiWoDo(day)) && (
+                           !kiesJeKraamGeblokkeerdeData ||
+                           !kiesJeKraamGeblokkeerdeData.split(',').includes(marktDate)
+                       );
+            });
+        }
+    });
 };
