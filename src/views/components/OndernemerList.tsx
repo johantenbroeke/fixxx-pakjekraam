@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { IMarkt, IMarktondernemer, IRSVP } from '../../markt.model';
-const { EXP_ZONE } = require('../../util.ts');
 
 const OndernemerList = ({
     ondernemers,
@@ -24,12 +23,12 @@ const OndernemerList = ({
                     const algemenevoorkeur = algemenevoorkeuren[ondernemer.erkenningsNummer];
 
                     return (
-                        <tr key={ondernemer.erkenningsNummer} className={ ondernemer.status === EXP_ZONE ? 'exp' : ondernemer.status }>
+                        <tr key={ondernemer.erkenningsNummer} className={ondernemer.status}>
                             <td>
                                 <span id={`soll-${ondernemer.sollicitatieNummer}`} />
                                 <a href={`/profile/${ondernemer.erkenningsNummer}`}>{ondernemer.sollicitatieNummer}</a>
                             </td>
-                            <td>{ondernemer.status === EXP_ZONE ? 'exp' : ondernemer.status}</td>
+                            <td>{ondernemer.status}</td>
                             <td>{ondernemer.description}</td>
 
                             <td
