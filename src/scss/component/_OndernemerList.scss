@@ -40,10 +40,13 @@
         &.soll td:nth-child(2) {
             color: $supplement-darkgreen;
         }
-        &.exp td:nth-child(2) {
+        &.exp td:nth-child(2),
+        &.expf td:nth-child(2) {
             color: $supplement-purple;
         }
-        &.vkk td:nth-child(2) {
+        &.vkk td:nth-child(2),
+        &.tvpl td:nth-child(2),
+        &.tvplz td:nth-child(2) {
             color: $supplement-lightblue;
         }
         &.overig td:nth-child(2) {
