@@ -280,7 +280,9 @@ describe('Een ondernemer wordt afgewezen', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
     });
 
-    it('als het maximum aantal branche-ondernemers wordt overschreden ', () => {
+    // TODO: Deze functionaliteit wordt niet gebruikt? Momenteel niet meer
+    //       geïmplementeerd.
+    it.skip('als het maximum aantal branche-ondernemers wordt overschreden ', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } },
@@ -704,6 +706,77 @@ describe('Een ondernemer in een verplichte branche (bijv. bak)', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
         expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['4']);
+    });
+});
+
+describe('Een ondernemer in een beperkte branche (bijv. agf)', () => {
+    it('kan het maximum aantal plaatsen als SOLL niet overschrijden', () => {
+        // Ondernemers in een branche met een toewijzingsbeperking kregen in sommige
+        // situaties teveel plaatsen toegekend. Dit gebeurde voornamelijk als er nog
+        // 1 brancheplek beschikbaar was maar de ondernemer aan zet wilde graag 2 plaatsen.
+        // Als er vervolgens optimistisch werd ingedeeld kreeg deze ondernemer gelijk
+        // 2 plaatsen, waarmee het maximum met 1 plaats werd overschreden.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers : [
+                { sollicitatieNummer : 1, voorkeur: { branches: ['x'], maximum: 2 } },
+                { sollicitatieNummer : 2, voorkeur: { branches: ['x'], maximum: 2 } }
+            ],
+            marktplaatsen: [
+                '1', '2', '3', '4', '5', '6'
+            ],
+            branches: [{
+                brancheId: 'x',
+                maximumPlaatsen: 3
+            }]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
+    });
+
+    it('kan het maximum aantal plaatsen overschrijden indien VPH', () => {
+        // VPH in een branche met een toewijzingsbeperking moeten wel altijd hun
+        // plaatsen toegewezen krijgen, ook al overschrijden ze daarmee het maximum.
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers : [
+                { sollicitatieNummer : 1, status: 'vpl', plaatsen: ['1', '2'], voorkeur: { branches: ['x'] } },
+                { sollicitatieNummer : 2, status: 'vpl', plaatsen: ['3'], voorkeur: { branches: ['x'] } }
+            ],
+            marktplaatsen: [
+                '1', '2', '3'
+            ],
+            branches: [{
+                brancheId: 'x',
+                maximumPlaatsen: 1
+            }]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
+    });
+
+    it('kan conservatief ingedeeld worden terwijl de rest van de markt optimistisch ingedeeld wordt', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { branches: ['x', 'y'], maximum: 2 } },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['x'], maximum: 2 } },
+                { sollicitatieNummer: 3, voorkeur: { branches: ['x', 'y'] } }
+            ],
+            marktplaatsen: [
+                '1', '2', '3', '4', '5'
+            ],
+            branches: [
+                { brancheId: 'x', maximumPlaatsen: 2 },
+                { brancheId: 'y', maximumPlaatsen: 3 },
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([3]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
     });
 });
 
@@ -1824,8 +1897,8 @@ describe('Bugfix voor', () => {
         // zijn oorspronkelijke situatie zonder te verplaatsen.
         const { toewijzingen, afwijzingen } = calc({
             ondernemers : [
-                { sollicitatieNummer : 1, status : 'vph', plaatsen: ['5', '6'] },
-                { sollicitatieNummer : 2, status : 'vph', plaatsen: ['2', '3'] }
+                { sollicitatieNummer : 1, status : 'vpl', plaatsen: ['5', '6'] },
+                { sollicitatieNummer : 2, status : 'vpl', plaatsen: ['2', '3'] }
             ],
             marktplaatsen: [
                 '1', '2', '3', '4',

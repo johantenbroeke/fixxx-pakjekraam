@@ -26,6 +26,7 @@ export const ISO_SATURDAY = 6;
 export const ISO_SUNDAY = 7;
 
 export const WEEK_DAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+export const WEEK_DAYS_SHORT = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
 
 export const SUNDAY = 0;
 export const MONDAY = 1;
@@ -58,6 +59,7 @@ export const monthName = [
 
 export const formatISODayOfWeek = (day: number) => ISO_WEEK_DAYS[day];
 export const formatDayOfWeek = (date: string) => WEEK_DAYS[new Date(date).getDay()];
+export const formatDayOfWeekShort = (date: string) => WEEK_DAYS_SHORT[new Date(date).getDay()];
 export const formatMonth = (date: string) => monthName[new Date(date).getMonth()];
 
 export const getMaDiWoDo = (date: Date) => {
@@ -133,6 +135,12 @@ export const endOfWeek = (): string => {
 
 export const nextWeek = (): string => addDays(Date.now(), DAYS_IN_WEEK);
 
+export const toDate = (dateObject: Date) => {
+    const day   = String(dateObject.getDate()).padStart(2, '0');
+    const month = String(dateObject.getMonth()+1).padStart(2, '0');
+    const year  = dateObject.getFullYear();
+    return `${year}-${month}-${day}`;
+};
 export const toISODate = (date: Date): string => date.toISOString().replace(/T.+/, '');
 
 export const ddmmyyyyToDate = (dateString: string) => {
@@ -140,13 +148,6 @@ export const ddmmyyyyToDate = (dateString: string) => {
     const month = dateString.split('-')[1];
     const year = dateString.split('-')[2];
     return new Date(parseInt(year), parseInt(month)-1, parseInt(day), 0, 0, 0);
-};
-
-export const dateToYYYYMMDD = (dateObject: Date) => {
-    const day = dateObject.getDay();
-    const month = dateObject.getMonth()+1;
-    const year = dateObject.getFullYear();
-    return `${year}-${month}-${day}`;
 };
 
 // export const dateToDDMMYYYY = (dateObject: Date) => {

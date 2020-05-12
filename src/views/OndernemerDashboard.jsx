@@ -71,6 +71,7 @@ class OndernemerDashboard extends React.Component {
                     <div className="Section Section--column">
                         <a href="https://www.amsterdam.nl/ondernemen/markt-straathandel/digitaal-indelen/" rel="noopener noreferrer" target="_blank" className="Link">Informatie over digitaal Indelen van de markt</a>
                         <a href="/toewijzingen-afwijzingen/" className="Link">Toewijzingen/ afwijzingen</a>
+                        <a href="/aanwezigheid/" className="Link">Aanwezigheid</a>
                     </div>
                     <h1 className="Heading Heading--intro">Mijn markten</h1>
                     { marktenPlusToewijzing.length == 0 ?

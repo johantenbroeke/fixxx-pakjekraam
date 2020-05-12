@@ -1,36 +1,111 @@
-import { Request, Response, NextFunction } from 'express';
-import connectPgSimple = require('connect-pg-simple');
-import express = require('express');
-import Keycloak, { GrantedRequest, TokenContent } from 'keycloak-connect';
-import * as reactViews from 'express-react-views';
-import session from 'express-session';
-import path from 'path';
+import express, {
+    Request,
+    Response,
+    NextFunction
+} from 'express';
+
 import bodyParser from 'body-parser';
-import morgan from 'morgan';
-import url from 'url';
-import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makkelijkemarkt-api';
-import { requireEnv } from './util';
-import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, getQueryErrors, isAbsoluteUrl } from './express-util';
-import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
+import connectPgSimple = require('connect-pg-simple');
 import cookieParser from 'cookie-parser';
-
 import csrf from 'csurf';
+import morgan from 'morgan';
+import path from 'path';
+import Pool from 'pg-pool';
+import session from 'express-session';
+import url from 'url';
+import * as reactViews from 'express-react-views';
 
-const csrfProtection = csrf({ cookie: true });
+// Util
+// ----
 
-import { serverHealth, serverTime, databaseHealth, keycloakHealth, makkelijkeMarktHealth } from './routes/status';
-import { activationPage, handleActivation } from './routes/activation';
-import { registrationPage, handleRegistration } from './routes/registration';
+import {
+    HTTP_INTERNAL_SERVER_ERROR,
+    internalServerErrorPage,
+    getQueryErrors,
+    isAbsoluteUrl
+} from './express-util';
+
+import { requireEnv } from './util';
+
+// KeyCloak
+// --------
+
+import Keycloak, {
+    GrantedRequest,
+    TokenContent
+} from 'keycloak-connect';
+import { getKeycloakUser } from './keycloak-api';
+import { KeycloakRoles } from './permissions';
+
+// API
+// ---
+
+import {
+    getMarkt,
+    getMarktondernemer,
+    getMarktondernemersByMarkt
+} from './makkelijkemarkt-api';
+
+import {
+    getMarktEnriched,
+    getMarktenEnabled
+} from './model/markt.functions';
+
+// Routes
+// ------
+
+import {
+    serverHealth,
+    serverTime,
+    databaseHealth,
+    keycloakHealth,
+    makkelijkeMarktHealth
+} from './routes/status';
+
+import {
+    activationPage,
+    handleActivation
+} from './routes/activation';
+
+import {
+    registrationPage,
+    handleRegistration
+} from './routes/registration';
+
 import {
     attendancePage,
     handleAttendanceUpdate
 } from './routes/market-application';
-import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
-import { dashboardPage } from './routes/dashboard';
-import { plaatsvoorkeurenPage, updatePlaatsvoorkeuren } from './routes/market-location';
-import { activationQRPage } from './routes/activation-qr';
-import { deleteUserPage, deleteUser, publicProfilePage, toewijzingenAfwijzingenPage } from './routes/ondernemer';
-import { langdurigAfgemeld, marktDetail } from './routes/markt';
+
+import {
+    marketPreferencesPage,
+    updateMarketPreferences
+} from './routes/market-preferences';
+
+import {
+    dashboardPage
+} from './routes/dashboard';
+
+import {
+    plaatsvoorkeurenPage,
+    updatePlaatsvoorkeuren
+} from './routes/market-location';
+
+import {
+    activationQRPage
+} from './routes/activation-qr';
+
+import {
+    deleteUserPage,
+    deleteUser,
+    publicProfilePage,
+    toewijzingenAfwijzingenPage
+} from './routes/ondernemer';
+
+import {
+    langdurigAfgemeld,
+    marktDetail
+} from './routes/markt';
 
 import {
     vasteplaatshoudersPage,
@@ -40,10 +115,14 @@ import {
     sollicitantentAanwezigheidLijst,
     alleOndernemersAanwezigheidLijst,
 } from './routes/markt-marktmeester';
-import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
-import { getKeycloakUser } from './keycloak-api';
-import { KeycloakRoles } from './permissions';
-const Pool = require('pg-pool');
+
+import {
+    indelingslijstPage,
+    marketAllocationPage,
+    indelingPage
+} from './routes/market-allocation';
+
+const csrfProtection = csrf({ cookie: true });
 
 requireEnv('DATABASE_URL');
 requireEnv('APP_SECRET');
@@ -299,53 +378,56 @@ app.get('/welkom', (req: Request, res: Response) => {
 });
 
 app.get(
-    '/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    '/ondernemer/:erkenningsNummer/aanwezigheid/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
-    (req: GrantedRequest, res: Response) => {
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
         attendancePage(
-            req,
-            res,
-            getErkenningsNummer(req),
-            req.params.marktId,
-            req.query,
-            KeycloakRoles.MARKTONDERNEMER,
-            req.csrfToken(),
+            req, res, next,
+            KeycloakRoles.MARKTMEESTER,
+            req.params.erkenningsNummer,
+            req.csrfToken()
         );
     },
 );
 
 app.post(
-    '/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    '/ondernemer/:erkenningsNummer/aanwezigheid/',
+    keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
-    (req: GrantedRequest, res: Response, next: NextFunction) =>
-        handleAttendanceUpdate(req, res, next, getErkenningsNummer(req)),
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
+        handleAttendanceUpdate(
+            req, res, next,
+            KeycloakRoles.MARKTMEESTER,
+            req.params.erkenningsNummer
+        );
+    }
 );
 
 app.get(
-    '/ondernemer/:erkenningsNummer/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    '/aanwezigheid/',
+    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     csrfProtection,
-    (req: GrantedRequest, res: Response) => {
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
         attendancePage(
-            req,
-            res,
-            req.params.erkenningsNummer,
-            req.params.marktId,
-            req.query,
-            KeycloakRoles.MARKTMEESTER,
-            req.csrfToken(),
+            req, res, next,
+            KeycloakRoles.MARKTONDERNEMER,
+            getErkenningsNummer(req),
+            req.csrfToken()
         );
     },
 );
 
 app.post(
-    '/ondernemer/:erkenningsNummer/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    '/aanwezigheid/',
+    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     csrfProtection,
-    (req: Request, res: Response, next: NextFunction) =>
-        handleAttendanceUpdate(req, res, next, req.params.erkenningsNummer),
+    (req: GrantedRequest, res: Response, next: NextFunction) =>
+        handleAttendanceUpdate(
+            req, res, next,
+            KeycloakRoles.MARKTONDERNEMER,
+            getErkenningsNummer(req)
+        )
 );
 
 app.get(
@@ -514,20 +596,6 @@ app.post(
             KeycloakRoles.MARKTMEESTER,
         ),
 );
-
-app.get(
-    '/profile/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
-    (req: GrantedRequest, res: Response) => {
-    const messages = getQueryErrors(req.query);
-    getMarktondernemer(getErkenningsNummer(req)).then(ondernemer => {
-        res.render('ProfilePage', {
-            user: getKeycloakUser(req),
-            ondernemer,
-            messages,
-        });
-    });
-});
 
 app.get(
     '/profile/:erkenningsNummer',
