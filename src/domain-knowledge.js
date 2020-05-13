@@ -1,4 +1,8 @@
 const {
+    DeelnemerStatus
+} = require('./markt.model.ts');
+
+const {
     ISO_SUNDAY,
     ISO_MONDAY,
     ISO_TUESDAY,
@@ -11,7 +15,6 @@ const {
     SUNDAY,
     MILLISECONDS_IN_DAY,
     DAYS_IN_WEEK,
-    EXP_ZONE,
     toISODate,
     addDays,
     endOfWeek,
@@ -58,9 +61,18 @@ const indelingstijdstipInMinutes = () => {
 
 const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDagen[dag] : -1);
 
-const isVast = status => status === 'vpl' || status === 'vkk';
-const isExp = status => status === EXP_ZONE;
-const isVastOfExp = status => status === 'vpl' || status === 'vkk' || status === EXP_ZONE;
+const isVast = status =>
+    status === DeelnemerStatus.VASTE_PLAATS ||
+    status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS ||
+    status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS_Z ||
+    status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS_OLD;
+const isTVPLZ = status =>
+    status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS_Z;
+const isExp = status =>
+    status === DeelnemerStatus.EXPERIMENTAL ||
+    status === DeelnemerStatus.EXPERIMENTAL_F;
+const isVastOfExp = status =>
+    isVast(status) || isExp(status);
 
 // Geeft de datum terug vanaf wanneer ondernemers hun aanwezigheid
 // mogen aanpassen.
@@ -188,6 +200,7 @@ module.exports = {
     parseMarktDag,
     parseISOMarktDag,
     isVast,
+    isTVPLZ,
     isExp,
     isVastOfExp,
     getMarktDays,

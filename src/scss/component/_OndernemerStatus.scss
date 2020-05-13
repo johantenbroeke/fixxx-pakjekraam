@@ -31,7 +31,9 @@ $ondernemerStatusHeightSmall: 15px;
     &--exp:before {
         border-color: $supplement-purple;
     }
-    &--vkk:before {
+    &--vkk:before,
+    &--tvpl:before,
+    &--tvplz:before {
         border-color: $supplement-lightblue;
     }
     &--overig:before {

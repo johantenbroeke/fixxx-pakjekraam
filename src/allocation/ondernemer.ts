@@ -18,7 +18,7 @@ const Ondernemer = {
     ): boolean => {
         const voorkeur = ondernemer.voorkeur;
         return !voorkeur || !('anywhere' in voorkeur) ?
-               !Ondernemer.isVast(ondernemer) :
+               !Ondernemer.hasVastePlaatsen(ondernemer) :
                !!voorkeur.anywhere;
     },
 
@@ -106,10 +106,16 @@ const Ondernemer = {
         const { plaatsen = [] }          = ondernemer;
         let { minimum = 0, maximum = 0 } = ondernemer.voorkeur || {};
 
-        // Ondernemers met een tijdelijke vaste plaats mogen hun minimum aantal plaatsen
+        // Ondernemers met status experimenteel mogen hun minimum aantal plaatsen
         // niet zelf instellen.
         if (Ondernemer.isExperimenteel(ondernemer)) {
             return plaatsen.length;
+        }
+        // In `Indeling.init` wordt de input data zodanig gemanipuleerd dat een TVPLZ
+        // ondernemer altijd een lege `plaatsen` array heeft, maar een `voorkeur.minimum`
+        // ingesteld op het aantal plaatsen dat in de originele input zat.
+        if (Ondernemer.isTVPLZ(ondernemer)) {
+            return minimum;
         }
 
         minimum  = minimum || Math.max(plaatsen.length, 1);
@@ -122,16 +128,16 @@ const Ondernemer = {
                1;
     },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
-        const { plaatsen = [] } = ondernemer;
-
-        // Ondernemers met een tijdelijke vaste plaats mogen geen maximum aantal gewenste
+        // Ondernemers met status experimenteel mogen geen maximum aantal gewenste
         // plaatsen instellen.
         if (Ondernemer.isExperimenteel(ondernemer)) {
+            const { plaatsen = [] } = ondernemer;
             return plaatsen.length;
         }
 
-        const { minimum = 1, maximum = 0 } = ondernemer.voorkeur || {};
-        return maximum || Math.max(plaatsen.length, minimum, 1);
+        const minimum = Ondernemer.getMinimumSize(ondernemer);
+        const { maximum = 0 } = ondernemer.voorkeur || {};
+        return maximum || Math.max(minimum, 1);
     },
 
     getVastePlaatsen: (
@@ -186,8 +192,8 @@ const Ondernemer = {
     },
 
     isExperimenteel: (ondernemer: IMarktondernemer): boolean => {
-        // TODO: Remove '?' status when MakkelijkeMarkt is updated.
-        return ondernemer.status === '?' || ondernemer.status === 'exp';
+        return ondernemer.status === 'exp' ||
+               ondernemer.status === 'expf';
     },
 
     isInBranche: (
@@ -198,8 +204,15 @@ const Ondernemer = {
         return brancheIds.includes(branche.brancheId);
     },
 
+    isTVPLZ: (ondernemer: IMarktondernemer): boolean => {
+        return ondernemer.status === 'tvplz';
+    },
+
     isVast: (ondernemer: IMarktondernemer): boolean => {
-        return ondernemer.status === 'vpl' || ondernemer.status === 'vkk';
+        return ondernemer.status === 'vpl' ||
+               ondernemer.status === 'tvpl' ||
+               ondernemer.status === 'tvplz' ||
+               ondernemer.status === 'vkk';
     },
 
     wantsExpansion: (toewijzing: IToewijzing): boolean => {
