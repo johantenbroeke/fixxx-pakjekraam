@@ -1,11 +1,11 @@
 import {
-    getMarkt as getMakkelijkeMarkt,
+    getMarkt,
+    getMarkten
 } from '../makkelijkemarkt-api';
 import {
     getMarktProperties,
     getMarktPaginas,
     getMarktplaatsen,
-    getMarkten,
     getDaysClosed
 } from '../pakjekraam-api';
 import { IMarktEnriched } from '../markt.model';
@@ -16,8 +16,16 @@ import {
 
 import { getMaDiWoDo } from '../util';
 
+const isMarktZichtbaar = (markt: any) => {
+    return markt.kiesJeKraamActief && (
+        markt.kiesJeKraamFase === 'wenperiode' ||
+        markt.kiesJeKraamFase === 'live' ||
+        markt.kiesJeKraamFase === 'activatie'
+    );
+};
+
 export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
-    return getMakkelijkeMarkt(marktId)
+    return getMarkt(marktId)
         .then(mmarkt =>
             Promise.all([
                 getMarktProperties(mmarkt),
@@ -33,10 +41,6 @@ export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
                 };
             }));
 };
-
-export const getMarkt = (marktId: string): Promise<MMMarkt> =>
-    getMakkelijkeMarkt(marktId);
-
 
 export const getMarktenEnabled = () => {
     return getMarkten()
@@ -56,19 +60,10 @@ export const getMarktenForOndernemer = (
     });
 };
 
-export const marktZichtbaarOndernemers = (markt: any) => {
-    return markt.kiesJeKraamActief && (
-        markt.kiesJeKraamFase === 'wenperiode' ||
-        markt.kiesJeKraamFase === 'live' ||
-        markt.kiesJeKraamFase === 'activatie'
-    );
-};
-
-export const getMarktenZichtbaarOndernemers = () => {
-    return getMarkten()
-        .then((markten: any) => markten.filter((markt: any) =>
-            marktZichtbaarOndernemers(markt)
-        ));
+export const getZichtbareMarkten = () => {
+    return getMarkten().then((markten: any) =>
+        markten.filter((markt: any) => isMarktZichtbaar(markt)
+    ));
 };
 
 export const getMarktenByDate = (marktDate: string) => {

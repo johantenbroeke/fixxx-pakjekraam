@@ -1,6 +1,6 @@
 import {
     getALijst,
-    getMarkten as getMakkelijkeMarkten,
+    getMarkt,
     getMarktondernemer as getMarktondernemerMM,
     getMarktondernemers as getMarktondernemersMM,
     getMarktondernemersByMarkt as getMarktondernemersByMarktMM,
@@ -40,7 +40,6 @@ import { convertSollicitatieToOndernemer as convertSollicitatie } from './model/
 import { MMMarkt, MMOndernemerStandalone } from './makkelijkemarkt.model';
 
 import * as fs from 'fs';
-import { getMarkt } from './model/markt.functions';
 
 const loadJSON = <T>(path: string, defaultValue: T = null): Promise<T> =>
     new Promise((resolve, reject) => {
@@ -159,6 +158,7 @@ export const getVoorkeurenMarktOndern = (marktId: string, erkenningsNummer: stri
 
 const indelingVoorkeurPrio = (voorkeur: IMarktondernemerVoorkeur): number =>
     (voorkeur.marktId ? 1 : 0) | (voorkeur.marktDate ? 2 : 0);
+
 const indelingVoorkeurSort = (a: IMarktondernemerVoorkeur, b: IMarktondernemerVoorkeur) =>
     numberSort(indelingVoorkeurPrio(a), indelingVoorkeurPrio(b));
 
@@ -195,27 +195,6 @@ const indelingVoorkeurMerge = (
     return merged;
 };
 
-export const getIndelingVoorkeur = (
-    erkenningsNummer: string,
-    marktId: string = null,
-    marktDate: string = null,
-): Promise<IMarktondernemerVoorkeur> => {
-    const where = {
-        erkenningsNummer,
-        [Sequelize.Op.and]: [
-            { [Sequelize.Op.or]: [{ marktId }, { marktId: null }] },
-            { [Sequelize.Op.or]: [{ marktDate }, { marktDate: null }] },
-        ],
-    };
-
-    return voorkeur
-        .findAll<Voorkeur>({
-            where,
-            raw: true,
-        })
-        .then(voorkeuren => voorkeuren.sort(indelingVoorkeurSort).reduce(indelingVoorkeurMerge, null));
-};
-
 const groupByErkenningsNummer = (
     groups: IMarktondernemerVoorkeur[][],
     voorkeur: IMarktondernemerVoorkeur,
@@ -243,6 +222,46 @@ const convertVoorkeur = (obj: IMarktondernemerVoorkeurRow): IMarktondernemerVoor
     branches: [obj.brancheId, obj.parentBrancheId].filter(Boolean),
     verkoopinrichting: obj.inrichting ? [obj.inrichting] : [],
 });
+
+const enrichOndernemersWithVoorkeuren = (ondernemers: IMarktondernemer[], voorkeuren: IMarktondernemerVoorkeur[]) => {
+    return ondernemers.map(ondernemer => {
+
+        let voorkeurVoorOndernemer = voorkeuren.find(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer);
+
+        if (voorkeurVoorOndernemer === undefined) {
+            voorkeurVoorOndernemer = <IMarktondernemerVoorkeur>{
+                absentFrom: null,
+                absentUntil: null,
+            };
+        }
+
+        return {
+            ...ondernemer,
+            voorkeur: { ...ondernemer.voorkeur, ...voorkeurVoorOndernemer }
+        };
+    });
+};
+
+export const getIndelingVoorkeur = (
+    erkenningsNummer: string,
+    marktId: string = null,
+    marktDate: string = null,
+): Promise<IMarktondernemerVoorkeur> => {
+    const where = {
+        erkenningsNummer,
+        [Sequelize.Op.and]: [
+            { [Sequelize.Op.or]: [{ marktId }, { marktId: null }] },
+            { [Sequelize.Op.or]: [{ marktDate }, { marktDate: null }] },
+        ],
+    };
+
+    return voorkeur
+        .findAll<Voorkeur>({
+            where,
+            raw: true,
+        })
+        .then(voorkeuren => voorkeuren.sort(indelingVoorkeurSort).reduce(indelingVoorkeurMerge, null));
+};
 
 export const getIndelingVoorkeuren = (
     marktId: string,
@@ -300,43 +319,6 @@ export const getMededelingen = (): Promise<any> =>
 
 export const getDaysClosed = (): Promise<any> =>
     loadJSON('./config/markt/daysClosed.json', {});
-
-/*
- * Convert an object from Makkelijke Markt to our own type of `IMarktondernemer` object
- */
-const convertOndernemer = (data: MMOndernemerStandalone): IMarktondernemer => ({
-    description: formatOndernemerName(data),
-    erkenningsNummer: data.erkenningsnummer,
-    status: '' as any,
-    sollicitatieNummer: 0,
-});
-
-export const getMarktondernemer = (erkenningsNummer: string) =>
-    getMarktondernemerMM(erkenningsNummer).then(ondernemer => convertOndernemer(ondernemer));
-
-export const getMarktondernemers = () =>
-    getMarktondernemersMM().then(sollictaties =>
-        sollictaties.filter(sollictatie => !sollictatie.doorgehaald).map(convertSollicitatie),
-    );
-
-export const enrichOndernemersWithVoorkeuren = (ondernemers: IMarktondernemer[], voorkeuren: IMarktondernemerVoorkeur[]) => {
-    return ondernemers.map(ondernemer => {
-
-        let voorkeurVoorOndernemer = voorkeuren.find(voorkeur => voorkeur.erkenningsNummer === ondernemer.erkenningsNummer);
-
-        if (voorkeurVoorOndernemer === undefined) {
-            voorkeurVoorOndernemer = <IMarktondernemerVoorkeur>{
-                absentFrom: null,
-                absentUntil: null,
-            };
-        }
-
-        return {
-            ...ondernemer,
-            voorkeur: { ...ondernemer.voorkeur, ...voorkeurVoorOndernemer }
-        };
-    });
-};
 
 export const getMarktondernemersByMarkt = (marktId: string) =>
     getMarktondernemersByMarktMM(marktId)
@@ -442,7 +424,11 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
     });
 };
 
-export const getIndelingslijst = (marktId: string, date: string, logInput: boolean = false) => {
+export const getIndelingslijst = (
+    marktId: string,
+    date: string,
+    logInput: boolean = false
+) => {
     return getIndelingslijstInput(marktId, date)
     .then(data => {
         data = JSON.parse(JSON.stringify(data));
@@ -479,7 +465,10 @@ export const getIndelingslijst = (marktId: string, date: string, logInput: boole
 
 export const getToewijzingslijst = (marktId: string, marktDate: string) =>
     // TODO: Request only necessary data, `getIndelingslijstInput` returns too much
-    Promise.all([getIndelingslijstInput(marktId, marktDate), getToewijzingen(marktId, marktDate)]).then(
+    Promise.all([
+        getIndelingslijstInput(marktId, marktDate),
+        getToewijzingen(marktId, marktDate)
+    ]).then(
         ([data, toewijzingen]) => ({
             ...data,
             toewijzingen,
@@ -586,7 +575,3 @@ export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
         toewijzingen,
         algemenevoorkeuren,
     }));
-
-export const getMarkten = () =>
-    getMakkelijkeMarkten();
-

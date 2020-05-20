@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { getMarkt } from '../makkelijkemarkt-api';
 import {
     getIndelingslijstInput,
     getSollicitantenlijstInput,
@@ -15,7 +16,6 @@ import { KeycloakRoles } from '../permissions';
 import { GrantedRequest } from 'keycloak-connect';
 import { getKeycloakUser } from '../keycloak-api';
 
-import { getMarkt } from '../model/markt.functions';
 import { filterOndernemersAangemeld } from '../model/ondernemer.functions';
 import { getAanmeldingenByMarktAndDate } from '../model/rsvp.functions';
 import { getToewijzingenByMarktAndDate } from '../model/allocation.functions';

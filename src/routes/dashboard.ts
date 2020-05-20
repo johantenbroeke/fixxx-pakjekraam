@@ -12,7 +12,7 @@ import { tomorrow, nextWeek } from '../util';
 
 import { KeycloakRoles } from '../permissions';
 
-import { getMarktenZichtbaarOndernemers } from '../model/markt.functions';
+import { getZichtbareMarkten } from '../model/markt.functions';
 import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 import { GrantedRequest } from 'keycloak-connect';
@@ -24,7 +24,7 @@ export const dashboardPage = (req: GrantedRequest, res: Response, next: NextFunc
 
         Promise.all([
             getMarktondernemer(erkenningsNummer),
-            getMarktenZichtbaarOndernemers(),
+            getZichtbareMarkten(),
             getPlaatsvoorkeurenOndernemer(erkenningsNummer),
             getAanmeldingenByOndernemer(erkenningsNummer),
             getToewijzingenByOndernemer(erkenningsNummer),
@@ -32,7 +32,15 @@ export const dashboardPage = (req: GrantedRequest, res: Response, next: NextFunc
             getDaysClosed()
         ])
         .then(
-            ([ ondernemer, markten, plaatsvoorkeuren, aanmeldingen, toewijzingen, afwijzingen, daysClosed ]) => {
+            ([
+                ondernemer,
+                markten,
+                plaatsvoorkeuren,
+                aanmeldingen,
+                toewijzingen,
+                afwijzingen,
+                daysClosed
+            ]) => {
                 res.render('OndernemerDashboard', {
                     role: KeycloakRoles.MARKTONDERNEMER,
                     ondernemer,

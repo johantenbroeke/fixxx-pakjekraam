@@ -1,4 +1,3 @@
-import { getMarkt } from '../model/markt.functions';
 import { getOndernemersLangdurigAfgemeldByMarkt } from '../model/ondernemer.functions';
 import { getVoorkeurByMarktEnOndernemer } from '../model/voorkeur.functions';
 import { getAfwijzingenByOndernemerAndMarkt } from '../model/afwijzing.functions';
@@ -6,7 +5,10 @@ import { getAfwijzingenByOndernemerAndMarkt } from '../model/afwijzing.functions
 import { NextFunction, Response } from 'express';
 import { GrantedRequest } from 'keycloak-connect';
 
-import { getMarktondernemer } from '../makkelijkemarkt-api';
+import {
+    getMarkt,
+    getMarktondernemer
+} from '../makkelijkemarkt-api';
 import {
     getAllBranches,
     getIndelingVoorkeur,
@@ -69,8 +71,19 @@ export const marktDetail = (
             getVoorkeurByMarktEnOndernemer(marktId, erkenningsNummer),
             getDaysClosed()
         ])
-        .then(
-            ([ondernemer, plaatsvoorkeuren, aanmeldingen, markt, plaatsvoorkeur, branches, mededelingen, toewijzingen, afwijzingen, algemeneVoorkeur, daysClosed]) => {
+        .then(([
+            ondernemer,
+            plaatsvoorkeuren,
+            aanmeldingen,
+            markt,
+            plaatsvoorkeur,
+            branches,
+            mededelingen,
+            toewijzingen,
+            afwijzingen,
+            algemeneVoorkeur,
+            daysClosed
+        ]) => {
                 res.render('OndernemerMarktDetailPage', {
                     ondernemer,
                     plaatsvoorkeuren,

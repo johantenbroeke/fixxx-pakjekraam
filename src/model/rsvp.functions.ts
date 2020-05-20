@@ -9,8 +9,6 @@ import {
     MMOndernemerStandalone,
     MMSollicitatie
 } from '../makkelijkemarkt.model';
-import { getSollicitatiesByOndernemer } from '../makkelijkemarkt-api';
-import { getAanmeldingenByOndernemer } from '../pakjekraam-api';
 import {
     isVast,
     getMarktThresholdDate,
@@ -136,21 +134,4 @@ export const getAanmeldingenByMarktAndDate = (
 
 export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) => {
     return rsvp.destroy({ where: { erkenningsNummer } });
-};
-
-export const getConflictingSollicitaties = (aanmelding: IRSVP): Promise<MMSollicitatie[]> => {
-    return Promise.all([
-        getAanmeldingenByOndernemer(aanmelding.erkenningsNummer),
-        getSollicitatiesByOndernemer(aanmelding.erkenningsNummer)
-    ])
-    .then( ([aanmeldingen, sollicitaties]) =>
-        isConflictingSollicitatie(aanmeldingen, sollicitaties, aanmelding)
-    );
-};
-
-export const getConflictingApplications = (aanmelding: IRSVP): Promise<IRSVP[]> => {
-    return getAanmeldingenByOndernemer(aanmelding.erkenningsNummer)
-    .then(aanmeldingen =>
-        isConflictingApplication(aanmeldingen, aanmelding)
-    );
 };

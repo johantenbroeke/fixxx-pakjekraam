@@ -6,7 +6,9 @@ const packageJSON = require('../package.json');
 const axios = require('axios');
 
 import { session } from './model/index';
-import { upsert } from './sequelize-util.js';
+import { upsert } from './sequelize-util';
+
+import { A_LIJST_DAYS } from './domain-knowledge';
 
 const MILLISECONDS_IN_SECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
@@ -20,28 +22,30 @@ requireEnv('API_READONLY_USER');
 requireEnv('API_READONLY_PASS');
 
 const mmConfig = {
-    baseUrl: process.env.API_URL,
-    appKey: process.env.API_MMAPPKEY,
-    loginUrl: 'login/basicUsername/',
-    username: process.env.API_READONLY_USER,
-    password: process.env.API_READONLY_PASS,
-    clientApp: packageJSON.name,
-    clientVersion: packageJSON.version,
-    sessionKey: 'mmsession',
-    sessionLifetime: MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * 6,
+    baseUrl         : process.env.API_URL,
+    appKey          : process.env.API_MMAPPKEY,
+    loginUrl        : 'login/basicUsername/',
+    username        : process.env.API_READONLY_USER,
+    password        : process.env.API_READONLY_PASS,
+    clientApp       : packageJSON.name,
+    clientVersion   : packageJSON.version,
+    sessionKey      : 'mmsession',
+    sessionLifetime : MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * 6,
 };
-const getApi = () => axios.create({
-    baseURL: mmConfig.baseUrl,
-    headers: {
-        MmAppKey: mmConfig.appKey,
-    },
-});
-const login = (api: AxiosInstance) => api.post(mmConfig.loginUrl, {
-    username: mmConfig.username,
-    password: mmConfig.password,
-    clientApp: mmConfig.clientApp,
-    clientVersion: mmConfig.clientVersion,
-});
+const getApi = () =>
+    axios.create({
+        baseURL: mmConfig.baseUrl,
+        headers: {
+            MmAppKey: mmConfig.appKey,
+        },
+    });
+const login = (api: AxiosInstance) =>
+    api.post(mmConfig.loginUrl, {
+        username      : mmConfig.username,
+        password      : mmConfig.password,
+        clientApp     : mmConfig.clientApp,
+        clientVersion : mmConfig.clientVersion,
+    });
 
 const apiBase = (url: string): Promise<AxiosResponse> => {
     const api = getApi();
@@ -115,7 +119,7 @@ export const getSollicitatiesByOndernemer = (erkenningsNummer: string): Promise<
         getMarkten(),
     ])
     .then(([ondernemer, markten]) => {
-        const fases = ['activate','wenperiode','live'];
+        const fases = ['activatie','wenperiode','live'];
         const marktenActief = markten.filter(markt => fases.includes(markt.kiesJeKraamFase))
                                      .map(markt => markt.id);
 
@@ -145,8 +149,6 @@ export const getMarktondernemersByMarkt = (marktId: string): Promise<MMSollicita
 
     return recursiveCall(0, []);
 };
-
-const A_LIJST_DAYS = [FRIDAY, SATURDAY, SUNDAY];
 
 export const getALijst = (marktId: string, marktDate: string): Promise<MMOndernemer[]> => {
     const day = new Date(marktDate).getDay();

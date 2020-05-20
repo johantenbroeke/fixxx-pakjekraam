@@ -41,9 +41,7 @@ import { KeycloakRoles } from './permissions';
 // ---
 
 import {
-    getMarkt,
-    getMarktondernemer,
-    getMarktondernemersByMarkt
+    getMarkt
 } from './makkelijkemarkt-api';
 
 import {

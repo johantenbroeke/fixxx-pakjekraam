@@ -54,7 +54,9 @@ export const publicProfilePage = async (req: GrantedRequest, res: Response, erke
         const ondernemer = await getMarktondernemer(erkenningsNummer);
         const marktenEnabled = await getMarktenEnabled();
         const marktenEnabledIds = marktenEnabled.map( (markt: any) => markt.id);
-        ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) => marktenEnabledIds.includes(sollicitatie.markt.id) );
+        ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) =>
+            marktenEnabledIds.includes(sollicitatie.markt.id)
+        );
 
         res.render('PublicProfilePage', { ondernemer, messages, role, user: getKeycloakUser(req) });
     } catch(err) {
