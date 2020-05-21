@@ -1,5 +1,7 @@
+const axios = require('axios');
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { addDays, MONDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, requireEnv } from './util';
+
 import {
     MMMarkt,
     MMOndernemerStandalone,
@@ -7,20 +9,23 @@ import {
     MMOndernemer,
     MMSollicitatie
 } from './makkelijkemarkt.model';
-
-const packageJSON = require('../package.json');
-const axios = require('axios');
+import {
+    IMarktondernemer
+} from './markt.model';
 
 import { session } from './model/index';
 import { upsert } from './sequelize-util';
 
-import { A_LIJST_DAYS } from './domain-knowledge';
+import {
+    A_LIJST_DAYS,
+    formatOndernemerName
+} from './domain-knowledge';
+
+const packageJSON = require('../package.json');
 
 const MILLISECONDS_IN_SECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_HOUR = 60;
-
-import { convertSollicitatieToOndernemer as convertSollicitatie } from './model/ondernemer.functions';
 
 requireEnv('API_URL');
 requireEnv('API_MMAPPKEY');
@@ -93,6 +98,41 @@ const apiBase = (url: string): Promise<AxiosResponse> => {
     });
 };
 
+export const getMarkt = (marktId: string): Promise<MMMarkt> =>
+    apiBase(`markt/${marktId}`).then(response => response.data);
+
+
+export const getMarkten = (includeInactive: boolean = false): Promise<MMMarkt[]> =>
+    apiBase('markt/').then(({ data:markten = [] }) =>
+        markten.filter(markt =>
+            markt.kiesJeKraamActief && (
+                includeInactive ||
+                markt.kiesJeKraamFase === 'wenperiode' ||
+                markt.kiesJeKraamFase === 'live' ||
+                markt.kiesJeKraamFase === 'activatie'
+            )
+        )
+    );
+
+export const getMarktenForOndernemer = (
+    ondernemer: Promise<MMOndernemerStandalone> | MMOndernemerStandalone,
+    includeInactive: boolean = false
+): Promise<MMMarkt[]> => {
+    return Promise.all([
+        getMarkten(includeInactive),
+        ondernemer
+    ])
+    .then(([
+        markten,
+        ondernemer
+    ]) => {
+        return ondernemer.sollicitaties.reduce((result, sollicitatie) => {
+            const markt = markten.find(({ id }) => id === sollicitatie.markt.id);
+            return markt ? result.concat(markt) : result;
+        }, []);
+    });
+};
+
 export const getMarktondernemers = (): Promise<MMSollicitatieStandalone[]> =>
     apiBase('koopman/').then(response => response.data);
 
@@ -108,54 +148,40 @@ export const getMarktondernemer = (
         // Filter inactieve sollicitaties, aangezien we die nooit gebruiken binnen
         // dit systeem.
         const ondernemer = response.data;
-        ondernemer.sollicitaties = ondernemer.sollicitaties.filter(sollicitatie =>
-            !sollicitatie.doorgehaald
-        );
+        ondernemer.sollicitaties = ondernemer.sollicitaties.filter(sollicitatie => {
+            return !sollicitatie.doorgehaald;
+        });
         return ondernemer;
     });
 };
 
-export const getMarkt = (marktId: string): Promise<MMMarkt> =>
-    apiBase(`markt/${marktId}`).then(response => response.data);
+export const getMarktondernemersByMarkt = (marktId: string): Promise<IMarktondernemer[]> => {
+    return apiBase(`sollicitaties/markt/${marktId}?listLength=10000&includeDoorgehaald=0`)
+    .then(response => {
+        const sollicitaties: MMSollicitatieStandalone[] = response.data;
+        return sollicitaties.map(sollicitatie => {
+            const {
+                koopman,
+                sollicitatieNummer,
+                status,
+                markt,
+                vastePlaatsen
+            } = sollicitatie;
 
-export const getMarkten = (): Promise<MMMarkt[]> =>
-    apiBase('markt/').then(response => response.data);
-
-export const getSollicitatiesByOndernemer = (erkenningsNummer: string): Promise<MMSollicitatie[]> => {
-    return Promise.all([
-        getMarktondernemer(erkenningsNummer),
-        getMarkten(),
-    ])
-    .then(([ondernemer, markten]) => {
-        const fases = ['activatie','wenperiode','live'];
-        const marktenActief = markten.filter(markt => fases.includes(markt.kiesJeKraamFase))
-                                     .map(markt => markt.id);
-
-        return ondernemer.sollicitaties.filter(sollicitatie =>
-            !sollicitatie.doorgehaald &&
-            marktenActief.includes(sollicitatie.markt.id)
-        );
-    });
-};
-
-export const getMarktondernemersByMarkt = (marktId: string): Promise<MMSollicitatieStandalone[]> => {
-    const recursiveCall = ((p: number, total: any[]): any => {
-
-        return new Promise((resolve) => {
-            apiBase(`sollicitaties/markt/${marktId}?listOffset=${p}&includeDoorgehaald=0`).then(response => {
-                if (response.data.length > 0) {
-
-                    return resolve(recursiveCall(p + 100, [...total, ...response.data]));
-                } else {
-
-                    return resolve(total);
-                }
-            });
-
+            return {
+                description      : formatOndernemerName(koopman),
+                erkenningsNummer : koopman.erkenningsnummer,
+                plaatsen         : vastePlaatsen,
+                voorkeur: {
+                    marktId          : String(markt.id),
+                    erkenningsNummer : koopman.erkenningsnummer,
+                    maximum          : Math.max(1, (vastePlaatsen || []).length),
+                },
+                sollicitatieNummer,
+                status,
+            };
         });
     });
-
-    return recursiveCall(0, []);
 };
 
 export const getALijst = (marktId: string, marktDate: string): Promise<MMOndernemer[]> => {

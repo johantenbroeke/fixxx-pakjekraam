@@ -1,13 +1,10 @@
-import {
-    getALijst,
-    getMarkt,
-    getMarktondernemer as getMarktondernemerMM,
-    getMarktondernemers as getMarktondernemersMM,
-    getMarktondernemersByMarkt as getMarktondernemersByMarktMM,
-} from './makkelijkemarkt-api';
-import { formatOndernemerName, isVast } from './domain-knowledge.js';
-import { numberSort, stringSort } from './util';
+import * as fs from 'fs';
+
 import Sequelize from 'sequelize';
+
+import { numberSort, stringSort } from './util';
+import { formatOndernemerName, isVast } from './domain-knowledge.js';
+
 import {
     allocation,
     plaatsvoorkeur,
@@ -15,8 +12,10 @@ import {
     voorkeur,
     log
 } from './model/index';
-import { calcToewijzingen } from './indeling';
-
+import {
+    MMMarkt,
+    MMOndernemerStandalone
+} from './makkelijkemarkt.model';
 import {
     IMarkt,
     IBranche,
@@ -30,16 +29,26 @@ import {
     IRSVP,
     IToewijzing,
 } from './markt.model';
-import { IAllocationPrintout, IAllocationPrintoutPage, IMarketRow } from './model/printout.model';
+import {
+    IAllocationPrintout,
+    IAllocationPrintoutPage,
+    IMarketRow
+} from './model/printout.model';
 import { RSVP } from './model/rsvp.model';
 import { Allocation } from './model/allocation.model';
 import { Plaatsvoorkeur } from './model/plaatsvoorkeur.model';
 import { Voorkeur } from './model/voorkeur.model';
-import { convertSollicitatieToOndernemer as convertSollicitatie } from './model/ondernemer.functions';
 
-import { MMMarkt, MMOndernemerStandalone } from './makkelijkemarkt.model';
+import {
+    getALijst,
+    getMarkt,
+    getMarkten,
+    getMarktondernemer,
+    getMarktondernemers,
+    getMarktondernemersByMarkt,
+} from './makkelijkemarkt-api';
 
-import * as fs from 'fs';
+import { calcToewijzingen } from './indeling';
 
 const loadJSON = <T>(path: string, defaultValue: T = null): Promise<T> =>
     new Promise((resolve, reject) => {
@@ -319,12 +328,6 @@ export const getMededelingen = (): Promise<any> =>
 
 export const getDaysClosed = (): Promise<any> =>
     loadJSON('./config/markt/daysClosed.json', {});
-
-export const getMarktondernemersByMarkt = (marktId: string) =>
-    getMarktondernemersByMarktMM(marktId)
-        .then(sollicitaties => {
-            return sollicitaties.filter(sollicitatie => !sollicitatie.doorgehaald).map(convertSollicitatie);
-        });
 
 export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
 

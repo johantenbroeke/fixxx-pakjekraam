@@ -41,12 +41,12 @@ import { KeycloakRoles } from './permissions';
 // ---
 
 import {
-    getMarkt
+    getMarkt,
+    getMarkten
 } from './makkelijkemarkt-api';
 
 import {
-    getMarktEnriched,
-    getMarktenEnabled
+    getMarktEnriched
 } from './model/markt.functions';
 
 // Routes
@@ -261,7 +261,7 @@ app.get(
     '/markt/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: GrantedRequest, res: Response) => {
-        return getMarktenEnabled()
+        return getMarkten(true)
             .then((markten: any) => {
                 res.render('MarktenPage',{ markten, role: KeycloakRoles.MARKTMEESTER, user: getKeycloakUser(req) });
             }, internalServerErrorPage(res));

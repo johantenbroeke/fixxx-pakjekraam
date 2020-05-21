@@ -25,6 +25,7 @@ import {
 
 import { getKeycloakUser } from '../keycloak-api';
 import {
+    getMarktenForOndernemer,
     getMarktondernemer
 } from '../makkelijkemarkt-api';
 import {
@@ -36,9 +37,7 @@ import models from '../model/index';
 import { IRSVP } from '../markt.model';
 
 import {
-    getMarktEnriched,
-    getMarktenEnabled,
-    getMarktenForOndernemer
+    getMarktEnriched
 } from '../model/markt.functions';
 import {
     groupAanmeldingenPerMarktPerWeek
@@ -80,7 +79,7 @@ export const attendancePage = (
 ) => {
     const thresholdDate       = getMarktThresholdDate(role);
     const ondernemerPromise   = getMarktondernemer(erkenningsNummer);
-    const marktenPromise      = ondernemerPromise.then(getMarktenForOndernemer);
+    const marktenPromise      = getMarktenForOndernemer(ondernemerPromise);
     const aanmeldingenPromise = getAanmeldingenByOndernemer(erkenningsNummer);
 
     return Promise.all([

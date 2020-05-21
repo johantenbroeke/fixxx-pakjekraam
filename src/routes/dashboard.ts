@@ -1,5 +1,9 @@
+import { Promise } from 'bluebird';
 import { Response, NextFunction } from 'express';
-import { getMarktondernemer } from '../makkelijkemarkt-api';
+import {
+    getMarkten,
+    getMarktondernemer
+} from '../makkelijkemarkt-api';
 import {
     getPlaatsvoorkeurenOndernemer,
     getAanmeldingenByOndernemer,
@@ -10,7 +14,6 @@ import { tomorrow, nextWeek } from '../util';
 
 import { KeycloakRoles } from '../permissions';
 
-import { getZichtbareMarkten } from '../model/markt.functions';
 import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 import { GrantedRequest } from 'keycloak-connect';
@@ -24,39 +27,22 @@ export const dashboardPage = (
 ) => {
     const messages = getQueryErrors(req.query);
 
-        Promise.all([
-            getMarktondernemer(erkenningsNummer),
-            getZichtbareMarkten(),
-            getPlaatsvoorkeurenOndernemer(erkenningsNummer),
-            getAanmeldingenByOndernemer(erkenningsNummer),
-            getToewijzingenByOndernemer(erkenningsNummer),
-            getAfwijzingenByOndernemer(erkenningsNummer),
-            getDaysClosed()
-        ])
-        .then(
-            ([
-                ondernemer,
-                markten,
-                plaatsvoorkeuren,
-                aanmeldingen,
-                toewijzingen,
-                afwijzingen,
-                daysClosed
-            ]) => {
-                res.render('OndernemerDashboard', {
-                    role: KeycloakRoles.MARKTONDERNEMER,
-                    ondernemer,
-                    aanmeldingen,
-                    markten,
-                    plaatsvoorkeuren,
-                    messages,
-                    toewijzingen,
-                    afwijzingen,
-                    user: getKeycloakUser(req),
-                    daysClosed,
-                });
-            },
-            internalServerErrorPage(res),
-        )
-        .catch(next);
+    Promise.props({
+        ondernemer       : getMarktondernemer(erkenningsNummer),
+        markten          : getMarkten(),
+        plaatsvoorkeuren : getPlaatsvoorkeurenOndernemer(erkenningsNummer),
+        aanmeldingen     : getAanmeldingenByOndernemer(erkenningsNummer),
+        toewijzingen     : getToewijzingenByOndernemer(erkenningsNummer),
+        afwijzingen      : getAfwijzingenByOndernemer(erkenningsNummer),
+        daysClosed       : getDaysClosed()
+    })
+    .then(result => {
+        res.render('OndernemerDashboard', {
+            ...result,
+            messages,
+            role: KeycloakRoles.MARKTONDERNEMER,
+            user: getKeycloakUser(req)
+        });
+    })
+    .catch(internalServerErrorPage(res));
 };

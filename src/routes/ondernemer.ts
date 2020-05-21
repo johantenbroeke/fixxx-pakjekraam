@@ -1,18 +1,26 @@
 import { Request, Response } from 'express';
+import { GrantedRequest } from 'keycloak-connect';
+
+import { getQueryErrors, internalServerErrorPage } from '../express-util';
+import { KeycloakRoles } from '../permissions';
+import { getKeycloakUser } from '../keycloak-api';
+
+import { MMSollicitatie } from '../makkelijkemarkt.model';
+
+import {
+    getMarkten,
+    getMarktondernemer
+} from '../makkelijkemarkt-api';
+import {
+    getAllBranches
+} from '../pakjekraam-api';
+
 import { deletePlaatsvoorkeurenByErkenningsnummer } from '../model/plaatsvoorkeur.functions';
 import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 import { deleteRsvpsByErkenningsnummer } from '../model/rsvp.functions';
 import { deleteVoorkeurenByErkenningsnummer } from '../model/voorkeur.functions';
-import { getMarktenEnabled } from '../model/markt.functions';
-import { getMarktondernemer } from '../makkelijkemarkt-api';
-import { getQueryErrors, internalServerErrorPage } from '../express-util';
-import { MMSollicitatie } from '../makkelijkemarkt.model';
-import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
-import { getAllBranches } from '../pakjekraam-api';
 
-import { KeycloakRoles } from '../permissions';
-import { GrantedRequest } from 'keycloak-connect';
-import { getKeycloakUser } from '../keycloak-api';
+import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 
 export const deleteUserPage = ( req: GrantedRequest, res: Response, result: string, error: string, csrfToken: string, role: string) => {
     return res.render('DeleteUserPage', {
@@ -46,13 +54,17 @@ export const deleteUser = (req: GrantedRequest, res: Response, erkenningsNummer:
     });
 };
 
-export const publicProfilePage = async (req: GrantedRequest, res: Response, erkenningsNummer: string, role: string) => {
-
+export const publicProfilePage = async (
+    req: GrantedRequest,
+    res: Response,
+    erkenningsNummer: string,
+    role: string
+) => {
     const messages = getQueryErrors(req.query);
 
     try {
         const ondernemer = await getMarktondernemer(erkenningsNummer);
-        const marktenEnabled = await getMarktenEnabled();
+        const marktenEnabled = await getMarkten(true);
         const marktenEnabledIds = marktenEnabled.map( (markt: any) => markt.id);
         ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) =>
             marktenEnabledIds.includes(sollicitatie.markt.id)
@@ -62,7 +74,6 @@ export const publicProfilePage = async (req: GrantedRequest, res: Response, erke
     } catch(err) {
         internalServerErrorPage(res);
     }
-
 };
 
 export const toewijzingenAfwijzingenPage = (
@@ -79,7 +90,7 @@ export const toewijzingenAfwijzingenPage = (
         getAfwijzingenByOndernemer(erkenningsNummer),
         getMarktondernemer(erkenningsNummer),
         getAllBranches(),
-        getMarktenEnabled(),
+        getMarkten(),
     ]).then(
         ([toewijzingen, afwijzingen, ondernemer, branches, markten]) => {
 

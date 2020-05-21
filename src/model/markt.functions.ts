@@ -16,14 +16,6 @@ import {
 
 import { getMaDiWoDo } from '../util';
 
-const isMarktZichtbaar = (markt: any) => {
-    return markt.kiesJeKraamActief && (
-        markt.kiesJeKraamFase === 'wenperiode' ||
-        markt.kiesJeKraamFase === 'live' ||
-        markt.kiesJeKraamFase === 'activatie'
-    );
-};
-
 export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
     return getMarkt(marktId)
         .then(mmarkt =>
@@ -42,30 +34,6 @@ export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
             }));
 };
 
-export const getMarktenEnabled = () => {
-    return getMarkten()
-    .then(markten => {
-        return markten.filter((markt: any) => markt.kiesJeKraamActief);
-    });
-};
-
-export const getMarktenForOndernemer = (
-    ondernemer: MMOndernemerStandalone
-): Promise<MMMarkt[]> => {
-    return Promise.all(ondernemer.sollicitaties.map(sollicitatie =>
-        getMarkt(String(sollicitatie.markt.id))
-    ))
-    .then(markten => {
-        return markten.filter(markt => markt.kiesJeKraamActief);
-    });
-};
-
-export const getZichtbareMarkten = () => {
-    return getMarkten().then((markten: any) =>
-        markten.filter((markt: any) => isMarktZichtbaar(markt)
-    ));
-};
-
 export const getMarktenByDate = (marktDate: string) => {
     const day = new Date(marktDate);
 
@@ -79,9 +47,8 @@ export const getMarktenByDate = (marktDate: string) => {
             return [];
         } else {
             return markten
-            .filter(({ kiesJeKraamActief, marktDagen, kiesJeKraamGeblokkeerdeData }) => {
-                return kiesJeKraamActief &&
-                       marktDagen.includes(getMaDiWoDo(day)) && (
+            .filter(({ marktDagen, kiesJeKraamGeblokkeerdeData }) => {
+                return marktDagen.includes(getMaDiWoDo(day)) && (
                            !kiesJeKraamGeblokkeerdeData ||
                            !kiesJeKraamGeblokkeerdeData.split(',').includes(marktDate)
                        );
