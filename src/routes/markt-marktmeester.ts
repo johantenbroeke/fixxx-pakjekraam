@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import {
     getMarkt,
-    getMarktondernemersByMarkt
+    getOndernemersByMarkt
 } from '../makkelijkemarkt-api';
 import {
     getIndelingslijstInput,
@@ -131,7 +131,7 @@ export const ondernemersNietIngedeeldPage = (req: GrantedRequest, res: Response,
     const marktId = req.params.marktId;
 
     Promise.all([
-        getMarktondernemersByMarkt(marktId),
+        getOndernemersByMarkt(marktId),
         getAanmeldingenByMarktAndDate(marktId, datum),
         getMarkt(marktId),
         getToewijzingenByMarktAndDate(marktId, datum),
@@ -193,7 +193,7 @@ export const alleSollicitantenPage = (req: GrantedRequest, res: Response, next: 
     const marktId = req.params.marktId;
 
     Promise.all([
-        getMarktondernemersByMarkt(marktId),
+        getOndernemersByMarkt(marktId),
         getAanmeldingenByMarktAndDate(marktId, datum),
         getPlaatsvoorkeurenByMarkt(marktId),
         getMarkt(marktId),
@@ -223,7 +223,7 @@ export const sollicitantentAanwezigheidLijst = (req: GrantedRequest, res: Respon
     const marktId = req.params.marktId;
 
     Promise.all([
-        getMarktondernemersByMarkt(marktId),
+        getOndernemersByMarkt(marktId),
         getAanmeldingenByMarktAndDate(marktId, datum),
         getPlaatsvoorkeurenByMarkt(marktId),
         getMarkt(marktId),
@@ -255,7 +255,7 @@ export const alleOndernemersAanwezigheidLijst = (req: GrantedRequest, res: Respo
     const marktId = req.params.marktId;
 
     Promise.all([
-        getMarktondernemersByMarkt(marktId),
+        getOndernemersByMarkt(marktId),
         getAanmeldingenByMarktAndDate(marktId, datum),
         getPlaatsvoorkeurenByMarkt(marktId),
         getMarkt(marktId),

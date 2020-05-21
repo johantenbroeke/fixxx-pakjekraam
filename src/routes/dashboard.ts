@@ -2,7 +2,7 @@ import { Promise } from 'bluebird';
 import { Response, NextFunction } from 'express';
 import {
     getMarkten,
-    getMarktondernemer
+    getOndernemer
 } from '../makkelijkemarkt-api';
 import {
     getPlaatsvoorkeurenOndernemer,
@@ -28,7 +28,7 @@ export const dashboardPage = (
     const messages = getQueryErrors(req.query);
 
     Promise.props({
-        ondernemer       : getMarktondernemer(erkenningsNummer),
+        ondernemer       : getOndernemer(erkenningsNummer),
         markten          : getMarkten(),
         plaatsvoorkeuren : getPlaatsvoorkeurenOndernemer(erkenningsNummer),
         aanmeldingen     : getAanmeldingenByOndernemer(erkenningsNummer),

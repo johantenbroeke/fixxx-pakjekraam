@@ -133,10 +133,10 @@ export const getMarktenForOndernemer = (
     });
 };
 
-export const getMarktondernemers = (): Promise<MMSollicitatieStandalone[]> =>
+export const getOndernemers = (): Promise<MMSollicitatieStandalone[]> =>
     apiBase('koopman/').then(response => response.data);
 
-export const getMarktondernemer = (
+export const getOndernemer = (
     erkenningsNummer: string
 ): Promise<MMOndernemerStandalone> => {
     return apiBase(`koopman/erkenningsnummer/${erkenningsNummer}`)
@@ -155,7 +155,7 @@ export const getMarktondernemer = (
     });
 };
 
-export const getMarktondernemersByMarkt = (marktId: string): Promise<IMarktondernemer[]> => {
+export const getOndernemersByMarkt = (marktId: string): Promise<IMarktondernemer[]> => {
     return apiBase(`sollicitaties/markt/${marktId}?listLength=10000&includeDoorgehaald=0`)
     .then(response => {
         const sollicitaties: MMSollicitatieStandalone[] = response.data;
@@ -198,7 +198,7 @@ export const getALijst = (marktId: string, marktDate: string): Promise<MMOnderne
 };
 
 export const checkActivationCode = (username: string, code: string): Promise<any> =>
-    getMarktondernemer(username).then(
+    getOndernemer(username).then(
         ondernemer => {
             if (!ondernemer.pasUid) {
                 // This method of activation only works for people with a `pasUid`

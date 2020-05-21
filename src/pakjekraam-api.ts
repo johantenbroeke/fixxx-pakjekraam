@@ -43,9 +43,9 @@ import {
     getALijst,
     getMarkt,
     getMarkten,
-    getMarktondernemer,
-    getMarktondernemers,
-    getMarktondernemersByMarkt,
+    getOndernemer,
+    getOndernemers,
+    getOndernemersByMarkt,
 } from './makkelijkemarkt-api';
 
 import { calcToewijzingen } from './indeling';
@@ -337,7 +337,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
             .then(voorkeuren => voorkeuren.map(convertVoorkeur));
 
         // Populate the `ondernemer.voorkeur` field
-        const enrichedOndernemers = Promise.all([getMarktondernemersByMarkt(marktId), voorkeurenPromise]).then(result => {
+        const enrichedOndernemers = Promise.all([getOndernemersByMarkt(marktId), voorkeurenPromise]).then(result => {
             return enrichOndernemersWithVoorkeuren(...result);
         });
 
@@ -525,7 +525,7 @@ export const getMailContext = (marktId: string, erkenningsNr: string, marktDate:
 
 export const getSollicitantenlijstInput = (marktId: string, date: string) =>
     Promise.all([
-        getMarktondernemersByMarkt(marktId).then(ondernemers =>
+        getOndernemersByMarkt(marktId).then(ondernemers =>
             ondernemers.filter(({ status }) => !isVast(status)),
         ),
         getAanmeldingen(marktId, date),
@@ -543,7 +543,7 @@ export const getSollicitantenlijstInput = (marktId: string, date: string) =>
 
 export const getAfmeldingenVasteplaatshoudersInput = (marktId: string, marktDate: string) =>
     Promise.all([
-        getMarktondernemersByMarkt(marktId),
+        getOndernemersByMarkt(marktId),
         getAanmeldingen(marktId, marktDate),
         getPlaatsvoorkeuren(marktId),
         getMarkt(marktId),
@@ -562,7 +562,7 @@ export const getAfmeldingenVasteplaatshoudersInput = (marktId: string, marktDate
 
 export const getVoorrangslijstInput = (marktId: string, marktDate: string) =>
     Promise.all([
-        getMarktondernemersByMarkt(marktId),
+        getOndernemersByMarkt(marktId),
         getAanmeldingen(marktId, marktDate),
         getPlaatsvoorkeuren(marktId),
         getMarkt(marktId),

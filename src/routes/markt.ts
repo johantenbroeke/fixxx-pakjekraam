@@ -7,7 +7,7 @@ import { GrantedRequest } from 'keycloak-connect';
 
 import {
     getMarkt,
-    getMarktondernemer
+    getOndernemer
 } from '../makkelijkemarkt-api';
 import {
     getAllBranches,
@@ -59,7 +59,7 @@ export const marktDetail = (
     const messages = getQueryErrors(req.query);
 
         Promise.all([
-            getMarktondernemer(erkenningsNummer),
+            getOndernemer(erkenningsNummer),
             getPlaatsvoorkeurenOndernemer(erkenningsNummer),
             getAanmeldingenByOndernemerEnMarkt(marktId, erkenningsNummer),
             getMarkt(marktId),

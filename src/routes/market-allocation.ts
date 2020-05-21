@@ -11,7 +11,7 @@ import {
 } from '../pakjekraam-api';
 import {
     getMarkt,
-    getMarktondernemersByMarkt
+    getOndernemersByMarkt
 } from '../makkelijkemarkt-api';
 import { internalServerErrorPage } from '../express-util';
 import { getVoorkeurenByMarkt } from '../model/voorkeur.functions';
@@ -23,7 +23,7 @@ import { GrantedRequest } from 'keycloak-connect';
 export const getIndelingslijstData = (marktId: string, marktDate: string) =>
     getMarkt(marktId).then( mmarkt => {
         return Promise.all([
-            getMarktondernemersByMarkt(marktId),
+            getOndernemersByMarkt(marktId),
             getAanmeldingen(marktId, marktDate),
             getMarkt(marktId),
             getMarktPaginas(mmarkt),

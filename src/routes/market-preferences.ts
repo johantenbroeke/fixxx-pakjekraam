@@ -3,7 +3,7 @@ import { IMarktondernemerVoorkeurRow } from '../markt.model';
 import { upsert } from '../sequelize-util.js';
 import models from '../model/index';
 import { internalServerErrorPage, HTTP_CREATED_SUCCESS, getQueryErrors } from '../express-util';
-import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
+import { getMarkt, getOndernemer } from '../makkelijkemarkt-api';
 import { getAllBranches } from '../pakjekraam-api';
 
 import { Voorkeur } from '../model/voorkeur.model';
@@ -68,7 +68,7 @@ export const marketPreferencesPage = (
 ) => {
 
     const messages = getQueryErrors(req.query);
-    const ondernemerPromise = getMarktondernemer(erkenningsNummer);
+    const ondernemerPromise = getOndernemer(erkenningsNummer);
     const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
 
     // TODO: Only allow relative URLs in `next`, to prevent redirection to 3rd party phishing sites

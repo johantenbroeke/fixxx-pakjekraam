@@ -9,7 +9,7 @@ import { MMSollicitatie } from '../makkelijkemarkt.model';
 
 import {
     getMarkten,
-    getMarktondernemer
+    getOndernemer
 } from '../makkelijkemarkt-api';
 import {
     getAllBranches
@@ -63,7 +63,7 @@ export const publicProfilePage = async (
     const messages = getQueryErrors(req.query);
 
     try {
-        const ondernemer = await getMarktondernemer(erkenningsNummer);
+        const ondernemer = await getOndernemer(erkenningsNummer);
         const marktenEnabled = await getMarkten(true);
         const marktenEnabledIds = marktenEnabled.map( (markt: any) => markt.id);
         ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) =>
@@ -88,7 +88,7 @@ export const toewijzingenAfwijzingenPage = (
     Promise.all([
         getToewijzingenByOndernemer(erkenningsNummer),
         getAfwijzingenByOndernemer(erkenningsNummer),
-        getMarktondernemer(erkenningsNummer),
+        getOndernemer(erkenningsNummer),
         getAllBranches(),
         getMarkten(),
     ]).then(

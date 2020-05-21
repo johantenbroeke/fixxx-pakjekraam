@@ -11,7 +11,7 @@ import {
 import { today } from '../util';
 
 import {
-    getMarktondernemersByMarkt
+    getOndernemersByMarkt
 } from '../makkelijkemarkt-api';
 
 import {
@@ -136,7 +136,7 @@ export const vphIsUitgebreid = (ondernemer: IMarktondernemer, toewijzingen: IToe
 export const getOndernemersLangdurigAfgemeldByMarkt = (marktId: string) => {
     return Promise.all([
         getVoorkeurenAbsentByMarkt(marktId),
-        getMarktondernemersByMarkt(marktId)
+        getOndernemersByMarkt(marktId)
     ])
     .then( ([voorkeuren, ondernemers]) => {
         const voorkeurenFiltered = voorkeuren.filter( voorkeur => {

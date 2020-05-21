@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
+import { getMarkt, getOndernemer } from '../makkelijkemarkt-api';
 import {
     getIndelingVoorkeur,
     getMarktplaatsen,
@@ -28,7 +28,7 @@ export const plaatsvoorkeurenPage = (
 ) => {
 
     const messages = getQueryErrors(req.query);
-    const ondernemerPromise = getMarktondernemer(erkenningsNummer);
+    const ondernemerPromise = getOndernemer(erkenningsNummer);
     const marktenPromise = ondernemerPromise
         .then(ondernemer =>
             Promise.all(
