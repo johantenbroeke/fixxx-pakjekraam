@@ -7,8 +7,6 @@ import {
 } from '../pakjekraam-api';
 import { internalServerErrorPage, getQueryErrors } from '../express-util';
 import { tomorrow, nextWeek } from '../util';
-// import { parse } from '@babel/core';
-// import { promises } from 'fs';
 
 import { KeycloakRoles } from '../permissions';
 
@@ -18,8 +16,12 @@ import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 import { GrantedRequest } from 'keycloak-connect';
 import { getKeycloakUser } from '../keycloak-api';
 
-export const dashboardPage = (req: GrantedRequest, res: Response, next: NextFunction, erkenningsNummer: string) => {
-
+export const dashboardPage = (
+    req: GrantedRequest,
+    res: Response,
+    next: NextFunction,
+    erkenningsNummer: string
+) => {
     const messages = getQueryErrors(req.query);
 
         Promise.all([

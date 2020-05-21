@@ -1,6 +1,12 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { addDays, MONDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, requireEnv } from './util';
-import { MMMarkt, MMOndernemerStandalone, MMSollicitatieStandalone, MMOndernemer, MMSollicitatie } from './makkelijkemarkt.model';
+import {
+    MMMarkt,
+    MMOndernemerStandalone,
+    MMSollicitatieStandalone,
+    MMOndernemer,
+    MMSollicitatie
+} from './makkelijkemarkt.model';
 
 const packageJSON = require('../package.json');
 const axios = require('axios');
@@ -90,8 +96,10 @@ const apiBase = (url: string): Promise<AxiosResponse> => {
 export const getMarktondernemers = (): Promise<MMSollicitatieStandalone[]> =>
     apiBase('koopman/').then(response => response.data);
 
-export const getMarktondernemer = (id: string): Promise<MMOndernemerStandalone> => {
-    return apiBase(`koopman/erkenningsnummer/${id}`)
+export const getMarktondernemer = (
+    erkenningsNummer: string
+): Promise<MMOndernemerStandalone> => {
+    return apiBase(`koopman/erkenningsnummer/${erkenningsNummer}`)
     .then(response => {
         if (!response || !response.data) {
             return Promise.reject(Error('Ondernemer niet gevonden'));
