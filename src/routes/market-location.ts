@@ -26,39 +26,32 @@ export const plaatsvoorkeurenPage = (
     role: string,
     csrfToken: string,
 ) => {
-
-    const messages = getQueryErrors(req.query);
+    const messages          = getQueryErrors(req.query);
     const ondernemerPromise = getOndernemer(erkenningsNummer);
-    const marktenPromise = ondernemerPromise
-        .then(ondernemer =>
-            Promise.all(
-                ondernemer.sollicitaties
-                    .filter(sollicitatie => !sollicitatie.doorgehaald)
-                    .map(sollicitatie => String(sollicitatie.markt.id))
-                    .map(marktId => getMarkt(marktId)),
-            ),
-        )
-        .then(markten =>
-            Promise.all(
-                (currentMarktId ? markten.filter(markt => String(markt.id) === currentMarktId) : markten).map(markt =>
-                    getMarktplaatsen(markt).then(marktplaatsen => ({
-                        ...markt,
-                        marktplaatsen,
-                    })),
-                ),
-            ),
+    const marktPromise      = ondernemerPromise
+    .then(ondernemer => {
+        const sollicitatie = ondernemer.sollicitaties.find(sollicitatie =>
+            String(sollicitatie.markt.id) === currentMarktId
         );
+        if (!sollicitatie) {
+            throw Error('Geen sollicitatie voor deze markt gevonden');
+        }
+
+        return getMarktEnriched(currentMarktId);
+    });
 
     Promise.all([
         ondernemerPromise,
-        marktenPromise,
+        marktPromise,
         getPlaatsvoorkeurenByMarktEnOndernemer(currentMarktId, erkenningsNummer),
         getIndelingVoorkeur(erkenningsNummer, currentMarktId),
-        getMarktEnriched(currentMarktId),
         getMededelingen(),
     ]).then(
-        ([ondernemer, markten, plaatsvoorkeuren, indelingVoorkeur, markt, mededelingen]) => {
-            const sollicitatie = ondernemer.sollicitaties.find( (soll: any) => soll.markt.id === markt.id && !soll.doorgehaald);
+        ([ondernemer, markt, plaatsvoorkeuren, indelingVoorkeur, mededelingen]) => {
+            const sollicitatie = ondernemer.sollicitaties.find(soll =>
+                soll.markt.id === markt.id
+            );
+
             // Als iemand de status experimenteel heeft mag degene zijn plaatsvoorkeuren niet wijzigen
             if (role === 'marktondernemer' && isExp(sollicitatie.status)) {
                 res.status(403);
@@ -66,14 +59,13 @@ export const plaatsvoorkeurenPage = (
             }
             res.render('VoorkeurenPage', {
                 ondernemer,
-                markten,
+                markt,
                 plaatsvoorkeuren,
                 marktplaatsen: markt.plaatsen,
                 indelingVoorkeur,
                 query,
                 messages,
                 role,
-                markt,
                 sollicitatie,
                 mededeling: mededelingen.plaatsVoorkeuren,
                 csrfToken,
