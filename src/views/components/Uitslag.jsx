@@ -4,9 +4,9 @@ const UitslagTile = require('./UitslagTile');
 const { getMaDiWoDo } = require('../../util.ts');
 
 const Component = ({ markt, today, tomorrow, aanmeldingVandaag, aanmeldingMorgen, toewijzingVandaag, toewijzingMorgen, ondernemer, afwijzingVandaag, afwijzingMorgen, daysClosed }) => {
-    const sollicitatie = ondernemer.sollicitaties.find(sollicitatieOndernemer => {
-        return sollicitatieOndernemer.markt.id == markt.id && !sollicitatieOndernemer.doorgehaald;
-    });
+    const sollicitatie = ondernemer.sollicitaties.find(sollicitatieOndernemer =>
+        sollicitatieOndernemer.markt.id == markt.id
+    );
 
     const openToday = markt.marktDagen.includes(getMaDiWoDo( new Date(today) ));
     const openTomorrow = markt.marktDagen.includes(getMaDiWoDo( new Date(tomorrow) ));

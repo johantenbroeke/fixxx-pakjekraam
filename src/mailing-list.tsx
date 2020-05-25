@@ -10,11 +10,11 @@ import { shareReplay, tap, combineLatest } from 'rxjs/operators';
 import { mail } from './mail.js';
 import { requireEnv, yyyyMmDdtoDDMMYYYY, getTimezoneTime } from './util';
 import { INDELING_DAG_OFFSET } from './domain-knowledge.js';
-import { getMarktondernemersByMarkt, getToewijzingen } from './pakjekraam-api';
+import { getToewijzingen } from './pakjekraam-api';
 import { getAfwijzingen } from './model/afwijzing.functions';
 import { retry } from './rxjs-util';
 import { getAllUsers } from './keycloak-api';
-import { checkLogin } from './makkelijkemarkt-api';
+import { checkLogin, getOndernemersByMarkt } from './makkelijkemarkt-api';
 import { getMarktenByDate } from './model/markt.functions';
 import { MMMarkt } from 'makkelijkemarkt.model';
 
@@ -118,7 +118,7 @@ makkelijkeMarkt$.pipe(combineLatest(users$)).subscribe(([makkelijkeMarkt, users]
             .filter(markt => markt.kiesJeKraamFase === 'live' || markt.kiesJeKraamFase === 'wenperiode')
             .map(markt =>
                 Promise.all([
-                    getMarktondernemersByMarkt(String(markt.id)),
+                    getOndernemersByMarkt(String(markt.id)),
                     getToewijzingen(String(markt.id), marktDate),
                     getAfwijzingen(String(markt.id), marktDate),
                 ]).then(([

@@ -12,21 +12,20 @@ const { INDELINGSTIJDSTIP_TEXT } = require('../domain-knowledge.js');
 
 class VoorkeurenPage extends React.Component {
     propTypes = {
-        plaatsvoorkeuren: PropTypes.array.isRequired,
-        markten: PropTypes.array.isRequired,
-        ondernemer: PropTypes.object.isRequired,
-        marktPaginas: PropTypes.object,
-        marktplaatsen: PropTypes.object,
-        indelingVoorkeur: PropTypes.object,
-        marktDate: PropTypes.string,
-        messages: PropTypes.array,
-        query: PropTypes.string,
-        role: PropTypes.object,
-        markt: PropTypes.object,
-        sollicitatie: PropTypes.object,
-        mededeling: PropTypes.object,
-        csrfToken: PropTypes.string,
-        user: PropTypes.object.isRequired
+        plaatsvoorkeuren : PropTypes.array.isRequired,
+        markt            : PropTypes.object.isRequired,
+        ondernemer       : PropTypes.object.isRequired,
+        marktPaginas     : PropTypes.object,
+        marktplaatsen    : PropTypes.object,
+        indelingVoorkeur : PropTypes.object,
+        marktDate        : PropTypes.string,
+        messages         : PropTypes.array,
+        query            : PropTypes.string,
+        role             : PropTypes.object,
+        sollicitatie     : PropTypes.object,
+        mededeling       : PropTypes.object,
+        csrfToken        : PropTypes.string,
+        user             : PropTypes.object.isRequired
     };
 
     render() {
@@ -43,7 +42,9 @@ class VoorkeurenPage extends React.Component {
             user
         } = this.props;
 
-        const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
+        const breadcrumbs = role === 'marktondernemer' ?
+                            getBreadcrumbsMarkt(markt, role) :
+                            getBreadcrumbsOndernemer(ondernemer, role);
 
         return (
             <Page messages={this.props.messages}>
@@ -74,7 +75,7 @@ class VoorkeurenPage extends React.Component {
                     <PlaatsvoorkeurenForm
                         plaatsvoorkeuren={plaatsvoorkeuren}
                         ondernemer={this.props.ondernemer}
-                        markt={this.props.markten[0]}
+                        markt={this.props.markt}
                         indelingVoorkeur={indelingVoorkeur}
                         role={role}
                         marktplaatsen={marktplaatsen}
