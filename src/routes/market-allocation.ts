@@ -11,9 +11,9 @@ import {
 } from '../pakjekraam-api';
 import {
     getMarkt,
+    getOndernemersByMarkt
 } from '../makkelijkemarkt-api';
 import { internalServerErrorPage } from '../express-util';
-import { getOndernemersByMarkt } from '../model/ondernemer.functions';
 import { getVoorkeurenByMarkt } from '../model/voorkeur.functions';
 import { KeycloakRoles } from '../permissions';
 import { getKeycloakUser } from '../keycloak-api';

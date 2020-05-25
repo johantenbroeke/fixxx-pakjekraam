@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { getMarktondernemer } from '../makkelijkemarkt-api';
+import { getOndernemer } from '../makkelijkemarkt-api';
 import { HTTP_PAGE_NOT_FOUND, internalServerErrorPage } from '../express-util';
 import * as qs from 'qs';
 
 export const activationQRPage = (req: Request, res: Response) => {
-    getMarktondernemer(req.params.erkenningsNummer).then(ondernemer => {
+    getOndernemer(req.params.erkenningsNummer).then(ondernemer => {
         const params = {
             username: req.params.erkenningsNummer,
             code: ondernemer.pasUid,

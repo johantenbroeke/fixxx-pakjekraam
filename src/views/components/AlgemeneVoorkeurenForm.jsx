@@ -21,7 +21,9 @@ class AlgemeneVoorkeurenForm extends React.Component {
 
     render() {
         const { branches, ondernemer, markt, marktId, marktDate, role, csrfToken } = this.props;
-        const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
+        const sollicitatie = ondernemer.sollicitaties.find(soll =>
+            soll.markt.id === markt.id
+        );
 
         const voorkeur = this.props.voorkeur || getDefaultVoorkeur(sollicitatie);
 

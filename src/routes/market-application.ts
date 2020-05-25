@@ -25,7 +25,8 @@ import {
 
 import { getKeycloakUser } from '../keycloak-api';
 import {
-    getMarktondernemer
+    getMarktenForOndernemer,
+    getOndernemer
 } from '../makkelijkemarkt-api';
 import {
     getAanmeldingenByOndernemer,
@@ -36,9 +37,7 @@ import models from '../model/index';
 import { IRSVP } from '../markt.model';
 
 import {
-    getMarktEnriched,
-    getMarktenEnabled,
-    getMarktenForOndernemer
+    getMarktEnriched
 } from '../model/markt.functions';
 import {
     groupAanmeldingenPerMarktPerWeek
@@ -79,8 +78,8 @@ export const attendancePage = (
     newAanmeldingen?: IRSVP[]
 ) => {
     const thresholdDate       = getMarktThresholdDate(role);
-    const ondernemerPromise   = getMarktondernemer(erkenningsNummer);
-    const marktenPromise      = ondernemerPromise.then(getMarktenForOndernemer);
+    const ondernemerPromise   = getOndernemer(erkenningsNummer);
+    const marktenPromise      = getMarktenForOndernemer(ondernemerPromise);
     const aanmeldingenPromise = getAanmeldingenByOndernemer(erkenningsNummer);
 
     return Promise.all([
@@ -180,7 +179,7 @@ export const handleAttendanceUpdate = (
 
     // Controleer per dag of het maximum wordt overschreden. Zo ja, geef dan een
     // foutmelding weer.
-    getMarktondernemer(erkenningsNummer)
+    getOndernemer(erkenningsNummer)
     .then(({ vervangers }): any => {
         const dailyMax  = vervangers.length + 1;
         const errorDays = [];
