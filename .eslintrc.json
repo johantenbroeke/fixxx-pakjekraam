@@ -265,7 +265,7 @@
     "strict": ["error", "global"],
     "template-curly-spacing": ["error", "never"],
     "use-isnan": ["error"],
-    "vars-on-top": ["error"],
+    "vars-on-top": ["off"],
     "wrap-iife": ["error"],
     "wrap-regexp": ["off"],
     "yield-star-spacing": ["error"],
