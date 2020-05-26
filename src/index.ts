@@ -175,7 +175,7 @@ const templateEngine = reactViews.createEngine({ beautify: true });
 app.engine('jsx', templateEngine);
 app.engine('tsx', templateEngine);
 
-app.use(morgan(morgan.compile(':date[iso] :method :status :url :response-time ms')));
+app.use(morgan(':date[iso] :method :status :url :response-time ms'));
 
 // The `/status/health` endpoint is required for Docker deployments
 app.get('/status/health', serverHealth);
@@ -193,19 +193,29 @@ app.use(cookieParser());
 const pool = new Pool(parseDatabaseURL(process.env.DATABASE_URL));
 const sessionStore = new (connectPgSimple(session))({ pool });
 
-const keycloak = new Keycloak(
-    { store: sessionStore },
-    {
-        realm: process.env.IAM_REALM,
-        'auth-server-url': process.env.IAM_URL,
-        'ssl-required': 'external',
-        resource: process.env.IAM_CLIENT_ID,
-        credentials: {
-            secret: process.env.IAM_CLIENT_SECRET,
-        },
-        'confidential-port': 0,
+const keycloak = new Keycloak({
+    store: sessionStore
+}, {
+    realm: process.env.IAM_REALM,
+    'auth-server-url': process.env.IAM_URL,
+    'ssl-required': 'external',
+    resource: process.env.IAM_CLIENT_ID,
+    credentials: {
+        secret: process.env.IAM_CLIENT_SECRET,
     },
-);
+    'confidential-port': 0,
+});
+
+app.use((req, res, next) => {
+    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    res.header('X-Content-Type-Options', 'nosniff');
+    res.header('X-XSS-Protection', '1; mode=block');
+    res.header('X-Frame-Options', 'SAMEORIGIN');
+    next();
+});
+
+// Static files that are public (robots.txt, favicon.ico)
+app.use(express.static('./dist/'));
 
 app.use(
     session({
@@ -219,27 +229,16 @@ app.use(
     }),
 );
 
-app.use((req, res, next) => {
-    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-    res.header('X-Content-Type-Options', 'nosniff');
-    res.header('X-XSS-Protection', '1; mode=block');
-    res.header('X-Frame-Options', 'SAMEORIGIN');
-    next();
-});
-
 app.use(
-    keycloak.middleware({
-        logout: '/logout',
-    }),
+    keycloak.middleware({ logout: '/logout' })
 );
 
 // Put the login route before the expired redirect to prevent an
 // endless loop.
 app.get('/login', keycloak.protect(), (req: GrantedRequest, res: Response) => {
-
     if (req.query.next) {
         // To prevent open redirects, filter out absolute URLS
-        !isAbsoluteUrl(req.query.next) ? res.redirect(req.query.next) : res.redirect('/');
+        res.redirect(!isAbsoluteUrl(req.query.next) ? req.query.next : '/');
     } else if (isMarktondernemer(req)) {
         res.redirect('/dashboard/');
     } else if (isMarktmeester(req)) {
@@ -257,6 +256,8 @@ app.get('/email/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, 
     res.render('EmailPage');
 });
 
+
+
 app.get(
     '/markt/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
@@ -266,14 +267,6 @@ app.get(
                 res.render('MarktenPage',{ markten, role: KeycloakRoles.MARKTMEESTER, user: getKeycloakUser(req) });
             }, internalServerErrorPage(res));
 });
-
-// app.get(
-//     '/environment/',
-//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
-//     (req: Request, res: Response) => {
-//         res.render('EnvironmentPage');
-//     }
-// );
 
 app.get(
     '/markt/:marktId/',
@@ -450,7 +443,13 @@ app.post(
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        updatePlaatsvoorkeuren(req, res, next, req.params.marktId, getErkenningsNummer(req)),
+        updatePlaatsvoorkeuren(
+            req,
+            res,
+            next,
+            req.params.marktId,
+            getErkenningsNummer(req)
+        )
 );
 
 app.get(
@@ -475,33 +474,39 @@ app.post(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response, next: NextFunction) =>
-        updatePlaatsvoorkeuren(req, res, next, req.params.marktId, req.params.erkenningsNummer),
+        updatePlaatsvoorkeuren(
+            req,
+            res,
+            next,
+            req.params.marktId,
+            req.params.erkenningsNummer
+        )
 );
 
 app.get(
     '/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-    marktDetail(
-        req,
-        res,
-        next,
-        getErkenningsNummer(req),
-        KeycloakRoles.MARKTONDERNEMER
-    ),
+        marktDetail(
+            req,
+            res,
+            next,
+            getErkenningsNummer(req),
+            KeycloakRoles.MARKTONDERNEMER
+        )
 );
 
 app.get(
     '/ondernemer/:erkenningsNummer/markt-detail/:marktId/',
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-    marktDetail(
-        req,
-        res,
-        next,
-        req.params.erkenningsNummer,
-        KeycloakRoles.MARKTMEESTER,
-    ),
+        marktDetail(
+            req,
+            res,
+            next,
+            req.params.erkenningsNummer,
+            KeycloakRoles.MARKTMEESTER,
+        )
 );
 
 app.get(
@@ -539,8 +544,9 @@ app.get(
     keycloak.protect(KeycloakRoles.MARKTMEESTER),
     csrfProtection,
     (req: GrantedRequest, res: Response) => {
-        !req.url.endsWith('/') ?
-            res.redirect(301, `${req.url}/`) :
+        if (!req.url.endsWith('/')) {
+            res.redirect(301, `${req.url}/`);
+        } else {
             deleteUserPage(
                 req,
                 res,
@@ -549,6 +555,7 @@ app.get(
                 req.csrfToken(),
                 KeycloakRoles.MARKTMEESTER,
             );
+        }
     },
 );
 
@@ -638,13 +645,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         res.render('ErrorPage', { message: err.message, stack: err.stack, errorCode: 500, req });
     }
 });
-
-// Static files that are public (robots.txt, favicon.ico)
-app.use(express.static('./src/public/'));
-app.use(express.static('./dist/public/'));
-
-// Static files that require authorization (business logic scripts for example)
-app.use(keycloak.protect(), express.static('./src/www/'));
 
 const port = process.env.PORT || HTTP_DEFAULT_PORT;
 

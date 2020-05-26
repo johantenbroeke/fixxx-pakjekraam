@@ -80,47 +80,6 @@ export const groupAanmeldingenPerMarktPerWeek = (
     return aanmeldingenPerMarktPerWeek;
 };
 
-/*
- * Vendors are allowed to attend only one market per day.
- * Check if a vendor wants to apply for a market, while on the same day it has applied for others.
- */
-const isConflictingApplication = (
-    aanmeldingen: IRSVP[],
-    aanmelding: IRSVP
-): IRSVP[] => {
-    if (!aanmelding.attending) {
-        return [];
-    }
-
-    return aanmeldingen.filter(_aanmelding =>
-        String(_aanmelding.marktId) !== String(aanmelding.marktId) &&
-        _aanmelding.marktDate === aanmelding.marktDate &&
-        _aanmelding.attending !== null && !!_aanmelding.attending
-    );
-};
-
-const isConflictingSollicitatie = (
-    aanmeldingen: IRSVP[],
-    sollicitaties: MMSollicitatie[],
-    aanmelding: IRSVP
-): MMSollicitatie[] => {
-    if (!aanmelding.attending) {
-        return [];
-    }
-
-    const afmeldingen = aanmeldingen.filter(_aanmelding =>
-        !_aanmelding.attending &&
-        String(_aanmelding.marktId) !== String(aanmelding.marktId) &&
-        _aanmelding.marktDate === aanmelding.marktDate
-    );
-
-    return sollicitaties.filter(sollicitatie =>
-        String(sollicitatie.markt.id) !== String(aanmelding.marktId) &&
-        isVast(sollicitatie.status) &&
-        !afmeldingen.find(afmelding => parseInt(afmelding.marktId) === sollicitatie.markt.id)
-    );
-};
-
 export const getAanmeldingenByMarktAndDate = (
     marktId: string,
     marktDate: string
