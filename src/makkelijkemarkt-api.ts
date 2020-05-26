@@ -58,7 +58,9 @@ const login = (api: AxiosInstance) =>
         clientVersion : mmConfig.clientVersion,
     });
 
-const apiBase = (url: string): Promise<AxiosResponse> => {
+const apiBase = (
+    url: string
+): Promise<AxiosResponse> => {
     const api = getApi();
     const getFunction = (url: string, token: string): AxiosResponse => {
         return api.get(url, {
@@ -98,11 +100,15 @@ const apiBase = (url: string): Promise<AxiosResponse> => {
     });
 };
 
-export const getMarkt = (marktId: string): Promise<MMMarkt> =>
+export const getMarkt = (
+    marktId: string
+): Promise<MMMarkt> =>
     apiBase(`markt/${marktId}`).then(response => response.data);
 
 
-export const getMarkten = (includeInactive: boolean = false): Promise<MMMarkt[]> =>
+export const getMarkten = (
+    includeInactive: boolean = false
+): Promise<MMMarkt[]> =>
     apiBase('markt/').then(({ data:markten = [] }) =>
         markten.filter(markt =>
             markt.kiesJeKraamActief && (
@@ -142,7 +148,7 @@ export const getOndernemer = (
     return apiBase(`koopman/erkenningsnummer/${erkenningsNummer}`)
     .then(response => {
         if (!response || !response.data) {
-            return Promise.reject(Error('Ondernemer niet gevonden'));
+            throw Error('Ondernemer niet gevonden');
         }
 
         // Filter inactieve sollicitaties, aangezien we die nooit gebruiken binnen
@@ -155,7 +161,9 @@ export const getOndernemer = (
     });
 };
 
-export const getOndernemersByMarkt = (marktId: string): Promise<IMarktondernemer[]> => {
+export const getOndernemersByMarkt = (
+    marktId: string
+): Promise<IMarktondernemer[]> => {
     return apiBase(`sollicitaties/markt/${marktId}?listLength=10000&includeDoorgehaald=0`)
     .then(response => {
         const sollicitaties: MMSollicitatieStandalone[] = response.data;
@@ -184,7 +192,10 @@ export const getOndernemersByMarkt = (marktId: string): Promise<IMarktondernemer
     });
 };
 
-export const getALijst = (marktId: string, marktDate: string): Promise<MMOndernemer[]> => {
+export const getALijst = (
+    marktId: string,
+    marktDate: string
+): Promise<MMOndernemer[]> => {
     const day = new Date(marktDate).getDay();
 
     if (A_LIJST_DAYS.includes(day)) {
@@ -197,22 +208,20 @@ export const getALijst = (marktId: string, marktDate: string): Promise<MMOnderne
     }
 };
 
-export const checkActivationCode = (username: string, code: string): Promise<any> =>
-    getOndernemer(username).then(
-        ondernemer => {
-            if (!ondernemer.pasUid) {
-                // This method of activation only works for people with a `pasUid`
-                throw new Error('Incorrect username/password');
-            } else {
-                // Return Boolean please
-                return typeof code === 'string' && code.length > 0 && code === ondernemer.pasUid;
-            }
-        },
-        (err: Error) => {
-            console.log(err);
-            throw new Error('Incorrect username/password');
-        },
-    );
+export const checkActivationCode = (
+    username: string,
+    code: string
+): Promise<any> =>
+    getOndernemer(username)
+    .then(ondernemer => {
+        if (!ondernemer.pasUid) {
+            throw Error('Incorrect username/password');
+        }
+
+        return typeof code === 'string' &&
+               code.length > 0 &&
+               code === ondernemer.pasUid;
+    });
 
 export const checkLogin = (): Promise<any> => {
     const api = getApi();
