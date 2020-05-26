@@ -3,7 +3,7 @@ const gulp = require('gulp'),
     minifyCSS = require('gulp-clean-css'),
     paths = {
         style: ['src/scss/**/*.scss'],
-        cssMin: 'dist/public/style/',
+        cssMin: 'dist/style/',
     };
 
 gulp.task('build', () =>
