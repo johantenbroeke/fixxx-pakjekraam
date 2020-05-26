@@ -1,11 +1,83 @@
-import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
-import { Request, Response } from 'express';
-import { getKeycloakAdmin } from '../keycloak-api';
-import { forbiddenErrorPage, internalServerErrorPage, publicErrors, getQueryErrors } from '../express-util';
 import { stringify } from 'qs';
-import { trace } from '../util';
+import { Router } from 'express';
+import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
 
-export const registrationPage = (req: Request, res: Response) => {
+import {
+    HTTP_PAGE_NOT_FOUND,
+    forbiddenErrorPage,
+    publicErrors,
+    getQueryErrors,
+    internalServerErrorPage,
+    redirectWithParams
+} from '../express-util';
+import {
+    userExists,
+    getKeycloakAdmin
+} from '../keycloak-api';
+
+import {
+    checkActivationCode
+} from '../makkelijkemarkt-api';
+
+module.exports = () => {
+    const router = Router();
+
+    router.route('/activeren')
+    .get(activationPage)
+    .post(handleActivation);
+
+    router.route('/registreren')
+    .get(registrationPage)
+    .post(handleRegistration);
+
+    router.get('/welkom', (req, res) => {
+        res.render('AccountCreatedPage', {});
+    });
+
+    return router;
+};
+
+const activationPage = (req, res) => {
+    res.render('ActivatePage', {
+        username: req.query.username,
+        code: req.query.code,
+        messages: getQueryErrors(req.query),
+    });
+};
+
+const handleActivation = (req, res) => {
+    const { username, code } = req.body;
+
+    if (username.includes('.')) {
+        throw publicErrors.USERNAME_CONTAINS_DOT;
+    } else if (!code) {
+        throw publicErrors.ACTIVATION_CODE_NOT_SET;
+    }
+
+    Promise.all([
+        checkActivationCode(username, code),
+        userExists(username)
+    ])
+    .then(([ isValid, isExistingUser ]) => {
+        if (!isValid) {
+            throw publicErrors.ACTIVATION_CODE_INCORRECT;
+        } else if (isExistingUser) {
+            throw publicErrors.ACCOUNT_EXISTS_ALREADY;
+        }
+
+        req.session.activation = { username };
+        return res.redirect('/registreren');
+    })
+    .catch(error => {
+        if (typeof error === 'string') {
+            redirectWithParams(res, { error, username, code });
+        } else {
+            internalServerErrorPage(res);
+        }
+    });
+};
+
+const registrationPage = (req, res) => {
     if (req.session.activation) {
         res.render('RegistrationPage', {
             code: req.session.activation.code,
@@ -18,83 +90,41 @@ export const registrationPage = (req: Request, res: Response) => {
     }
 };
 
-export const handleRegistration = (req: Request, res: Response) => {
-    if (req.session.activation) {
-        const { password, email } = req.body;
+const handleRegistration = (req, res) => {
+    const { password, email } = req.body;
 
-        if (req.body.password !== req.body.passwordRepeat) {
-            res.redirect(
-                `/registreren${stringify(
-                    { email, error: publicErrors.NON_MATCHING_PASSWORDS },
-                    {
-                        addQueryPrefix: true,
-                    },
-                )}`,
-            );
-        } else {
-            const userDefinition = {
-                username: req.session.activation.username,
-                email,
-                enabled: true,
-            };
-
-            getKeycloakAdmin().then(kcAdminClient => {
-                // Use `as any` as workaround for incomplete TypeScript definition for `findOne` argument.
-                const clientPromise = kcAdminClient.clients
-                    .findOne({
-                        clientId: process.env.IAM_CLIENT_ID,
-                    } as any)
-                    .then(
-                        (clients: ClientRepresentation): ClientRepresentation => {
-                            if (Array.isArray(clients)) {
-                                return clients[0];
-                            } else {
-                                return clients;
-                            }
-                        },
-                    );
-
-                clientPromise.catch(() => console.warn('Unable to find Keycloak client'));
-                clientPromise.catch(internalServerErrorPage(res));
-
-                const userPromise = Promise.all([clientPromise]).then(() =>
-                    kcAdminClient.users.create(userDefinition),
-                );
-
-                Promise.all([clientPromise, userPromise])
-                    .then(([client, user]) => {
-                        const passwordPromise = kcAdminClient.users.resetPassword({
-                            id: user.id,
-                            credential: {
-                                temporary: false,
-                                type: 'password',
-                                value: password,
-                            },
-                        });
-
-                        // userDefinition.email ?
-                        //     // TODO: How should we handle failure here?
-                        //     kcAdminClient.users
-                        //         .sendVerifyEmail({
-                        //             id: user.id,
-                        //         })
-                        //         .then(
-                        //             () => console.log('Verification e-mail sent.'),
-                        //             () => console.log('Failed to send verification e-mail.'),
-                        //         ): null;
-
-                        return passwordPromise.then(result => {
-                            console.log('Password reset', result);
-                        });
-                    })
-                    .then(x => {
-                        delete req.session.activation;
-                        res.redirect('/welkom');
-                    })
-                    .catch(internalServerErrorPage(res));
-            });
-        }
-    } else {
-        forbiddenErrorPage(res)('');
+    if (!req.session.activation) {
+        return forbiddenErrorPage(res)('');
+    } else if (req.body.password !== req.body.passwordRepeat) {
+        return res.redirect(
+            `/registreren${stringify(
+                { email, error: publicErrors.NON_MATCHING_PASSWORDS },
+                { addQueryPrefix: true }
+            )}`
+        );
     }
+
+    getKeycloakAdmin()
+    .then(kcAdminClient => {
+        kcAdminClient.users.create({
+            username: req.session.activation.username,
+            email,
+            enabled: true,
+        })
+        .then(user => {
+            return kcAdminClient.users.resetPassword({
+                id: user.id,
+                credential: {
+                    temporary: false,
+                    type: 'password',
+                    value: password,
+                },
+            });
+        })
+        .then(() => {
+            delete req.session.activation;
+            res.redirect('/welkom');
+        })
+        .catch(internalServerErrorPage(res));
+    });
 };

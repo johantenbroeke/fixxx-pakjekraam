@@ -61,16 +61,6 @@ import {
 } from './routes/status';
 
 import {
-    activationPage,
-    handleActivation
-} from './routes/activation';
-
-import {
-    registrationPage,
-    handleRegistration
-} from './routes/registration';
-
-import {
     attendancePage,
     handleAttendanceUpdate
 } from './routes/market-application';
@@ -88,10 +78,6 @@ import {
     plaatsvoorkeurenPage,
     updatePlaatsvoorkeuren
 } from './routes/market-location';
-
-import {
-    activationQRPage
-} from './routes/activation-qr';
 
 import {
     deleteUserPage,
@@ -303,18 +289,10 @@ app.get(
     },
 );
 
-
-app.get('/activeren', activationPage);
-
-app.post('/activeren', handleActivation);
-
-app.get('/registreren', registrationPage);
-
-app.post('/registreren', handleRegistration);
-
-app.get('/welkom', (req: Request, res: Response) => {
-    res.render('AccountCreatedPage', {});
-});
+// Registratie & Activatie
+// -----------------------
+const registrationAndActivation = require('./routes/registration')();
+app.use(registrationAndActivation);
 
 app.get(
     '/ondernemer/:erkenningsNummer/aanwezigheid/',
