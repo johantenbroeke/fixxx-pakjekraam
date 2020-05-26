@@ -12,7 +12,7 @@ import {
 import { internalServerErrorPage, getQueryErrors } from '../express-util';
 import { tomorrow, nextWeek } from '../util';
 
-import { KeycloakRoles } from '../permissions';
+import { Roles } from '../authentication';
 
 import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 import { getToewijzingenByOndernemer } from '../model/allocation.functions';
@@ -40,7 +40,7 @@ export const dashboardPage = (
         res.render('OndernemerDashboard', {
             ...result,
             messages,
-            role: KeycloakRoles.MARKTONDERNEMER,
+            role: Roles.MARKTONDERNEMER,
             user: getKeycloakUser(req)
         });
     })
