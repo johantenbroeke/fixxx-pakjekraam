@@ -35,3 +35,5 @@ You can simply run the command 'webpack'
 ### Berekening controleren
 
 Kopieer output van een dagindeling op een markt uit de log tabel. Run vervolgens `(export $(cat .env-prod) && pbpaste | ts-node src/_debug_check-calc.js)`. (`pbpaste` gebruikt de gekopieerde output om deze als input voor het script door te geven).
+
+Om een debugger te kunnen attachen bij het testen van de berekening: `node --inspect -r ts-node/register src/_debug_analyze-calc.js src/allocation/markt.ts src/allocation/ondernemer.ts src/allocation/ondernemers.ts src/allocation/toewijzing.ts`
