@@ -15,7 +15,7 @@ import {
 } from '../makkelijkemarkt-api';
 import { internalServerErrorPage } from '../express-util';
 import { getVoorkeurenByMarkt } from '../model/voorkeur.functions';
-import { KeycloakRoles } from '../permissions';
+import { Roles } from '../authentication';
 import { getKeycloakUser } from '../keycloak-api';
 
 import { GrantedRequest } from 'keycloak-connect';
@@ -66,7 +66,7 @@ export const indelingslijstPage = (req: GrantedRequest, res: Response) => {
     const { marktDate, marktId } = req.params;
     const type = 'concept-indelingslijst';
 
-    const role = KeycloakRoles.MARKTMEESTER;
+    const role = Roles.MARKTMEESTER;
 
     Promise.all([
         getIndelingslijst(marktId, marktDate),
@@ -99,7 +99,7 @@ export const marketAllocationPage = (req: GrantedRequest, res: Response) => {
             ...data,
             datum: marktDate,
             type:'wenperiode',
-            role: KeycloakRoles.MARKTMEESTER,
+            role: Roles.MARKTMEESTER,
             user: getKeycloakUser(req)
         });
     }, internalServerErrorPage(res));
@@ -116,7 +116,7 @@ export const indelingPage = (req: GrantedRequest, res: Response) => {
                 ...data,
                 datum: marktDate,
                 type: 'indeling',
-                role: KeycloakRoles.MARKTMEESTER,
+                role: Roles.MARKTMEESTER,
                 user: getKeycloakUser(req)
             });
         }, internalServerErrorPage(res));
