@@ -199,8 +199,8 @@ export const handleAttendanceUpdate = (
                 code: 'error',
                 title: 'Onvoldoende vervangers',
                 message: errorDaysPretty.length === 1 ?
-                         `U heeft teveel aanmeldingen voor ${errorDaysPretty[0]}` :
-                         `U heeft teveel aanmeldingen voor: ${errorDaysPretty.join(', ')}`
+                         `U heeft onvoldoende vervangers voor ${errorDaysPretty[0]}` :
+                         `U heeft onvoldoende vervangers voor de volgende dagen: ${errorDaysPretty.join(', ')}`
             };
 
             attendancePage(
