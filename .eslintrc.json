@@ -38,7 +38,7 @@
     "consistent-return": ["error"],
     "consistent-this": ["error"],
     "constructor-super": ["error"],
-    "class-methods-use-this": ["error", { "exceptMethods": ["render"] }],
+    "class-methods-use-this": ["off", { "exceptMethods": ["render"] }],
     "default-case": ["error"],
     "dot-location": ["error", "property"],
     "dot-notation": ["error"],
