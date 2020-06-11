@@ -212,8 +212,14 @@ app.get(
     keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
         getMarktEnriched(req.params.marktId)
-            .then((markt: any) => res.render('MarktDetailPage', { markt, role: Roles.MARKTMEESTER, user: getKeycloakUser(req) }))
-            .catch(next);
+        .then(markt => {
+            res.render('MarktDetailPage', {
+                role: Roles.MARKTMEESTER,
+                user: getKeycloakUser(req),
+                markt
+            });
+        })
+        .catch(next);
     },
 );
 
