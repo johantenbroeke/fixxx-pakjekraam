@@ -330,14 +330,15 @@ export const getDaysClosed = (): Promise<any> =>
     loadJSON('./config/markt/daysClosed.json', {});
 
 export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
-
     return getMarkt(marktId).then(mmarkt => {
-
         const voorkeurenPromise = Voorkeur.findAll({ where: { marktId }, raw: true })
             .then(voorkeuren => voorkeuren.map(convertVoorkeur));
 
         // Populate the `ondernemer.voorkeur` field
-        const enrichedOndernemers = Promise.all([getOndernemersByMarkt(marktId), voorkeurenPromise]).then(result => {
+        const enrichedOndernemers = Promise.all([
+            getOndernemersByMarkt(marktId),
+            voorkeurenPromise
+        ]).then(result => {
             return enrichOndernemersWithVoorkeuren(...result);
         });
 
@@ -345,16 +346,16 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
             getMarkt(marktId),
             getMarktplaatsen(mmarkt)
         ]).then(([makkelijkemarkt, marktplaatsen]) => {
-                if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
-                    const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
-                    return marktplaatsen.map(plaats => {
-                        geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
-                        return plaats;
-                    });
-                } else {
-                    return marktplaatsen;
-                }
-            });
+            if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
+                const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
+                return marktplaatsen.map(plaats => {
+                    geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
+                    return plaats;
+                });
+            } else {
+                return marktplaatsen;
+            }
+        });
 
         return Promise.all([
             getMarktProperties(mmarkt),

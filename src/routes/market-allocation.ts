@@ -62,7 +62,7 @@ const getIndelingslijstData = (marktId: string, marktDate: string) =>
     });
 
 
-export const indelingslijstPage = (req: GrantedRequest, res: Response) => {
+export const conceptIndelingPage = (req: GrantedRequest, res: Response) => {
     const { marktDate, marktId } = req.params;
 
     Promise.all([
@@ -88,31 +88,16 @@ export const indelingslijstPage = (req: GrantedRequest, res: Response) => {
     }, internalServerErrorPage(res));
 };
 
-export const marketAllocationPage = (req: GrantedRequest, res: Response) => {
+export const indelingPage = (req: GrantedRequest, res: Response, type: string = 'indeling') => {
     const { marktDate, marktId } = req.params;
     getIndelingslijstData(marktId, marktDate)
     .then(data => {
         res.render('IndelingslijstPage.tsx', {
             ...data,
-            datum: marktDate,
-            type:'wenperiode',
-            role: Roles.MARKTMEESTER,
-            user: getKeycloakUser(req)
-        });
-    }, internalServerErrorPage(res));
-};
-
-
-export const indelingPage = (req: GrantedRequest, res: Response) => {
-    const { marktDate } = req.params;
-    getIndelingslijstData(req.params.marktId, marktDate)
-    .then(data => {
-        res.render('IndelingslijstPage.tsx', {
-            ...data,
-            datum: marktDate,
-            type: 'indeling',
-            role: Roles.MARKTMEESTER,
-            user: getKeycloakUser(req)
+            type,
+            datum : marktDate,
+            role  : Roles.MARKTMEESTER,
+            user  : getKeycloakUser(req)
         });
     }, internalServerErrorPage(res));
 };

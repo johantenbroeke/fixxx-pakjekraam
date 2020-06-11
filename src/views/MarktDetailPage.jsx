@@ -50,7 +50,7 @@ class MarktDetailPage extends React.Component {
                         <a href={`./${today()}/alle-sollicitanten/`} className="Link">Alle sollicitanten</a> : null
                     }
                     {markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'voorbereiding' ?
-                        <a href={`./${today()}/indelingslijst/`} className="Link">Positie vasteplaasthouders</a> : null
+                        <a href={`./${today()}/indelingslijst/`} className="Link">Positie vasteplaatshouders</a> : null
                     }
                     {markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
                         <a href={`/pdf/kaart-${markt.afkorting}.pdf`} rel="noopener noreferrer" target="_blank" className="Link">Kaart {markt.naam}</a> : null

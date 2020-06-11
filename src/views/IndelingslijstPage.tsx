@@ -36,7 +36,6 @@ type IndelingslijstenPageState = {
     paginas: IAllocationPrintout;
     toewijzingen: IToewijzing[];
     markt: IMarkt;
-    plaatsvoorkeuren: any[];
     voorkeuren: IMarktondernemerVoorkeur[];
     marktId: string;
     datum: string;
@@ -44,6 +43,12 @@ type IndelingslijstenPageState = {
     branches: IBranche[];
     role: string;
     user: object;
+};
+
+const titleMap: { [index: string]: string } = {
+    wenperiode               : 'Indelingslijst',
+    indeling                 : 'Indeling',
+    'concept-indelingslijst' : 'Concept indelingslijst',
 };
 
 export default class IndelingslijstenPage extends React.Component {
@@ -57,36 +62,21 @@ export default class IndelingslijstenPage extends React.Component {
             paginas,
             markt,
             datum,
-            type,
+            type = 'indeling',
             voorkeuren,
             branches,
             role,
             user
         } = props;
 
-        let { toewijzingen, plaatsvoorkeuren } = props;
-        const plaatsList = arrayToObject(marktplaatsen, 'plaatsId');
-        const vphl = ondernemersToLocatieKeyValue(ondernemers);
+        const title        = titleMap[type];
+        const breadcrumbs  = getBreadcrumbsMarkt(markt, role);
+
+        const plaatsList   = arrayToObject(marktplaatsen, 'plaatsId');
+        const vphl         = ondernemersToLocatieKeyValue(ondernemers);
         const obstakelList = obstakelsToLocatieKeyValue(obstakels);
 
-        const titleMap: { [index: string]: string } = {
-            indelingslijst: 'Indelingslijst',
-            indeling: 'Indeling',
-            'concept-indelingslijst': 'Concept indelingslijst',
-        };
-        const title = titleMap[type] || titleMap['indelingslijst'];
-
-        toewijzingen = type !== 'wenperiode' ? toewijzingen : [];
-
-        plaatsvoorkeuren = plaatsvoorkeuren.reduce((t: any, voorkeur: any) => {
-            if (!t[voorkeur.erkenningsNummer]) {
-                t[voorkeur.erkenningsNummer] = [];
-            }
-            t[voorkeur.erkenningsNummer].push(voorkeur);
-            return t;
-        }, {});
-
-        const breadcrumbs = getBreadcrumbsMarkt(markt, role);
+        const toewijzingen = type !== 'wenperiode' ? props.toewijzingen : [];
 
         return (
             <MarktDetailBase
@@ -124,7 +114,6 @@ export default class IndelingslijstenPage extends React.Component {
                          markt={markt}
                          datum={datum}
                          voorkeuren={voorkeuren}
-                         plaatsvoorkeuren={plaatsvoorkeuren}
                          branches={branches}
                      />
                 )}
