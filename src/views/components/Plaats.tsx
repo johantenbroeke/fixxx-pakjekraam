@@ -10,7 +10,6 @@ const Plaats = ({
     ondernemer,
     first,
     toewijzing,
-    plaatsvoorkeuren,
     type,
     color,
     opUitgebreid,
@@ -25,7 +24,6 @@ const Plaats = ({
     ondernemer?: IMarktondernemer;
     first?: boolean;
     toewijzing?: IToewijzing;
-    plaatsvoorkeuren?: any;
     type?: string;
     color?: string;
     opUitgebreid?: boolean;
@@ -35,29 +33,26 @@ const Plaats = ({
     ondernemerUitgebreid?: boolean;
     ondernemerGewisseld?: boolean;
 }) => {
-
-    let plaatsProps = plaats.properties || [];
-    let tags = plaats.properties || [];
-
-    plaatsProps = plaatsProps.filter(word => !['dubble'].includes(word));
-    plaatsProps.reverse();
-    tags = tags.filter(word => ['experimentele-zone', 'standwerkersplaats', 'eigen-materiaal'].includes(word));
-
+    const plaatsProps = (plaats.properties || [])
+                        .filter(word => !['dubble'].includes(word))
+                        .reverse();
+    const tags = (plaats.properties || []).filter(word =>
+        ['experimentele-zone', 'standwerkersplaats', 'eigen-materiaal'].includes(word)
+    );
     const voorkeur = vph && vph.voorkeur;
 
     return (
-
         <tr
-            className={`
-                Plaats ${first && 'Plaats--first'} ${tags.join(' ')} ${opAfgemeld || opAfgemeldPeriode? ' Plaats--vph-attendance-not-attending': null }`}
+            className={
+                `Plaats ${first && 'Plaats--first'} ${tags.join(' ')} ${opAfgemeld || opAfgemeldPeriode? ' Plaats--vph-attendance-not-attending': null }`
+            }
             data-sollicitatie-nummer={vph && vph.sollicitatieNummer}
         >
             <td className="Plaats__prop Plaats__prop-properties">
                 <span className={`icon icon-${plaatsProps ? plaatsProps[0] : ''}`} />
             </td>
-            <td className="Plaats__prop Plaats__prop-plaats-nr">
+            <td className="Plaats__prop Plaats__prop-plaats-nr" style={{ backgroundColor: color || 'transparent' }}>
                 {plaats.plaatsId}
-                {color && <PrintableBackground color={color} />}
             </td>
             <td className="Plaats__prop Plaats__prop-soll Plaats__prop-vph">
                 {opUitgebreid ? <div className="Plaats__prop__icon Icon Icon--plus"></div> : null }

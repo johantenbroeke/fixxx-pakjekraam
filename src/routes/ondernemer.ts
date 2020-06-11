@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { GrantedRequest } from 'keycloak-connect';
 
 import { getQueryErrors, internalServerErrorPage } from '../express-util';
-import { KeycloakRoles } from '../permissions';
+import { Roles } from '../authentication';
 import { getKeycloakUser } from '../keycloak-api';
 
 import { MMSollicitatie } from '../makkelijkemarkt.model';
@@ -46,7 +46,7 @@ export const deleteUser = (req: GrantedRequest, res: Response, erkenningsNummer:
             `${numberOfRecordsFound} records mbt registratienummer '${req.body.erkenningsNummer}' verwijderd`,
             null,
             req.csrfToken(),
-            KeycloakRoles.MARKTMEESTER,
+            Roles.MARKTMEESTER,
         );
     })
     .catch( ( e: string ) => {

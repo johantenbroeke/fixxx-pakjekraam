@@ -18,20 +18,21 @@ import { getMaDiWoDo } from '../util';
 
 export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
     return getMarkt(marktId)
-        .then(mmarkt =>
-            Promise.all([
-                getMarktProperties(mmarkt),
-                getMarktplaatsen(mmarkt),
-                getMarktPaginas(mmarkt),
-            ]).then(result => {
-                const [marktProperties, plaatsen, paginas] = result;
-                return {
-                    ...mmarkt,
-                    ...marktProperties,
-                    plaatsen,
-                    paginas
-                };
-            }));
+    .then(mmarkt =>
+        Promise.all([
+            getMarktProperties(mmarkt),
+            getMarktplaatsen(mmarkt),
+            getMarktPaginas(mmarkt),
+        ]).then(result => {
+            const [marktProperties, plaatsen, paginas] = result;
+            return {
+                ...mmarkt,
+                ...marktProperties,
+                plaatsen,
+                paginas
+            };
+        })
+    );
 };
 
 export const getMarktenByDate = (marktDate: string) => {
