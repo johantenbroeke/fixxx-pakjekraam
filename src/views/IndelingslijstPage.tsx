@@ -24,6 +24,7 @@ import {
 } from '../util';
 
 import MarktDetailBase from './components/MarktDetailBase';
+import IndelingsLegenda from './components/IndelingsLegenda';
 import IndelingslijstGroup from './components/IndelingslijstGroup';
 import PrintPage from './components/PrintPage';
 import Street from './components/Street';
@@ -91,6 +92,19 @@ export default class IndelingslijstenPage extends React.Component {
                 user={user}
                 printButton={true}
             >
+                <PrintPage
+                    key="legenda"
+                    title={`Legenda ${markt.naam}`}
+                    datum={datum}
+                >
+                    <IndelingsLegenda
+                        branches={branches}
+                        marktplaatsen={marktplaatsen}
+                        ondernemers={ondernemers}
+                        aanmeldingen={aanmeldingen}
+                        toewijzingen={toewijzingen}
+                    ></IndelingsLegenda>
+                </PrintPage>
             {paginas.map((page, j) => (
                 <PrintPage
                     key={`page-${j}`}
