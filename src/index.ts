@@ -101,8 +101,7 @@ import {
 } from './routes/markt-marktmeester';
 
 import {
-    indelingslijstPage,
-    marketAllocationPage,
+    conceptIndelingPage,
     indelingPage
 } from './routes/market-allocation';
 
@@ -236,21 +235,23 @@ app.get(
 );
 
 app.get(
-    '/markt/:marktId/:marktDate/concept-indelingslijst/',
-    keycloak.protect(Roles.MARKTMEESTER),
-    indelingslijstPage,
-);
-
-app.get(
     '/markt/:marktId/:marktDate/indelingslijst/',
     keycloak.protect(Roles.MARKTMEESTER),
-    marketAllocationPage,
+    (req: GrantedRequest, res: Response, next: NextFunction) =>
+        indelingPage(req, res, 'wenperiode')
 );
 
 app.get(
     '/markt/:marktId/:marktDate/indeling/',
     keycloak.protect(Roles.MARKTMEESTER),
-    indelingPage,
+    (req: GrantedRequest, res: Response, next: NextFunction) =>
+        indelingPage(req, res, 'indeling')
+);
+
+app.get(
+    '/markt/:marktId/:marktDate/concept-indelingslijst/',
+    keycloak.protect(Roles.MARKTMEESTER),
+    conceptIndelingPage,
 );
 
 app.get(
