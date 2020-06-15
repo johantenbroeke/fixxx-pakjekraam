@@ -15,8 +15,8 @@ const IndelingsLegenda = ({
     const relevantBranches     = getAllBranchesForLegend(branches, marktplaatsen);
     const showToewijzingen     = !!toewijzingen.length;
     const indelingenPerBranche = showToewijzingen ?
-                                 countToewijzingenPerBranche(relevantBranches, marktplaatsen, toewijzingen) :
-                                 {}; // countAanmeldingenPerBranche(relevantBranches, marktplaatsen, ondernemers, aanmeldingen);
+                                 countToewijzingenPerBranche(relevantBranches, ondernemers, toewijzingen) :
+                                 {}; // countAanmeldingenPerBranche(relevantBranches, ondernemers, aanmeldingen);
 
     return (
         <div className="IndelingsLegenda">
@@ -102,14 +102,19 @@ const getAllBranchesForLegend = (allBranches, marktplaatsen) => {
     );
 };
 
-const countToewijzingenPerBranche = (allBranches, marktplaatsen, toewijzingen) => {
-    const toegewezenPlaatsen = toewijzingen.reduce((result, toewijzing) => {
-        const plaatsen = marktplaatsen.filter(({ plaatsId }) =>
-            toewijzing.plaatsen.includes(plaatsId)
-        );
-        return result.concat(plaatsen);
-    }, []);
-    return _countPlaatsenPerBranche(allBranches, toegewezenPlaatsen);
+const countToewijzingenPerBranche = (allBranches, ondernemers, toewijzingen) => {
+    return toewijzingen.reduce((result, toewijzing) => {
+        const { ondernemer, plaatsen } = toewijzing;
+        const brancheId = ondernemer.voorkeur && ondernemer.voorkeur.branches &&
+                          ondernemer.voorkeur.branches[0];
+
+        if (brancheId) {
+            result[brancheId] = result[brancheId] || 0;
+            result[brancheId] += toewijzing.plaatsen.length;
+        }
+
+        return result;
+    }, {});
 };
 
 module.exports = IndelingsLegenda;
