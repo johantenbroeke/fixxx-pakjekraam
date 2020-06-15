@@ -6,6 +6,5 @@
 .npm/
 .npmrc
 .vscode/
-dist/
 node_modules/
 tmp/
