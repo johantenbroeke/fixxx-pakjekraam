@@ -31,3 +31,4 @@ node_modules/
 tmp/
 .ash_history
 .env_prod
+dist/style/screen.css
