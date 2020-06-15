@@ -13,11 +13,10 @@ const IndelingsLegenda = ({
     toewijzingen
 }) => {
     const relevantBranches     = getAllBranchesForLegend(branches, marktplaatsen);
-    const indelingenPerBranche = toewijzingen.length ?
-                                 countToewijzingenPerBranche(relevantBranches, toewijzingen) :
-                                 {};
-                                 // countAanmeldingenPerBranche(relevantBranches, ondernemers, aanmeldingen);
     const showToewijzingen     = !!toewijzingen.length;
+    const indelingenPerBranche = showToewijzingen ?
+                                 countToewijzingenPerBranche(relevantBranches, ondernemers, toewijzingen) :
+                                 {}; // countAanmeldingenPerBranche(relevantBranches, ondernemers, aanmeldingen);
 
     return (
         <div className="IndelingsLegenda">
@@ -87,33 +86,35 @@ const _countPlaatsenPerBranche = (allBranches, marktplaatsen) => {
 const getAllBranchesForLegend = (allBranches, marktplaatsen) => {
     return allBranches
     .reduce((result, branche) => {
-        return _isRelevantBrancheForLegend(marktplaatsen, branche) ?
-               result.concat(branche) :
-               result;
+        if (!_isRelevantBrancheForLegend(marktplaatsen, branche)) {
+            return result;
+        }
+        if (!branche.maximumPlaatsen && branche.verplicht) {
+            const branchePlaatsen = marktplaatsen.filter(plaats =>
+                plaats.branches && plaats.branches[0] === branche.brancheId
+            );
+            branche = { ...branche, maximumPlaatsen: branchePlaatsen.length };
+        }
+        return result.concat(branche);
     }, [])
     .sort((a, b) =>
         String(a.description).localeCompare(b.description, { sensitivity: 'base' })
     );
 };
 
-const countToewijzingenPerBranche = (allBranches, toewijzingen) => {
-    const toegewezenPlaatsen = toewijzingen.reduce((result, toewijzing) => {
-        return result.concat(toewijzing.plaatsen);
-    }, []);
-    return _countPlaatsenPerBranche(allBranches, toegewezenPlaatsen);
-};
+const countToewijzingenPerBranche = (allBranches, ondernemers, toewijzingen) => {
+    return toewijzingen.reduce((result, toewijzing) => {
+        const { ondernemer, plaatsen } = toewijzing;
+        const brancheId = ondernemer.voorkeur && ondernemer.voorkeur.branches &&
+                          ondernemer.voorkeur.branches[0];
 
-const countAanmeldingenPerBranche = (allBranches, ondernemers, aanmeldingen) => {
-    const vastePlaatsen = aanmeldingen.reduce((result, aanmelding) => {
-        const ondernemer = ondernemers.find(({ erkenningsNummer }) =>
-            erkenningsNummer === aanmelding.erkenningsNummer
-        );
+        if (brancheId) {
+            result[brancheId] = result[brancheId] || 0;
+            result[brancheId] += toewijzing.plaatsen.length;
+        }
 
-        return ondernemer && isVast(ondernemer) ?
-               result.concat(ondernemer.plaatsen || []) :
-               result;
-    }, []);
-    return _countPlaatsenPerBranche(allBranches, vastePlaatsen);
+        return result;
+    }, {});
 };
 
 module.exports = IndelingsLegenda;
