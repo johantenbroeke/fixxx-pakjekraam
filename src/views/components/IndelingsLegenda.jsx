@@ -13,11 +13,10 @@ const IndelingsLegenda = ({
     toewijzingen
 }) => {
     const relevantBranches     = getAllBranchesForLegend(branches, marktplaatsen);
-    const indelingenPerBranche = toewijzingen.length ?
-                                 countToewijzingenPerBranche(relevantBranches, toewijzingen) :
-                                 {};
-                                 // countAanmeldingenPerBranche(relevantBranches, ondernemers, aanmeldingen);
     const showToewijzingen     = !!toewijzingen.length;
+    const indelingenPerBranche = showToewijzingen ?
+                                 countToewijzingenPerBranche(relevantBranches, marktplaatsen, toewijzingen) :
+                                 {}; // countAanmeldingenPerBranche(relevantBranches, marktplaatsen, ondernemers, aanmeldingen);
 
     return (
         <div className="IndelingsLegenda">
@@ -87,33 +86,30 @@ const _countPlaatsenPerBranche = (allBranches, marktplaatsen) => {
 const getAllBranchesForLegend = (allBranches, marktplaatsen) => {
     return allBranches
     .reduce((result, branche) => {
-        return _isRelevantBrancheForLegend(marktplaatsen, branche) ?
-               result.concat(branche) :
-               result;
+        if (!_isRelevantBrancheForLegend(marktplaatsen, branche)) {
+            return result;
+        }
+        if (!branche.maximumPlaatsen && branche.verplicht) {
+            const branchePlaatsen = marktplaatsen.filter(plaats =>
+                plaats.branches && plaats.branches[0] === branche.brancheId
+            );
+            branche = { ...branche, maximumPlaatsen: branchePlaatsen.length };
+        }
+        return result.concat(branche);
     }, [])
     .sort((a, b) =>
         String(a.description).localeCompare(b.description, { sensitivity: 'base' })
     );
 };
 
-const countToewijzingenPerBranche = (allBranches, toewijzingen) => {
+const countToewijzingenPerBranche = (allBranches, marktplaatsen, toewijzingen) => {
     const toegewezenPlaatsen = toewijzingen.reduce((result, toewijzing) => {
-        return result.concat(toewijzing.plaatsen);
+        const plaatsen = marktplaatsen.filter(({ plaatsId }) =>
+            toewijzing.plaatsen.includes(plaatsId)
+        );
+        return result.concat(plaatsen);
     }, []);
     return _countPlaatsenPerBranche(allBranches, toegewezenPlaatsen);
-};
-
-const countAanmeldingenPerBranche = (allBranches, ondernemers, aanmeldingen) => {
-    const vastePlaatsen = aanmeldingen.reduce((result, aanmelding) => {
-        const ondernemer = ondernemers.find(({ erkenningsNummer }) =>
-            erkenningsNummer === aanmelding.erkenningsNummer
-        );
-
-        return ondernemer && isVast(ondernemer) ?
-               result.concat(ondernemer.plaatsen || []) :
-               result;
-    }, []);
-    return _countPlaatsenPerBranche(allBranches, vastePlaatsen);
 };
 
 module.exports = IndelingsLegenda;
