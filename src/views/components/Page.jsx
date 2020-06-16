@@ -29,8 +29,10 @@ class Page extends React.Component {
                             <span dangerouslySetInnerHTML={{ __html: message.message }}></span>
                         </Alert>
                     ))}
+
                     {this.props.children}
-                    <script src="/js/script.js" />
+
+                    <script src="/js/script.min.js" />
                 </body>
             </html>
         );
