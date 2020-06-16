@@ -3,9 +3,9 @@ const MarktDetailBase = require('./components/MarktDetailBase');
 const OndernemerListAfwezig = require('./components/OndernemerListAfwezig.tsx');
 const PrintPage = require('./components/PrintPage');
 const PropTypes = require('prop-types');
-const { arrayToChunks, getBreadcrumbsMarkt } = require('../util');
+const { paginate, getBreadcrumbsMarkt } = require('../util');
 
-class afmeldingenPage extends React.Component {
+class AfmeldingenVPHPage extends React.Component {
     propTypes = {
         markt: PropTypes.object.isRequired,
         data: PropTypes.object,
@@ -24,7 +24,7 @@ class afmeldingenPage extends React.Component {
            user
         } = this.props;
 
-        const columns = arrayToChunks(vasteplaatshoudersAfgemeld, 40);
+        const columns = paginate(vasteplaatshoudersAfgemeld, 40);
         const breadcrumbs = getBreadcrumbsMarkt(markt, role);
 
         return (
@@ -55,4 +55,4 @@ class afmeldingenPage extends React.Component {
     }
 }
 
-module.exports = afmeldingenPage;
+module.exports = AfmeldingenVPHPage;

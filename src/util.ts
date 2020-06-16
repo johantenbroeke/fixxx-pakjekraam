@@ -212,20 +212,6 @@ export const exclude = <T>(a: T[] = [], b: any[] = []): T[] => {
     return a.filter(value => !b.includes(value));
 };
 
-export const groupBy = <T, K extends keyof T>(array: T[], keyField: K): { [index: string]: T[] } => {
-    return array.reduce((obj: { [index: string]: T[] }, item: T) => {
-        const key = String(item[keyField]);
-
-        if (obj.hasOwnProperty(key)) {
-            obj[key].push(item);
-        } else {
-            obj[key] = [item];
-        }
-
-        return obj;
-    }, {});
-};
-
 export const difference = (a: any[] = [], b: any[] = []) => {
     return a.filter(value => !b.includes(value));
 };
@@ -236,30 +222,6 @@ export const intersection = (a: any[] = [], b: any[] = []) => {
 
 export const intersects = (a: any[] = [], b: any[] = []): boolean => {
     return !!a.find(value => b.includes(value));
-};
-
-export const isEqualArray = (a: any[], b: any[]): boolean => {
-    return Array.isArray(a) && Array.isArray(b) &&
-           a.length === b.length &&
-           a.every((value, index) => value === b[index]);
-};
-
-export const arrayToChunks = function(array: [], size: number) {
-    const results = [];
-    while (array.length) {
-      results.push(array.splice(0, size));
-    }
-    return results;
-};
-
-export const removeDuplicates = function(array: any[]) {
-    const uniqueArray = array.filter((thing, index) => {
-        const _thing = JSON.stringify(thing);
-        return index === array.findIndex(obj => {
-            return JSON.stringify(obj) === _thing;
-        });
-    });
-    return uniqueArray;
 };
 
 export const paginate = <T>(arr: T[], count: number): T[][] => {
@@ -327,26 +289,6 @@ export const requireOne = <T>(arg: T[] | T | null): T => {
     } else {
         throw new TypeError('Must be exactly one');
     }
-};
-
-// Debug functions
-// ===============
-
-export const log = (...arg: any) => {
-    // if (process.env.NODE_ENV !== 'production') {
-    //     console.log.apply(console, arg);
-    // }
-};
-
-export const trace = (arg: any) => {
-    console.log(arg);
-
-    return arg;
-};
-
-export const traceError = (message: string) => (err: Error) => {
-    console.error(message, err);
-    throw err;
 };
 
 // Misc
