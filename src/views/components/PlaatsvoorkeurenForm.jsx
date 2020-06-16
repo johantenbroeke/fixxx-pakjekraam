@@ -251,10 +251,12 @@ class PlaatsvoorkeurenForm extends React.Component {
                                     <p className="Fieldset__highlight-text">Verouderde functie! Alleen aanpassen als je weet wat je doet.</p> : null
                                 }
                                 <h2 className="Fieldset__header">
-                                    Flexibel indelen?
-                                    <br />
-                                    Dan deelt het systeem u in op beschikbare plaatsen.
+                                    Automatisch indelen?
                                 </h2>
+                                <p><i>
+                                    Zijn uw voorkeursplekken niet meer vrij?
+                                    Met deze optie aan wordt geprobeerd u op andere vrije plaatsen in te delen.
+                                </i></p>
                                 <p className="InputField InputField--checkbox">
                                     <input
                                         id="anywhere"
@@ -263,17 +265,9 @@ class PlaatsvoorkeurenForm extends React.Component {
                                         defaultChecked={voorkeur.anywhere}
                                     />
                                     <label htmlFor="anywhere">
-                                        {isVastOfExp(sollicitatie.status) ? (
-                                            <span>
-                                                Ja, ik wil liever kunnen vergroten dan alleen op mijn eigen plaats(en)
-                                                staan.
-                                            </span>
-                                        ) : (
-                                                <span>
-                                                    Als mijn voorkeursplaatsen niet beschikbaar zijn, wil ik automatisch op een
-                                                    losse plaats ingedeeld worden.
-                                            </span>
-                                            )}
+                                        <span>
+                                            Ja, ook als mijn voorkeuren niet vrij zijn wil ik ingedeeld worden.
+                                        </span>
                                     </label>
                                 </p>
                             </div>
