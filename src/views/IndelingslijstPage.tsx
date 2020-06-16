@@ -92,19 +92,6 @@ export default class IndelingslijstenPage extends React.Component {
                 user={user}
                 printButton={true}
             >
-                <PrintPage
-                    key="legenda"
-                    title={`Legenda ${markt.naam}`}
-                    datum={datum}
-                >
-                    <IndelingsLegenda
-                        branches={branches}
-                        marktplaatsen={marktplaatsen}
-                        ondernemers={ondernemers}
-                        aanmeldingen={aanmeldingen}
-                        toewijzingen={toewijzingen}
-                    ></IndelingsLegenda>
-                </PrintPage>
             {paginas.map((page, j) => (
                 <PrintPage
                     key={`page-${j}`}
@@ -133,6 +120,20 @@ export default class IndelingslijstenPage extends React.Component {
                 )}
                 </PrintPage>
             ))}
+
+                <PrintPage
+                    key="legenda"
+                    title={`Legenda ${markt.naam}`}
+                    datum={datum}
+                >
+                    <IndelingsLegenda
+                        branches={branches}
+                        marktplaatsen={marktplaatsen}
+                        ondernemers={ondernemers}
+                        aanmeldingen={aanmeldingen}
+                        toewijzingen={toewijzingen}
+                    ></IndelingsLegenda>
+                </PrintPage>
             </MarktDetailBase>
         );
     }
