@@ -22,6 +22,9 @@ import {
     LF,
     today
 } from '../util';
+import {
+    Roles
+} from '../authentication';
 
 import { getKeycloakUser } from '../keycloak-api';
 import {
@@ -79,7 +82,8 @@ export const attendancePage = (
 ) => {
     const thresholdDate       = getMarktThresholdDate(role);
     const ondernemerPromise   = getOndernemer(erkenningsNummer);
-    const marktenPromise      = getMarktenForOndernemer(ondernemerPromise);
+    const includeInactive     = role === Roles.MARKTMEESTER;
+    const marktenPromise      = getMarktenForOndernemer(ondernemerPromise, includeInactive);
     const aanmeldingenPromise = getAanmeldingenByOndernemer(erkenningsNummer);
 
     return Promise.all([
