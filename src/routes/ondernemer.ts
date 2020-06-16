@@ -1,18 +1,26 @@
 import { Request, Response } from 'express';
+import { GrantedRequest } from 'keycloak-connect';
+
+import { getQueryErrors, internalServerErrorPage } from '../express-util';
+import { Roles } from '../authentication';
+import { getKeycloakUser } from '../keycloak-api';
+
+import { MMSollicitatie } from '../makkelijkemarkt.model';
+
+import {
+    getMarkten,
+    getOndernemer
+} from '../makkelijkemarkt-api';
+import {
+    getAllBranches
+} from '../pakjekraam-api';
+
 import { deletePlaatsvoorkeurenByErkenningsnummer } from '../model/plaatsvoorkeur.functions';
 import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 import { deleteRsvpsByErkenningsnummer } from '../model/rsvp.functions';
 import { deleteVoorkeurenByErkenningsnummer } from '../model/voorkeur.functions';
-import { getMarktenEnabled } from '../model/markt.functions';
-import { getMarktondernemer } from '../makkelijkemarkt-api';
-import { getQueryErrors, internalServerErrorPage } from '../express-util';
-import { MMSollicitatie } from '../makkelijkemarkt.model';
-import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
-import { getAllBranches } from '../pakjekraam-api';
 
-import { KeycloakRoles } from '../permissions';
-import { GrantedRequest } from 'keycloak-connect';
-import { getKeycloakUser } from '../keycloak-api';
+import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 
 export const deleteUserPage = ( req: GrantedRequest, res: Response, result: string, error: string, csrfToken: string, role: string) => {
     return res.render('DeleteUserPage', {
@@ -38,7 +46,7 @@ export const deleteUser = (req: GrantedRequest, res: Response, erkenningsNummer:
             `${numberOfRecordsFound} records mbt registratienummer '${req.body.erkenningsNummer}' verwijderd`,
             null,
             req.csrfToken(),
-            KeycloakRoles.MARKTMEESTER,
+            Roles.MARKTMEESTER,
         );
     })
     .catch( ( e: string ) => {
@@ -46,21 +54,26 @@ export const deleteUser = (req: GrantedRequest, res: Response, erkenningsNummer:
     });
 };
 
-export const publicProfilePage = async (req: GrantedRequest, res: Response, erkenningsNummer: string, role: string) => {
-
+export const publicProfilePage = async (
+    req: GrantedRequest,
+    res: Response,
+    erkenningsNummer: string,
+    role: string
+) => {
     const messages = getQueryErrors(req.query);
 
     try {
-        const ondernemer = await getMarktondernemer(erkenningsNummer);
-        const marktenEnabled = await getMarktenEnabled();
+        const ondernemer = await getOndernemer(erkenningsNummer);
+        const marktenEnabled = await getMarkten(true);
         const marktenEnabledIds = marktenEnabled.map( (markt: any) => markt.id);
-        ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) => marktenEnabledIds.includes(sollicitatie.markt.id) );
+        ondernemer.sollicitaties = ondernemer.sollicitaties.filter((sollicitatie: MMSollicitatie) =>
+            marktenEnabledIds.includes(sollicitatie.markt.id)
+        );
 
         res.render('PublicProfilePage', { ondernemer, messages, role, user: getKeycloakUser(req) });
     } catch(err) {
         internalServerErrorPage(res);
     }
-
 };
 
 export const toewijzingenAfwijzingenPage = (
@@ -75,9 +88,9 @@ export const toewijzingenAfwijzingenPage = (
     Promise.all([
         getToewijzingenByOndernemer(erkenningsNummer),
         getAfwijzingenByOndernemer(erkenningsNummer),
-        getMarktondernemer(erkenningsNummer),
+        getOndernemer(erkenningsNummer),
         getAllBranches(),
-        getMarktenEnabled(),
+        getMarkten(),
     ]).then(
         ([toewijzingen, afwijzingen, ondernemer, branches, markten]) => {
 

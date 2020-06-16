@@ -20,6 +20,7 @@
 @import "element/dl";
 
 
+@import "component/AanwezigheidsForm";
 @import "component/Alert";
 @import "component/AlertLine";
 // @import "component/Modal";
@@ -38,6 +39,7 @@
 @import "component/MarktDetailPage";
 @import "component/MarktDetailHeader";
 @import "component/MarktDates";
+@import "component/IndelingsLegenda";
 @import "component/IndelingslijstGroup";
 @import "component/MarktList";
 @import "component/MarktDetail";
@@ -64,7 +66,6 @@
 @import "component/LinkSummary";
 @import "component/UitslagTile";
 
-@import "component/Pil";
 @import "component/SollicitatieSpecs";
 @import "component/CheckboxList";
 @import "component/PlaatsvoorkeurenForm";

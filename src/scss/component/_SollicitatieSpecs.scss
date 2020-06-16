@@ -1,5 +1,37 @@
-.SollicitatieSpecs{
-    display: flex;
-    flex-direction: row;
-    margin: $gutter 0;
+.SollicitatieSpecs {
+    display: inline-block;
+    margin: 0;
+
+    .Pil {
+        display: inline-block;
+        font-size: $fs-40;
+        line-height: 19px;
+        color: $primary-white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 1px $vm2 0;
+        background-color: $primary-black;
+        border-radius: 10px;
+        margin: 1px 5px 1px 0;
+        font-weight: bolder;
+        &--vpl {
+            background-color: $primary-darkblue;
+        }
+        &--soll {
+            background-color: $supplement-darkgreen;
+        }
+        &--exp,
+        &--expf {
+            background-color: $supplement-purple;
+        }
+        &--vkk,
+        &--tvpl,
+        &--tvplz {
+            background-color: $supplement-lightblue;
+        }
+        &--overig {
+            background-color: $support-focus;
+        }
+    }
 }

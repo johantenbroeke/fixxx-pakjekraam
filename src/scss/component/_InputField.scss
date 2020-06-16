@@ -142,51 +142,6 @@ $radiobutton-left: 0px;
             }
         }
     }
-    &--afmelden {
-        max-width: 270px;
-        margin-left: 10px;
-        margin-right: 10px;
-        label {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            &:before {
-                content: "";
-                position: absolute;
-                background-color: $support-focus;
-                left: -10px;
-                top: 0;
-                right: -10px;
-                bottom: 0;
-                z-index: -1;
-                opacity: 0;
-                transition: opacity 0.2s;
-            }
-        }
-        input:checked + label {
-            &:before {
-                opacity: 1;
-            }
-        }
-        &__date {
-            float: right;
-        }
-        &__main {
-            min-width: 130px;
-        }
-        &__rsvp-verified {
-            background-color: $primary-black;
-            color: $primary-white;
-            font-size: 12px;
-            line-height: 24px;
-            font-family: $ff-bold;
-            padding: 0 5px;
-        }
-        &__divider {
-            max-width: 290px;
-            margin: 20px 0;
-        }
-    }
     &--range {
         &__wrapper {
             line-height: 0;

@@ -22,7 +22,7 @@
     ],
     "no-duplicate-variable": true,
     "no-invalid-template-strings": true,
-    "no-use-before-declare": true,
+    "no-use-before-declare": false,
     "no-var-keyword": true,
     "triple-equals": true,
     "eofline": true,
@@ -156,7 +156,7 @@
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
     "no-unused-parameters": true,
-    "no-use-before-declare": true,
+    "no-use-before-declare": false,
     "object-literal-sort-keys": false,
     "one-line": {
       "options": ["check-catch", "check-else", "check-finally", "check-open-brace", "check-whitespace"]

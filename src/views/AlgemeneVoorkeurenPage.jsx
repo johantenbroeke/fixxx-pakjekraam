@@ -28,11 +28,15 @@ class AlgemeneVoorkeurenPage extends React.Component {
         const { ondernemer, messages, role, markt, user } = this.props;
         let { branches } = this.props;
 
-        branches = branches.filter(branche => branche.brancheId !== 'bak');
-        branches = branches.sort((a, b) => a.brancheId - b.brancheId);
+        branches = branches.filter(branche => branche.brancheId !== 'bak')
+                           .sort((a, b) => a.brancheId - b.brancheId);
 
-        const breadcrumbs = role === 'marktondernemer' ? getBreadcrumbsMarkt(markt, role) : getBreadcrumbsOndernemer(ondernemer, role);
-        const sollicitatie = ondernemer.sollicitaties.find(soll => soll.markt.id === markt.id && !soll.doorgehaald);
+        const breadcrumbs = role === 'marktondernemer' ?
+                            getBreadcrumbsMarkt(markt, role) :
+                            getBreadcrumbsOndernemer(ondernemer, role);
+        const sollicitatie = ondernemer.sollicitaties.find(soll =>
+            soll.markt.id === markt.id
+        );
 
         return (
             <Page messages={messages}>

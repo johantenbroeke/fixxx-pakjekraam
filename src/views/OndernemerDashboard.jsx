@@ -9,27 +9,39 @@ const { tomorrow, today } = require('../util.ts');
 
 class OndernemerDashboard extends React.Component {
     propTypes = {
-        ondernemer: PropTypes.object,
-        aanmeldingen: PropTypes.array,
-        markten: PropTypes.array,
-        plaatsvoorkeuren: PropTypes.array,
-        messages: PropTypes.array,
-        toewijzingen: PropTypes.array,
-        afwijzingen: PropTypes.array,
-        daysClosed: PropTypes.array.isRequired,
-        role: PropTypes.string,
-        user: PropTypes.object.isRequired,
+        ondernemer       : PropTypes.object,
+        aanmeldingen     : PropTypes.array,
+        markten          : PropTypes.array,
+        plaatsvoorkeuren : PropTypes.array,
+        messages         : PropTypes.array,
+        toewijzingen     : PropTypes.array,
+        afwijzingen      : PropTypes.array,
+        daysClosed       : PropTypes.array.isRequired,
+        role             : PropTypes.string,
+        user             : PropTypes.object.isRequired,
     };
 
     render() {
-        const { ondernemer, messages, markten, aanmeldingen, toewijzingen, afwijzingen, role, user, daysClosed } = this.props;
+        const {
+            ondernemer,
+            messages,
+            markten,
+            aanmeldingen,
+            toewijzingen,
+            afwijzingen,
+            role,
+            user,
+            daysClosed
+        } = this.props;
 
-        const sollicitaties = ondernemer.sollicitaties.filter(soll => {
-            return !soll.doorgehaald && markten.map(markt => markt.id).includes(soll.markt.id);
-        });
+        const sollicitaties = ondernemer.sollicitaties.filter(soll =>
+            !!markten.find(markt => markt.id === soll.markt.id)
+        );
 
         const marktenPlusAanmelding = sollicitaties.map(sollicitatie => {
-            const marktVoorSollicitatie = markten.find(markt => markt.id == sollicitatie.markt.id);
+            const marktVoorSollicitatie = markten.find(markt =>
+                markt.id == sollicitatie.markt.id
+            );
             const aanmeldingenVoorDezeMarkt = aanmeldingen.filter(aanmelding => {
                 return aanmelding.marktId == marktVoorSollicitatie.id;
             });
@@ -71,6 +83,7 @@ class OndernemerDashboard extends React.Component {
                     <div className="Section Section--column">
                         <a href="https://www.amsterdam.nl/ondernemen/markt-straathandel/digitaal-indelen/" rel="noopener noreferrer" target="_blank" className="Link">Informatie over digitaal Indelen van de markt</a>
                         <a href="/toewijzingen-afwijzingen/" className="Link">Toewijzingen/ afwijzingen</a>
+                        <a href="/aanwezigheid/" className="Link">Aanwezigheid</a>
                     </div>
                     <h1 className="Heading Heading--intro">Mijn markten</h1>
                     { marktenPlusToewijzing.length == 0 ?

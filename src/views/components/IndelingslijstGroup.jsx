@@ -3,7 +3,12 @@ const Plaats = require('./Plaats.tsx').default;
 // const PlaatsVPH = require('./PlaatsVPH');
 const PropTypes = require('prop-types');
 const React = require('react');
-const { ondernemerIsAfgemeld, ondernemerIsAfgemeldPeriode, vphIsGewisseld, vphIsUitgebreid } = require('../../model/ondernemer.functions');
+const {
+    ondernemerIsAfgemeld,
+    ondernemerIsAfgemeldPeriode,
+    vphIsGewisseld,
+    vphIsUitgebreid
+} = require('../../model/ondernemer.functions');
 
 const IndelingslijstGroup = ({
     page,
@@ -13,10 +18,9 @@ const IndelingslijstGroup = ({
     markt,
     ondernemers,
     aanmeldingen,
-    toewijzingen,
+    toewijzingen = [],
     datum,
     voorkeuren,
-    plaatsvoorkeuren,
     branches,
 }) => {
     let first = true;
@@ -62,9 +66,11 @@ const IndelingslijstGroup = ({
                             voorkeurOp = voorkeuren.find(voorkeur => voorkeur.erkenningsNummer == originelePlaatshouder.erkenningsNummer);
                         }
 
-                        const aanmeldingVph = originelePlaatshouder ? aanmeldingen.find(rsvp => rsvp.erkenningsNummer === originelePlaatshouder.erkenningsNummer) : null;
+                        const aanmeldingVph = originelePlaatshouder ?
+                                              aanmeldingen.find(rsvp => rsvp.erkenningsNummer === originelePlaatshouder.erkenningsNummer) :
+                                              null;
 
-                        const toewijzing = (toewijzingen || []).find(({ plaatsen }) => plaatsen.includes(plaatsNr));
+                        const toewijzing = toewijzingen.find(({ plaatsen }) => plaatsen.includes(plaatsNr));
 
                         const ingedeeldeOndernemer = toewijzing ? ondernemers.find(
                             ({ erkenningsNummer }) => erkenningsNummer === toewijzing.erkenningsNummer,
@@ -94,7 +100,6 @@ const IndelingslijstGroup = ({
                             markt,
                             datum,
                             toewijzing,
-                            plaatsvoorkeuren,
                             color,
                         };
 
@@ -140,7 +145,6 @@ IndelingslijstGroup.propTypes = {
     ondernemers: PropTypes.array.isRequired,
     markt: PropTypes.object.isRequired,
     datum: PropTypes.string,
-    plaatsvoorkeuren: PropTypes.object,
     voorkeuren: PropTypes.array,
     branches: PropTypes.array.isRequired
 };

@@ -42,7 +42,7 @@ then \
     && npm cache clean --force 2> /dev/null \
 ; fi
 
-ADD ./ /srv/
+ADD --chown=node ./ /srv/
 
 # After building the application, remove the `devDependencies`
 # for when NODE_ENV is "production".

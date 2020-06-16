@@ -18,7 +18,7 @@ const Ondernemer = {
     ): boolean => {
         const voorkeur = ondernemer.voorkeur;
         return !voorkeur || !('anywhere' in voorkeur) ?
-               !Ondernemer.isVast(ondernemer) :
+               !Ondernemer.hasVastePlaatsen(ondernemer) :
                !!voorkeur.anywhere;
     },
 
@@ -32,8 +32,7 @@ const Ondernemer = {
         const targetSize  = Ondernemer.getTargetSize(ondernemer);
         const maxSize     = Math.min(targetSize, iteration);
 
-        return currentSize < maxSize &&
-               !Ondernemer.isInMaxedOutBranche(indeling, ondernemer);
+        return currentSize < maxSize;
     },
 
     getBrancheIds: (ondernemer: IMarktondernemer): BrancheId[] => {
@@ -42,8 +41,8 @@ const Ondernemer = {
     },
 
     getBranches: (
-        markt: IMarkt,
-        ondernemer: IMarktondernemer
+        ondernemer: IMarktondernemer,
+        markt: IMarkt
     ): IBranche[] => {
         const brancheIds = Ondernemer.getBrancheIds(ondernemer);
         return brancheIds.reduce((branches, brancheId) => {
@@ -90,36 +89,55 @@ const Ondernemer = {
         }, []);
     },
 
-    getStartSize: (ondernemer: IMarktondernemer): number => {
-        return Ondernemer.isVast(ondernemer) || Ondernemer.isExperimenteel(ondernemer) ?
-               Ondernemer.getMinimumSize(ondernemer) :
-               1;
+    getMostLimitedBranche: (
+        ondernemer: IMarktondernemer,
+        indeling: IMarktindeling
+    ): IBranche | void => {
+        const branches = Ondernemer.getBranches(ondernemer, indeling);
+        return branches.reduce((mostLimited, branche) => {
+            return !branche.maximumPlaatsen                              ? mostLimited :
+                   !mostLimited || !mostLimited.maximumPlaatsen          ? branche :
+                   branche.maximumPlaatsen < mostLimited.maximumPlaatsen ? branche :
+                                                                           mostLimited;
+        }, undefined);
     },
+
     getMinimumSize: (ondernemer: IMarktondernemer): number => {
         const { plaatsen = [] }          = ondernemer;
         let { minimum = 0, maximum = 0 } = ondernemer.voorkeur || {};
 
-        // Ondernemers met een tijdelijke vaste plaats mogen hun minimum aantal plaatsen
+        // Ondernemers met status experimenteel mogen hun minimum aantal plaatsen
         // niet zelf instellen.
         if (Ondernemer.isExperimenteel(ondernemer)) {
             return plaatsen.length;
+        }
+        // In `Indeling.init` wordt de input data zodanig gemanipuleerd dat een TVPLZ
+        // ondernemer altijd een lege `plaatsen` array heeft, maar een `voorkeur.minimum`
+        // ingesteld op het aantal plaatsen dat in de originele input zat.
+        if (Ondernemer.isTVPLZ(ondernemer)) {
+            return minimum;
         }
 
         minimum  = minimum || Math.max(plaatsen.length, 1);
         maximum  = maximum || minimum;
         return Math.min(minimum, maximum);
     },
+    getStartSize: (ondernemer: IMarktondernemer): number => {
+        return Ondernemer.isVast(ondernemer) || Ondernemer.isExperimenteel(ondernemer) ?
+               Ondernemer.getMinimumSize(ondernemer) :
+               1;
+    },
     getTargetSize: (ondernemer: IMarktondernemer): number => {
-        const { plaatsen = [] } = ondernemer;
-
-        // Ondernemers met een tijdelijke vaste plaats mogen geen maximum aantal gewenste
+        // Ondernemers met status experimenteel mogen geen maximum aantal gewenste
         // plaatsen instellen.
         if (Ondernemer.isExperimenteel(ondernemer)) {
+            const { plaatsen = [] } = ondernemer;
             return plaatsen.length;
         }
 
-        const { minimum = 1, maximum = 0 } = ondernemer.voorkeur || {};
-        return maximum || Math.max(plaatsen.length, minimum, 1);
+        const minimum = Ondernemer.getMinimumSize(ondernemer);
+        const { maximum = 0 } = ondernemer.voorkeur || {};
+        return maximum || Math.max(minimum, 1);
     },
 
     getVastePlaatsen: (
@@ -169,13 +187,13 @@ const Ondernemer = {
         markt: IMarkt,
         ondernemer: IMarktondernemer
     ): boolean => {
-        const branches = Ondernemer.getBranches(markt, ondernemer);
+        const branches = Ondernemer.getBranches(ondernemer, markt);
         return !!branches.find(branche => !!branche.verplicht);
     },
 
     isExperimenteel: (ondernemer: IMarktondernemer): boolean => {
-        // TODO: Remove '?' status when MakkelijkeMarkt is updated.
-        return ondernemer.status === '?' || ondernemer.status === 'exp';
+        return ondernemer.status === 'exp' ||
+               ondernemer.status === 'expf';
     },
 
     isInBranche: (
@@ -186,32 +204,15 @@ const Ondernemer = {
         return brancheIds.includes(branche.brancheId);
     },
 
-    isInMaxedOutBranche: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): boolean => {
-        const branches = Ondernemer.getBranches(indeling, ondernemer);
-
-        // For each branche this ondernemer is in, find out if it has already
-        // exceeded the maximum amount of toewijzingen or the maximum amount
-        // of plaatsen.
-        return !!branches.find(branche => {
-            const { maximumToewijzingen, maximumPlaatsen } = branche;
-            const brancheToewijzingen = indeling.toewijzingen.filter(({ ondernemer }) =>
-                Ondernemer.isInBranche(ondernemer, branche)
-            );
-            const branchePlaatsen = brancheToewijzingen.reduce(
-                (sum, toewijzing) => sum + toewijzing.plaatsen.length,
-                0
-            );
-
-            return maximumToewijzingen && brancheToewijzingen.length >= maximumToewijzingen ||
-                   maximumPlaatsen     && branchePlaatsen >= maximumPlaatsen;
-        });
+    isTVPLZ: (ondernemer: IMarktondernemer): boolean => {
+        return ondernemer.status === 'tvplz';
     },
 
     isVast: (ondernemer: IMarktondernemer): boolean => {
-        return ondernemer.status === 'vpl' || ondernemer.status === 'vkk';
+        return ondernemer.status === 'vpl' ||
+               ondernemer.status === 'tvpl' ||
+               ondernemer.status === 'tvplz' ||
+               ondernemer.status === 'vkk';
     },
 
     wantsExpansion: (toewijzing: IToewijzing): boolean => {
@@ -234,8 +235,8 @@ const Ondernemer = {
     //       in `Indeling.allocateOndernemer` die voorkomt dat een VPH niet op zijn
     //       eigen plek terecht kan als zijn voorkeuren niet beschikbaar zijn?
     willNeverLeave: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
+        ondernemer: IMarktondernemer,
+        indeling: IMarktindeling
     ): PlaatsId[] => {
         const minSize     = Ondernemer.getMinimumSize(ondernemer);
         const voorkeuren  = Ondernemer.getPlaatsVoorkeuren(indeling, ondernemer);

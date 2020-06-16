@@ -1,77 +1,96 @@
+import moment from 'moment-timezone';
+
 import { rsvp } from './index';
 import { RSVP } from './rsvp.model';
 import { IRSVP } from 'markt.model';
 
-import { MMSollicitatie } from '../makkelijkemarkt.model';
-import { getSollicitatiesByMarktFases } from '../makkelijkemarkt-api';
-import { isVast } from '../domain-knowledge';
+import {
+    MMMarkt,
+    MMOndernemerStandalone,
+    MMSollicitatie
+} from '../makkelijkemarkt.model';
+import {
+    isVast,
+    getMarktThresholdDate,
+    filterRsvpList
+} from '../domain-knowledge';
 
-export const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<IRSVP[]> =>
-    rsvp
-        .findAll<RSVP>({
-            where: { erkenningsNummer },
-            raw: true,
-        })
-        .then(aanmeldingen => aanmeldingen);
+const {
+    endOfWeek,
+} = require('../util.ts');
 
+export const groupAanmeldingenPerMarktPerWeek = (
+    markten: MMMarkt[],
+    sollicitaties: { [marktId: number]: MMSollicitatie },
+    aanmeldingen: IRSVP[],
+    thresholdDate: Date
+): object[] => {
+    const currentWeek = moment().week();
+    const nextWeek    = moment().add(1, 'weeks').week();
 
-export const getAanmeldingenByMarktAndDate = (marktId: string, marktDate: string): Promise<IRSVP[]> =>
-    rsvp
-        .findAll<RSVP>({
-            where: { marktId, marktDate },
-            raw: true,
-        })
-        .then(aanmeldingen => aanmeldingen);
+    const aanmeldingenPerMarkt = aanmeldingen.reduce((result, aanmelding) => {
+        const marktWeek = moment(aanmelding.marktDate).week();
 
+        if( marktWeek !== currentWeek && marktWeek !== nextWeek) {
+            return result;
+        }
 
-export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) =>
-    rsvp.destroy({ where: { erkenningsNummer } });
+        const marktId = aanmelding.marktId;
+        result[marktId] = result[marktId] ?
+                          result[marktId].concat(aanmelding) :
+                          [aanmelding];
 
-/*
- * Vendors are allowed to attend only one market per day.
- * Check if a vendor wants to apply for a market, while on the same day it has applied for others.
- */
-export const isConflictingApplication = (aanmeldingen: IRSVP[], application: IRSVP): IRSVP[] => {
-    if (application.attending) {
-        const conflictingAanmeldingen = aanmeldingen
-            .filter(a => String(a.marktId) !== String(application.marktId))
-            .filter(a => a.marktDate === application.marktDate)
-            .filter(a => a.attending !== null && !!a.attending);
-        return conflictingAanmeldingen;
-    } else {
-        return [];
-    }
-};
+        return result;
+    }, {});
 
-export const isConflictingSollicitatie = (aanmeldingen: IRSVP[], sollicitaties: MMSollicitatie[], application: IRSVP): MMSollicitatie[] => {
-
-    if (application.attending) {
-
-        const afmeldingen = aanmeldingen
-            .filter(a => !a.attending)
-            .filter(a => String(a.marktId) !== String(application.marktId))
-            .filter(a => a.marktDate === application.marktDate);
-
-        const conflictingSollicitatiesVPH = sollicitaties
-            .filter(sollicitatie => String(sollicitatie.markt.id) !== String(application.marktId))
-            .filter(sollicitatie => isVast(sollicitatie.status))
-            .filter(sollicitatie => !afmeldingen.find(afmelding => parseInt(afmelding.marktId) === sollicitatie.markt.id));
-
-        return conflictingSollicitatiesVPH;
-    } else {
-        return [];
-    }
-};
-
-export const getConflictingSollicitaties = (application: IRSVP): Promise<MMSollicitatie[]> =>
-    Promise.all([getAanmeldingenByOndernemer(application.erkenningsNummer), getSollicitatiesByMarktFases(application.erkenningsNummer, ['activate','wenperiode','live'])])
-        .then( ([aanmeldingen, sollicitaties]) => {
-            return isConflictingSollicitatie(aanmeldingen, sollicitaties, application);
-        });
-
-
-export const getConflictingApplications = (application: IRSVP): Promise<IRSVP[]> =>
-    getAanmeldingenByOndernemer(application.erkenningsNummer)
-        .then( (aanmeldingen) =>
-            isConflictingApplication(aanmeldingen, application)
+    const aanmeldingenPerMarktPerWeek = markten.map(markt => {
+        const aanmeldingen = (aanmeldingenPerMarkt[markt.id] || []).filter(({ marktId }) =>
+            Number(marktId) === Number(markt.id)
         );
+        const aanmeldingenPerDag = filterRsvpList(aanmeldingen, markt);
+
+        const aanmeldingenPerWeek = aanmeldingenPerDag.reduce((result, { date, rsvp }) => {
+            // Voeg de tijd toe, zodat we een datum in de huidige tijdszone krijgen.
+            // Doen we dit niet, dan wordt de datum ingesteld op UTC. Aangezien wij in de
+            // zomer op UTC+2 zitten is de datumwissel bij ons twee uur eerder. Gebruikers
+            // zouden in dit geval twee uur na de automatische indeling hun aanwezigheid nog
+            // kunnen aanpassen
+            date = new Date(`${date} 00:00:00`);
+
+            const week        = date > new Date(endOfWeek()) ? 1 : 0;
+            const weekDay     = date.getDay();
+            const attending   = rsvp ? rsvp.attending : isVast(sollicitaties[markt.id].status);
+            const isInThePast = date < thresholdDate;
+
+            result[week][weekDay] = {
+                date,
+                attending,
+                isInThePast
+            };
+
+            return result;
+        }, [{}, {}]);
+
+        return {
+            markt,
+            aanmeldingenPerWeek
+        };
+    });
+
+    return aanmeldingenPerMarktPerWeek;
+};
+
+export const getAanmeldingenByMarktAndDate = (
+    marktId: string,
+    marktDate: string
+): Promise<IRSVP[]> => {
+    return rsvp.findAll<RSVP>({
+        where: { marktId, marktDate },
+        raw: true,
+    })
+    .then(aanmeldingen => aanmeldingen);
+};
+
+export const deleteRsvpsByErkenningsnummer = (erkenningsNummer: string) => {
+    return rsvp.destroy({ where: { erkenningsNummer } });
+};

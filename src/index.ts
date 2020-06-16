@@ -1,36 +1,95 @@
-import { Request, Response, NextFunction } from 'express';
-import connectPgSimple = require('connect-pg-simple');
-import express = require('express');
-import Keycloak, { GrantedRequest, TokenContent } from 'keycloak-connect';
-import * as reactViews from 'express-react-views';
-import session from 'express-session';
-import path from 'path';
+import express, {
+    Request,
+    Response,
+    NextFunction
+} from 'express';
+
 import bodyParser from 'body-parser';
-import morgan from 'morgan';
-import url from 'url';
-import { getMarkt, getMarktondernemer, getMarktondernemersByMarkt } from './makkelijkemarkt-api';
-import { requireEnv } from './util';
-import { HTTP_INTERNAL_SERVER_ERROR, internalServerErrorPage, getQueryErrors, isAbsoluteUrl } from './express-util';
-import { getMarktEnriched, getMarktenEnabled } from './model/markt.functions';
 import cookieParser from 'cookie-parser';
-
 import csrf from 'csurf';
+import morgan from 'morgan';
+import path from 'path';
+import * as reactViews from 'express-react-views';
 
-const csrfProtection = csrf({ cookie: true });
+// Util
+// ----
 
-import { serverHealth, serverTime, databaseHealth, keycloakHealth, makkelijkeMarktHealth } from './routes/status';
-import { activationPage, handleActivation } from './routes/activation';
-import { registrationPage, handleRegistration } from './routes/registration';
+import {
+    HTTP_INTERNAL_SERVER_ERROR,
+    internalServerErrorPage,
+    getQueryErrors,
+    isAbsoluteUrl
+} from './express-util';
+
+import { requireEnv } from './util';
+
+// Authentication
+// --------------
+
+import {
+    GrantedRequest,
+    TokenContent
+} from 'keycloak-connect';
+import { getKeycloakUser } from './keycloak-api';
+import {
+    Roles,
+    keycloak,
+    sessionMiddleware
+} from './authentication';
+
+// API
+// ---
+
+import {
+    getMarkt,
+    getMarkten
+} from './makkelijkemarkt-api';
+
+import {
+    getMarktEnriched
+} from './model/markt.functions';
+
+// Routes
+// ------
+
+import {
+    serverHealth,
+    serverTime,
+    databaseHealth,
+    keycloakHealth,
+    makkelijkeMarktHealth
+} from './routes/status';
+
 import {
     attendancePage,
     handleAttendanceUpdate
 } from './routes/market-application';
-import { marketPreferencesPage, updateMarketPreferences } from './routes/market-preferences';
-import { dashboardPage } from './routes/dashboard';
-import { plaatsvoorkeurenPage, updatePlaatsvoorkeuren } from './routes/market-location';
-import { activationQRPage } from './routes/activation-qr';
-import { deleteUserPage, deleteUser, publicProfilePage, toewijzingenAfwijzingenPage } from './routes/ondernemer';
-import { langdurigAfgemeld, marktDetail } from './routes/markt';
+
+import {
+    marketPreferencesPage,
+    updateMarketPreferences
+} from './routes/market-preferences';
+
+import {
+    dashboardPage
+} from './routes/dashboard';
+
+import {
+    plaatsvoorkeurenPage,
+    updatePlaatsvoorkeuren
+} from './routes/market-location';
+
+import {
+    deleteUserPage,
+    deleteUser,
+    publicProfilePage,
+    toewijzingenAfwijzingenPage
+} from './routes/ondernemer';
+
+import {
+    langdurigAfgemeld,
+    marktDetail
+} from './routes/markt';
 
 import {
     vasteplaatshoudersPage,
@@ -40,35 +99,25 @@ import {
     sollicitantentAanwezigheidLijst,
     alleOndernemersAanwezigheidLijst,
 } from './routes/markt-marktmeester';
-import { indelingslijstPage, marketAllocationPage, indelingPage } from './routes/market-allocation';
-import { getKeycloakUser } from './keycloak-api';
-import { KeycloakRoles } from './permissions';
-const Pool = require('pg-pool');
+
+import {
+    conceptIndelingPage,
+    indelingPage
+} from './routes/market-allocation';
+
+const csrfProtection = csrf({ cookie: true });
 
 requireEnv('DATABASE_URL');
 requireEnv('APP_SECRET');
 
 const HTTP_DEFAULT_PORT = 8080;
 
-const parseDatabaseURL = (str: string) => {
-    const params = url.parse(str);
-    const auth = params.auth.split(':');
-
-    return {
-        user: auth[0],
-        password: auth[1],
-        host: params.hostname,
-        port: parseInt(params.port, 10),
-        database: params.pathname.split('/')[1],
-    };
-};
-
 const isMarktondernemer = (req: GrantedRequest) => {
     const accessToken = req.kauth.grant.access_token.content;
 
     return (
         !!accessToken.resource_access[process.env.IAM_CLIENT_ID] &&
-        accessToken.resource_access[process.env.IAM_CLIENT_ID].roles.includes(KeycloakRoles.MARKTONDERNEMER)
+        accessToken.resource_access[process.env.IAM_CLIENT_ID].roles.includes(Roles.MARKTONDERNEMER)
     );
 };
 
@@ -77,7 +126,7 @@ const isMarktmeester = (req: GrantedRequest) => {
 
     return (
         !!accessToken.resource_access[process.env.IAM_CLIENT_ID] &&
-        accessToken.resource_access[process.env.IAM_CLIENT_ID].roles.includes(KeycloakRoles.MARKTMEESTER)
+        accessToken.resource_access[process.env.IAM_CLIENT_ID].roles.includes(Roles.MARKTMEESTER)
     );
 };
 
@@ -98,7 +147,7 @@ const templateEngine = reactViews.createEngine({ beautify: true });
 app.engine('jsx', templateEngine);
 app.engine('tsx', templateEngine);
 
-app.use(morgan(morgan.compile(':date[iso] :method :status :url :response-time ms')));
+app.use(morgan(':date[iso] :method :status :url :response-time ms'));
 
 // The `/status/health` endpoint is required for Docker deployments
 app.get('/status/health', serverHealth);
@@ -106,41 +155,6 @@ app.get('/status/time', serverTime);
 app.get('/status/database', databaseHealth);
 app.get('/status/keycloak', keycloakHealth);
 app.get('/status/makkelijkemarkt', makkelijkeMarktHealth);
-
-// Required for Passport login form
-app.use(bodyParser.urlencoded({ extended: true }));
-// We need to parse cookies because csurf needs them
-app.use(cookieParser());
-// app.use(bodyParser.json());
-
-const pool = new Pool(parseDatabaseURL(process.env.DATABASE_URL));
-const sessionStore = new (connectPgSimple(session))({ pool });
-
-const keycloak = new Keycloak(
-    { store: sessionStore },
-    {
-        realm: process.env.IAM_REALM,
-        'auth-server-url': process.env.IAM_URL,
-        'ssl-required': 'external',
-        resource: process.env.IAM_CLIENT_ID,
-        credentials: {
-            secret: process.env.IAM_CLIENT_SECRET,
-        },
-        'confidential-port': 0,
-    },
-);
-
-app.use(
-    session({
-        store: sessionStore,
-        secret: process.env.APP_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            sameSite: true
-        }
-    }),
-);
 
 app.use((req, res, next) => {
     res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
@@ -150,19 +164,21 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(
-    keycloak.middleware({
-        logout: '/logout',
-    }),
-);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Static files that are public (robots.txt, favicon.ico)
+app.use(express.static('./dist/'));
+
+app.use(sessionMiddleware());
+app.use(keycloak.middleware({ logout: '/logout' }));
 
 // Put the login route before the expired redirect to prevent an
 // endless loop.
 app.get('/login', keycloak.protect(), (req: GrantedRequest, res: Response) => {
-
     if (req.query.next) {
         // To prevent open redirects, filter out absolute URLS
-        !isAbsoluteUrl(req.query.next) ? res.redirect(req.query.next) : res.redirect('/');
+        res.redirect(!isAbsoluteUrl(req.query.next) ? req.query.next : '/');
     } else if (isMarktondernemer(req)) {
         res.redirect('/dashboard/');
     } else if (isMarktmeester(req)) {
@@ -176,181 +192,171 @@ app.get('/', (req: Request, res: Response) => {
     res.render('HomePage');
 });
 
-app.get('/email/', keycloak.protect(KeycloakRoles.MARKTMEESTER), (req: Request, res: Response) => {
+app.get('/email/', keycloak.protect(Roles.MARKTMEESTER), (req: Request, res: Response) => {
     res.render('EmailPage');
 });
 
 app.get(
     '/markt/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response) => {
-        return getMarktenEnabled()
+        return getMarkten(true)
             .then((markten: any) => {
-                res.render('MarktenPage',{ markten, role: KeycloakRoles.MARKTMEESTER, user: getKeycloakUser(req) });
+                res.render('MarktenPage',{ markten, role: Roles.MARKTMEESTER, user: getKeycloakUser(req) });
             }, internalServerErrorPage(res));
 });
 
-// app.get(
-//     '/environment/',
-//     keycloak.protect(KeycloakRoles.MARKTMEESTER),
-//     (req: Request, res: Response) => {
-//         res.render('EnvironmentPage');
-//     }
-// );
-
 app.get(
     '/markt/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
         getMarktEnriched(req.params.marktId)
-            .then((markt: any) => res.render('MarktDetailPage', { markt, role: KeycloakRoles.MARKTMEESTER, user: getKeycloakUser(req) }))
-            .catch(next);
+        .then(markt => {
+            res.render('MarktDetailPage', {
+                role: Roles.MARKTMEESTER,
+                user: getKeycloakUser(req),
+                markt
+            });
+        })
+        .catch(next);
     },
 );
 
 app.get(
     '/markt/:marktId/langdurig-afgemeld',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
         langdurigAfgemeld(
             req,
             res,
             req.params.marktId,
-            KeycloakRoles.MARKTMEESTER,
+            Roles.MARKTMEESTER,
         )
 );
 
 app.get(
-    '/markt/:marktId/:marktDate/concept-indelingslijst/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    indelingslijstPage,
-);
-
-app.get(
     '/markt/:marktId/:marktDate/indelingslijst/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    marketAllocationPage,
+    keycloak.protect(Roles.MARKTMEESTER),
+    (req: GrantedRequest, res: Response, next: NextFunction) =>
+        indelingPage(req, res, 'wenperiode')
 );
 
 app.get(
     '/markt/:marktId/:marktDate/indeling/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    indelingPage,
+    keycloak.protect(Roles.MARKTMEESTER),
+    (req: GrantedRequest, res: Response, next: NextFunction) =>
+        indelingPage(req, res, 'indeling')
+);
+
+app.get(
+    '/markt/:marktId/:marktDate/concept-indelingslijst/',
+    keycloak.protect(Roles.MARKTMEESTER),
+    conceptIndelingPage,
 );
 
 app.get(
     '/markt/:marktId/:datum/vasteplaatshouders/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     vasteplaatshoudersPage,
 );
 
 app.get(
     '/markt/:marktId/:datum/a-b-lijst/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     voorrangslijstPage
 );
 
 app.get(
     '/markt/:marktId/:datum/ondernemers-niet-ingedeeld/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     ondernemersNietIngedeeldPage
 );
 
 app.get('/markt/:marktId/:datum/alle-sollicitanten/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     sollicitantentAanwezigheidLijst
 );
 
 app.get('/markt/:marktId/:datum/alle-ondernemers/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     alleOndernemersAanwezigheidLijst
 );
 
 app.get(
     '/markt/:marktId/:datum/afmeldingen-vasteplaatshouders/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     afmeldingenVasteplaatshoudersPage
 );
 
 app.get(
     '/dashboard/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    keycloak.protect(Roles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
         dashboardPage(req, res, next, getErkenningsNummer(req));
     },
 );
 
-app.get(
-    '/ondernemer/:erkenningsNummer/activatie-qr.svg',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    activationQRPage,
-);
-
-app.get('/activeren', activationPage);
-
-app.post('/activeren', handleActivation);
-
-app.get('/registreren', registrationPage);
-
-app.post('/registreren', handleRegistration);
-
-app.get('/welkom', (req: Request, res: Response) => {
-    res.render('AccountCreatedPage', {});
-});
+// Registratie & Activatie
+// -----------------------
+const registrationAndActivation = require('./routes/registration')();
+app.use(registrationAndActivation);
 
 app.get(
-    '/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    '/ondernemer/:erkenningsNummer/aanwezigheid/',
+    keycloak.protect(Roles.MARKTMEESTER),
     csrfProtection,
-    (req: GrantedRequest, res: Response) => {
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
         attendancePage(
-            req,
-            res,
-            getErkenningsNummer(req),
-            req.params.marktId,
-            req.query,
-            KeycloakRoles.MARKTONDERNEMER,
-            req.csrfToken(),
+            req, res, next,
+            Roles.MARKTMEESTER,
+            req.params.erkenningsNummer,
+            req.csrfToken()
         );
     },
 );
 
 app.post(
-    '/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    '/ondernemer/:erkenningsNummer/aanwezigheid/',
+    keycloak.protect(Roles.MARKTMEESTER),
+    csrfProtection,
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
+        handleAttendanceUpdate(
+            req, res, next,
+            Roles.MARKTMEESTER,
+            req.params.erkenningsNummer
+        );
+    }
+);
+
+app.get(
+    '/aanwezigheid/',
+    keycloak.protect(Roles.MARKTONDERNEMER),
+    csrfProtection,
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
+        attendancePage(
+            req, res, next,
+            Roles.MARKTONDERNEMER,
+            getErkenningsNummer(req),
+            req.csrfToken()
+        );
+    },
+);
+
+app.post(
+    '/aanwezigheid/',
+    keycloak.protect(Roles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        handleAttendanceUpdate(req, res, next, getErkenningsNummer(req)),
-);
-
-app.get(
-    '/ondernemer/:erkenningsNummer/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    csrfProtection,
-    (req: GrantedRequest, res: Response) => {
-        attendancePage(
-            req,
-            res,
-            req.params.erkenningsNummer,
-            req.params.marktId,
-            req.query,
-            KeycloakRoles.MARKTMEESTER,
-            req.csrfToken(),
-        );
-    },
-);
-
-app.post(
-    '/ondernemer/:erkenningsNummer/afmelden/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
-    csrfProtection,
-    (req: Request, res: Response, next: NextFunction) =>
-        handleAttendanceUpdate(req, res, next, req.params.erkenningsNummer),
+        handleAttendanceUpdate(
+            req, res, next,
+            Roles.MARKTONDERNEMER,
+            getErkenningsNummer(req)
+        )
 );
 
 app.get(
     '/voorkeuren/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    keycloak.protect(Roles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response) => {
         plaatsvoorkeurenPage(
@@ -359,7 +365,7 @@ app.get(
             getErkenningsNummer(req),
             req.query,
             req.params.marktId,
-            KeycloakRoles.MARKTONDERNEMER,
+            Roles.MARKTONDERNEMER,
             req.csrfToken(),
         );
     },
@@ -367,15 +373,21 @@ app.get(
 
 app.post(
     ['/voorkeuren/:marktId/'],
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    keycloak.protect(Roles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-        updatePlaatsvoorkeuren(req, res, next, req.params.marktId, getErkenningsNummer(req)),
+        updatePlaatsvoorkeuren(
+            req,
+            res,
+            next,
+            req.params.marktId,
+            getErkenningsNummer(req)
+        )
 );
 
 app.get(
     '/ondernemer/:erkenningsNummer/voorkeuren/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     csrfProtection,
     (req: GrantedRequest, res: Response) => {
         plaatsvoorkeurenPage(
@@ -384,7 +396,7 @@ app.get(
             req.params.erkenningsNummer,
             req.query,
             req.params.marktId,
-            KeycloakRoles.MARKTMEESTER,
+            Roles.MARKTMEESTER,
             req.csrfToken(),
         );
     },
@@ -392,41 +404,47 @@ app.get(
 
 app.post(
     '/ondernemer/:erkenningsNummer/voorkeuren/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response, next: NextFunction) =>
-        updatePlaatsvoorkeuren(req, res, next, req.params.marktId, req.params.erkenningsNummer),
+        updatePlaatsvoorkeuren(
+            req,
+            res,
+            next,
+            req.params.marktId,
+            req.params.erkenningsNummer
+        )
 );
 
 app.get(
     '/markt-detail/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    keycloak.protect(Roles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-    marktDetail(
-        req,
-        res,
-        next,
-        getErkenningsNummer(req),
-        KeycloakRoles.MARKTONDERNEMER
-    ),
+        marktDetail(
+            req,
+            res,
+            next,
+            getErkenningsNummer(req),
+            Roles.MARKTONDERNEMER
+        )
 );
 
 app.get(
     '/ondernemer/:erkenningsNummer/markt-detail/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response, next: NextFunction) =>
-    marktDetail(
-        req,
-        res,
-        next,
-        req.params.erkenningsNummer,
-        KeycloakRoles.MARKTMEESTER,
-    ),
+        marktDetail(
+            req,
+            res,
+            next,
+            req.params.erkenningsNummer,
+            Roles.MARKTMEESTER,
+        )
 );
 
 app.get(
     '/algemene-voorkeuren/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    keycloak.protect(Roles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response) => {
         marketPreferencesPage(
@@ -434,7 +452,7 @@ app.get(
             res,
             getErkenningsNummer(req),
             req.params.marktId,
-            KeycloakRoles.MARKTONDERNEMER,
+            Roles.MARKTONDERNEMER,
             req.csrfToken(),
         );
     },
@@ -442,7 +460,7 @@ app.get(
 
 app.post(
     '/algemene-voorkeuren/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    keycloak.protect(Roles.MARKTONDERNEMER),
     csrfProtection,
     (req: GrantedRequest, res: Response, next: NextFunction) =>
         updateMarketPreferences(
@@ -450,31 +468,33 @@ app.post(
             res,
             next,
             getErkenningsNummer(req),
-            KeycloakRoles.MARKTONDERNEMER
+            Roles.MARKTONDERNEMER
         ),
 );
 
 app.get(
     '/verwijder-ondernemer/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     csrfProtection,
     (req: GrantedRequest, res: Response) => {
-        !req.url.endsWith('/') ?
-            res.redirect(301, `${req.url}/`) :
+        if (!req.url.endsWith('/')) {
+            res.redirect(301, `${req.url}/`);
+        } else {
             deleteUserPage(
                 req,
                 res,
                 null,
                 null,
                 req.csrfToken(),
-                KeycloakRoles.MARKTMEESTER,
+                Roles.MARKTMEESTER,
             );
+        }
     },
 );
 
 app.post(
     '/verwijder-ondernemer/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     csrfProtection,
     (req: GrantedRequest, res: Response) => {
         deleteUser(
@@ -487,7 +507,7 @@ app.post(
 
 app.get(
     '/ondernemer/:erkenningsNummer/algemene-voorkeuren/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     csrfProtection,
     (req: GrantedRequest, res: Response) => {
         marketPreferencesPage(
@@ -495,7 +515,7 @@ app.get(
             res,
             req.params.erkenningsNummer,
             req.params.marktId,
-            KeycloakRoles.MARKTMEESTER,
+            Roles.MARKTMEESTER,
             req.csrfToken(),
         );
     },
@@ -503,7 +523,7 @@ app.get(
 
 app.post(
     '/ondernemer/:erkenningsNummer/algemene-voorkeuren/:marktId/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     csrfProtection,
     (req: Request, res: Response, next: NextFunction) =>
         updateMarketPreferences(
@@ -511,57 +531,43 @@ app.post(
             res,
             next,
             req.params.erkenningsNummer,
-            KeycloakRoles.MARKTMEESTER,
+            Roles.MARKTMEESTER,
         ),
 );
 
 app.get(
-    '/profile/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
-    (req: GrantedRequest, res: Response) => {
-    const messages = getQueryErrors(req.query);
-    getMarktondernemer(getErkenningsNummer(req)).then(ondernemer => {
-        res.render('ProfilePage', {
-            user: getKeycloakUser(req),
-            ondernemer,
-            messages,
-        });
-    });
-});
-
-app.get(
     '/profile/:erkenningsNummer',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response) =>
         publicProfilePage(
             req,
             res,
             req.params.erkenningsNummer,
-            KeycloakRoles.MARKTMEESTER,
+            Roles.MARKTMEESTER,
         )
 );
 
 app.get(
     '/ondernemer/:erkenningsNummer/toewijzingen-afwijzingen/',
-    keycloak.protect(KeycloakRoles.MARKTMEESTER),
+    keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response) =>
         toewijzingenAfwijzingenPage(
             req,
             res,
             req.params.erkenningsNummer,
-            KeycloakRoles.MARKTMEESTER
+            Roles.MARKTMEESTER
         )
 );
 
 app.get(
     '/toewijzingen-afwijzingen/',
-    keycloak.protect(KeycloakRoles.MARKTONDERNEMER),
+    keycloak.protect(Roles.MARKTONDERNEMER),
     (req: GrantedRequest, res: Response) =>
         toewijzingenAfwijzingenPage(
             req,
             res,
             getErkenningsNummer(req),
-            KeycloakRoles.MARKTONDERNEMER
+            Roles.MARKTONDERNEMER
         )
 );
 
@@ -572,13 +578,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         res.render('ErrorPage', { message: err.message, stack: err.stack, errorCode: 500, req });
     }
 });
-
-// Static files that are public (robots.txt, favicon.ico)
-app.use(express.static('./src/public/'));
-app.use(express.static('./dist/public/'));
-
-// Static files that require authorization (business logic scripts for example)
-app.use(keycloak.protect(), express.static('./src/www/'));
 
 const port = process.env.PORT || HTTP_DEFAULT_PORT;
 

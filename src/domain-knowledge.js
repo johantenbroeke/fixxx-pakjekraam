@@ -1,4 +1,8 @@
 const {
+    DeelnemerStatus
+} = require('./markt.model.ts');
+
+const {
     ISO_SUNDAY,
     ISO_MONDAY,
     ISO_TUESDAY,
@@ -11,13 +15,12 @@ const {
     SUNDAY,
     MILLISECONDS_IN_DAY,
     DAYS_IN_WEEK,
-    EXP_ZONE,
     toISODate,
     addDays,
     endOfWeek,
     stringSort,
     getMaDiWoDo,
-    dateToYYYYMMDD,
+    getTimezoneTime
 } = require('./util.ts');
 
 const moment = require('moment');
@@ -58,9 +61,36 @@ const indelingstijdstipInMinutes = () => {
 
 const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDagen[dag] : -1);
 
-const isVast = status => status === 'vpl' || status === 'vkk';
-const isExp = status => status === EXP_ZONE;
-const isVastOfExp = status => status === 'vpl' || status === 'vkk' || status === EXP_ZONE;
+const isVast = status =>
+    status === DeelnemerStatus.VASTE_PLAATS ||
+    status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS ||
+    status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS_Z ||
+    status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS_OLD;
+const isTVPLZ = status =>
+    status === DeelnemerStatus.TIJDELIJKE_VASTE_PLAATS_Z;
+const isExp = status =>
+    status === DeelnemerStatus.EXPERIMENTAL ||
+    status === DeelnemerStatus.EXPERIMENTAL_F;
+const isVastOfExp = status =>
+    isVast(status) || isExp(status);
+
+// Geeft de datum terug vanaf wanneer ondernemers hun aanwezigheid
+// mogen aanpassen.
+//
+// Dit betekent momenteel: Geef de datum van vandaag, tenzij de indeling
+// voor vandaag al gedraaid heeft. Dit hangt af van `INDELINGSTIJDSTIP`.
+const getMarktThresholdDate = role => {
+    // Door `offsetMins` bij de huidige tijd op te tellen, zal `startDate` naar morgen
+    // gaan ipv vandaag als de huidige tijd voorbij indelingstijd ligt.
+    const offsetMins = role !== 'marktmeester' ?
+                       (( 24 * 60 ) - indelingstijdstipInMinutes()) :
+                       0;
+    return getTimezoneTime()
+           .add(offsetMins, 'minutes')
+           .add(INDELING_DAG_OFFSET, 'days')
+           .startOf('day')
+           .toDate();
+};
 
 const getMarktDaysOndernemer = (startDate, endDate, marktdagen) => {
     const start = Date.parse(startDate);
@@ -86,12 +116,15 @@ const getMarktDays = (startDate, endDate, daysOfWeek) => {
     const end = Date.parse(endDate);
     const days = Math.max(0, (end - start) / MILLISECONDS_IN_DAY);
     const dates = [];
-    for (let i = 0, l = days; i <= l; i++) {
-        const date = new Date(start);
-        date.setDate(date.getDate() + i);
-        dates.push(date);
+
+    for (let i = 0; i <= days; i++) {
+        const date = new Date(start + i * MILLISECONDS_IN_DAY);
+        if (daysOfWeek.includes(date.getDay())) {
+            dates.push(date);
+        }
     }
-    return dates.filter(date => daysOfWeek.includes(date.getDay())).map(toISODate);
+
+    return dates.map(toISODate);
 };
 
 const getUpcomingMarktDays = (startDate, endDate, daysOfWeek) =>
@@ -119,49 +152,16 @@ const obstakelsToLocatieKeyValue = array =>
         return total;
     }, {});
 
-const filterRsvpListOndernemer = (aanmeldingen, markt, startDate) => {
-    let rsvpIndex = 0;
-
-    const start = moment(startDate).add(3, 'h').add(1, 'days').toDate();
-
-    let dates = getMarktDaysOndernemer(
-        start,
-        addDays(endOfWeek(), DAYS_IN_WEEK),
-        markt.marktDagen,
-    );
-
-    dates = dates.map(date => dateToYYYYMMDD(new Date(date)));
-
-    const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
-
-
-    // TODO: Replace non-pure `rsvpIndex` with grouping by `markt.id` afterwards
-    const rsvpList = dates.map( date => {
-        return {
-            date,
-            rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date),
-            index: rsvpIndex++
-        };
-    });
-
-    return rsvpList;
-};
-
 const filterRsvpList = (aanmeldingen, markt, startDate, endDate) => {
-    let rsvpIndex = 0;
-
     const dates = getMarktDays(
-        startDate ? startDate : addDays(Date.now(), 1),
+        startDate ? startDate : addDays(moment().day(0).valueOf(), 0),
         endDate ? endDate : addDays(endOfWeek(), DAYS_IN_WEEK),
         (markt.marktDagen || []).map(parseMarktDag),
     );
 
-    const newAanmeldingen = aanmeldingen.sort((a, b) => b.updatedAt - a.updatedAt);
-    // TODO: Replace non-pure `rsvpIndex` with grouping by `markt.id` afterwards
     const rsvpList = dates.map(date => ({
         date,
-        rsvp: newAanmeldingen.find(aanmelding => aanmelding.marktDate === date),
-        index: rsvpIndex++,
+        rsvp: aanmeldingen.find(aanmelding => aanmelding.marktDate === date)
     }));
 
     return rsvpList;
@@ -200,16 +200,17 @@ module.exports = {
     parseMarktDag,
     parseISOMarktDag,
     isVast,
+    isTVPLZ,
     isExp,
     isVastOfExp,
     getMarktDays,
     indelingstijdstipInMinutes,
+    getMarktThresholdDate,
     getMarktDaysOndernemer,
     getUpcomingMarktDays,
     ondernemersToLocatieKeyValue,
     obstakelsToLocatieKeyValue,
     filterRsvpList,
-    filterRsvpListOndernemer,
     plaatsSort,
     isErkenningsnummer,
 };

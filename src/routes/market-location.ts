@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { getMarkt, getMarktondernemer } from '../makkelijkemarkt-api';
+import { getMarkt, getOndernemer } from '../makkelijkemarkt-api';
 import {
     getIndelingVoorkeur,
     getMarktplaatsen,
     getMededelingen,
 } from '../pakjekraam-api';
 
-const { EXP_ZONE } = require('../util.ts');
+const { isExp } = require('../domain-knowledge.js');
 
 import { getQueryErrors, internalServerErrorPage, HTTP_CREATED_SUCCESS } from '../express-util';
 import { upsert } from '../sequelize-util.js';
@@ -26,54 +26,46 @@ export const plaatsvoorkeurenPage = (
     role: string,
     csrfToken: string,
 ) => {
-
-    const messages = getQueryErrors(req.query);
-    const ondernemerPromise = getMarktondernemer(erkenningsNummer);
-    const marktenPromise = ondernemerPromise
-        .then(ondernemer =>
-            Promise.all(
-                ondernemer.sollicitaties
-                    .filter(sollicitatie => !sollicitatie.doorgehaald)
-                    .map(sollicitatie => String(sollicitatie.markt.id))
-                    .map(marktId => getMarkt(marktId)),
-            ),
-        )
-        .then(markten =>
-            Promise.all(
-                (currentMarktId ? markten.filter(markt => String(markt.id) === currentMarktId) : markten).map(markt =>
-                    getMarktplaatsen(markt).then(marktplaatsen => ({
-                        ...markt,
-                        marktplaatsen,
-                    })),
-                ),
-            ),
+    const messages          = getQueryErrors(req.query);
+    const ondernemerPromise = getOndernemer(erkenningsNummer);
+    const marktPromise      = ondernemerPromise
+    .then(ondernemer => {
+        const sollicitatie = ondernemer.sollicitaties.find(sollicitatie =>
+            String(sollicitatie.markt.id) === currentMarktId
         );
+        if (!sollicitatie) {
+            throw Error('Geen sollicitatie voor deze markt gevonden');
+        }
+
+        return getMarktEnriched(currentMarktId);
+    });
 
     Promise.all([
         ondernemerPromise,
-        marktenPromise,
+        marktPromise,
         getPlaatsvoorkeurenByMarktEnOndernemer(currentMarktId, erkenningsNummer),
         getIndelingVoorkeur(erkenningsNummer, currentMarktId),
-        getMarktEnriched(currentMarktId),
         getMededelingen(),
     ]).then(
-        ([ondernemer, markten, plaatsvoorkeuren, indelingVoorkeur, markt, mededelingen]) => {
-            const sollicitatie = ondernemer.sollicitaties.find( (soll: any) => soll.markt.id === markt.id && !soll.doorgehaald);
+        ([ondernemer, markt, plaatsvoorkeuren, indelingVoorkeur, mededelingen]) => {
+            const sollicitatie = ondernemer.sollicitaties.find(soll =>
+                soll.markt.id === markt.id
+            );
+
             // Als iemand de status experimenteel heeft mag degene zijn plaatsvoorkeuren niet wijzigen
-            if (role === 'marktondernemer' && sollicitatie.status === EXP_ZONE) {
+            if (role === 'marktondernemer' && isExp(sollicitatie.status)) {
                 res.status(403);
                 res.send();
             }
             res.render('VoorkeurenPage', {
                 ondernemer,
-                markten,
+                markt,
                 plaatsvoorkeuren,
                 marktplaatsen: markt.plaatsen,
                 indelingVoorkeur,
                 query,
                 messages,
                 role,
-                markt,
                 sollicitatie,
                 mededeling: mededelingen.plaatsVoorkeuren,
                 csrfToken,
