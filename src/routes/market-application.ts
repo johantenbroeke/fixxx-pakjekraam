@@ -1,13 +1,11 @@
+import moment from 'moment-timezone';
+moment.locale('nl');
+
 import {
     NextFunction,
     Request,
     Response
 } from 'express';
-import { GrantedRequest } from 'keycloak-connect';
-
-import moment from 'moment-timezone';
-moment.locale('nl');
-
 import {
     httpErrorPage,
     internalServerErrorPage,
@@ -15,15 +13,31 @@ import {
     HTTP_FORBIDDEN_ERROR,
     getQueryErrors
 } from '../express-util';
-import { upsert } from '../sequelize-util.js';
+
 import {
     flatten,
     nextWeek,
     LF,
     today
 } from '../util';
+import {
+    getMarktThresholdDate
+} from '../domain-knowledge';
 
-import { getKeycloakUser } from '../keycloak-api';
+import {
+    GrantedRequest
+} from 'keycloak-connect';
+import {
+    getKeycloakUser
+} from '../keycloak-api';
+import {
+    Roles
+} from '../authentication';
+
+import { upsert } from '../sequelize-util';
+import models from '../model/index';
+import { IRSVP } from '../markt.model';
+
 import {
     getMarktenForOndernemer,
     getOndernemer
@@ -33,19 +47,12 @@ import {
     getMededelingen
 } from '../pakjekraam-api';
 
-import models from '../model/index';
-import { IRSVP } from '../markt.model';
-
 import {
     getMarktEnriched
 } from '../model/markt.functions';
 import {
     groupAanmeldingenPerMarktPerWeek
 } from '../model/rsvp.functions';
-
-const {
-    getMarktThresholdDate
-} = require('../domain-knowledge.js');
 
 interface AttendanceFormData {
     erkenningsNummer: string;
@@ -79,7 +86,8 @@ export const attendancePage = (
 ) => {
     const thresholdDate       = getMarktThresholdDate(role);
     const ondernemerPromise   = getOndernemer(erkenningsNummer);
-    const marktenPromise      = getMarktenForOndernemer(ondernemerPromise);
+    const includeInactive     = role === Roles.MARKTMEESTER;
+    const marktenPromise      = getMarktenForOndernemer(ondernemerPromise, includeInactive);
     const aanmeldingenPromise = getAanmeldingenByOndernemer(erkenningsNummer);
 
     return Promise.all([
