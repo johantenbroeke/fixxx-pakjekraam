@@ -43,6 +43,9 @@ $plaatsCellHeight: 16px;
         visibility: hidden;
     }
     &__prop-plaats-nr {
+
+        -webkit-print-color-adjust:exact;
+        color-adjust: exact;//:For Firefox
         width: 33px;
         color: $primary-black;
         text-align: center;
