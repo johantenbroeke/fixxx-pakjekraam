@@ -85,6 +85,4 @@ ENV \
 
 EXPOSE 8080
 
-ENTRYPOINT ["npm", "run"]
-
-CMD ["start"]
+CMD ["npm", "run", "start"]
