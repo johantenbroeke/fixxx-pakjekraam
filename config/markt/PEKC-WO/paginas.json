@@ -35,13 +35,15 @@
           "45", 
           "47"
         ]
-      },
+      }
+    ]
+  },
+  {
+    "title": "Markt Woensdag",
+    "indelingslijstGroup": 
+    [
       {
-        "type": "street",
-        "title": "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-      },
-      {
-        "class": "rechterzijde",
+        "class": "block-right",
         "title": "Markt Woensdag",
         "landmarkTop": "Lavendelstraat",
         "landmarkBottom": "Heimansweg",
@@ -79,7 +81,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "rechterzijde",
+        "class": "block-right",
         "title": "Markt Woensdag",
         "landmarkTop": "Heimansweg",
         "landmarkBottom": "Jasmijnstraat",
