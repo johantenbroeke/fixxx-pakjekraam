@@ -35,13 +35,15 @@
           "45",
           "47"
         ]
-      },
+      }
+    ]
+  }, 
+  {
+    "title": "Markt Vrijdag",
+    "indelingslijstGroup":
+    [
       {
-        "type": "street",
-        "title": "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-      },
-      {
-        "class": "rechterzijde",
+        "class": "block-right",
         "title": "Markt Vrijdag",
         "landmarkTop": "Lavendelstraat",
         "landmarkBottom": "Heimansweg",
@@ -79,7 +81,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "rechterzijde",
+        "class": "block-right",
         "title": "Markt Vrijdag",
         "landmarkTop": "Heimansweg",
         "landmarkBottom": "Jasmijnstraat",
