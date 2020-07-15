@@ -104,7 +104,14 @@ const getAllBranchesForLegend = (allBranches, marktplaatsen) => {
 
 const countToewijzingenPerBranche = (allBranches, ondernemers, toewijzingen) => {
     return toewijzingen.reduce((result, toewijzing) => {
-        const { ondernemer, plaatsen } = toewijzing;
+        // Als `IndelingslijstPage` wordt aangeroepen om een echt gedraaide indeling weer
+        // te geven, dan worden de toewijzingen uit de database gehaald. Deze worden hierbij
+        // niet verrijkt met de gegevens van de ondernemer (dit gebeurd bij een concept indeling
+        // wel). Haal de ondernemergegevens in dit geval uit de `ondernemers` array.
+        const ondernemer = toewijzing.ondernemer ||
+                           ondernemers.find(({ erkenningsNummer }) =>
+                             erkenningsNummer === toewijzing.erkenningsNummer
+                           );
         const brancheId = ondernemer.voorkeur && ondernemer.voorkeur.branches &&
                           ondernemer.voorkeur.branches[0];
 
