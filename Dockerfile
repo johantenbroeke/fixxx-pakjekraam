@@ -3,8 +3,8 @@ FROM mhart/alpine-node:12.0.0
 
 # Setup certificates for ADP/Motiv
 RUN apk add ca-certificates
-COPY certificates/adp_rootca.crt /usr/local/share/ca-certificates/extras/adp_rootca.crt
-RUN chmod 644 /usr/local/share/ca-certificates/extras/adp_rootca.crt \
+COPY certificates/adp_rootca.crt /usr/local/share/ca-certificates/adp_rootca.crt
+RUN chmod 644 /usr/local/share/ca-certificates/adp_rootca.crt \
   && update-ca-certificates --fresh
 
 RUN mkdir -p /srv /deploy \
