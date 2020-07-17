@@ -87,7 +87,8 @@ ENV \
     NO_PROXY=$NO_PROXY \
     http_proxy=$HTTP_PROXY \
     https_proxy=$HTTPS_PROXY \
-    no_proxy=$NO_PROXY
+    no_proxy=$NO_PROXY \
+    NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-cert-adp_rootca.pem
 
 EXPOSE 8080
 
