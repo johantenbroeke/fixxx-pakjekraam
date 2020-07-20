@@ -176,6 +176,8 @@ export interface IBranche {
     maximumPlaatsen?: number;
     maximumToewijzingen?: number;
     verplicht?: boolean;
+    color?: string;
+    number?: number;
 }
 
 export interface IPlaatsvoorkeur {

@@ -1,17 +1,22 @@
 import * as React from 'react';
-import OndernemerStatus from './OndernemerStatus.jsx';
 import PrintableBackground from './PrintableBackground.jsx';
 import PropTypes from 'prop-types';
-import { IMarktplaats, IMarktondernemer, IRSVP, IToewijzing } from '../../markt.model';
+import {
+    IBranche,
+    IMarktplaats,
+    IMarktondernemer,
+    IRSVP,
+    IToewijzing
+} from '../../markt.model';
 
 const Plaats = ({
     plaats,
+    branche,
     vph,
     ondernemer,
     first,
     toewijzing,
     type,
-    color,
     opUitgebreid,
     opGewisseld,
     opAfgemeld,
@@ -20,12 +25,12 @@ const Plaats = ({
     ondernemerGewisseld
 }: {
     plaats: IMarktplaats;
+    branche?: IBranche;
     vph?: IMarktondernemer;
     ondernemer?: IMarktondernemer;
     first?: boolean;
     toewijzing?: IToewijzing;
     type?: string;
-    color?: string;
     opUitgebreid?: boolean;
     opGewisseld?: boolean;
     opAfgemeld?: boolean;
@@ -36,6 +41,7 @@ const Plaats = ({
     const plaatsProps = (plaats.properties || [])
                         .filter(word => !['dubble'].includes(word))
                         .reverse();
+    const color = branche ? branche.color : null;
     const tags = (plaats.properties || []).filter(word =>
         ['experimentele-zone', 'standwerkersplaats', 'eigen-materiaal'].includes(word)
     );
@@ -43,16 +49,20 @@ const Plaats = ({
 
     return (
         <tr
-            className={
-                `Plaats ${first && 'Plaats--first'} ${tags.join(' ')} ${opAfgemeld || opAfgemeldPeriode? ' Plaats--vph-attendance-not-attending': null }`
-            }
+            className={`
+                Plaats ${first && 'Plaats--first'} ${tags.join(' ')}
+                ${opAfgemeld || opAfgemeldPeriode ? ' Plaats--vph-attendance-not-attending': null }
+            `}
             data-sollicitatie-nummer={vph && vph.sollicitatieNummer}
         >
             <td className="Plaats__prop Plaats__prop-properties">
                 <span className={`icon icon-${plaatsProps ? plaatsProps[0] : ''}`} />
             </td>
-            <td className="Plaats__prop Plaats__prop-plaats-nr" style={{ backgroundColor: color || 'transparent' }}>
+            <td className="Plaats__prop Plaats__prop-plaats-nr">
                 {plaats.plaatsId}
+            </td>
+            <td className="Plaats__prop Plaats__prop-branche autoColor" style={{ backgroundColor: color || 'transparent' }}>
+                {branche ? branche.number : null}
             </td>
             <td className="Plaats__prop Plaats__prop-soll Plaats__prop-vph">
                 {opUitgebreid ? <div className="Plaats__prop__icon Icon Icon--plus"></div> : null }
@@ -66,8 +76,8 @@ const Plaats = ({
                     </a>
                 ) : null}
             </td>
-            <td className="Plaats__prop Plaats__prop-naam Plaats__prop-vph-description">
-                {vph ? vph.description : <strong>{tags.join(' ')}</strong>}
+            <td className="Plaats__prop Plaats__prop-naam">
+                <div>{vph ? vph.description : <strong>{tags.join(' ')}</strong>}</div>
             </td>
             <td className="Plaats__prop Plaats__prop-soll">
                 {ondernemerUitgebreid ? <div className="Plaats__prop__icon Icon Icon--plus"></div> : null }
@@ -81,10 +91,10 @@ const Plaats = ({
                 ) : null}
             </td>
             <td className="Plaats__prop Plaats__prop-naam">
-                {ondernemer ? ondernemer.description : null}
+                <div>{ondernemer ? ondernemer.description : null}</div>
             </td>
-            <td className="Plaats__prop Plaats__prop-status">
-                {ondernemer ? <OndernemerStatus status={ondernemer.status} /> : null}
+            <td className={`Plaats__prop Plaats__prop-status Plaats__prop-status--${ondernemer ? ondernemer.status : 'none'}`}>
+                {ondernemer ? ondernemer.status : null}
             </td>
         </tr>
     );

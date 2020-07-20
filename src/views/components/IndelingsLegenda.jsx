@@ -23,7 +23,7 @@ const IndelingsLegenda = ({
             <table>
                 <thead>
                 <tr>
-                    <th className="color">Kleur</th>
+                    <th className="nr">Nr.</th>
                     <th>Beschrijving</th>
                     <th>Maximum</th>
                     {showToewijzingen && <th>Toegewezen</th>}
@@ -33,7 +33,7 @@ const IndelingsLegenda = ({
                 <tbody>
             {relevantBranches.map((branche, i) =>
                 <tr key={i}>
-                    <td style={{ backgroundColor: branche.color || 'transparent' }}></td>
+                    <td className="autoColor" style={{ backgroundColor: branche.color || 'transparent' }}>{branche.number}</td>
                     <td>{branche.description}</td>
                     <td className={!branche.maximumPlaatsen ? 'nvt' : ''}>{branche.maximumPlaatsen || '—'}</td>
                     {showToewijzingen && <td>{indelingenPerBranche[branche.brancheId] || 0}</td>}
