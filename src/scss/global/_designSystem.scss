@@ -161,22 +161,7 @@ $formfield-label-text-align: left;
     font-weight: $formfield-label-font-weight;
     text-align: $formfield-label-text-align;
 }
-/** h1 **/
-$h1-font-size: 30px;
-$h1-color: #000000;
-$h1-line-height: 38px;
-$h1-font-family: "Avenir Next LT Pro";
-$h1-font-weight: 500;
-$h1-text-align: left;
 
-@mixin h1() {
-    font-size: $h1-font-size;
-    color: $h1-color;
-    line-height: $h1-line-height;
-    font-family: $h1-font-family;
-    font-weight: $h1-font-weight;
-    text-align: $h1-text-align;
-}
 /** h1 **/
 $h1-font-size: 30px;
 $h1-color: #000000;
@@ -211,6 +196,7 @@ $h1-text-align: left;
     font-weight: $h1-font-weight;
     text-align: $h1-text-align;
 }
+
 /** h2 **/
 $h2-font-size: 24px;
 $h2-color: #000000;
@@ -254,6 +240,7 @@ $h2-text-align: left;
     font-weight: $h2-font-weight;
     text-align: $h2-text-align;
 }
+
 /** h3 **/
 $h3-font-size: 20px;
 $h3-color: #000000;
@@ -270,54 +257,7 @@ $h3-text-align: left;
     font-weight: $h3-font-weight;
     text-align: $h3-text-align;
 }
-/** h3 **/
-$h3-font-size: 20px;
-$h3-color: #ffffff;
-$h3-line-height: 28px;
-$h3-font-family: "Avenir Next LT Pro";
-$h3-font-weight: 500;
-$h3-text-align: left;
 
-@mixin h3() {
-    font-size: $h3-font-size;
-    color: $h3-color;
-    line-height: $h3-line-height;
-    font-family: $h3-font-family;
-    font-weight: $h3-font-weight;
-    text-align: $h3-text-align;
-}
-/** h3 **/
-$h3-font-size: 20px;
-$h3-color: #ffffff;
-$h3-line-height: 28px;
-$h3-font-family: "Avenir Next LT Pro";
-$h3-font-weight: 500;
-$h3-text-align: left;
-
-@mixin h3() {
-    font-size: $h3-font-size;
-    color: $h3-color;
-    line-height: $h3-line-height;
-    font-family: $h3-font-family;
-    font-weight: $h3-font-weight;
-    text-align: $h3-text-align;
-}
-/** h3 **/
-$h3-font-size: 20px;
-$h3-color: #000000;
-$h3-line-height: 28px;
-$h3-font-family: "Avenir Next LT Pro";
-$h3-font-weight: 500;
-$h3-text-align: left;
-
-@mixin h3() {
-    font-size: $h3-font-size;
-    color: $h3-color;
-    line-height: $h3-line-height;
-    font-family: $h3-font-family;
-    font-weight: $h3-font-weight;
-    text-align: $h3-text-align;
-}
 /** h4 **/
 $h4-font-size: 18px;
 $h4-color: #000000;
@@ -334,54 +274,7 @@ $h4-text-align: left;
     font-weight: $h4-font-weight;
     text-align: $h4-text-align;
 }
-/** h4 **/
-$h4-font-size: 18px;
-$h4-color: #ffffff;
-$h4-line-height: 25px;
-$h4-font-family: "Avenir Next LT Pro";
-$h4-font-weight: 500;
-$h4-text-align: left;
 
-@mixin h4() {
-    font-size: $h4-font-size;
-    color: $h4-color;
-    line-height: $h4-line-height;
-    font-family: $h4-font-family;
-    font-weight: $h4-font-weight;
-    text-align: $h4-text-align;
-}
-/** h4 **/
-$h4-font-size: 18px;
-$h4-color: #ffffff;
-$h4-line-height: 25px;
-$h4-font-family: "Avenir Next LT Pro";
-$h4-font-weight: 500;
-$h4-text-align: left;
-
-@mixin h4() {
-    font-size: $h4-font-size;
-    color: $h4-color;
-    line-height: $h4-line-height;
-    font-family: $h4-font-family;
-    font-weight: $h4-font-weight;
-    text-align: $h4-text-align;
-}
-/** h4 **/
-$h4-font-size: 18px;
-$h4-color: #000000;
-$h4-line-height: 25px;
-$h4-font-family: "Avenir Next LT Pro";
-$h4-font-weight: 500;
-$h4-text-align: left;
-
-@mixin h4() {
-    font-size: $h4-font-size;
-    color: $h4-color;
-    line-height: $h4-line-height;
-    font-family: $h4-font-family;
-    font-weight: $h4-font-weight;
-    text-align: $h4-text-align;
-}
 /** hint-text **/
 $hint-text-font-size: 16px;
 $hint-text-color: #767676;
@@ -416,54 +309,7 @@ $hover-text-align: left;
     text-decoration: $hover-text-decoration;
     text-align: $hover-text-align;
 }
-/** intro **/
-$intro-font-size: 18px;
-$intro-color: #000000;
-$intro-line-height: 25px;
-$intro-font-family: "Avenir Next LT Pro";
-$intro-font-weight: 500;
-$intro-text-align: left;
 
-@mixin intro() {
-    font-size: $intro-font-size;
-    color: $intro-color;
-    line-height: $intro-line-height;
-    font-family: $intro-font-family;
-    font-weight: $intro-font-weight;
-    text-align: $intro-text-align;
-}
-/** intro **/
-$intro-font-size: 18px;
-$intro-color: #ffffff;
-$intro-line-height: 25px;
-$intro-font-family: "Avenir Next LT Pro";
-$intro-font-weight: 500;
-$intro-text-align: left;
-
-@mixin intro() {
-    font-size: $intro-font-size;
-    color: $intro-color;
-    line-height: $intro-line-height;
-    font-family: $intro-font-family;
-    font-weight: $intro-font-weight;
-    text-align: $intro-text-align;
-}
-/** intro **/
-$intro-font-size: 16px;
-$intro-color: #ffffff;
-$intro-line-height: 22px;
-$intro-font-family: "Avenir Next LT Pro";
-$intro-font-weight: 500;
-$intro-text-align: left;
-
-@mixin intro() {
-    font-size: $intro-font-size;
-    color: $intro-color;
-    line-height: $intro-line-height;
-    font-family: $intro-font-family;
-    font-weight: $intro-font-weight;
-    text-align: $intro-text-align;
-}
 /** intro **/
 $intro-font-size: 16px;
 $intro-color: #000000;
@@ -638,36 +484,7 @@ $linklist-visited-text-align: left;
     font-weight: $linklist-visited-font-weight;
     text-align: $linklist-visited-text-align;
 }
-/** o-list **/
-$o-list-font-size: 16px;
-$o-list-color: #000000;
-$o-list-line-height: 25px;
-$o-list-font-family: "Avenir Next LT Pro";
-$o-list-font-weight: 400;
-$o-list-text-align: left;
 
-@mixin o-list() {
-    font-size: $o-list-font-size;
-    color: $o-list-color;
-    line-height: $o-list-line-height;
-    font-family: $o-list-font-family;
-    font-weight: $o-list-font-weight;
-    text-align: $o-list-text-align;
-}
-/** o-list **/
-$o-list-font-size: 16px;
-$o-list-color: #ffffff;
-$o-list-font-family: "Avenir Next LT Pro";
-$o-list-font-weight: 400;
-$o-list-text-align: left;
-
-@mixin o-list() {
-    font-size: $o-list-font-size;
-    color: $o-list-color;
-    font-family: $o-list-font-family;
-    font-weight: $o-list-font-weight;
-    text-align: $o-list-text-align;
-}
 /** o-list **/
 $o-list-font-size: 16px;
 $o-list-color: #000000;
@@ -682,54 +499,7 @@ $o-list-text-align: left;
     font-weight: $o-list-font-weight;
     text-align: $o-list-text-align;
 }
-/** p1 **/
-$p1-font-size: 16px;
-$p1-color: #000000;
-$p1-line-height: 22px;
-$p1-font-family: "Avenir Next LT Pro";
-$p1-font-weight: 400;
-$p1-text-align: left;
 
-@mixin p1() {
-    font-size: $p1-font-size;
-    color: $p1-color;
-    line-height: $p1-line-height;
-    font-family: $p1-font-family;
-    font-weight: $p1-font-weight;
-    text-align: $p1-text-align;
-}
-/** p1 **/
-$p1-font-size: 16px;
-$p1-color: #ffffff;
-$p1-line-height: 22px;
-$p1-font-family: "Avenir Next LT Pro";
-$p1-font-weight: 400;
-$p1-text-align: left;
-
-@mixin p1() {
-    font-size: $p1-font-size;
-    color: $p1-color;
-    line-height: $p1-line-height;
-    font-family: $p1-font-family;
-    font-weight: $p1-font-weight;
-    text-align: $p1-text-align;
-}
-/** p1 **/
-$p1-font-size: 16px;
-$p1-color: #ffffff;
-$p1-line-height: 22px;
-$p1-font-family: "Avenir Next LT Pro";
-$p1-font-weight: 400;
-$p1-text-align: left;
-
-@mixin p1() {
-    font-size: $p1-font-size;
-    color: $p1-color;
-    line-height: $p1-line-height;
-    font-family: $p1-font-family;
-    font-weight: $p1-font-weight;
-    text-align: $p1-text-align;
-}
 /** p1 **/
 $p1-font-size: 16px;
 $p1-color: #000000;
@@ -746,54 +516,7 @@ $p1-text-align: left;
     font-weight: $p1-font-weight;
     text-align: $p1-text-align;
 }
-/** p2 **/
-$p2-font-size: 18px;
-$p2-color: #323232;
-$p2-line-height: 25px;
-$p2-font-family: "Avenir Next LT Pro";
-$p2-font-weight: 400;
-$p2-text-align: left;
 
-@mixin p2() {
-    font-size: $p2-font-size;
-    color: $p2-color;
-    line-height: $p2-line-height;
-    font-family: $p2-font-family;
-    font-weight: $p2-font-weight;
-    text-align: $p2-text-align;
-}
-/** p2 **/
-$p2-font-size: 18px;
-$p2-color: #ffffff;
-$p2-line-height: 25px;
-$p2-font-family: "Avenir Next LT Pro";
-$p2-font-weight: 400;
-$p2-text-align: left;
-
-@mixin p2() {
-    font-size: $p2-font-size;
-    color: $p2-color;
-    line-height: $p2-line-height;
-    font-family: $p2-font-family;
-    font-weight: $p2-font-weight;
-    text-align: $p2-text-align;
-}
-/** p2 **/
-$p2-font-size: 16px;
-$p2-color: #ffffff;
-$p2-line-height: 22px;
-$p2-font-family: "Avenir Next LT Pro";
-$p2-font-weight: 400;
-$p2-text-align: left;
-
-@mixin p2() {
-    font-size: $p2-font-size;
-    color: $p2-color;
-    line-height: $p2-line-height;
-    font-family: $p2-font-family;
-    font-weight: $p2-font-weight;
-    text-align: $p2-text-align;
-}
 /** p2 **/
 $p2-font-size: 16px;
 $p2-color: #323232;
@@ -810,6 +533,7 @@ $p2-text-align: left;
     font-weight: $p2-font-weight;
     text-align: $p2-text-align;
 }
+
 /** sitenavitem-default **/
 $sitenavitem-default-font-size: 18px;
 $sitenavitem-default-color: #323232;
@@ -842,54 +566,7 @@ $sitenavitem-hover-text-align: left;
     font-weight: $sitenavitem-hover-font-weight;
     text-align: $sitenavitem-hover-text-align;
 }
-/** t1 **/
-$t1-font-size: 14px;
-$t1-color: #000000;
-$t1-line-height: 18px;
-$t1-font-family: "Avenir Next LT Pro";
-$t1-font-weight: 400;
-$t1-text-align: left;
 
-@mixin t1() {
-    font-size: $t1-font-size;
-    color: $t1-color;
-    line-height: $t1-line-height;
-    font-family: $t1-font-family;
-    font-weight: $t1-font-weight;
-    text-align: $t1-text-align;
-}
-/** t1 **/
-$t1-font-size: 14px;
-$t1-color: #ffffff;
-$t1-line-height: 18px;
-$t1-font-family: "Avenir Next LT Pro";
-$t1-font-weight: 400;
-$t1-text-align: left;
-
-@mixin t1() {
-    font-size: $t1-font-size;
-    color: $t1-color;
-    line-height: $t1-line-height;
-    font-family: $t1-font-family;
-    font-weight: $t1-font-weight;
-    text-align: $t1-text-align;
-}
-/** t1 **/
-$t1-font-size: 14px;
-$t1-color: #ffffff;
-$t1-line-height: 18px;
-$t1-font-family: "Avenir Next LT Pro";
-$t1-font-weight: 400;
-$t1-text-align: left;
-
-@mixin t1() {
-    font-size: $t1-font-size;
-    color: $t1-color;
-    line-height: $t1-line-height;
-    font-family: $t1-font-family;
-    font-weight: $t1-font-weight;
-    text-align: $t1-text-align;
-}
 /** t1 **/
 $t1-font-size: 14px;
 $t1-color: #000000;

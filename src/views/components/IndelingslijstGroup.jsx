@@ -1,14 +1,15 @@
-const ObstakelList = require('./ObstakelList');
-const Plaats = require('./Plaats.tsx').default;
-// const PlaatsVPH = require('./PlaatsVPH');
 const PropTypes = require('prop-types');
 const React = require('react');
+
 const {
     ondernemerIsAfgemeld,
     ondernemerIsAfgemeldPeriode,
     vphIsGewisseld,
     vphIsUitgebreid
 } = require('../../model/ondernemer.functions');
+
+const ObstakelList = require('./ObstakelList');
+const Plaats = require('./Plaats.tsx').default;
 
 const IndelingslijstGroup = ({
     page,

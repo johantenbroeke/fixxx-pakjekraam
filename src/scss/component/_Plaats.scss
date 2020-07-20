@@ -1,15 +1,12 @@
 $plaatsCellHeight: 16px;
-.table-cell--left {
-    text-align: left;
-}
 
 .Plaats {
     position: relative;
+
     &__prop {
         position: relative;
         z-index: 1;
         padding: 0 7px 0 9px;
-        flex-grow: 1;
         border-top: 1px solid #000;
         border-bottom: 1px solid #000;
         border-right: 1px solid #000;

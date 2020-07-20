@@ -2,7 +2,13 @@ import * as React from 'react';
 import OndernemerStatus from './OndernemerStatus.jsx';
 import PrintableBackground from './PrintableBackground.jsx';
 import PropTypes from 'prop-types';
-import { IMarktplaats, IMarktondernemer, IRSVP, IToewijzing } from '../../markt.model';
+import {
+    IBranche,
+    IMarktplaats,
+    IMarktondernemer,
+    IRSVP,
+    IToewijzing
+} from '../../markt.model';
 
 const Plaats = ({
     plaats,
