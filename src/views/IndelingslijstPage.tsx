@@ -29,7 +29,7 @@ import IndelingslijstGroup from './components/IndelingslijstGroup';
 import PrintPage from './components/PrintPage';
 import Street from './components/Street';
 
-type IndelingslijstenPageState = {
+type IndelingslijstPageState = {
     aanmeldingen: IRSVP[];
     obstakels: IObstakelBetween[];
     marktplaatsen: IMarktplaats[];
@@ -52,9 +52,9 @@ const titleMap: { [index: string]: string } = {
     'concept-indelingslijst' : 'Concept indelingslijst',
 };
 
-export default class IndelingslijstenPage extends React.Component {
+export default class IndelingslijstPage extends React.Component {
     public render() {
-        const props = this.props as IndelingslijstenPageState;
+        const props = this.props as IndelingslijstPageState;
         const {
             aanmeldingen,
             obstakels,
