@@ -5,7 +5,7 @@ const React = require('react');
 const ObstakelList = ({ obstakelList }) => {
     return (
         <tr className="ObstakelList">
-            <td colSpan="7">
+            <td colSpan="8">
                 {obstakelList.map((obstakel, i) => {
                     return <Obstakel key={i} obstakel={obstakel} />;
                 })}

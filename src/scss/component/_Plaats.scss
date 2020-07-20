@@ -18,136 +18,116 @@ $plaatsCellHeight: 16px;
         overflow: hidden;
         text-overflow: ellipsis;
 
-        &__icon{
+        &-plaats-nr,
+        &-branche {
+            border-right: 0;
+            color: $primary-black;
+            -webkit-print-color-adjust:exact;
+            color-adjust: exact;
+            overflow: visible;
+            padding: 0 2px;
+            text-align: center;
+
+            &.background-dark {
+                color: whitesmoke;
+            }
+            &.background-light {
+                color: $primary-black;
+            }
+        }
+        &-soll {
+            text-align: right;
+            border-right: none;
+            width: 39px;
+            text-overflow: unset;
+        }
+        &-naam {
+            padding: 0;
+            width: 50%;
+
+            >div {
+                padding: 0 5px 0 2px;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+        &-properties {
+            border-right: none;
+            min-width: $plaatsCellHeight;
+            padding: 0;
+            display: none;
+
+            @media screen and (min-width: $screenMedium) {
+                display: table-cell;
+            }
+
+            .icon {
+                display: block;
+                width: 100%;
+                height: 100%;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: contain;
+                line-height: 0;
+            }
+            @each $icon, $var in $iconListPlaats {
+                .icon-#{$icon} {
+                    &:before {
+                        @include icon($var);
+                        font-size: 14px;
+                        text-align: center;
+                        display: block;
+                    }
+                }
+            }
+            .icon-bankje:before {
+                font-size: 9px;
+            }
+        }
+        &-status {
+            @include fontBold;
+            border-left: none;
+            color: $primary-white;
+            font-size: 9px;
+            padding: 0 4px;
+            text-align: center;
+            width: 25px;
+
+            &--vpl {
+                background-color: $primary-darkblue;
+            }
+            &--soll {
+                background-color: $supplement-darkgreen;
+            }
+            &--exp {
+                background-color: $supplement-purple;
+            }
+            &--vkk,
+            &--tvpl,
+            &--tvplz {
+                background-color: $supplement-lightblue;
+            }
+            &--overig {
+                background-color: $support-focus;
+            }
+        }
+
+        &__icon {
             position: absolute;
             left: 3px;
-            img{
+            img {
                 width: 9px;
-                height: 9px;    
+                height: 9px;
             }
         }
 
     }
-    &__prop-vph{
-        // padding-left: 1rem;
-    }
-    &__target {
-        display: block;
-        margin: 0;
-        padding: 0;
-        width: 0;
-        height: 0;
-        visibility: hidden;
-    }
-    &__prop-plaats-nr {
 
-        -webkit-print-color-adjust:exact;
-        color-adjust: exact;//:For Firefox
-        width: 33px;
-        color: $primary-black;
-        text-align: center;
-        border-right: none;
-        position: relative;
-        z-index: 1;
-
-        .roze & {
-            background-color: #ff99cc;
-        }
-        .licht-blauw & {
-            background-color: #ccffff;
-        }
-        .oranje & {
-            background-color: #ff9900;
-        }
-        .blauw & {
-            color: white;
-            background-color: #333399;
-        }
-        .grijs & {
-            background-color: #c0c0c0;
-        }
-        .groen & {
-            background-color: #1fb714;
-        }
-        .licht-groen & {
-            background-color: #99cc00;
-        }
-        .rood & {
-            background-color: #ff0000;
-        }
-        .prom & {
-            background-color: #fcf305;
-        }
-        .exp & {
-            background-color: #99ccff;
-        }
-        @each $key, $color in $colorListBranch {
-            .#{$key} & {
-                background-color: $color;
-            }
-        }
-        .kraam-8-meter & {
-            background-color: rgb(253, 152, 39);
-        }
-
-        .buiten-gebruik {
-            background-color: rgb(218, 16, 25);
-        }
-
-        .branche-kaas &,
-        .branche-bakker &,
-        .branche-churros &,
-        .branche-noten &,
-        .branche-humus-olijven &,
-        .branche-gebakken-vis & {
-            background-color: rgb(192, 192, 192);
-        }
-
-        .branche-vis & {
-            background-color: rgb(52, 55, 151);
-        }
-
-        .branche-natte-vis & {
-            background-color: rgb(206, 255, 255);
-        }
-
-        .branche-kip & {
-            background-color: rgb(154, 202, 39);
-        }
-
-        .branche-agf & {
-            background-color: rgb(43, 181, 39);
-        }
-
-        .experimentele-zone & {
-            background-color: rgb(155, 205, 253);
-        }
-
-        .branche-bak & {
-            background-color: rgb(253, 155, 203);
-        }
-
-        .standwerkersplaats & {
-            background-color: rgb(251, 241, 54);
-        }
-    }
-    &__prop-soll {
-        text-align: right;
-        border-right: none;
-        width: 39px;
-        text-overflow: unset;
-    }
-    &__prop-naam {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 30%;
-        border-left: none;
-        padding: 0;
-    }
-    .Plaats__prop-vph-description {
-        border-right: none;
-    }
     &--vph-attendance-not-attending {
         .Plaats__prop-vph-description{
             &:after {
@@ -166,57 +146,9 @@ $plaatsCellHeight: 16px;
             border-left: 3px solid $primary-black;
         }
     }
-    &__prop-properties {
-        border-right: none;
-        width: $plaatsCellHeight;
-        padding: 0;
-        display: none;
-        .icon {
-            display: block;
-            width: 100%;
-            height: 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-            line-height: 0;
-        }
-        @each $icon, $var in $iconListPlaats {
-            .icon-#{$icon} {
-                &:before {
-                    @include icon($var);
-                    font-size: 14px;
-                    text-align: center;
-                    display: block;
-                }
-            }
-        }
-        .icon-bankje:before {
-            font-size: 9px;
-        }
-    }
-    &__prop-empty-fields {
-        border-left: none;
-        border-right: none;
-        &:last-of-type {
-            border-right: 1px solid;
-        }
-    }
+
     &--first .Plaats__prop {
         border-top: solid 1px #000000;
-    }
-    &__prop-status {
-        width: 25px;
-        padding: 0;
-        border-left: none;
-        .OndernemerStatus {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            text-align: center;
-            padding: 0;
-        }
     }
 
     &.experimentele-zone .Plaats__prop:after,
@@ -234,10 +166,5 @@ $plaatsCellHeight: 16px;
     }
     &.experimentele-zone .Plaats__prop:after {
         border-top-color: #9bcdfd;
-    }
-    @media screen and (min-width: $screenMedium) {
-        &__prop-properties {
-            display: table-cell;
-        }
     }
 }

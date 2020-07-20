@@ -134,6 +134,8 @@ export default class IndelingslijstPage extends React.Component {
                         toewijzingen={toewijzingen}
                     ></IndelingsLegenda>
                 </PrintPage>
+
+                <script src="/js/IndelingslijstPage.js"></script>
             </MarktDetailBase>
         );
     }

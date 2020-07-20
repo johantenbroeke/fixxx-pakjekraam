@@ -1,40 +1,16 @@
 .IndelingslijstGroup {
     width: 48%;
     vertical-align: top;
-    &__header {
-        padding: 0 5px;
-        border: none !important;
-        @include p1;
-    }
-    &__header-row {
-        //display: flex;
-    }
-    &__header-plaats {
-    }
-    &__header-properties {
-    }
-    &__vph {
-        text-align: right;
-        padding-right: 0;
-    }
-    &__table {
-        width: 100%;
-        table-layout: fixed;
-        & *,
-        & {
-            box-sizing: content-box;
-        }
-    }
-    &--markt-19.IndelingslijstGroup--straat-1a {
-        margin-top: 61px;
-    }
+
     &__title {
         display: inline-block;
         margin: 20px 0 0 0;
     }
+
     &--block-right {
         margin-left: 52%;
     }
+
     &__landmark {
         @include p1;
         @include fontBold;
@@ -47,6 +23,7 @@
         line-height: 20px;
         z-index: 1;
         border: 1px solid $neutral-grey5;
+
         &:after {
             content: "";
             position: absolute;
@@ -56,6 +33,20 @@
             right: 0;
             border-top: solid 20px $neutral-grey2;
         }
-        //border: 1px solid $neutral-grey4;
+
+        &-bottom {
+            margin-top: 10px;
+        }
+    }
+
+    &__table {
+        border-collapse: collapse;
+        width: 100%;
+
+        >thead th {
+            padding: 0;
+            border: none !important;
+            text-align: center;
+        }
     }
 }

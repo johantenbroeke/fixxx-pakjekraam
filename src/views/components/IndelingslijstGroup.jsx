@@ -38,23 +38,20 @@ const IndelingslijstGroup = ({
             )}
 
             <table className="IndelingslijstGroup__table" cellPadding="0" cellSpacing="0">
-                <thead className="IndelingslijstGroup__wrapper">
-                    <tr className="IndelingslijstGroup__header-row">
-                        <th
-                            className="IndelingslijstGroup__header
-                                       IndelingslijstGroup__header-properties
-                                       Plaats__prop Plaats__prop-properties"
-                        />
-                        <th className="IndelingslijstGroup__header IndelingslijstGroup__header-plaats Plaats__prop Plaats__prop-plaats-nr">
-                            nr.
+                <thead>
+                    <tr>
+                        <th className="Plaats__prop"></th>
+                        <th className="Plaats__prop">nr.</th>
+                        <th className="Plaats__prop">
+                            br.
                         </th>
-                        <th className="IndelingslijstGroup__header IndelingslijstGroup__vph Plaats__prop Plaats__prop-soll">
+                        <th className="vph Plaats__prop Plaats__prop-soll">
                             vph
                         </th>
-                        <th className="IndelingslijstGroup__header IndelingslijstGroup__vph Plaats__prop Plaats__prop-naam" />
-                        <th className="IndelingslijstGroup__header IndelingslijstGroup__empty-field Plaats__prop Plaats__prop-soll" />
-                        <th className="IndelingslijstGroup__header IndelingslijstGroup__empty-field Plaats__prop Plaats__prop-naam" />
-                        <th className="IndelingslijstGroup__header IndelingslijstGroup__status Plaats__prop Plaats__prop-status" />
+                        <th className="vph Plaats__prop Plaats__prop-naam" />
+                        <th className="Plaats__prop Plaats__prop-soll" />
+                        <th className="Plaats__prop Plaats__prop-naam" />
+                        <th className="Plaats__prop Plaats__prop-status" />
                     </tr>
                 </thead>
                 <tbody className="IndelingslijstGroup__wrapper">
@@ -77,17 +74,16 @@ const IndelingslijstGroup = ({
                             ({ erkenningsNummer }) => erkenningsNummer === toewijzing.erkenningsNummer,
                         ) : null;
 
-                        const plaats = plaatsList[plaatsNr];
-                        let color = null;
-                        if (plaats.branches) {
-                            const plaatsBranche = branches.find(branche => branche.brancheId === plaats.branches[0]);
-                            plaatsBranche && plaatsBranche.color ? color = plaatsBranche.color : null;
-                        }
+                        const plaats        = plaatsList[plaatsNr];
+                        const plaatsBranche = plaats.branches ?
+                                              branches.find(branche => branche.brancheId === plaats.branches[0]) :
+                                              null;
 
                         const plaatsProps = {
                             first,
                             key: plaatsNr,
                             plaats: plaatsList[plaatsNr],
+                            branche: plaatsBranche,
                             obstakels: obstakelList,
                             ondernemer: ingedeeldeOndernemer,
                             vph: originelePlaatshouder,
@@ -100,8 +96,7 @@ const IndelingslijstGroup = ({
                             aanmelding: aanmeldingVph,
                             markt,
                             datum,
-                            toewijzing,
-                            color,
+                            toewijzing
                         };
 
                         if (plaatsList[plaatsNr]) {
