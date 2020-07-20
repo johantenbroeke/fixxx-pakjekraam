@@ -5,13 +5,9 @@ const icons = ['loopjediedichtmag', 'lantaarnpaal', 'bankje', 'boom', 'electra']
 
 const Obstakel = ({ obstakel }) => {
     return (
-        <span
-            className={
-                'Obstakel ' + (icons.includes(obstakel) ? 'Obstakel__icon icon-' + obstakel : ' Obstakel__street')
-            }
-        >
-            <span className="Obstakel__text">{obstakel === 'loopje' ? '' : obstakel}</span>
-        </span>
+        <span className={
+            'Obstakel ' + (icons.includes(obstakel) ? 'Obstakel__icon icon-' + obstakel : ' Obstakel__street')
+        }> </span>
     );
 };
 
