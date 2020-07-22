@@ -40,18 +40,18 @@ const IndelingslijstGroup = ({
             <table className="IndelingslijstGroup__table" cellPadding="0" cellSpacing="0">
                 <thead>
                     <tr>
-                        <th className="Plaats__prop"></th>
+                        <th className="Plaats__prop Plaats__prop-properties"></th>
                         <th className="Plaats__prop">nr.</th>
                         <th className="Plaats__prop">
                             br.
                         </th>
-                        <th className="vph Plaats__prop Plaats__prop-soll">
+                        <th className="Plaats__prop">
                             vph
                         </th>
-                        <th className="vph Plaats__prop Plaats__prop-naam" />
-                        <th className="Plaats__prop Plaats__prop-soll" />
-                        <th className="Plaats__prop Plaats__prop-naam" />
-                        <th className="Plaats__prop Plaats__prop-status" />
+                        <th className="Plaats__prop" />
+                        <th className="Plaats__prop" />
+                        <th className="Plaats__prop" />
+                        <th className="Plaats__prop" />
                     </tr>
                 </thead>
                 <tbody className="IndelingslijstGroup__wrapper">
