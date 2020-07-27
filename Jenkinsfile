@@ -51,7 +51,11 @@ node {
             sh 'echo SOURCE_COMMIT := $commit_id >> .build'
             println commit_id
             echo 'end git version'
+            if (BRANCH == "${ACCEPTANCE_BRANCH}") {            
             image = docker.build("docker-registry.secure.amsterdam.nl/${PROJECTNAME}:${env.BUILD_NUMBER}")
+            } else {
+            image = docker.build("build.app.amsterdam.nl:5000/${PROJECTNAME}:${env.BUILD_NUMBER}")
+            }
             image.push()
         }
     }
@@ -81,8 +85,7 @@ if (BRANCH == "${PRODUCTION_BRANCH}") {
             build job: 'Subtask_Openstack_Playbook',
                 parameters: [
                     [$class: 'StringParameterValue', name: 'INVENTORY', value: 'production'],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: "${PLAYBOOK}"],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_pakjekraam"],
+                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-pakjekraam.yml'],
                 ]
         }
     }
