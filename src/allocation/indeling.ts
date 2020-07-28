@@ -270,17 +270,6 @@ const Indeling = {
         );
     },
 
-    // Wordt in `calcToewijzingen` gebruikt om een splitsing te maken tussen A-lijst
-    // ondernemers en de rest.
-    getListGroup: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ): number => {
-        return Ondernemer.isVast(ondernemer)        ? 1 :
-               indeling.aLijst.includes(ondernemer) ? 1 :
-                                                      2;
-    },
-
     isAanwezig: (
         ondernemer: IMarktondernemer,
         aanmeldingen: IRSVP[],
