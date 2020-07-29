@@ -21,6 +21,11 @@
       "obstakel": ["loopje"]
     },
     {
+      "kraamA": "19",
+      "kraamB": "21",
+      "obstakel": ["loopje"]
+    },
+    {
       "kraamA": "20",
       "kraamB": "22",
       "obstakel": ["loopje"]
@@ -46,11 +51,6 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "31",
-      "kraamB": "33",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "32",
       "kraamB": "34",
       "obstakel": ["loopje"]
@@ -66,8 +66,8 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "39",
-      "kraamB": "41",
+      "kraamA": "38",
+      "kraamB": "40",
       "obstakel": ["loopje"]
     },
     {
@@ -81,11 +81,6 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "43",
-      "kraamB": "45",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "44",
       "kraamB": "46",
       "obstakel": ["loopje"]
@@ -96,8 +91,8 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "52",
-      "kraamB": "54",
+      "kraamA": "51",
+      "kraamB": "53",
       "obstakel": ["loopje"]
     },
     {
@@ -116,33 +111,23 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "63",
-      "kraamB": "65",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "64",
       "kraamB": "66",
       "obstakel": ["loopje"]
     }, 
     {
-      "kraamA": "77",
-      "kraamB": "79",
+      "kraamA": "67",
+      "kraamB": "69",
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "79",
-      "kraamB": "81",
+      "kraamA": "72",
+      "kraamB": "74",
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "81",
-      "kraamB": "83",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "83",
-      "kraamB": "85",
+      "kraamA": "80",
+      "kraamB": "82",
       "obstakel": ["loopje"]
     },
     {
@@ -151,33 +136,23 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "85",
-      "kraamB": "87",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "88",
       "kraamB": "90",
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "97",
-      "kraamB": "99",
+      "kraamA": "91",
+      "kraamB": "93",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "94",
+      "kraamB": "96",
       "obstakel": ["loopje"]
     },
     {
       "kraamA": "100",
       "kraamB": "102",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "103",
-      "kraamB": "105",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "106",
-      "kraamB": "108",
       "obstakel": ["loopje"]
     },
     {
@@ -193,6 +168,11 @@
     {
       "kraamA": "113",
       "kraamB": "115",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "114",
+      "kraamB": "116",
       "obstakel": ["loopje"]
     },
     {
@@ -221,16 +201,6 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "129",
-      "kraamB": "131",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "131",
-      "kraamB": "133",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "132",
       "kraamB": "134",
       "obstakel": ["loopje"]
@@ -238,6 +208,11 @@
     {
       "kraamA": "133",
       "kraamB": "135",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "136",
+      "kraamB": "138",
       "obstakel": ["loopje"]
     },
     {
@@ -256,6 +231,11 @@
       "obstakel": ["loopje"]
     },
     {
+      "kraamA": "146",
+      "kraamB": "148",
+      "obstakel": ["loopje"]
+    },
+    {
       "kraamA": "152",
       "kraamB": "154",
       "obstakel": ["loopje"]
@@ -263,6 +243,21 @@
     {
       "kraamA": "155",
       "kraamB": "157",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "156",
+      "kraamB": "158",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "160",
+      "kraamB": "162",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "166",
+      "kraamB": "168",
       "obstakel": ["loopje"]
     },
     {
@@ -286,8 +281,23 @@
       "obstakel": ["loopje"]
     },
     {
+      "kraamA": "176",
+      "kraamB": "178",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "181",
+      "kraamB": "183",
+      "obstakel": ["loopje"]
+    },
+    {
       "kraamA": "182",
       "kraamB": "184",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "188",
+      "kraamB": "190",
       "obstakel": ["loopje"]
     },
     {
@@ -326,6 +336,11 @@
       "obstakel": ["loopje"]
     },
     {
+      "kraamA": "204",
+      "kraamB": "206",
+      "obstakel": ["loopje"]
+    },
+    {
       "kraamA": "205",
       "kraamB": "207",
       "obstakel": ["loopje"]
@@ -341,8 +356,13 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "220",
-      "kraamB": "222",
+      "kraamA": "215",
+      "kraamB": "217",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "225",
+      "kraamB": "227",
       "obstakel": ["loopje"]
     },
     {
@@ -351,13 +371,13 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "232",
-      "kraamB": "234",
+      "kraamA": "229",
+      "kraamB": "231",
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "237",
-      "kraamB": "239",
+      "kraamA": "232",
+      "kraamB": "234",
       "obstakel": ["loopje"]
     },
     {
@@ -371,8 +391,8 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "246",
-      "kraamB": "248",
+      "kraamA": "243",
+      "kraamB": "245",
       "obstakel": ["loopje"]
     },
     {
@@ -381,18 +401,28 @@
       "obstakel": ["loopje"]
     },
     {
+      "kraamA": "251",
+      "kraamB": "253",
+      "obstakel": ["loopje"]
+    },
+    {
       "kraamA": "255",
       "kraamB": "257",
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "257",
-      "kraamB": "259",
+      "kraamA": "258",
+      "kraamB": "260",
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "258",
-      "kraamB": "260",
+      "kraamA": "262",
+      "kraamB": "264",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "266",
+      "kraamB": "268",
       "obstakel": ["loopje"]
     }
   ]
