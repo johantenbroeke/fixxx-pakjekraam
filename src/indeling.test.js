@@ -279,27 +279,6 @@ describe('Een ondernemer wordt afgewezen', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
     });
-
-    // TODO: Deze functionaliteit wordt niet gebruikt? Momenteel niet meer
-    //       geïmplementeerd.
-    it.skip('als het maximum aantal branche-ondernemers wordt overschreden ', () => {
-        const { toewijzingen, afwijzingen } = calc({
-            ondernemers: [
-                { sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } },
-                { sollicitatieNummer: 42, voorkeur: { branches: ['branche-x'] } }
-            ],
-            marktplaatsen: [{}, {}],
-            branches: [{
-                brancheId: 'branche-x',
-                maximumToewijzingen: 1
-            }]
-        });
-
-        expect(toewijzingen.length).toBe(1);
-        expect(afwijzingen.length).toBe(1);
-        expect(findPlaatsen(toewijzingen, 42)).toStrictEqual(['1']);
-        expect(isRejected(afwijzingen, 99)).toBe(true);
-    });
 });
 
 describe('Een VPL/TVPL die niet ingedeeld wil worden', () => {
@@ -548,7 +527,8 @@ describe('Een TVPLZ die ingedeeld wil worden', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
     });
 
-    it('krijgt voorkeur boven sollicitanten', () => {
+    // Uitgezet omdat dit in Corona tijd niet meer geldt.
+    it.skip('krijgt voorkeur boven sollicitanten', () => {
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'soll' },
@@ -582,6 +562,42 @@ describe('Een TVPLZ die ingedeeld wil worden', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['3']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['2']);
+    });
+    it('krijgt GEEN voorkeur boven sollicitanten in Coronatijd', () => {
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'soll' },
+                { sollicitatieNummer: 2, status: 'tvplz', plaatsen: ['1'] }
+            ],
+            marktplaatsen: ['1']
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, voorkeur: { branches: ['a'] }, status: 'soll' },
+                { sollicitatieNummer: 2, voorkeur: { branches: ['a'] }, status: 'tvplz', plaatsen: ['2'] },
+                { sollicitatieNummer: 3, voorkeur: { branches: ['a'] }, status: 'tvplz', plaatsen: ['1'] }
+            ],
+            marktplaatsen: [
+                { branches: ['a'] }, { branches: ['a'] }, { branches: ['a'] }
+            ],
+            branches: [
+                { brancheId: 'a', verplicht: true }
+            ],
+            voorkeuren: [
+                { sollicitatieNummer: 3, plaatsId: '2' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2, 3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['3']);
         expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['2']);
     });
 
@@ -800,6 +816,27 @@ describe('Een ondernemer in een verplichte branche (bijv. bak)', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
+    });
+
+    // TODO: Deze functionaliteit wordt niet gebruikt? Momenteel niet meer
+    //       geïmplementeerd.
+    it.skip('wordt afgewezen als het maximum aantal branche-ondernemers bereikt is', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } },
+                { sollicitatieNummer: 42, voorkeur: { branches: ['branche-x'] } }
+            ],
+            marktplaatsen: [{}, {}],
+            branches: [{
+                brancheId: 'branche-x',
+                maximumToewijzingen: 1
+            }]
+        });
+
+        expect(toewijzingen.length).toBe(1);
+        expect(afwijzingen.length).toBe(1);
+        expect(findPlaatsen(toewijzingen, 42)).toStrictEqual(['1']);
+        expect(isRejected(afwijzingen, 99)).toBe(true);
     });
 
     it('krijgt voorrang boven VPLs die willen verplaatsen', () => {
@@ -1035,7 +1072,8 @@ describe('Een ondernemer met een EVI', () => {
 });
 
 describe('Een VPL die wil verplaatsen', () => {
-    it('krijgt WEL voorrang boven sollicitanten die niet willen bakken', () => {
+    // Uitgezet omdat dit in Corona tijd niet meer geldt.
+    it.skip('krijgt WEL voorrang boven sollicitanten die niet willen bakken', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1 },
@@ -1052,6 +1090,24 @@ describe('Een VPL die wil verplaatsen', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
+    });
+    it('krijgt GEEN voorrang boven sollicitanten die niet willen bakken', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1 },
+                { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['1'] }
+            ],
+            marktplaatsen: [{}, {}],
+            voorkeuren: [
+                { sollicitatieNummer: 1, plaatsId: '2' },
+                { sollicitatieNummer: 2, plaatsId: '2' }
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 
     it.todo('krijgt WEL voorrang boven bak ondernemers als zij zelf ook bakken');
