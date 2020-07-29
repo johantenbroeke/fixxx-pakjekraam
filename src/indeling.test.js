@@ -279,27 +279,6 @@ describe('Een ondernemer wordt afgewezen', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1']);
     });
-
-    // TODO: Deze functionaliteit wordt niet gebruikt? Momenteel niet meer
-    //       geïmplementeerd.
-    it.skip('als het maximum aantal branche-ondernemers wordt overschreden ', () => {
-        const { toewijzingen, afwijzingen } = calc({
-            ondernemers: [
-                { sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } },
-                { sollicitatieNummer: 42, voorkeur: { branches: ['branche-x'] } }
-            ],
-            marktplaatsen: [{}, {}],
-            branches: [{
-                brancheId: 'branche-x',
-                maximumToewijzingen: 1
-            }]
-        });
-
-        expect(toewijzingen.length).toBe(1);
-        expect(afwijzingen.length).toBe(1);
-        expect(findPlaatsen(toewijzingen, 42)).toStrictEqual(['1']);
-        expect(isRejected(afwijzingen, 99)).toBe(true);
-    });
 });
 
 describe('Een VPL/TVPL die niet ingedeeld wil worden', () => {
@@ -800,6 +779,27 @@ describe('Een ondernemer in een verplichte branche (bijv. bak)', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
+    });
+
+    // TODO: Deze functionaliteit wordt niet gebruikt? Momenteel niet meer
+    //       geïmplementeerd.
+    it.skip('wordt afgewezen als het maximum aantal branche-ondernemers bereikt is', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 99, voorkeur: { branches: ['branche-x'] } },
+                { sollicitatieNummer: 42, voorkeur: { branches: ['branche-x'] } }
+            ],
+            marktplaatsen: [{}, {}],
+            branches: [{
+                brancheId: 'branche-x',
+                maximumToewijzingen: 1
+            }]
+        });
+
+        expect(toewijzingen.length).toBe(1);
+        expect(afwijzingen.length).toBe(1);
+        expect(findPlaatsen(toewijzingen, 42)).toStrictEqual(['1']);
+        expect(isRejected(afwijzingen, 99)).toBe(true);
     });
 
     it('krijgt voorrang boven VPLs die willen verplaatsen', () => {
