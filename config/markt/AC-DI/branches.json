@@ -8,6 +8,10 @@
         "verplicht": false
     },
     {
+        "brancheId": "102-bio-health-fairtrade",
+        "verplicht": false
+    },    
+    {
         "brancheId": "103-brood-banket",
         "verplicht": false
     },
