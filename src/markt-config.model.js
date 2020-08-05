@@ -13,7 +13,8 @@ module.exports = function( INDEX ) {
         properties: {
           'brancheId': { type: 'string', required: true },
           'description': { type: 'string', required: true },
-          'color': { type: 'string', required: true }
+          'color': { type: 'string', required: true },
+          'number': { type: 'number' }
         },
         additionalProperties: false
       }
