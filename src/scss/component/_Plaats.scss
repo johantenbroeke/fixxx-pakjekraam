@@ -25,7 +25,8 @@ $plaatsCellHeight: 16px;
             -webkit-print-color-adjust:exact;
             color-adjust: exact;
             overflow: visible;
-            padding: 0 2px;
+            padding: 0 4px;
+            position: relative;
             text-align: center;
 
             &.background-dark {
@@ -33,6 +34,18 @@ $plaatsCellHeight: 16px;
             }
             &.background-light {
                 color: $primary-black;
+            }
+
+            &.bak::after {
+                border: 4px solid #FF8100;
+                border-color: #FF8100 transparent transparent transparent;
+                content: '';
+                transform: rotate(135deg);
+                height: 0;
+                position: absolute;
+                width: 0;
+                top: -4px;
+                left: -4px;
             }
         }
         &-soll {
