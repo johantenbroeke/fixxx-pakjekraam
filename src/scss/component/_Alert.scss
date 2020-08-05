@@ -35,7 +35,23 @@
         margin-left: $gutter;
     }
 
-    &__icon:before {
+    &.inline {
+        animation: none;
+        display: block;
+        left: auto;
+        margin: $gutter auto;
+        max-width: 400px;
+        opacity: 1;
+        position: relative;
+        top: auto;
+        transform: none;
+        z-index: 90;
+    }
+    &.wide {
+        max-width: 620px;
+    }
+
+    >.icon:before {
         position: absolute;
         left: 20px;
         top: 16px;
@@ -44,57 +60,55 @@
         font-size: 22px;
         @include icon($icon-Alert);
     }
-    &__title {
+    >h4 {
         @include h4;
         margin: 0;
     }
-    &__message {
+    >.message {
         @include p1;
         margin-top: 2px;
+
+        >.sub {
+            font-size: 0.875rem;
+            font-style: italic;
+        }
     }
-    &--error {
+
+    &.error {
         border-color: $primary-red;
-        .Alert__icon:before {
+
+        >.icon:before {
             @include icon($icon-Error);
             color: $primary-red;
             top: 20px;
             font-size: 20px;
         }
     }
-    &--activation-failed,
-    &--non-matching-passwords,
-    &--incorrect-credentials,
-    &--warning {
+    &.activation-failed,
+    &.non-matching-passwords,
+    &.incorrect-credentials,
+    &.warning {
         border-color: $supplement-orange;
-        .Alert__icon:before {
+
+        >.icon:before {
             color: $supplement-orange;
         }
     }
-    &--algemene-voorkeuren-saved,
-    &--plaatsvoorkeuren-saved,
-    &--aanwezigheid-saved,
-    &--success {
+    &.algemene-voorkeuren-saved,
+    &.plaatsvoorkeuren-saved,
+    &.aanwezigheid-saved,
+    &.success {
         border-color: $supplement-lightgreen;
-        .Alert__icon:before {
+
+        >.icon:before {
             @include icon($icon-Check-Mark);
             color: $supplement-lightgreen;
         }
     }
+
     @for $i from 1 through 10 {
         &:nth-child(#{$i}) {
             animation-delay: (($i - 1) * 4s);
         }
-    }
-    &--inline {
-        position: relative;
-        display: block;
-        margin: 0 auto $gutter;
-        animation: none;
-        opacity: 1;
-        transform: none;
-        left: auto;
-        top: auto;
-        max-width: 400px;
-        z-index: 90;
     }
 }

@@ -11,7 +11,7 @@ import {
 
 const Plaats = ({
     plaats,
-    branche,
+    branches,
     vph,
     ondernemer,
     first,
@@ -25,7 +25,7 @@ const Plaats = ({
     ondernemerGewisseld
 }: {
     plaats: IMarktplaats;
-    branche?: IBranche;
+    branches?: IBranche[];
     vph?: IMarktondernemer;
     ondernemer?: IMarktondernemer;
     first?: boolean;
@@ -41,11 +41,15 @@ const Plaats = ({
     const plaatsProps = (plaats.properties || [])
                         .filter(word => !['dubble'].includes(word))
                         .reverse();
-    const color = branche ? branche.color : null;
-    const tags = (plaats.properties || []).filter(word =>
+    // `realBranche` om duidelijk te maken dat 'bak' niet als een echte branche gezien
+    // wordt.
+    const realBranche = branches.find(branche => branche.brancheId !== 'bak');
+    const wilBakken   = branches.find(branche => branche.brancheId === 'bak');
+    const color       = realBranche ? realBranche.color : null;
+    const tags        = (plaats.properties || []).filter(word =>
         ['experimentele-zone', 'standwerkersplaats', 'eigen-materiaal'].includes(word)
     );
-    const voorkeur = vph && vph.voorkeur;
+    const voorkeur    = vph && vph.voorkeur;
 
     return (
         <tr
@@ -61,8 +65,11 @@ const Plaats = ({
             <td className="Plaats__prop Plaats__prop-plaats-nr">
                 {plaats.plaatsId}
             </td>
-            <td className="Plaats__prop Plaats__prop-branche autoColor" style={{ backgroundColor: color || 'transparent' }}>
-                {branche ? branche.number : null}
+            <td
+                className={`Plaats__prop Plaats__prop-branche autoColor ${wilBakken ? 'bak' : ''}`}
+                style={{ backgroundColor: color || 'transparent' }}
+            >
+                {realBranche ? realBranche.number : null}
             </td>
             <td className="Plaats__prop Plaats__prop-soll Plaats__prop-vph">
                 {opUitgebreid ? <div className="Plaats__prop__icon Icon Icon--plus"></div> : null }

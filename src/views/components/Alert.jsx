@@ -3,10 +3,10 @@ const React = require('react');
 
 const Alert = ({ type, message, title, inline, children }) => {
     return (
-        <div className={`Alert Alert--${type} ${inline ? `Alert--inline` : ``}`}>
-            <span className="Alert__icon" />
-            {title && <h4 className="Alert__title">{title}</h4>}
-            <span className="Alert__message">{message ? message : children}</span>
+        <div className={`Alert ${type} ${inline ? 'inline' : ''}`}>
+            <span className="icon" />
+            {title && <h4>{title}</h4>}
+            <span className="message">{message ? message : children}</span>
         </div>
     );
 };
