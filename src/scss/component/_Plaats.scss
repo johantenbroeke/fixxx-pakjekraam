@@ -3,6 +3,10 @@ $plaatsCellHeight: 16px;
 .Plaats {
     position: relative;
 
+    &--first .Plaats__prop {
+        border-top: solid 1px #000000;
+    }
+
     &__prop {
         position: relative;
         z-index: 1;
@@ -158,10 +162,6 @@ $plaatsCellHeight: 16px;
         .Plaats__prop-vph {
             border-left: 3px solid $primary-black;
         }
-    }
-
-    &--first .Plaats__prop {
-        border-top: solid 1px #000000;
     }
 
     &.experimentele-zone .Plaats__prop:after,
