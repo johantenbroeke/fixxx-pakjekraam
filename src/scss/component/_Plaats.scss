@@ -102,6 +102,14 @@ $plaatsCellHeight: 16px;
                     }
                 }
             }
+            .icon-water {
+                background-image: url('/images/water.svg');
+                background-position: center 1px;
+                background-repeat: no-repeat;
+                background-size: contain;
+                height: 16px;
+                width: 16px;
+            }
             .icon-bankje:before {
                 font-size: 9px;
             }
