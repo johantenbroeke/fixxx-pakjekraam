@@ -38,9 +38,7 @@ const Plaats = ({
     ondernemerUitgebreid?: boolean;
     ondernemerGewisseld?: boolean;
 }) => {
-    const plaatsProps = (plaats.properties || [])
-                        .filter(word => !['dubble'].includes(word))
-                        .reverse();
+    const plaatsProps = plaats.properties;
     // `realBranche` om duidelijk te maken dat 'bak' niet als een echte branche gezien
     // wordt.
     const realBranche = branches.find(branche => branche.brancheId !== 'bak');
