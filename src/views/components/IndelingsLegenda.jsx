@@ -16,7 +16,7 @@ const IndelingsLegenda = ({
     const showToewijzingen     = !!toewijzingen.length;
     const indelingenPerBranche = showToewijzingen ?
                                  countToewijzingenPerBranche(relevantBranches, ondernemers, toewijzingen) :
-                                 {}; // countAanmeldingenPerBranche(relevantBranches, ondernemers, aanmeldingen);
+                                 {};
 
     return (
         <div className="IndelingsLegenda">
@@ -33,7 +33,7 @@ const IndelingsLegenda = ({
                 <tbody>
             {relevantBranches.map((branche, i) =>
                 <tr key={i}>
-                    <td className="autoColor" style={{ backgroundColor: branche.color || 'transparent' }}>{branche.number}</td>
+                    <td className={`autoColor ${branche.brancheId}`} style={{ backgroundColor: branche.color || 'transparent' }}>{branche.number}</td>
                     <td>{branche.description}</td>
                     <td className={!branche.maximumPlaatsen ? 'nvt' : ''}>{branche.maximumPlaatsen || '—'}</td>
                     {showToewijzingen && <td>{indelingenPerBranche[branche.brancheId] || 0}</td>}
@@ -58,29 +58,14 @@ const _isRelevantBrancheForLegend = (marktplaatsen, branche) => {
     const relevantForLegend = true; /* branche.maximumPlaatsen ||
                               branche.maximumToewijzingen ||
                               branche.verplicht; */
+
     if (!relevantForLegend) {
-        return result;
+        return false;
     }
 
     return !!marktplaatsen.find(({ branches }) =>
-        // branches && branches.includes(brancheId)
-        branches && branches[0] === brancheId
+        branches && branches.includes(brancheId)
     );
-};
-
-const _countPlaatsenPerBranche = (allBranches, marktplaatsen) => {
-    return marktplaatsen.reduce((result, marktplaats) => {
-        const brancheId = marktplaats.branches ?
-                          marktplaats.branches[0] :
-                          null;
-
-        if (brancheId) {
-            result[brancheId] = result[brancheId] || 0;
-            result[brancheId]++;
-        }
-
-        return result;
-    }, {});
 };
 
 const getAllBranchesForLegend = (allBranches, marktplaatsen) => {
@@ -91,14 +76,20 @@ const getAllBranchesForLegend = (allBranches, marktplaatsen) => {
         }
         if (!branche.maximumPlaatsen && branche.verplicht) {
             const branchePlaatsen = marktplaatsen.filter(plaats =>
-                plaats.branches && plaats.branches[0] === branche.brancheId
+                plaats.branches && plaats.branches.includes(branche.brancheId)
             );
             branche = { ...branche, maximumPlaatsen: branchePlaatsen.length };
         }
         return result.concat(branche);
     }, [])
     .sort((a, b) =>
-        String(a.description).localeCompare(b.description, { sensitivity: 'base' })
+        // `bak` moet bovenaan de lijst staan in de legenda. Bakken is niet echt
+        // een branche, maar een toevoeging op een branche. In de indeling wordt
+        // dit per plaats aangeduid met een driehoekje linksboven in de branchekleur
+        // van een plaats.
+        b.brancheId !== 'bak' ?
+        String(a.description).localeCompare(b.description, { sensitivity: 'base' }) :
+        1
     );
 };
 
@@ -112,15 +103,15 @@ const countToewijzingenPerBranche = (allBranches, ondernemers, toewijzingen) => 
                            ondernemers.find(({ erkenningsNummer }) =>
                              erkenningsNummer === toewijzing.erkenningsNummer
                            );
-        const brancheId = ondernemer.voorkeur && ondernemer.voorkeur.branches &&
-                          ondernemer.voorkeur.branches[0];
 
-        if (brancheId) {
-            result[brancheId] = result[brancheId] || 0;
-            result[brancheId] += toewijzing.plaatsen.length;
+        if (!ondernemer.voorkeur || !ondernemer.voorkeur.branches) {
+            return result;
         }
 
-        return result;
+        return ondernemer.voorkeur.branches.reduce((_result, brancheId) => {
+            _result[brancheId] = (_result[brancheId] || 0) + toewijzing.plaatsen.length;
+            return _result;
+        }, result);
     }, {});
 };
 

@@ -3,6 +3,10 @@ $plaatsCellHeight: 16px;
 .Plaats {
     position: relative;
 
+    &--first .Plaats__prop {
+        border-top: solid 1px #000000;
+    }
+
     &__prop {
         position: relative;
         z-index: 1;
@@ -25,7 +29,8 @@ $plaatsCellHeight: 16px;
             -webkit-print-color-adjust:exact;
             color-adjust: exact;
             overflow: visible;
-            padding: 0 2px;
+            padding: 0 4px;
+            position: relative;
             text-align: center;
 
             &.background-dark {
@@ -33,6 +38,18 @@ $plaatsCellHeight: 16px;
             }
             &.background-light {
                 color: $primary-black;
+            }
+
+            &.bak::after {
+                border: 5px solid #FF8100;
+                border-color: #FF8100 transparent transparent transparent;
+                content: '';
+                transform: rotate(135deg);
+                height: 0;
+                position: absolute;
+                width: 0;
+                top: -5px;
+                left: -5px;
             }
         }
         &-soll {
@@ -84,6 +101,14 @@ $plaatsCellHeight: 16px;
                         display: block;
                     }
                 }
+            }
+            .icon-water {
+                background-image: url('/images/water.svg');
+                background-position: center 1px;
+                background-repeat: no-repeat;
+                background-size: contain;
+                height: 16px;
+                width: 16px;
             }
             .icon-bankje:before {
                 font-size: 9px;
@@ -145,10 +170,6 @@ $plaatsCellHeight: 16px;
         .Plaats__prop-vph {
             border-left: 3px solid $primary-black;
         }
-    }
-
-    &--first .Plaats__prop {
-        border-top: solid 1px #000000;
     }
 
     &.experimentele-zone .Plaats__prop:after,

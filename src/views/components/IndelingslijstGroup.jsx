@@ -74,16 +74,15 @@ const IndelingslijstGroup = ({
                             ({ erkenningsNummer }) => erkenningsNummer === toewijzing.erkenningsNummer,
                         ) : null;
 
-                        const plaats        = plaatsList[plaatsNr];
-                        const plaatsBranche = plaats.branches ?
-                                              branches.find(branche => branche.brancheId === plaats.branches[0]) :
-                                              null;
-
+                        const plaats         = plaatsList[plaatsNr];
+                        const plaatsBranches = plaats.branches ?
+                                               branches.filter(branche => plaats.branches.includes(branche.brancheId)) :
+                                               [];
                         const plaatsProps = {
-                            first,
                             key: plaatsNr,
-                            plaats: plaatsList[plaatsNr],
-                            branche: plaatsBranche,
+                            first,
+                            plaats,
+                            branches: plaatsBranches,
                             obstakels: obstakelList,
                             ondernemer: ingedeeldeOndernemer,
                             vph: originelePlaatshouder,

@@ -26,6 +26,21 @@
                 color: $primary-black;
             }
         }
+        td.bak {
+            position: relative;
+
+            &::after {
+                border: 8px solid #FF8100;
+                border-color: #FF8100 transparent transparent transparent;
+                content: '';
+                transform: rotate(135deg);
+                height: 0;
+                position: absolute;
+                width: 0;
+                top: -8px;
+                left: -8px;
+            }
+        }
         td.nvt {
             color: #7F7F7F;
         }
