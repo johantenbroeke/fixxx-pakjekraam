@@ -33,7 +33,7 @@ const IndelingsLegenda = ({
                 <tbody>
             {relevantBranches.map((branche, i) =>
                 <tr key={i}>
-                    <td className="autoColor" style={{ backgroundColor: branche.color || 'transparent' }}>{branche.number}</td>
+                    <td className={`autoColor ${branche.brancheId}`} style={{ backgroundColor: branche.color || 'transparent' }}>{branche.number}</td>
                     <td>{branche.description}</td>
                     <td className={!branche.maximumPlaatsen ? 'nvt' : ''}>{branche.maximumPlaatsen || '—'}</td>
                     {showToewijzingen && <td>{indelingenPerBranche[branche.brancheId] || 0}</td>}
@@ -58,8 +58,9 @@ const _isRelevantBrancheForLegend = (marktplaatsen, branche) => {
     const relevantForLegend = true; /* branche.maximumPlaatsen ||
                               branche.maximumToewijzingen ||
                               branche.verplicht; */
+
     if (!relevantForLegend) {
-        return result;
+        return false;
     }
 
     return !!marktplaatsen.find(({ branches }) =>
@@ -82,7 +83,13 @@ const getAllBranchesForLegend = (allBranches, marktplaatsen) => {
         return result.concat(branche);
     }, [])
     .sort((a, b) =>
-        String(a.description).localeCompare(b.description, { sensitivity: 'base' })
+        // `bak` moet bovenaan de lijst staan in de legenda. Bakken is niet echt
+        // een branche, maar een toevoeging op een branche. In de indeling wordt
+        // dit per plaats aangeduid met een driehoekje linksboven in de branchekleur
+        // van een plaats.
+        b.brancheId !== 'bak' ?
+        String(a.description).localeCompare(b.description, { sensitivity: 'base' }) :
+        1
     );
 };
 
