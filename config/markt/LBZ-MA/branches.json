@@ -1,0 +1,54 @@
+[
+    {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
+        "brancheId": "101-agf",
+        "verplicht": false
+    }, 
+    {    
+        "brancheId": "105-noten-zuidvruchten",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "107-vis-nat",
+        "verplicht": false
+    },
+    {
+        "brancheId": "111-exotische-groenten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "207-grill-frituur",
+        "verplicht": false
+    },
+    {
+        "brancheId": "305-horloges-brillen-sieraden",
+        "verplicht": false
+    },
+    {
+        "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
+        "verplicht": false
+    },
+    {
+        "brancheId": "307-kleding-baby-kinder",
+        "verplicht": false
+    },
+    {
+        "brancheId": "309-kleding-volwassenen-hoofddeksels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "314-partijhandel-inboedels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "318-doe-het-zelf-gereedschap-ijzerwaren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "322-tapijten-vloerkleden",
+        "verplicht": false
+    }
+]

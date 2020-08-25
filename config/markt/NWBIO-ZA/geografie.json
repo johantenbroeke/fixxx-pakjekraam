@@ -1,0 +1,9 @@
+{
+  "obstakels": [
+    {
+      "kraamA": "4",
+      "kraamB": "5",
+      "obstakel": ["loopje"]
+    }
+  ]
+}

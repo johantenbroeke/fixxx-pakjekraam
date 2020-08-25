@@ -1,0 +1,26 @@
+[
+    {
+        "brancheId": "314-partijhandel-inboedels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "316-souvenirs",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "305-horloges-brillen-sieraden",
+        "verplicht": false
+    },
+    {
+        "brancheId": "303-boeken-stripboeken-muziek-film",
+        "verplicht": false
+    },
+    {
+        "brancheId": "301-antiek-kunst",
+        "verplicht": false
+    },
+    {
+        "brancheId": "315-schoenen-tassen-lederwaren",
+        "verplicht": false
+    }
+]
