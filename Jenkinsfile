@@ -51,11 +51,7 @@ node {
             sh 'echo SOURCE_COMMIT := $commit_id >> .build'
             println commit_id
             echo 'end git version'
-            if (BRANCH == "${ACCEPTANCE_BRANCH}") {            
             image = docker.build("docker-registry.secure.amsterdam.nl/${PROJECTNAME}:${env.BUILD_NUMBER}")
-            } else {
-            image = docker.build("build.app.amsterdam.nl:5000/${PROJECTNAME}:${env.BUILD_NUMBER}")
-            }
             image.push()
         }
     }
