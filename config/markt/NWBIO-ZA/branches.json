@@ -1,0 +1,46 @@
+[
+    {
+        "brancheId": "101-agf",
+        "verplicht": false
+    },
+    {
+        "brancheId": "102-bio-health-fairtrade",
+        "verplicht": false
+    },    
+    {
+        "brancheId": "103-brood-banket",
+        "verplicht": false
+    },
+    {    
+        "brancheId": "104-hummus-kruiden-olijven",
+        "verplicht": false
+    },   
+    {   
+        "brancheId": "107-vis-nat",
+        "verplicht": false
+    },
+    {
+        "brancheId": "108-vleeswaren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "109-zuivel-eieren",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "206-oudhollands-gebak",
+        "verplicht": false
+    },
+    {
+        "brancheId": "207-grill-frituur",
+        "verplicht": false
+    },
+    {
+        "brancheId": "209-vis-gebakken",
+        "verplicht": false
+    },
+    {
+        "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
+        "verplicht": false
+    }
+]

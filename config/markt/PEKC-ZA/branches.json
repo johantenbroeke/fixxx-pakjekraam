@@ -35,11 +35,6 @@
         "maximumPlaatsen": 1
     },
     {
-        "brancheId": "206-oudhollands-gebak",
-        "verplicht": false,
-        "maximumPlaatsen": 1
-    },   
-    {
         "brancheId": "207-grill-frituur",
         "verplicht": false,
         "maximumPlaatsen": 2
