@@ -1,0 +1,56 @@
+[
+    {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
+        "brancheId": "101-agf",
+        "verplicht": false,
+        "maximumPlaatsen": 5
+    },
+    {
+        "brancheId": "102-bio-health-fairtrade",
+        "verplicht": false,
+        "maximumPlaatsen": 2
+    },    
+    {
+        "brancheId": "103-brood-banket",
+        "verplicht": false,
+        "maximumPlaatsen": 4
+    },
+    {    
+        "brancheId": "104-hummus-kruiden-olijven",
+        "verplicht": false,
+        "maximumPlaatsen": 4
+    },   
+    {   
+        "brancheId": "107-vis-nat",
+        "verplicht": false,
+        "maximumPlaatsen": 4
+    },
+    {   
+        "brancheId": "108-vleeswaren",
+        "verplicht": false,
+        "maximumPlaatsen": 4
+    },
+    {
+        "brancheId": "109-zuivel-eieren",
+        "verplicht": false,
+        "maximumPlaatsen": 4
+    },
+    {
+        "brancheId": "110-poelier",
+        "verplicht": false,
+        "maximumPlaatsen": 4
+    },
+    {
+        "brancheId": "207-grill-frituur",
+        "verplicht": false,
+        "maximumPlaatsen": 2
+    },
+    {
+        "brancheId": "302-bloemen-planten",
+        "verplicht": false,
+        "maximumPlaatsen": 4
+    }
+]

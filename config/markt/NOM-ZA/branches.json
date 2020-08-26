@@ -1,0 +1,46 @@
+[
+    {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
+        "brancheId": "102-bio-health-fairtrade",
+        "verplicht": false
+    },  
+    {
+        "brancheId": "301-antiek-kunst",
+        "verplicht": false
+    },
+    {
+        "brancheId": "302-bloemen-planten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "303-boeken-stripboeken-muziek-film",
+        "verplicht": false
+    },
+    {
+        "brancheId": "305-horloges-brillen-sieraden",
+        "verplicht": false
+    },
+    {
+        "brancheId": "309-kleding-volwassenen-hoofddeksels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "310-kleding-vintage-2ehands",
+        "verplicht": false
+    },
+    {
+        "brancheId": "315-schoenen-tassen-lederwaren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "317-speelgoed-spellen",
+        "verplicht": false
+    },
+    {
+        "brancheId": "321-stoffen-textiel-fornituren",
+        "verplicht": false
+    }
+]
