@@ -43,8 +43,6 @@
         "brancheId": "111-exotische-groenten",
         "verplicht": false
     },
-
-
     {
         "brancheId": "201-broodjes-belegd",
         "verplicht": false
@@ -53,17 +51,22 @@
         "brancheId": "204-koffie-versnaperingen",
         "verplicht": false
     },
-
     {   
         "brancheId": "205-loempias",
         "verplicht": false
     },
-
+    {   
+        "brancheId": "206-oudhollands-gebak",
+        "verplicht": false
+    },    
     {
         "brancheId": "207-grill-frituur",
         "verplicht": false
     },
-
+    {
+        "brancheId": "209-vis-gebakken",
+        "verplicht": false
+    },
     {
         "brancheId": "301-antiek-kunst",
         "verplicht": false
