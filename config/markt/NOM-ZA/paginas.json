@@ -1,0 +1,86 @@
+[
+  {
+    "title": "Markt Zaterdag",
+    "indelingslijstGroup": 
+    [
+      {
+        "class": "block-left",
+        "title": "Markt eerste rijen",
+        "landmarkTop": "",
+        "landmarkBottom": "",
+        "plaatsList": 
+        [
+          "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115"
+        ]
+      },
+      {
+        "class": "block-right",
+        "title": "Markt eerste rijen",
+        "landmarkTop": "",
+        "landmarkBottom": "",
+        "plaatsList": 
+        [
+          "134", "134a", "135", "136", "137", "138", "139", "139a" 
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Markt Zaterdag",
+    "indelingslijstGroup": 
+    [
+      {
+        "class": "block-left",
+        "title": "Enkele rij",
+        "landmarkTop": "",
+        "landmarkBottom": "",
+        "plaatsList": 
+        [
+          "129", "130", "131", "132", "133"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Markt Zaterdag",
+    "indelingslijstGroup": 
+    [
+      {
+        "class": "block-left",
+        "title": "Markt tweede rijen",
+        "landmarkTop": "",
+        "landmarkBottom": "",
+        "plaatsList": 
+        [
+        "126", "127", "128"
+        ]
+      },
+      {
+        "class": "block-right",
+        "title": "Markt tweede rijen",
+        "landmarkTop": "",
+        "landmarkBottom": "",
+        "plaatsList": 
+        [
+        "142", "143", "144", "145", "146", "147"       
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Markt Zaterdag",
+    "indelingslijstGroup": 
+    [
+      {
+        "class": "block-left",
+        "title": "Schuine rij",
+        "landmarkTop": "",
+        "landmarkBottom": "",
+        "plaatsList": 
+        [
+        "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "140", "141"
+        ]
+      }
+    ]
+  }
+]

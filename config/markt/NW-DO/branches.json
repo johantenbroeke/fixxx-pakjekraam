@@ -1,0 +1,51 @@
+[
+
+
+    {
+        "brancheId": "101-agf",
+        "verplicht": false,
+        "maximumPlaatsen": 4
+    }, 
+    {
+        "brancheId": "103-brood-banket",
+        "verplicht": false
+    },
+    {
+        "brancheId": "104-hummus-kruiden-olijven",
+        "verplicht": false
+    },
+    {
+        "brancheId": "105-noten-zuidvruchten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "107-vis-nat",
+        "verplicht": false,
+        "maximumPlaatsen": 1
+    },
+    {
+        "brancheId": "109-zuivel-eieren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "204-koffie-versnaperingen",
+        "verplicht": false
+    },
+    {
+        "brancheId": "207-grill-frituur",
+        "verplicht": false,
+        "maximumPlaatsen": 1
+    },
+    {
+        "brancheId": "302-bloemen-planten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "309-kleding-volwassenen-hoofddeksels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "316-souvenirs",
+        "verplicht": false
+    }
+]
