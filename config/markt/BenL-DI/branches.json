@@ -5,7 +5,8 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 12
     },
     {   
         "brancheId": "107-vis-nat",
