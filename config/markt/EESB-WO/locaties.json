@@ -1,0 +1,27 @@
+[
+    { "plaatsId": "1", "branches": ["101-agf"] },
+    { "plaatsId": "2", "branches": ["101-agf"] },    
+    { "plaatsId": "3", "branches": ["109-zuivel-eieren"] },
+    { "plaatsId": "4", "branches": ["109-zuivel-eieren"] },
+    { "plaatsId": "5" },
+    { "plaatsId": "6", "branches": ["201-broodjes-belegd"] },
+    { "plaatsId": "7", "branches": ["102-bio-health-fairtrade"] },
+    { "plaatsId": "8", "branches": ["102-bio-health-fairtrade"], "verkoopinrichting": ["eigen-materieel"] },
+    { "plaatsId": "9", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"] },
+    { "plaatsId": "10", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"] },
+
+    { "plaatsId": "11", "branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"] },
+    { "plaatsId": "12", "branches": ["102-bio-health-fairtrade"] },
+    { "plaatsId": "13", "branches": ["108-vleeswaren"] },
+    { "plaatsId": "14", "branches": ["108-vleeswaren"] },
+    { "plaatsId": "15", "branches": ["105-noten-zuidvruchten"], "verkoopinrichting": ["eigen-materieel"] },
+    { "plaatsId": "16", "branches": ["105-noten-zuidvruchten"], "verkoopinrichting": ["eigen-materieel"] },
+    { "plaatsId": "17", "branches": ["107-vis-nat"], "verkoopinrichting": ["eigen-materieel"] },
+    { "plaatsId": "18", "branches": ["107-vis-nat"], "verkoopinrichting": ["eigen-materieel"] },
+    { "plaatsId": "19" },
+    { "plaatsId": "20" },
+    
+    { "plaatsId": "21" },
+    { "plaatsId": "22" },
+    { "plaatsId": "23" }
+]
