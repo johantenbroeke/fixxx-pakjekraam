@@ -1,0 +1,39 @@
+{
+  "obstakels": [
+    {
+      "kraamA": "42",
+      "kraamB": "43",
+      "obstakel": ["electra"]
+    },
+    {
+      "kraamA": "49",
+      "kraamB": "50",
+      "obstakel": ["electra"]
+    },
+    {
+      "kraamA": "60",
+      "kraamB": "61",
+      "obstakel": ["electra"]
+    },
+    {
+      "kraamA": "2",
+      "kraamB": "3",
+      "obstakel": ["electra"]
+    },
+    {
+      "kraamA": "10",
+      "kraamB": "11",
+      "obstakel": ["electra"]
+    },
+    {
+      "kraamA": "18",
+      "kraamB": "19",
+      "obstakel": ["electra"]
+    },
+    {
+      "kraamA": "53",
+      "kraamB": "54",
+      "obstakel": ["electra"]
+    }
+  ]
+}
