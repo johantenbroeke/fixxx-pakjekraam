@@ -1,0 +1,55 @@
+[
+    {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
+        "brancheId": "101-agf",
+        "verplicht": false,
+        "maximumPlaatsen": 12
+    },
+    {
+        "brancheId": "104-hummus-kruiden-olijven",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "107-vis-nat",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "204-koffie-versnaperingen",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "205-loempias",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "307-kleding-baby-kinder",
+        "verplicht": false
+    },
+    {
+        "brancheId": "309-kleding-volwassenen-hoofddeksels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "314-partijhandel-inboedels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "315-schoenen-tassen-lederwaren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "317-speelgoed-spellen",
+        "verplicht": false
+    },
+    {
+        "brancheId": "321-stoffen-textiel-fornituren",
+        "verplicht": false
+    }
+]
