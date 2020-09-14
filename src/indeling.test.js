@@ -2117,4 +2117,24 @@ describe('Bugfix voor', () => {
         expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['5', '6']);
         expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1', '2']);
     });
+
+    it('issue #709', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'vpl', plaatsen: ['1', '2'] },
+                { sollicitatieNummer: 2, status: 'vpl', plaatsen: ['3', '4'] },
+                { sollicitatieNummer: 3, status: 'soll' },
+            ],
+            marktplaatsen: [
+                '1', '2', '3', '4'
+            ],
+            rows: [
+                ['1'], ['2', '3'], ['4']
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([3]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1, 2]);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['1']);
+    });
 });
