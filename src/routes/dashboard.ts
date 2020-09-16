@@ -33,8 +33,7 @@ export const dashboardPage = (
         plaatsvoorkeuren : getPlaatsvoorkeurenOndernemer(erkenningsNummer),
         aanmeldingen     : getAanmeldingenByOndernemer(erkenningsNummer),
         toewijzingen     : getToewijzingenByOndernemer(erkenningsNummer),
-        afwijzingen      : getAfwijzingenByOndernemer(erkenningsNummer),
-        daysClosed       : getDaysClosed()
+        afwijzingen      : getAfwijzingenByOndernemer(erkenningsNummer)
     })
     .then(result => {
         res.render('OndernemerDashboard', {

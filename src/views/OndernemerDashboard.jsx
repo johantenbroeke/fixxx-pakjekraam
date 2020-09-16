@@ -16,7 +16,6 @@ class OndernemerDashboard extends React.Component {
         messages         : PropTypes.array,
         toewijzingen     : PropTypes.array,
         afwijzingen      : PropTypes.array,
-        daysClosed       : PropTypes.array.isRequired,
         role             : PropTypes.string,
         user             : PropTypes.object.isRequired,
     };
@@ -30,8 +29,7 @@ class OndernemerDashboard extends React.Component {
             toewijzingen,
             afwijzingen,
             role,
-            user,
-            daysClosed
+            user
         } = this.props;
 
         const sollicitaties = ondernemer.sollicitaties.filter(soll =>
@@ -61,8 +59,8 @@ class OndernemerDashboard extends React.Component {
             const afwijzingenVoorDezeMarkt = afwijzingen.filter(toewijzing => {
                 return toewijzing.marktId == markt.id;
             });
-            markt.toewijzingVandaag = toewijzingenVoorDezeMarkt.find(aanmelding => aanmelding.marktDate == today());
-            markt.toewijzingMorgen = toewijzingenVoorDezeMarkt.find(aanmelding => aanmelding.marktDate == tomorrow());
+            markt.toewijzingVandaag = toewijzingenVoorDezeMarkt.find(toewijzing => toewijzing.marktDate == today());
+            markt.toewijzingMorgen = toewijzingenVoorDezeMarkt.find(toewijzing => toewijzing.marktDate == tomorrow());
             markt.afwijzingVandaag = afwijzingenVoorDezeMarkt.find(afwijzing => afwijzing.marktDate == today());
             markt.afwijzingMorgen = afwijzingenVoorDezeMarkt.find(afwijzing => afwijzing.marktDate == tomorrow());
             return markt;
@@ -101,9 +99,6 @@ class OndernemerDashboard extends React.Component {
                                 toewijzingMorgen={markt.toewijzingMorgen}
                                 afwijzingVandaag={markt.afwijzingVandaag}
                                 afwijzingMorgen={markt.afwijzingMorgen}
-                                today={today()}
-                                tomorrow={tomorrow()}
-                                daysClosed={daysClosed}
                             />
                         ))}
                     </div>

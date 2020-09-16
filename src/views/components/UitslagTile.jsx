@@ -1,10 +1,26 @@
-const PropTypes = require('prop-types');
 const React = require('react');
 const AlertLine = require('./AlertLine');
-const { formatDate } = require('../../util.ts');
-import { printAfwijzingReason } from '../../model/afwijzing.functions';
 
-const Component = ({ open, date, aanmelding, sollicitatie, title, markt, toewijzing, afwijzing, daysClosed }) => {
+import {
+    formatDate
+} from '../../util';
+
+import {
+    printAfwijzingReason
+} from '../../model/afwijzing.functions';
+import {
+    isMarketClosed
+} from '../../model/markt.functions';
+
+const UitslagTile = ({
+    open,
+    date,
+    aanmelding,
+    sollicitatie,
+    markt,
+    toewijzing,
+    afwijzing
+}) => {
     const aangemeld = (aanmelding && aanmelding.attending && sollicitatie.status === '?') ||
         (aanmelding && aanmelding.attending && sollicitatie.status === 'soll') ||
         ((!aanmelding || aanmelding.attending) && sollicitatie.status === 'vpl');
@@ -17,17 +33,12 @@ const Component = ({ open, date, aanmelding, sollicitatie, title, markt, toewijz
         }
     }
 
-    const dateInDaysClosed = daysClosed.includes(date);
-    const dateInGeblokeerdeData = markt.kiesJeKraamGeblokkeerdeData ?
-        markt.kiesJeKraamGeblokkeerdeData.replace(/\s+/g, '').split(',').includes(date) :
-        false;
-
-    const marktGesloten = dateInDaysClosed || dateInGeblokeerdeData;
+    const marktGesloten = isMarketClosed(markt, date);
 
     return (
         <div className="col-1-2 UitslagTile">
             <div className="UitslagTile__datum">
-                <p className="UitslagTile__datum__heading">{title} {formatDate(date)}</p>
+                <p className="UitslagTile__datum__heading">{formatDate(date)}</p>
                 {open && !(marktGesloten && !aangemeld) ?
                     <h4 className={`UitslagTile__datum__aanwezigheid ${aangemeld ? `UitslagTile__datum__aanwezigheid--aangemeld` : null}`}>
                         {aangemeld ? (
@@ -67,16 +78,4 @@ const Component = ({ open, date, aanmelding, sollicitatie, title, markt, toewijz
     );
 };
 
-Component.propTypes = {
-    title: PropTypes.string,
-    open: PropTypes.bool,
-    date: PropTypes.date,
-    markt: PropTypes.object,
-    sollicitatie: PropTypes.object,
-    aanmelding: PropTypes.object,
-    toewijzing: PropTypes.object,
-    afwijzing: PropTypes.object,
-    daysClosed: PropTypes.array.isRequired
-};
-
-module.exports = Component;
+module.exports = UitslagTile;
