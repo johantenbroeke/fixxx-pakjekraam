@@ -103,7 +103,7 @@
         "class": "block-left",
         "title": "Markt 2",
         "landmarkTop": "Eerste van der Helstraat",
-        "landmarkBottom": "Eerste Sweelinckstraat",
+        "landmarkBottom": "markt gaat door op volgende pagina",
         "plaatsList": 
         [
           "80", 
@@ -150,7 +150,7 @@
         "class": "block-right",
         "title": "Markt 2",
         "landmarkTop": "Eerste van der Helstraat",
-        "landmarkBottom": "Eerste Sweelinckstraat",
+        "landmarkBottom": "markt gaat door op volgende pagina",
         "plaatsList": 
         [
           "77", 
@@ -198,7 +198,7 @@
         {
           "class": "block-left",
           "title": "Markt 2",
-          "landmarkTop": "Eerste van der Helstraat",
+          "landmarkTop": "vervolg vorige pagina",
           "landmarkBottom": "Eerste Sweelinckstraat",
           "plaatsList": 
           [ 
@@ -234,7 +234,7 @@
         {
           "class": "block-right",
           "title": "Markt 2",
-          "landmarkTop": "Eerste van der Helstraat",
+          "landmarkTop": "vervolg vorige pagina",
           "landmarkBottom": "Eerste Sweelinckstraat",
           "plaatsList": 
           [
@@ -306,7 +306,6 @@
           "248", 
           "250",
           "252",
-          "254",
           "256", 
           "258", 
           "260", 
