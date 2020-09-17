@@ -75,17 +75,14 @@ export const formatDate = (date: string): string =>
 export const formatDateFull = (date: string): string =>
     `${new Date(date).getDate()} ${formatMonth(date)} ${String(new Date(date).getFullYear())}`;
 
-export const today = (): string => new Date().toISOString().replace(/T.+/, '');
-
 export const dateDiffInDays = (date1: string, date2: string): number => {
-    const dt1 = new Date(date1),
-        dt2 = new Date(date2);
+    const dt1 = new Date(date1);
+    const dt2 = new Date(date2);
 
-    return Math.floor(
-        (Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) -
-            Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) /
-            MILLISECONDS_IN_DAY,
-    );
+    return Math.floor((
+        Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) -
+        Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())
+    ) / MILLISECONDS_IN_DAY);
 };
 
 export const relativeHumanDay = (date: string) => {
@@ -100,15 +97,13 @@ export const fullRelativeHumanDate = (date: string): string =>
 
 export const addDays = (offsetDate: string | number, days: number): string => {
     const date = new Date(offsetDate);
-
     date.setDate(date.getDate() + days);
-
-    return date.toISOString().replace(/T.+/, '');
+    return toISODate(date);
 };
 
 export const addMinutes = (offsetDate: string | number, minutes: number): string => {
     const date = new Date(offsetDate);
-    return new Date(date.getTime() + minutes * 60000).toISOString().replace(/T.+/, '');
+    return toISODate(new Date(date.getTime() + minutes * 60000));
 };
 
 export const addMinutesTime = (offsetDate: string | number, minutes: number): Date => {
@@ -125,6 +120,7 @@ export const getTimezoneHours = (): Number => {
     return parseInt(moment( getTimezoneTime() ).format('H'));
 };
 
+export const today = (): string => toISODate(new Date());
 export const tomorrow = (): string => addDays(Date.now(), 1);
 export const yesterday = (): string => addDays(Date.now(), -1);
 
@@ -141,7 +137,8 @@ export const toDate = (dateObject: Date) => {
     const year  = dateObject.getFullYear();
     return `${year}-${month}-${day}`;
 };
-export const toISODate = (date: Date): string => date.toISOString().replace(/T.+/, '');
+export const toISODate = (date: Date): string =>
+    date.toISOString().replace(/T.+/, '');
 
 export const ddmmyyyyToDate = (dateString: string) => {
     const day = dateString.split('-')[0];

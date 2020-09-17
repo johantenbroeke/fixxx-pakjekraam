@@ -62,13 +62,6 @@ class OndernemerMarktDetailPage extends React.Component {
             today(),
         );
 
-        const aanmeldingVandaag = aanmeldingen.find(aanmelding => aanmelding.marktDate == today());
-        const aanmeldingMorgen = aanmeldingen.find(aanmelding => aanmelding.marktDate == tomorrow());
-        const toewijzingVandaag = toewijzingen.find(aanmelding => aanmelding.marktDate == today());
-        const toewijzingMorgen = toewijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
-        const afwijzingVandaag = afwijzingen.find(aanmelding => aanmelding.marktDate == today());
-        const afwijzingMorgen = afwijzingen.find(aanmelding => aanmelding.marktDate == tomorrow());
-
         const absentGemeld = algemeneVoorkeur ? ( algemeneVoorkeur.absentFrom && algemeneVoorkeur.absentUntil )  : false;
         const breadcrumbs = getBreadcrumbsOndernemer(ondernemer, role);
 
@@ -99,16 +92,10 @@ class OndernemerMarktDetailPage extends React.Component {
                     <SollicitatieSpecs sollicitatie={sollicitatie} markt={markt} />
                     <Uitslag
                         ondernemer={ondernemer}
-                        today={today()}
-                        tomorrow={tomorrow()}
                         markt={markt}
-                        toewijzingVandaag={toewijzingVandaag}
-                        toewijzingMorgen={toewijzingMorgen}
-                        afwijzingVandaag={afwijzingVandaag}
-                        afwijzingMorgen={afwijzingMorgen}
-                        aanmeldingVandaag={aanmeldingVandaag}
-                        aanmeldingMorgen={aanmeldingMorgen}
-                        daysClosed={daysClosed}
+                        toewijzingen={toewijzingen}
+                        afwijzingen={afwijzingen}
+                        aanmeldingen={aanmeldingen}
                     />
                     { absentGemeld ? (
                         <Alert type="warning" inline={true}>
