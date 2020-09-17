@@ -68,20 +68,32 @@ export const getMarktEnriched = (marktId: string): Promise<IMarktEnriched> => {
     );
 };
 
-export const getNextMarktDate = (markt: MMMarkt, skipDays: number) => {
+export const getNextMarktDate = (
+    markt: MMMarkt,
+    skipDays: number,
+    autoAdjust: boolean = true
+) => {
     if (!markt.marktDagen) {
         return undefined;
     }
 
-    if (skipDays) {
-        const diff = dateDiffInDays(today(), getNextMarktDate(markt, 0));
+    // Stel je wilt de twee eerstvolgende marktdagen weten. Dan doe je 2 calls:
+    // 1. `getNextMarktDate(markt, 0)`
+    // 2. `getNextMarktDate(markt, 1)`
+    //
+    // De eerstvolgende marktdag blijkt morgen te zijn. Dan geeft de eerst call
+    // de datum van morgen terug, en de tweede call ook. Onderstaande `autoAdjust`
+    // code corrigeert de tweede call: Hij skipt dagen vanaf de eerste relevante
+    // marktdag. Op die manier geeft de tweede call de datum van overmorgen terug.
+    if (autoAdjust && skipDays) {
+        const diff = dateDiffInDays(today(), getNextMarktDate(markt, 0, false));
         skipDays += diff;
     }
 
     const dateString = addDays(today(), skipDays);
     return isMarketDay(markt, dateString) && !isMarketClosed(markt, dateString) ?
            dateString :
-           getNextMarktDate(markt, skipDays+1);
+           getNextMarktDate(markt, skipDays+1, false);
 };
 
 export const isMarketDay = (markt: MMMarkt, dateString: string) => {
@@ -90,6 +102,10 @@ export const isMarketDay = (markt: MMMarkt, dateString: string) => {
 };
 
 export const isMarketClosed = (markt: MMMarkt, dateString: string) => {
+    if (!isMarketDay(markt, dateString)) {
+        return true;
+    }
+
     const dateInDaysClosed = DAYS_CLOSED.includes(dateString);
     if (!markt.kiesJeKraamGeblokkeerdeData || dateInDaysClosed) {
         return dateInDaysClosed;

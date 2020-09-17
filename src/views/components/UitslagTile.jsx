@@ -13,7 +13,6 @@ import {
 } from '../../model/markt.functions';
 
 const UitslagTile = ({
-    open,
     date,
     aanmelding,
     sollicitatie,
@@ -21,6 +20,8 @@ const UitslagTile = ({
     toewijzing,
     afwijzing
 }) => {
+    // TODO: Deze status check is niet compleet!! Dit werkt alleen maar tijdens de
+    //       corona periode waarbij enkel `soll` en `vpl` actief zijn.
     const aangemeld = (aanmelding && aanmelding.attending && sollicitatie.status === '?') ||
         (aanmelding && aanmelding.attending && sollicitatie.status === 'soll') ||
         ((!aanmelding || aanmelding.attending) && sollicitatie.status === 'vpl');
@@ -39,41 +40,40 @@ const UitslagTile = ({
         <div className="col-1-2 UitslagTile">
             <div className="UitslagTile__datum">
                 <p className="UitslagTile__datum__heading">{formatDate(date)}</p>
-                {open && !(marktGesloten && !aangemeld) ?
+                {!marktGesloten ?
                     <h4 className={`UitslagTile__datum__aanwezigheid ${aangemeld ? `UitslagTile__datum__aanwezigheid--aangemeld` : null}`}>
                         {aangemeld ? (
                             "Aangemeld"
                         ) : (
-                                "Niet aangemeld"
-                            )}
+                            "Niet aangemeld"
+                        )}
                     </h4>
-                    : null }
-                {!open && !marktGesloten ?
-                     <h4 className="UitslagTile__datum__aanwezigheid">Geen marktdag</h4>
+                : null }
+                {marktGesloten ?
+                     <h4 className="UitslagTile__datum__aanwezigheid">Geen markt</h4>
                 : null}
             </div>
-            {marktGesloten ?
-                <h4 className="UitslagTile__datum__aanwezigheid">Geen markt</h4>
-                : null}
-            {toewijzing && markt.kiesJeKraamFase === 'live' && !marktGesloten ?
+            {!marktGesloten && toewijzing && markt.kiesJeKraamFase === 'live' ?
                 <AlertLine
                     type="success"
                     title="Ingedeeld"
                     titleSmall={true}
                     message={plaatsenDuiding(toewijzing.plaatsen)}
                     inline={true}
-                /> : null}
-            {afwijzing && markt.kiesJeKraamFase === 'live' && !marktGesloten ?
+                />
+            : null}
+            {!marktGesloten && afwijzing && markt.kiesJeKraamFase === 'live' ?
                 <AlertLine
                     type="default"
                     title="Afgewezen"
                     titleSmall={true}
                     message={`${afwijzing.reasonCode ? printAfwijzingReason(afwijzing.reasonCode) : 'Het is niet gelukt u in te delen.'}`}
                     inline={true}
-                /> : null}
-            {open && !toewijzing && !afwijzing && aangemeld && markt.kiesJeKraamFase === 'live' && !marktGesloten ?
-                <p className="UitslagTile__text">Er is (nog) geen indeling</p> : null
-            }
+                />
+            : null}
+            {!marktGesloten && !toewijzing && !afwijzing && aangemeld && markt.kiesJeKraamFase === 'live' ?
+                <p className="UitslagTile__text">Er is (nog) geen indeling</p>
+            : null}
         </div>
     );
 };

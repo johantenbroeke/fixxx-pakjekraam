@@ -36,35 +36,19 @@ class OndernemerDashboard extends React.Component {
             !!markten.find(markt => markt.id === soll.markt.id)
         );
 
-        const marktenPlusAanmelding = sollicitaties.map(sollicitatie => {
-            const marktVoorSollicitatie = markten.find(markt =>
-                markt.id == sollicitatie.markt.id
-            );
-            const aanmeldingenVoorDezeMarkt = aanmeldingen.filter(aanmelding => {
-                return aanmelding.marktId == marktVoorSollicitatie.id;
-            });
-            marktVoorSollicitatie.aanmeldingVandaag = aanmeldingenVoorDezeMarkt.find(
-                aanmelding => aanmelding.marktDate == today(),
-            );
-            marktVoorSollicitatie.aanmeldingMorgen = aanmeldingenVoorDezeMarkt.find(
-                aanmelding => aanmelding.marktDate == tomorrow(),
-            );
-            return marktVoorSollicitatie;
-        });
+        const marktenMetSollicitatie = sollicitaties.reduce((result, sollicitatie) => {
+            const markt = markten.find(({ id }) => id == sollicitatie.markt.id);
+            if (!markt) {
+                return result;
+            }
 
-        const marktenPlusToewijzing = marktenPlusAanmelding.map(markt => {
-            const toewijzingenVoorDezeMarkt = toewijzingen.filter(toewijzing => {
-                return toewijzing.marktId == markt.id;
+            return result.concat({
+                markt,
+                aanmeldingen : aanmeldingen.filter(({ marktId }) => marktId == markt.id),
+                toewijzingen : toewijzingen.filter(({ marktId }) => marktId == markt.id),
+                afwijzingen  : afwijzingen.filter(({ marktId }) => marktId == markt.id),
             });
-            const afwijzingenVoorDezeMarkt = afwijzingen.filter(toewijzing => {
-                return toewijzing.marktId == markt.id;
-            });
-            markt.toewijzingVandaag = toewijzingenVoorDezeMarkt.find(toewijzing => toewijzing.marktDate == today());
-            markt.toewijzingMorgen = toewijzingenVoorDezeMarkt.find(toewijzing => toewijzing.marktDate == tomorrow());
-            markt.afwijzingVandaag = afwijzingenVoorDezeMarkt.find(afwijzing => afwijzing.marktDate == today());
-            markt.afwijzingMorgen = afwijzingenVoorDezeMarkt.find(afwijzing => afwijzing.marktDate == tomorrow());
-            return markt;
-        });
+        }, []);
 
         const breadcrumbs = [];
 
@@ -84,21 +68,18 @@ class OndernemerDashboard extends React.Component {
                         <a href="/aanwezigheid/" className="Link">Aanwezigheid</a>
                     </div>
                     <h1 className="Heading Heading--intro">Mijn markten</h1>
-                    { marktenPlusToewijzing.length == 0 ?
-                        <p>U hebt geen sollicitatie voor een markt die digitaal wordt ingedeeld. Klopt dit niet, neem dan contact op met de marktmeesters via 14 020 of <a href="mailto:marktbureau@amsterdam.nl">marktbureau@amsterdam.nl</a>.</p> : null
-                    }
+                    {marktenMetSollicitatie.length == 0 ?
+                        <p>U hebt geen sollicitatie voor een markt die digitaal wordt ingedeeld. Klopt dit niet, neem dan contact op met de marktmeesters via 14 020 of <a href="mailto:marktbureau@amsterdam.nl">marktbureau@amsterdam.nl</a>.</p>
+                    : null}
                     <div className="row row--responsive">
-                        {marktenPlusToewijzing.map((markt, index) => (
+                        {marktenMetSollicitatie.map((item, index) => (
                             <OndernemerMarktTile
-                                markt={markt}
+                                markt={item.markt}
                                 key={index}
                                 ondernemer={ondernemer}
-                                aanmeldingVandaag={markt.aanmeldingVandaag}
-                                aanmeldingMorgen={markt.aanmeldingMorgen}
-                                toewijzingVandaag={markt.toewijzingVandaag}
-                                toewijzingMorgen={markt.toewijzingMorgen}
-                                afwijzingVandaag={markt.afwijzingVandaag}
-                                afwijzingMorgen={markt.afwijzingMorgen}
+                                aanmeldingen={item.aanmeldingen}
+                                toewijzingen={item.toewijzingen}
+                                afwijzingen={item.afwijzingen}
                             />
                         ))}
                     </div>

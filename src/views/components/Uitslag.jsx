@@ -6,48 +6,52 @@ const {
 } = require('../../util.ts');
 
 import {
-    isMarketDay
+    getNextMarktDate
 } from '../../model/markt.functions';
 
 const Uitslag = ({
     markt,
-    aanmeldingVandaag,
-    aanmeldingMorgen,
-    toewijzingVandaag,
-    toewijzingMorgen,
     ondernemer,
-    afwijzingVandaag,
-    afwijzingMorgen
+    aanmeldingen,
+    toewijzingen,
+    afwijzingen,
 }) => {
     const sollicitatie = ondernemer.sollicitaties.find(sollicitatieOndernemer =>
         sollicitatieOndernemer.markt.id == markt.id
     );
 
-    const openToday = isMarketDay(markt, today());
-    const openTomorrow = isMarketDay(markt, tomorrow());
+    const marktDate1 = getNextMarktDate(markt, 0);
+    const marktDate2 = getNextMarktDate(markt, 1);
+
+    const aanmelding1 = aanmeldingen.find(({ marktDate }) => marktDate == marktDate1);
+    const aanmelding2 = aanmeldingen.find(({ marktDate }) => marktDate == marktDate2);
+    const toewijzing1 = toewijzingen.find(({ marktDate }) => marktDate == marktDate1);
+    const toewijzing2 = toewijzingen.find(({ marktDate }) => marktDate == marktDate2);
+    const afwijzing1  = afwijzingen.find(({ marktDate }) => marktDate == marktDate1);
+    const afwijzing2  = afwijzingen.find(({ marktDate }) => marktDate == marktDate2);
 
     return (
         <div className="row row--responsive">
             {markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+            <>
                 <UitslagTile
                     markt={markt}
-                    open={openToday}
-                    date={today()}
+                    date={marktDate1}
                     sollicitatie={sollicitatie}
-                    aanmelding={aanmeldingVandaag}
-                    toewijzing={toewijzingVandaag}
-                    afwijzing={afwijzingVandaag}
-                /> : null}
-            {markt.kiesJeKraamFase === 'activatie' || markt.kiesJeKraamFase === 'wenperiode' || markt.kiesJeKraamFase === 'live' ?
+                    aanmelding={aanmelding1}
+                    toewijzing={toewijzing1}
+                    afwijzing={afwijzing1}
+                />
                 <UitslagTile
                     markt={markt}
-                    open={openTomorrow}
-                    date={tomorrow()}
+                    date={marktDate2}
                     sollicitatie={sollicitatie}
-                    aanmelding={aanmeldingMorgen}
-                    toewijzing={toewijzingMorgen}
-                    afwijzing={afwijzingMorgen}
-                /> : null}
+                    aanmelding={aanmelding2}
+                    toewijzing={toewijzing2}
+                    afwijzing={afwijzing2}
+                />
+            </>
+            : null}
         </div>
     );
 };

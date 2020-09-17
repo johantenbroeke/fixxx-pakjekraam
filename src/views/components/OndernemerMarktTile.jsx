@@ -4,12 +4,9 @@ const Uitslag = require('./Uitslag.jsx');
 
 const OndernemerMarktTile = ({
     markt,
-    aanmeldingVandaag,
-    aanmeldingMorgen,
-    toewijzingVandaag,
-    toewijzingMorgen,
-    afwijzingVandaag,
-    afwijzingMorgen,
+    aanmeldingen,
+    toewijzingen,
+    afwijzingen,
     ondernemer
 }) => {
     return (
@@ -20,12 +17,9 @@ const OndernemerMarktTile = ({
             <Uitslag
                 ondernemer={ondernemer}
                 markt={markt}
-                aanmeldingVandaag={aanmeldingVandaag}
-                aanmeldingMorgen={aanmeldingMorgen}
-                toewijzingVandaag={toewijzingVandaag}
-                toewijzingMorgen={toewijzingMorgen}
-                afwijzingVandaag={afwijzingVandaag}
-                afwijzingMorgen={afwijzingMorgen}
+                aanmeldingen={aanmeldingen}
+                toewijzingen={toewijzingen}
+                afwijzingen={afwijzingen}
             />
         </div>
     );
