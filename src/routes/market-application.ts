@@ -48,9 +48,6 @@ import {
 } from '../pakjekraam-api';
 
 import {
-    getMarktEnriched
-} from '../model/markt.functions';
-import {
     groupAanmeldingenPerMarktPerWeek
 } from '../model/rsvp.functions';
 
