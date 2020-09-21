@@ -1,0 +1,68 @@
+[
+    {
+        "brancheId": "101-agf",
+        "verplicht": true,
+        "maximumPlaatsen": 12
+    },
+    {
+       "brancheId": "109-zuivel-eieren",
+       "verplicht": false
+   },
+   {
+       "brancheId": "110-poelier",
+       "verplicht": false
+    },
+    {
+        "brancheId": "205-loempias",
+        "verplicht": false
+    },
+   {
+       "brancheId": "208-smoothies",
+       "verplicht": false
+   },
+   {
+       "brancheId": "209-vis-gebakken",
+       "verplicht": false
+   },
+   {
+       "brancheId": "303-boeken-stripboeken-muziek-film",
+       "verplicht": false
+   },
+   {
+       "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
+       "verplicht": false
+   },
+   {
+       "brancheId": "305-horloges-brillen-sieraden",
+       "verplicht": false
+   },
+   {
+       "brancheId": "309-kleding-volwassenen-hoofddeksels",
+       "verplicht": false
+   },
+   {
+       "brancheId": "311-lampen",
+       "verplicht": false
+   },
+   {
+    "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
+    "verplicht": false
+},   
+{
+    "brancheId": "314-partijhandel-inboedels",
+    "verplicht": false
+},   
+{
+    "brancheId": "315-schoenen-tassen-lederwaren",
+    "verplicht": false
+},   
+{
+    "brancheId": "316-souvenirs",
+    "verplicht": false
+},             
+{
+    "brancheId": "317-speelgoed-spellen",
+    "verplicht": false
+}          
+ ]
+
