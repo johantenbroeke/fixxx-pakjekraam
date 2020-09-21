@@ -20,7 +20,7 @@
     { "plaatsId": "19", "branches": ["315-schoenen-tassen-lederwaren"] },
     { "plaatsId": "20", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
     { "plaatsId": "21", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "22", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
+    { "plaatsId": "22" },
     { "plaatsId": "23", "branches": ["310-kleding-vintage-2ehands"] },
     { "plaatsId": "24", "branches": ["310-kleding-vintage-2ehands"] },
     { "plaatsId": "25", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
