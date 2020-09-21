@@ -1,4 +1,5 @@
 [
+    { "plaatsId": "2", "branches": ["303-boeken-stripboeken-muziek-film"] },
     { "plaatsId": "3", "branches": ["303-boeken-stripboeken-muziek-film"] },
     { "plaatsId": "4", "branches": ["303-boeken-stripboeken-muziek-film"] },
     { "plaatsId": "5", "branches": ["303-boeken-stripboeken-muziek-film"] },

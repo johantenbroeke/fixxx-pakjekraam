@@ -1,0 +1,21 @@
+[
+    {
+       "brancheId": "101-agf",
+       "verplicht": true,
+       "maximumPlaatsen": 12
+   },
+    {
+       "brancheId": "211-delicatessen-hapjes",
+       "verplicht": false
+   },
+    {
+        "brancheId": "108-vleeswaren",
+        "verplicht": false
+    },
+   {
+       "brancheId": "109-zuivel-eieren",
+       "verplicht": false
+   }
+           
+ ]
+

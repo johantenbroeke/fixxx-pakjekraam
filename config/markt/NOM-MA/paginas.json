@@ -4,25 +4,16 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
-        "title": "Markt eerste rijen",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115"
-
-        ]
-      },
-      {
         "class": "block-right",
-        "title": "Markt eerste rijen",
+         "title": "Markt Prinsengracht zijde",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
         [
-        "32", "33", "34", "35", "36", "37", "38", "39", "134", "134a", "135", "136", "137", "138", "139" 
-
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", 
+        "101", "102", "103", "104", "105", 
+        "106", "107", "108", "109", "110", "111", "112", 
+        "113", "114", "115"
         ]
       }
     ]
@@ -32,23 +23,31 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
-        "title": "Markt linkerkant schuine rijen",
+        "class": "block-right",
+        "title": "Markt Speeltuin",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
         [
-        "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"
+        "142", "143", "144", "145", 
+        "138", "139"      
         ]
-      },
+      }
+    ]
+  },
+  {
+    "title": "Noordermarkt maandag",
+    "indelingslijstGroup": 
+    [
       {
         "class": "block-right",
-        "title": "Markt linkerkant schuine rijen",
+        "title": "Markt schuine zijde",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
         [
-        "42", "43"
+        "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", 
+        "140", "141"
         ]
       }
     ]
@@ -58,23 +57,16 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
-        "title": "Markt midden rijen",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "21", "20", "19", "18", "17", "16", "133", "132", "131", "130", "129"
-        ]
-      },
-      {
         "class": "block-right",
-        "title": "Markt schuine rijen",
+        "title": "Markt Kerkzijde",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
         [
-        "40", "41"
+        "21", "20", "19", 
+        "18", "17", "16", 
+        "133", "132", "131", "130", "129",
+        "128", "127", "126"
         ]
       }
     ]
@@ -84,23 +76,13 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
-        "title": "Markt rijen rechterkant",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "126", "127", "128"
-        ]
-      },
-      {
         "class": "block-right",
-        "title": "Markt rijen rechterkant",
+        "title": "Markt Westerstraat-zijde",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
         [
-        "142", "143", "144", "145"     
+        "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"
         ]
       }
     ]
@@ -110,13 +92,14 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
-        "title": "Rechts schuine rij",
+        "class": "block-right",
+        "title": "Middenrij",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
         [
-        "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "140", "141"
+        "32", "33", "34", "35", "36", "37", "38", "39", "40", "41",  "42", "43",
+        "134", "134a", "135", "136", "137"
         ]
       }
     ]

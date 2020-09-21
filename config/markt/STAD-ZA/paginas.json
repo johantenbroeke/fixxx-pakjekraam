@@ -1,0 +1,72 @@
+[
+    {
+      "title": "Markt Stadionplein",
+      "indelingslijstGroup": 
+      [
+        {
+          "class": "block-right",
+          "title": "Markt 1",
+          "landmarkTop": "Stadionpleinmarkt",
+          "landmarkBottom": "Fietspad",
+          "plaatsList": 
+          [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6"       
+              ]
+        },
+          { 
+            "class": "block-left",
+            "title": "Markt 1",
+            "landmarkTop": "Fietspad",
+            "landmarkBottom": "Stadionpleinmarkt",
+            "plaatsList": 
+            [
+                "19",
+                "20",
+                "21",
+                "22",
+                "23",
+                "24",
+                "25",
+                "26"    
+            ]
+        },
+     {
+                "class": "block-right",
+                "title": "Markt 1",
+                "landmarkTop": "Fietspad",
+                "landmarkBottom": "Stadionpleinmarkt",
+                "plaatsList": 
+                [
+                  "17",
+                  "18"     
+                  
+                ]
+         },
+         {
+            "class": "block-right",
+            "title": "Markt 1",
+            "landmarkTop": "Fietspad",
+            "landmarkBottom": "Stadionpleinmarkt",
+            "plaatsList": 
+            [
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16"
+                        ]
+      }
+    ]
+    }
+]
+    

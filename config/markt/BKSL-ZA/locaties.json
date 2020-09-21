@@ -1,0 +1,44 @@
+[
+    { "plaatsId": "103","branches": ["205-loempias"] },
+    { "plaatsId": "104","branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"], "properties": ["electra"] },
+    { "plaatsId": "105","branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"] },
+
+    { "plaatsId": "106","branches": ["105-noten-zuidvruchten"] },
+    { "plaatsId": "107","branches": ["105-noten-zuidvruchten"], "properties": ["electra"] },
+
+    { "plaatsId": "109","branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"] },
+    { "plaatsId": "110","branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"] },
+    { "plaatsId": "111","branches": ["306-huishoudelijke-artikelen-meubels-apparatuur"] },
+    { "plaatsId": "112","branches": ["101-agf"] },
+    { "plaatsId": "113","branches": ["101-agf"] },
+    { "plaatsId": "114","branches": ["101-agf"] },
+
+    { "plaatsId": "303","branches": ["110-poelier"] },
+    { "plaatsId": "304","branches": ["110-poelier"] },
+    { "plaatsId": "305","branches": ["315-schoenen-tassen-lederwaren"] },
+    { "plaatsId": "306","branches": ["315-schoenen-tassen-lederwaren"] },
+    { "plaatsId": "307","branches": ["315-schoenen-tassen-lederwaren"] },
+
+    { "plaatsId": "309","branches": ["309-kleding-volwassenen-hoofddeksels"] },
+    { "plaatsId": "310","branches": ["111-exotische-groenten"], "properties": ["electra"] },
+
+    { "plaatsId": "312","branches": ["304-dierenbijnodigdheden"] },
+    { "plaatsId": "313","branches": ["304-dierenbijnodigdheden"] },
+    { "plaatsId": "314","branches": ["304-dierenbijnodigdheden"] },
+
+    { "plaatsId": "403","branches": ["309-kleding-volwassenen-hoofddeksels"] },
+    { "plaatsId": "404","branches": ["309-kleding-volwassenen-hoofddeksels"] },
+    { "plaatsId": "405","branches": ["206-oudhollands-gebak"], "properties": ["electra"] },
+    { "plaatsId": "406","branches": ["109-zuivel-eieren"] },
+    { "plaatsId": "407","branches": ["109-zuivel-eieren"] },
+
+    { "plaatsId": "409","branches": ["209-vis-gebakken"] },
+    { "plaatsId": "410","branches": ["209-vis-gebakken"], "properties": ["electra"] },
+    { "plaatsId": "411","branches": ["101-agf"] },
+    { "plaatsId": "412","branches": ["101-agf"] },
+    { "plaatsId": "413","branches": ["309-kleding-volwassenen-hoofddeksels"] },
+    { "plaatsId": "414","branches": ["309-kleding-volwassenen-hoofddeksels"] },
+
+    { "plaatsId": "513","branches": ["302-bloemen-planten"] },
+    { "plaatsId": "514","branches": ["302-bloemen-planten"] }
+]
