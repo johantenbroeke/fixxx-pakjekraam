@@ -1,9 +1,49 @@
 {
     "obstakels": [
       {
+        "kraamA": "4",
+        "kraamB": "5",
+        "obstakel": ["lantaarnpaal"]
+      },
+      {
         "kraamA": "6",
         "kraamB": "7",
         "obstakel": ["loopje"]
+      },
+      {
+        "kraamA": "8",
+        "kraamB": "9",
+        "obstakel": ["lantaarnpaal"]
+      },
+      {
+        "kraamA": "9",
+        "kraamB": "10",
+        "obstakel": ["lantaarnpaal"]
+      },
+      {
+        "kraamA": "11",
+        "kraamB": "12",
+        "obstakel": ["lantaarnpaal"]
+      },
+      {
+        "kraamA": "12",
+        "kraamB": "13",
+        "obstakel": ["lantaarnpaal"]
+      },
+      {
+        "kraamA": "17",
+        "kraamB": "18",
+        "obstakel": ["lantaarnpaal"]
+      },
+      {
+        "kraamA": "18",
+        "kraamB": "19",
+        "obstakel": ["lantaarnpaal"]
+      },
+      {
+        "kraamA": "19",
+        "kraamB": "20",
+        "obstakel": ["lantaarnpaal"]
       },
       {
         "kraamA": "21",
