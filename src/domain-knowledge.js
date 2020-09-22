@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const {
     DeelnemerStatus
 } = require('./markt.model.ts');
@@ -46,6 +48,16 @@ const isoMarktDagen = {
     za: ISO_SATURDAY,
     zo: ISO_SUNDAY,
 };
+
+const DAYS_CLOSED = (function() {
+    try {
+        const data = fs.readFileSync(`${__dirname}/../config/markt/daysClosed.json`);
+        return data ? JSON.parse(data) : [];
+    } catch (e) {
+        console.error(`Could not read JSON file: config/markt/daysClosed.json`);
+        process.exit(1);
+    }
+})();
 
 const A_LIJST_DAYS = [FRIDAY, SATURDAY, SUNDAY];
 
@@ -192,6 +204,7 @@ const plaatsSort = (plaatsA, plaatsB, byKey) => {
 const isErkenningsnummer = str => /^\d+$/.test(str);
 
 module.exports = {
+    DAYS_CLOSED,
     A_LIJST_DAYS,
     INDELINGSTIJDSTIP,
     INDELINGSTIJDSTIP_TEXT,

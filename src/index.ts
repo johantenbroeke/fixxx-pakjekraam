@@ -272,6 +272,11 @@ app.get(
     ondernemersNietIngedeeldPage
 );
 
+app.get('/markt/:marktId/:datum/voorrangslijst/',
+    keycloak.protect(Roles.MARKTMEESTER),
+    sollicitantentAanwezigheidLijst
+);
+
 app.get('/markt/:marktId/:datum/alle-sollicitanten/',
     keycloak.protect(Roles.MARKTMEESTER),
     sollicitantentAanwezigheidLijst

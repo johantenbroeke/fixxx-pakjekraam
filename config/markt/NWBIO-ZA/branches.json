@@ -1,7 +1,9 @@
 [
     {
         "brancheId": "101-agf",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 8
+
     },
     {
         "brancheId": "102-bio-health-fairtrade",
@@ -9,11 +11,13 @@
     },    
     {
         "brancheId": "103-brood-banket",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 4
     },
     {    
         "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 4
     },   
     {   
         "brancheId": "107-vis-nat",
@@ -25,22 +29,27 @@
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 5
     },
     {   
         "brancheId": "206-oudhollands-gebak",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 2
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 2
     },
     {
         "brancheId": "209-vis-gebakken",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 1
     },
     {
         "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 1
     }
 ]

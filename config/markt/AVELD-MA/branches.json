@@ -1,0 +1,18 @@
+[
+    {
+        "brancheId": "101-agf",
+        "verplicht": false
+    },  
+    {   
+        "brancheId": "109-zuivel-eieren",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "302-bloemen-planten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "305-horloges-brillen-sieraden",
+        "verplicht": false
+    }
+]

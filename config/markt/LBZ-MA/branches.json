@@ -1,11 +1,14 @@
 [
     {
         "brancheId": "bak",
-        "verplicht": true
+        "verplicht": true,
+        "maximumPlaatsen": 8
+
     },
     {
         "brancheId": "101-agf",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     }, 
     {    
         "brancheId": "105-noten-zuidvruchten",
@@ -17,7 +20,9 @@
     },
     {
         "brancheId": "111-exotische-groenten",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 1
+
     },
     {
         "brancheId": "207-grill-frituur",

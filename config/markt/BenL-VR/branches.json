@@ -1,0 +1,39 @@
+[
+    {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
+        "brancheId": "101-agf",
+        "verplicht": false,
+        "maximumPlaatsen": 12
+    },
+    {   
+        "brancheId": "107-vis-nat",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "204-koffie-versnaperingen",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "205-loempias",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "307-kleding-baby-kinder",
+        "verplicht": false
+    },
+    {
+        "brancheId": "309-kleding-volwassenen-hoofddeksels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "317-speelgoed-spellen",
+        "verplicht": false
+    },
+    {
+        "brancheId": "321-stoffen-textiel-fornituren",
+        "verplicht": false
+    }
+]

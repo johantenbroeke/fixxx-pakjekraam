@@ -1,0 +1,47 @@
+[
+     {
+        "brancheId": "101-agf",
+        "verplicht": false
+    },
+    {
+        "brancheId": "103-brood-banket",
+        "verplicht": false
+    },
+    {
+        "brancheId": "105-noten-zuidvruchten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "107-vis-nat",
+        "verplicht": false
+    },
+    {
+        "brancheId": "109-zuivel-eieren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "110-poelier",
+        "verplicht": false
+    },
+    {
+        "brancheId": "201-broodjes-belegd",
+        "verplicht": false
+    },
+    {
+        "brancheId": "302-bloemen-planten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "104-hummus-kruiden-olijven",
+        "verplicht": false
+    },
+    {
+        "brancheId": "108-vleeswaren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "102-bio-health-fairtrade",
+        "verplicht": false
+    }            
+  ]
+

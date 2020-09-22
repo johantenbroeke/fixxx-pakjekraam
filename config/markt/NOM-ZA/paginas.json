@@ -5,7 +5,7 @@
     [
       {
         "class": "block-left",
-        "title": "Markt eerste rijen",
+        "title": "Markt Prinsengracht",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
@@ -15,7 +15,7 @@
       },
       {
         "class": "block-right",
-        "title": "Markt eerste rijen",
+        "title": "Markt middenrijden",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
@@ -31,7 +31,7 @@
     [
       {
         "class": "block-left",
-        "title": "Enkele rij",
+        "title": "Markt kerkzijde",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
@@ -47,7 +47,7 @@
     [
       {
         "class": "block-left",
-        "title": "Markt tweede rijen",
+        "title": "Markt kerkzijde t.o. speeltuin",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
@@ -57,12 +57,12 @@
       },
       {
         "class": "block-right",
-        "title": "Markt tweede rijen",
+        "title": "Markt speeltiunzijde",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
         [
-        "142", "143", "144", "145", "146", "147"       
+        "142", "143", "144", "145"      
         ]
       }
     ]

@@ -247,6 +247,7 @@ const Indeling = {
     canBeAssignedTo: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
+        openPlaatsen: IMarktplaats[],
         plaats: IMarktplaats,
         anywhere: boolean
     ): boolean => {
@@ -257,15 +258,19 @@ const Indeling = {
                                     .filter(({ verplicht = false }) => verplicht)
                                     .map(({ brancheId }) => brancheId);
 
-        return Indeling._isAvailable(indeling, plaats, ondernemer) && (
-            // Als de plaats is toegekend zijn verdere controles onnodig.
-            Ondernemer.hasVastePlaats(ondernemer, plaats) || !(
-                // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
-                verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
-                // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
-                Ondernemer.hasEVI(ondernemer) && !Markt.hasEVI(plaats) ||
-                // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
-                !anywhere && !voorkeurIds.includes(plaats.plaatsId)
+        return (
+            // TODO: Deze 2 checks hebben overlap. Refactoren?
+            Indeling._isAvailable(indeling, plaats, ondernemer) &&
+            !!openPlaatsen.find(({ plaatsId }) => plaats.plaatsId === plaatsId) && (
+                // Als de plaats is toegekend zijn verdere controles onnodig.
+                Ondernemer.hasVastePlaats(ondernemer, plaats) || !(
+                    // Ondernemer is in verplichte branche, maar plaats voldoet daar niet aan.
+                    verplichteBrancheIds.length && !intersects(verplichteBrancheIds, plaats.branches) ||
+                    // Ondernemer heeft een EVI, maar de plaats is hier niet geschikt voor.
+                    Ondernemer.hasEVI(ondernemer) && !Markt.hasEVI(plaats) ||
+                    // Ondernemer wil niet willekeurig ingedeeld worden en plaats is geen voorkeur.
+                    !anywhere && !voorkeurIds.includes(plaats.plaatsId)
+                )
             )
         );
     },
@@ -491,6 +496,7 @@ const Indeling = {
     _findBestGroup: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer,
+        openPlaatsen: IMarktplaats[],
         groups: IPlaatsvoorkeur[][],
         size: number = 1,
         compare?: (best: IPlaatsvoorkeur[], current: IPlaatsvoorkeur[]) => number
@@ -502,7 +508,7 @@ const Indeling = {
                 const depth     = size - group.length;
                 const plaatsIds = group.map(({ plaatsId }) => plaatsId);
                 const extra     = Markt.getAdjacentPlaatsen(indeling, plaatsIds, depth, plaats =>
-                    Indeling.canBeAssignedTo(indeling, ondernemer, plaats, true)
+                    Indeling.canBeAssignedTo(indeling, ondernemer, openPlaatsen, plaats, true)
                 );
                 group = group.concat(<IPlaatsvoorkeur[]> extra);
                 // Zet de zojuist toegevoegde plaatsen op de juiste plek.
@@ -548,7 +554,7 @@ const Indeling = {
         // 1. Converteer geschikte plaatsen naar IPlaatsvoorkeur (zodat elke optie
         //    een `priority` heeft).
         // 2. Sorteer op branche overlap en `priority`.
-        const plaatsen = <IPlaatsvoorkeurPlus[]> openPlaatsen
+        const openPlaatsenPrio = <IPlaatsvoorkeurPlus[]> openPlaatsen
         .map(plaats => {
             const voorkeur = voorkeuren.find(({ plaatsId }) => plaatsId === plaats.plaatsId);
 
@@ -605,13 +611,14 @@ const Indeling = {
             a.voorkeurScore - b.voorkeurScore
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)
-        const groups = Markt.groupByAdjacent(indeling, plaatsen, plaats =>
-            Indeling.canBeAssignedTo(indeling, ondernemer, plaats, anywhere)
+        const groups = Markt.groupByAdjacent(indeling, openPlaatsenPrio, plaats =>
+            Indeling.canBeAssignedTo(indeling, ondernemer, openPlaatsenPrio, plaats, anywhere)
         );
         // 4. Geef de meest geschikte groep terug.
         return Indeling._findBestGroup(
             indeling,
             ondernemer,
+            openPlaatsenPrio,
             groups,
             size,
             (a: IPlaatsvoorkeurPlus[], b: IPlaatsvoorkeurPlus[]) =>
