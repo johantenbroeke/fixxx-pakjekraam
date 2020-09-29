@@ -27,6 +27,16 @@
       "obstakel": ["loopje", "lantaarnpaal"]
     },
     {
+      "kraamA": "83",
+      "kraamB": "84",
+      "obstakel": ["loopje", "lantaarnpaal"]
+    },
+    {
+      "kraamA": "86",
+      "kraamB": "87",
+      "obstakel": ["loopje", "lantaarnpaal"]
+    },
+    {
       "kraamA": "112",
       "kraamB": "113",
       "obstakel": ["loopje"]

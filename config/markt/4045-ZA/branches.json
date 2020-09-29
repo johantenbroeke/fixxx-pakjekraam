@@ -57,6 +57,10 @@
         "verplicht": false
     }, 
     {
+        "brancheId": "304-dierenbijnodigdheden",
+        "verplicht": false
+    },
+    {
         "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
         "verplicht": false
     },
@@ -70,7 +74,8 @@
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
+        "verplicht": true,
+        "maximumPlaatsen": 22
     },
     {
         "brancheId": "311-lampen",
@@ -102,6 +107,10 @@
     },
     {
         "brancheId": "322-tapijten-vloerkleden",
+        "verplicht": false
+    },
+    {
+        "brancheId": "323-raam-muurdecoratie",
         "verplicht": false
     }
 ]

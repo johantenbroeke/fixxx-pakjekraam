@@ -62,7 +62,8 @@
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
+        "verplicht": true,
+        "maximumPlaatsen": 22
     },
     {
         "brancheId": "311-lampen",
