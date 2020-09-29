@@ -1,7 +1,8 @@
 [
     {
         "brancheId": "bak",
-        "verplicht": true
+        "verplicht": true,
+        "maximumPlaatsen": 16
     },
     {
         "brancheId": "101-agf",
@@ -50,10 +51,17 @@
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },
     {
         "brancheId": "319-elektronica-mobieltjes-accessoires",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
+    },
+    {
+        "brancheId": "320-fietsen-auto-accessoires",
+        "verplicht": false,
+        "maximumPlaatsen": 1
     }
 ]
