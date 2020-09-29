@@ -3,16 +3,21 @@
         "brancheId": "bak",
         "verplicht": true,
         "maximumPlaatsen": 8
-
     },
     {
         "brancheId": "101-agf",
         "verplicht": false,
         "maximumPlaatsen": 3
     }, 
+    {
+        "brancheId": "104-hummus-kruiden-olijven",
+        "verplicht": false,
+        "maximumPlaatsen": 2
+    },
     {    
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 2
     },
     {   
         "brancheId": "107-vis-nat",
@@ -22,7 +27,6 @@
         "brancheId": "111-exotische-groenten",
         "verplicht": false,
         "maximumPlaatsen": 1
-
     },
     {
         "brancheId": "207-grill-frituur",
@@ -42,18 +46,37 @@
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 19
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 7
+    },
+    {
+        "brancheId": "315-schoenen-tassen-lederwaren",
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },
     {
         "brancheId": "318-doe-het-zelf-gereedschap-ijzerwaren",
         "verplicht": false
     },
     {
+        "brancheId": "319-elektronica-mobieltjes-accessoires",
+        "verplicht": false,
+        "maximumPlaatsen": 2
+    },
+    {
+        "brancheId": "321-stoffen-textiel-fornituren",
+        "verplicht": false,
+        "maximumPlaatsen": 2
+    },
+    {
         "brancheId": "322-tapijten-vloerkleden",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 4
+
     }
 ]
