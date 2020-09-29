@@ -82,7 +82,8 @@
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
+        "verplicht": true,
+        "maximumPlaatsen": 22
     },
     {
         "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
