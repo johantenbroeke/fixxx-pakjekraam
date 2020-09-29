@@ -11,13 +11,23 @@
       "obstakel": ["loopje"]
     },
     {
+      "kraamA": "33",
+      "kraamB": "34",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "40",
+      "kraamB": "41",
+      "obstakel": ["loopje"]
+    },
+    {
       "kraamA": "79",
       "kraamB": "57",
       "obstakel": ["loopje"]    
     },
     {
-      "kraamA": "64",
-      "kraamB": "63",
+      "kraamA": "63",
+      "kraamB": "64",
       "obstakel": ["loopje"]
     }
   ]

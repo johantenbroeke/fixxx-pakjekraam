@@ -1,24 +1,14 @@
 {
   "obstakels": [
     {
-      "kraamA": "54",
-      "kraamB": "56",
+      "kraamA": "61",
+      "kraamB": "63",
       "obstakel": ["electra"]
     },
     {
-      "kraamA": "51",
-      "kraamB": "53",
-      "obstakel": ["electra"]
-    },
-    {
-      "kraamA": "84",
-      "kraamB": "86",
-      "obstakel": ["electra"]
-    },
-    {
-      "kraamA": "83",
-      "kraamB": "85",
-      "obstakel": ["electra"]
+      "kraamA": "214",
+      "kraamB": "216",
+      "obstakel": ["bankje"]
     }
   ]
 }
