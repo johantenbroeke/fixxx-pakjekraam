@@ -80,6 +80,10 @@
         "verplicht": false
     },
     {
+        "brancheId": "304-dierenbijnodigdheden",
+        "verplicht": false
+    },
+    {
         "brancheId": "305-horloges-brillen-sieraden",
         "verplicht": false
     },

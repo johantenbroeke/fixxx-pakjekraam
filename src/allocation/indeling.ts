@@ -73,48 +73,50 @@ const Indeling = {
             toewijzingen    : []
         };
 
-        // We willen enkel de aanwezige ondernemers, zonder dubbelingen (miscommunicatie
-        // tussen Mercato en Makkelijke Markt), dus dubbelingen moeten eruit gefilterd worden.
-        //
-        // De sortering vindt plaats nadat `indeling.voorkeuren` is gevuld (onderaan deze
-        // functie).
+        // De sortering van ondernemers vindt plaats nadat `indeling.voorkeuren` is gevuld
+        // (onderaan `Indeling.init`).
         indeling.ondernemers = markt.ondernemers.reduce((result, ondernemer) => {
+            // We willen enkel de aanwezige ondernemers, zonder dubbelingen (miscommunicatie
+            // tussen Mercato en Makkelijke Markt), dus dubbelingen moeten eruit
+            // gefilterd worden.
             if (
-                Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate) &&
+                !Indeling.isAanwezig(ondernemer, markt.aanwezigheid, marktDate) ||
                 result.find(({ erkenningsNummer, sollicitatieNummer }) =>
                     erkenningsNummer === ondernemer.erkenningsNummer ||
                     sollicitatieNummer === ondernemer.sollicitatieNummer
-                ) === undefined
+                )
             ) {
-                result.push(ondernemer);
+                return result;
             }
 
-            return result;
-        }, []);
-
-        // Tijdelijke vasteplaatshouders zonder plaatsnummer hebben in de input toch plaatsnummers
-        // vanwege beperkingen in Makkelijke Markt of Mercato. Deze plaatsnummers moet weggehaald
-        // worden, maar het aantal plaatsen moet behouden blijven. Aangezien dit type ondernemer
-        // niet mag uitbreiden, kunnen we de voorkeuren hiervoor overschrijven.
-        indeling.ondernemers.forEach(ondernemer => {
+            // Tijdelijke vasteplaatshouders zonder plaatsnummer hebben in de input toch
+            // plaatsnummers vanwege beperkingen in Makkelijke Markt of Mercato. Deze
+            // plaatsnummers moet weggehaald worden, maar het aantal plaatsen moet behouden
+            // blijven. Aangezien dit type ondernemer niet mag uitbreiden, kunnen we de
+            // voorkeuren hiervoor overschrijven.
             if (Ondernemer.isTVPLZ(ondernemer)) {
                 const erkenningsNummer = ondernemer.erkenningsNummer;
                 const minimum = ondernemer.plaatsen ? ondernemer.plaatsen.length : 1;
                 const voorkeur = (ondernemer.voorkeur || { erkenningsNummer });
 
-                ondernemer.voorkeur = {
-                    ...voorkeur,
-                    maximum: Math.max(voorkeur.maximum || 0, minimum),
-                    minimum
+                ondernemer = {
+                    ...ondernemer,
+                    voorkeur: {
+                        ...voorkeur,
+                        maximum: Math.max(voorkeur.maximum || 0, minimum),
+                        minimum
+                    },
+                    plaatsen: []
                 };
-                ondernemer.plaatsen = [];
             }
-        });
 
-        // De ondernemer objecten in de `indeling.aLijst` properties zijn exacte kopieën van de
-        // ondernemer objecten in `indeling.ondernemers`. Daar maken we hier references van, zodat
-        // we in de rest van de code simpelweg `aLijst.includes(ondernemerObj)` kunnen doen om te
-        // controleren of een ondernemer op de aLijst staat.
+            return result.concat(ondernemer);
+        }, []);
+
+        // De ondernemer objecten in de `indeling.aLijst` properties zijn exacte kopieën van
+        // de ondernemer objecten in `indeling.ondernemers`. Daar maken we hier references van,
+        // zodat we in de rest van de code simpelweg `aLijst.includes(ondernemerObj)` kunnen
+        // doen om te controleren of een ondernemer op de aLijst staat.
         indeling.aLijst = indeling.aLijst.reduce((result, ondernemer) => {
             const ondernemerOrig = indeling.ondernemers.find(({ erkenningsNummer }) =>
                 erkenningsNummer === ondernemer.erkenningsNummer

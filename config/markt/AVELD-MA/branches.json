@@ -1,11 +1,13 @@
 [
     {
         "brancheId": "101-agf",
-        "verplicht": false
+        "verplicht": true,
+        "maximumPlaatsen": 1
     },  
     {   
         "brancheId": "109-zuivel-eieren",
-        "verplicht": false
+        "verplicht": true,
+        "maximumPlaatsen": 1
     },
     {   
         "brancheId": "302-bloemen-planten",
@@ -13,6 +15,7 @@
     },
     {
         "brancheId": "305-horloges-brillen-sieraden",
-        "verplicht": false
+        "verplicht": true,
+        "maximumPlaatsen": 15
     }
 ]
