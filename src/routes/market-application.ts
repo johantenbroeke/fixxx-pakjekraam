@@ -51,13 +51,15 @@ import {
     groupAanmeldingenPerMarktPerWeek
 } from '../model/rsvp.functions';
 
+interface RSVPFormData {
+    marktId: string;
+    marktDate: string;
+    attending: string;
+}
+
 interface AttendanceFormData {
     erkenningsNummer: string;
-    rsvp: {
-        marktId: string;
-        marktDate: string;
-        attending: string;
-    }[];
+    rsvp: RSVPFormData[];
     next: string;
 }
 
@@ -160,8 +162,11 @@ export const handleAttendanceUpdate = (
     const endDate   = moment().day(13).endOf('day').toDate();
 
     // Converteer form data naar echte RSVP objecten. Deze data wordt ook
-    // doorgegeven aan de `attendencePage` call hieronder indien er een error is.
-    const rsvps: IRSVP[] = data.rsvp.map(rsvpData => ({
+    // doorgegeven aan de `attendancePage` call hieronder indien er een error is.
+    const rsvpFormData: RSVPFormData[] = data.rsvp && !Array.isArray(data.rsvp) ?
+                                         Object.values(data.rsvp) :
+                                         data.rsvp || [];
+    const rsvps: IRSVP[] = rsvpFormData.map(rsvpData => ({
         ...rsvpData,
         erkenningsNummer,
         attending: rsvpData.attending === '1'
