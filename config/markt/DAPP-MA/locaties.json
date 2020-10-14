@@ -78,7 +78,6 @@
     { "plaatsId": "150", "properties": ["boom"] },
     { "plaatsId": "152" },
     { "plaatsId": "154" },
-    { "plaatsId": "156" },
     { "plaatsId": "158", "branches": ["bak", "207-grill-frituur"], "verkoopinrichting": ["eigen-materieel"],  "properties": ["electra"] },
     { "plaatsId": "160" },
     { "plaatsId": "162" },
@@ -130,8 +129,8 @@
 
 
 
-    { "plaatsId": "7",   "properties": ["boom"] },
-    { "plaatsId": "9"  },
+    { "plaatsId": "7", "branches": ["bak", "103-brood-banket"], "verkoopinrichting": ["eigen-materieel"], "properties": ["boom"] },
+    { "plaatsId": "9", "branches": ["bak", "103-brood-banket"], "verkoopinrichting": ["eigen-materieel"]  },
     { "plaatsId": "13" },
 
     { "plaatsId": "15" },
