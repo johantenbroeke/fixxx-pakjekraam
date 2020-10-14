@@ -150,7 +150,7 @@
         "landmarkBottom": "Pieter Nieuwlandstraat",
         "plaatsList": 
         [
-          "148", "150",  "152", "154", "158",  "160", "162", "166"
+          "148", "150",  "152", "154", "158",  "160", "162", "164", "166"
         ]
       }
     ]
@@ -166,7 +166,17 @@
         "landmarkBottom": "Pieter Nieuwlandstraat",
         "plaatsList": 
         [
-          "171", "183", "185", "189","191", "193", "197", "199", "203","205"
+          "183", "185", "189","191", "193", "197", "199", "203","205"
+        ]
+      },
+      {
+        "class": "block-right",
+        "title": "Kraam in zijstraat rechts",
+        "landmarkTop": "Zijstraat",
+        "landmarkBottom": "Zijstraat",
+        "plaatsList": 
+        [
+          "171"
         ]
       },
       {
@@ -176,7 +186,17 @@
         "landmarkBottom": "Pieter Nieuwlandstraat",
         "plaatsList": 
         [
-          "178", "180", "182", "184", "186", "188","190", "192", "194", "196", "198", "200", "202", "204"
+          "182", "184", "186", "188","190", "192", "194", "196", "198", "200", "202", "204"
+        ]
+      },
+      {
+        "class": "block-left",
+        "title": "Kramen in zijstraat links",
+        "landmarkTop": "Zijstraat",
+        "landmarkBottom": "Zijstraat",
+        "plaatsList": 
+        [
+          "178", "180"
         ]
       }
     ]
