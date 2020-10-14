@@ -161,9 +161,9 @@
     { "plaatsId": "204"  },
     { "plaatsId": "205"  },
 
-    { "plaatsId": "206", "branches": ["103-brood-banket"] , "properties": ["electra"] },
+    { "plaatsId": "206", "branches": ["bak", "103-brood-banket"], "verkoopinrichting": ["eigen-materieel"] , "properties": ["electra"] },
     { "plaatsId": "207" , "properties": ["electra"] },
-    { "plaatsId": "208", "branches": ["103-brood-banket"] , "properties": ["boom"] },
+    { "plaatsId": "208", "branches": ["bak", "103-brood-banket"], "verkoopinrichting": ["eigen-materieel"] , "properties": ["boom"] },
     { "plaatsId": "209" , "properties": ["boom"] },
 
     { "plaatsId": "211"  },
