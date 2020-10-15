@@ -4,11 +4,6 @@
       "kraamA": "214",
       "kraamB": "216",
       "obstakel": ["bankje"]
-    },
-    {
-      "kraamA": "240",
-      "kraamB": "242",
-      "obstakel": ["bankje"]
     }
   ]
 }
