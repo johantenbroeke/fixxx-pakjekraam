@@ -1,11 +1,6 @@
 {
   "obstakels": [
     {
-      "kraamA": "61",
-      "kraamB": "63",
-      "obstakel": ["electra"]
-    },
-    {
       "kraamA": "214",
       "kraamB": "216",
       "obstakel": ["bankje"]

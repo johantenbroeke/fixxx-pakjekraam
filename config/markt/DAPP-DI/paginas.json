@@ -4,7 +4,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
+        "class": "block-right",
         "title": "5e stuk vanaf de Mauritskade tot de Pieter Vlamingstraat",
         "landmarkTop": "Mauritskade",
         "landmarkBottom": "Pieter Vlamingstraat",
@@ -14,7 +14,7 @@
         ]
       },
       {
-        "class": "block-right",
+        "class": "block-left",
         "title": "5e stuk vanaf de Mauritskade tot de Pieter Vlamingstraat",
         "landmarkTop": "Mauritskade",
         "landmarkBottom": "Pieter Vlamingstraat",
@@ -30,7 +30,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
+        "class": "block-right",
         "title": "4e stuk vanaf de Pieter Vlamingstraat tot de Von Zesenstraat",
         "landmarkTop": "Pieter Vlamingstraat",
         "landmarkBottom": "Von Zesenstraat",
@@ -40,7 +40,7 @@
         ]
       },
       {
-        "class": "block-right",
+        "class": "block-left",
         "title": "4e stuk vanaf de Pieter Vlamingstraat tot de Von Zesenstraat",
         "landmarkTop": "Pieter Vlamingstraat",
         "landmarkBottom": "Von Zesenstraat",
@@ -56,7 +56,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
+        "class": "block-right",
         "title": "3e stuk vanaf Von Zesenstraat tot Commelinstraat",
         "landmarkTop": "Von Zesenstraat",
         "landmarkBottom": "Commelinstraat",
@@ -66,7 +66,7 @@
         ]
       },
       {
-        "class": "block-right",
+        "class": "block-left",
         "title": "3e stuk vanaf Von Zesenstraat tot Commelinstraat",
         "landmarkTop": "Von Zesenstraat",
         "landmarkBottom": "Commelinstraat",
@@ -82,7 +82,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
+        "class": "block-right",
         "title": "2e stuk vanaf Commelinstraat tot de Wagenaarstraat",
         "landmarkTop": "Commelinstraat",
         "landmarkBottom": "Wagenaarstraat",
@@ -92,7 +92,7 @@
         ]
       },
       {
-        "class": "block-right",
+        "class": "block-left",
         "title": "2e stuk vanaf Commelinstraat tot de Wagenaarstraat",
         "landmarkTop": "Commelinstraat",
         "landmarkBottom": "Wagenaarstraat",
@@ -108,7 +108,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
+        "class": "block-right",
         "title": "1e stuk vanaf de Wagenaarstraat tot de 1e van Swindenstraat",
         "landmarkTop": "Wagenaarstraat",
         "landmarkBottom": "1e van Swindenstraat",
@@ -118,7 +118,7 @@
         ]
       },
       {
-        "class": "block-right",
+        "class": "block-left",
         "title": "1e stuk vanaf de Wagenaarstraat tot de 1e van Swindenstraat",
         "landmarkTop": "Wagenaarstraat",
         "landmarkBottom": "1e van Swindenstraat",
@@ -134,7 +134,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
+        "class": "block-right",
         "title": "Dapperplein tot de Pieter Nieuwlandstraat",
         "landmarkTop": "Dapperplein",
         "landmarkBottom": "Pieter Nieuwlandstraat",
@@ -144,13 +144,13 @@
         ]
       },
       {
-        "class": "block-right",
+        "class": "block-left",
         "title": "Dapperplein tot de Pieter Nieuwlandstraat",
         "landmarkTop": "Dapperplein",
         "landmarkBottom": "Pieter Nieuwlandstraat",
         "plaatsList": 
         [
-          "148", "150",  "152", "154", "156", "158",  "160", "162", "166"
+          "148", "150",  "152", "154", "158",  "160", "162", "164", "166"
         ]
       }
     ]
@@ -159,16 +159,6 @@
     "title": "Dappermarkt dinsdag",
     "indelingslijstGroup": 
     [
-      {
-        "class": "block-left",
-        "title": "Zijstraat tot de Pieter Nieuwlandstraat",
-        "landmarkTop": "Zijstraat",
-        "landmarkBottom": "Pieter Nieuwlandstraat",
-        "plaatsList": 
-        [
-          "171", "183", "185", "189","191", "193", "197", "199", "203","205"
-        ]
-      },
       {
         "class": "block-right",
         "title": "Zijstraat tot de Pieter Nieuwlandstraat",
@@ -176,7 +166,37 @@
         "landmarkBottom": "Pieter Nieuwlandstraat",
         "plaatsList": 
         [
-          "178", "180", "182", "184", "186", "188","190", "192", "194", "196", "198", "200", "202", "204"
+          "183", "185", "189","191", "193", "197", "199", "203","205"
+        ]
+      },
+      {
+        "class": "block-right",
+        "title": "Kraam in zijstraat rechts",
+        "landmarkTop": "Zijstraat",
+        "landmarkBottom": "Zijstraat",
+        "plaatsList": 
+        [
+          "171"
+        ]
+      },
+      {
+        "class": "block-left",
+        "title": "Zijstraat tot de Pieter Nieuwlandstraat",
+        "landmarkTop": "Zijstraat",
+        "landmarkBottom": "Pieter Nieuwlandstraat",
+        "plaatsList": 
+        [
+          "182", "184", "186", "188","190", "192", "194", "196", "198", "200", "202", "204"
+        ]
+      },
+      {
+        "class": "block-left",
+        "title": "Kramen in zijstraat links",
+        "landmarkTop": "Zijstraat",
+        "landmarkBottom": "Zijstraat",
+        "plaatsList": 
+        [
+          "178", "180"
         ]
       }
     ]
@@ -186,7 +206,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
+        "class": "block-right",
         "title": "Pieter Nieuwlandstraat tot de Reinwardtstraat",
         "landmarkTop": "Pieter Nieuwlandstraat",
         "landmarkBottom": "Reinwardtstraat",
@@ -196,7 +216,7 @@
         ]
       },
       {
-        "class": "block-right",
+        "class": "block-left",
         "title": "Pieter Nieuwlandstraat tot de Reinwardtstraat",
         "landmarkTop": "Pieter Nieuwlandstraat",
         "landmarkBottom": "Reinwardtstraat",
@@ -212,7 +232,7 @@
     "indelingslijstGroup": 
     [
       {
-        "class": "block-left",
+        "class": "block-right",
         "title": "Reinwardtstraat tot de Wijttenbachstraat",
         "landmarkTop": "Reinwardtstraat",
         "landmarkBottom": "Wijttenbachstraat",
@@ -222,7 +242,7 @@
         ]
       },
       {
-        "class": "block-right",
+        "class": "block-left",
         "title": "Reinwardtstraat tot de Wijttenbachstraat",
         "landmarkTop": "Reinwardtstraat",
         "landmarkBottom": "Wijttenbachstraat",

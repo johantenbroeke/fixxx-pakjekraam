@@ -23,12 +23,24 @@
         "brancheId": "105-noten-zuidvruchten",
         "verplicht": false
     },
+    {    
+        "brancheId": "106-o-k-oliebollen",
+        "verplicht": false
+    },
     {   
         "brancheId": "107-vis-nat",
         "verplicht": false
     },
+    {   
+        "brancheId": "108-vleeswaren",
+        "verplicht": false
+    },
     {
         "brancheId": "109-zuivel-eieren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "110-poelier",
         "verplicht": false
     },
     {
@@ -45,8 +57,9 @@
     },
     {   
         "brancheId": "206-oudhollands-gebak",
-        "verplicht": false
-    },
+        "verplicht": false,
+        "maximumPlaatsen": 8
+    }, 
     {
         "brancheId": "207-grill-frituur",
         "verplicht": false
