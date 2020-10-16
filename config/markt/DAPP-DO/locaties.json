@@ -32,9 +32,9 @@
 
 
     { "plaatsId": "40"  },
-    { "plaatsId": "42"  },
-    { "plaatsId": "43", "verkoopinrichting": ["eigen-materieel"], "properties": ["boom"] },
-    { "plaatsId": "45", "verkoopinrichting": ["eigen-materieel"], "properties": ["bankje"] },
+    { "plaatsId": "42"  }, 
+    { "plaatsId": "43", "branches": ["109-zuivel-eieren"], "verkoopinrichting": ["eigen-materieel"], "properties": ["boom"] },
+    { "plaatsId": "45", "branches": ["109-zuivel-eieren"], "verkoopinrichting": ["eigen-materieel"], "properties": ["bankje"] },
     { "plaatsId": "46",  "properties": ["electra"] },
     { "plaatsId": "48" },
     { "plaatsId": "49" },
