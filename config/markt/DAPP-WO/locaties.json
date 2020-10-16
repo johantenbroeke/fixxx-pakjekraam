@@ -1,7 +1,7 @@
 [
     { "plaatsId": "2", "branches": ["bak", "201-broodjes-belegd"], "verkoopinrichting": ["eigen-materieel"], "properties": ["boom"] },
     { "plaatsId": "4", "branches": ["bak", "201-broodjes-belegd"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "7", "branches": ["bak" ], "properties": ["boom"] },
+    { "plaatsId": "7", "properties": ["boom"] },
     { "plaatsId": "8" , "properties": ["boom"] },
     { "plaatsId": "9"  },
     { "plaatsId": "10"  },
