@@ -1,7 +1,7 @@
 [
     {
         "brancheId": "101-agf",
-        "verplicht": true,
+        "verplicht": false,
         "maximumPlaatsen": 12
     },
     {

@@ -1,6 +1,6 @@
 [
     {
-      "title": "Rij 1",
+      "title": "Rij 1 en 2",
       "indelingslijstGroup": 
       [
         {
@@ -28,13 +28,7 @@
             "16",
             "17"
           ]
-        }
-      ]
-    },
-    {
-      "title": "Rij 2",
-      "indelingslijstGroup": 
-      [
+        },
         {
           "class": "block-left",
           "title": "Rij 2",
@@ -66,7 +60,7 @@
       ]
     },
     {
-        "title": "Rij 3",
+        "title": "Rij 3 en 4",
         "indelingslijstGroup": 
         [
           {
@@ -94,42 +88,36 @@
               "87",
               "88"
             ]
+          },
+          {
+            "class": "block-left",
+            "title": "Rij 4",
+            "landmarkTop": "Jumbo",
+            "landmarkBottom": "Rij kop",
+            "plaatsList": 
+            [
+  
+              "107", 
+              "108",
+              "109",
+              "110",
+              "111",
+              "112",
+              "113",
+              "114",
+              "115",
+              "116", 
+              "117",
+              "118",
+              "119",
+              "120",
+              "121",
+              "122",
+              "123", 
+              "124"
+            ]
           }
         ]
-    },
-    {
-      "title": "Rij 4",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Rij 4",
-          "landmarkTop": "Jumbo",
-          "landmarkBottom": "Rij kop",
-          "plaatsList": 
-          [
-
-            "107", 
-            "108",
-            "109",
-            "110",
-            "111",
-            "112",
-            "113",
-            "114",
-            "115",
-            "116", 
-            "117",
-            "118",
-            "119",
-            "120",
-            "121",
-            "122",
-            "123", 
-            "124"
-          ]
-        }
-      ]
     },
     {
       "title": "Rij kop",

@@ -50,7 +50,8 @@
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 2
     },    
     {
         "brancheId": "307-kleding-baby-kinder",
