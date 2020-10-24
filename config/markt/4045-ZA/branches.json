@@ -54,7 +54,8 @@
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 22
     }, 
     {
         "brancheId": "304-dierenbijnodigdheden",
