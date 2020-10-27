@@ -24,8 +24,10 @@
     { "plaatsId": "44", "branches": ["bak", "108-vleeswaren"] },
     { "plaatsId": "48", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
     { "plaatsId": "49", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
+ 
     { "plaatsId": "55", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
     { "plaatsId": "56", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
+    
     { "plaatsId": "57", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"]  },
     { "plaatsId": "58", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"]  },
     { "plaatsId": "59", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"]  },
