@@ -52,14 +52,8 @@
           [
             "90", "91",  "92", "93", "94", "95", "96", "97"
           ]
-        }
-      ]
-    },
-    {
-        "title": "Rij 3",
-        "indelingslijstGroup": 
-        [
-          {
+        },
+        {
             "class": "block-left",
             "title": "Rij 3",
             "landmarkTop": "Borgerstraat",

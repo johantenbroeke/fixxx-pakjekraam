@@ -18,13 +18,7 @@
           "landmarkBottom": "Prinsengracht",
           "plaatsList":  
           ["2", "3", "4", "5", "5a", "26","27"]
-        }
-      ]
-    },
-    {
-      "title": "Amstelveld markt",
-      "indelingslijstGroup": 
-      [
+        },
         {
           "class": "block-left",
           "title": "Rij 2",
@@ -46,13 +40,7 @@
           "landmarkBottom": "Amstelveld Straatkant",
           "plaatsList": 
           ["12", "13", "14", "15", "16", "17",  "18", "19", "19a"]         
-        }
-      ]
-    },
-    {
-      "title": "Amstelveld markt",
-      "indelingslijstGroup": 
-      [
+        },
         {
           "class": "block-left",
           "title": "Rij 4",
