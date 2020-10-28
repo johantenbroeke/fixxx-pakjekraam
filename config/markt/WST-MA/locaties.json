@@ -70,7 +70,7 @@
     { "plaatsId": "247", "properties": ["boom"] },
     { "plaatsId": "249", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
     { "plaatsId": "251", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "253", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra", "boom"] },
+    { "plaatsId": "253", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra"] },
     { "plaatsId": "255", "branches": ["321-stoffen-textiel-fornituren"] },
     { "plaatsId": "257", "branches": ["305-horloges-brillen-sieraden"] },
     { "plaatsId": "259", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
