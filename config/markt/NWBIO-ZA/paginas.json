@@ -9,13 +9,7 @@
           "landmarkTop": "Nieuwmarkt",
           "landmarkBottom": "Nieuwmarkt",
           "plaatsList": [ "2", "3", "4", "5", "6", "7"]
-        }
-      ]
-    },
-    {
-      "title": "Markt",
-      "indelingslijstGroup": 
-      [
+        },
         {
           "class": "block-left",
           "title": "Markt",
@@ -44,13 +38,7 @@
             "landmarkTop": "Nieuwmarkt",
             "landmarkBottom": "De Waag",
             "plaatsList": ["15", "16"] 
-          }
-        ]
-      },
-      {
-      "title": "Markt",
-      "indelingslijstGroup": 
-      [
+          },
         {
           "class": "block-left",
           "title": "Markt",
