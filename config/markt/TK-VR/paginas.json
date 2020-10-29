@@ -1,83 +1,85 @@
 [
-    {
-      "title": "Markt 1",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Markt 1",
-          "landmarkTop": "Kinkerstraat",
-          "landmarkBottom": "Bellamystraat",
-          "plaatsList": 
-          [ 
-          "25", "26", "27", "28", "29", "32", "33", "34", "35",  "37", "38", "39", "40", 
-          "41", "43", "44", "45", "48", "49" 
-          ]
-        },
-        {
-          "class": "block-right",
-          "title": "Markt 1",
-          "landmarkTop": "Kinkerstraat",
-          "landmarkBottom": "Bellamystraat",
-          "plaatsList": 
-          [
-          "57", "58", "59", "60", "61", "62", 
-          "64", "65", "66", "67", "68", "69", "70", "71", "74", 
-          "76", "77", "80", "81", "82", "83", "84", "85", "86"
-          ]
-        }
-      ]
-    },
-    {
-      "title": "Markt 2",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Markt 2",
-          "landmarkTop": "Bellamystraat",
-          "landmarkBottom": "",
-          "plaatsList": 
-          [
-            "1", "2", "3", "4", "7", "8", "9", "14", "16", "17", "18", "19"
-          ]
-        },
-        {
-          "class": "block-right",
-          "title": "Markt 2",
-          "landmarkTop": "Bellamystraat",
-          "landmarkBottom": "",
-          "plaatsList": 
-          [
-            "90", "91", "92", "93", "94", "95", "96", "97"
-          ]
-        }
-      ]
-    },
-    {
-        "title": "Markt 3",
-        "indelingslijstGroup": 
+  {
+    "title": "Markt 1",
+    "indelingslijstGroup": 
+    [
+      {
+        "class": "block-left",
+        "title": "Rij 1",
+        "landmarkTop": "Kinkerstraat",
+        "landmarkBottom": "Bellamystraat",
+        "plaatsList": 
+        [ 
+          "49", "48", 
+          "45", "44", "43", 
+          "41", "40", "39", "38", "37", 
+          "35", "34", "33", "32",
+          "29", "28", "27", "26", "25"
+        ]
+      },
+      {
+        "class": "block-right",
+        "title": "Rij 1",
+        "landmarkTop": "Kinkerstraat",
+        "landmarkBottom": "Bellamystraat",
+        "plaatsList": 
         [
-          {
-            "class": "block-left",
-            "title": "Markt 3",
-            "landmarkTop": "Borgerstraat",
-            "landmarkBottom": "",
-            "plaatsList": 
-            [ 
-              "111", "112"
-            ]
-          },
-          {
-            "class": "block-right",
-            "title": "Markt 3",
-            "landmarkTop": "Borgerstraat",
-            "landmarkBottom": "",
-            "plaatsList": 
-            [
-            "55", "56", "105", "106" 
-            ]
-          }
+          "57", "58", "59", "60", "61", "62",
+          "64", "65", "66", "67", "68", "69", "70", "71", 
+          "74", 
+          "76", "77", 
+          "80", "81", "82", "83", "84", "85", "86"
         ]
       }
-  ]
+    ]
+  },
+  {
+    "title": "Markt 2",
+    "indelingslijstGroup": 
+    [
+      {
+        "class": "block-left",
+        "title": "Rij 2",
+        "landmarkTop": "Bellamystraat",
+        "landmarkBottom": "",
+        "plaatsList": 
+        [
+          "19", "18", "17", "16", 
+          "14", 
+          "9", "8", "7", 
+          "4", "3", "2", "1"          
+        ]
+      },
+      {
+        "class": "block-right",
+        "title": "Rij 2",
+        "landmarkTop": "Bellamystraat",
+        "landmarkBottom": "",
+        "plaatsList": 
+        [
+          "90", "91",  "92", "93", "94", "95", "96", "97"
+        ]
+      },
+        {
+          "class": "block-left",
+          "title": "Rij 3",
+          "landmarkTop": "Borgerstraat",
+          "landmarkBottom": "",
+          "plaatsList": 
+          [ 
+            "112", "111"
+          ]
+        },
+        {
+          "class": "block-right",
+          "title": "Rij 3",
+          "landmarkTop": "Borgerstraat",
+          "landmarkBottom": "",
+          "plaatsList": 
+          [
+            "106", "105", "55", "56" 
+          ]
+        }
+      ]
+    }
+]
