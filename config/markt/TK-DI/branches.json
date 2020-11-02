@@ -11,35 +11,38 @@
     }, 
     {
         "brancheId": "103-brood-banket",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },
     {    
         "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },      
     {    
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": false
-    },
-    {   
-        "brancheId": "107-vis-nat",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },
     {
         "brancheId": "108-vleeswaren",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 2
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },
     {
         "brancheId": "201-broodjes-belegd",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },
     {   
         "brancheId": "205-loempias",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },
     {   
         "brancheId": "207-grill-frituur",
@@ -47,7 +50,8 @@
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": false
+        "verplicht": false,
+        "maximumPlaatsen": 3
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",

@@ -1,10 +1,18 @@
 [
     {   
+        "brancheId": "302-bloemen-planten",
+        "verplicht": false
+    }, 
+    {   
         "brancheId": "305-horloges-brillen-sieraden",
         "verplicht": false
     },
     {   
         "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
+        "verplicht": false
+    },
+    {   
+        "brancheId": "307-kleding-baby-kinder",
         "verplicht": false
     },
     {   

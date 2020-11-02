@@ -22,29 +22,17 @@
         [
         "32", "33", "34", "35", "36", "37", "38", "39"
         ]
-      }
-    ]
-  },
-  {
-    "title": "Boerenmarkt Zaterdag",
-    "indelingslijstGroup": 
-    [
+      },
       {
         "class": "block-left",
-        "title": "MarktWesterstraat",
+        "title": "Markt Westerstraat",
         "landmarkTop": "",
         "landmarkBottom": "",
         "plaatsList": 
         [
         "24", "25", "26", "27", "28", "29", "30", "31"
         ]
-      }
-    ]
-  },
-  {
-    "title": "Boerenmarkt Zaterdag",
-    "indelingslijstGroup": 
-    [
+      },
       {
         "class": "block-left",
         "title": "Markt kerkzijde",

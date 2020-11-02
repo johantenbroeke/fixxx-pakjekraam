@@ -19,13 +19,7 @@
           "landmarkBottom": "?",
           "plaatsList": 
           ["1", "2", "3", "4", "5", "6", "7"]
-        }
-      ]
-    },
-    {
-      "title": "Reigersbos markt",
-      "indelingslijstGroup": 
-      [
+        },
         {
           "class": "block-left",
           "title": "Deel 2",
@@ -64,14 +58,7 @@
             "landmarkBottom": "?",
             "plaatsList": 
             ["82", "81", "80", "79", "78", "77", "76", "75"]
-          }
-        ]
-      },
-
-    {
-      "title": "Markt 3",
-      "indelingslijstGroup": 
-      [
+          },
         {
           "class": "block-right",
           "title": "Markt 3",

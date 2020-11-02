@@ -32,6 +32,14 @@
         "verplicht": false
     },   
     {
+        "brancheId": "205-loempias",
+        "verplicht": false
+    }, 
+    {
+        "brancheId": "207-grill-frituur",
+        "verplicht": false
+    }, 
+    {
         "brancheId": "302-bloemen-planten",
         "verplicht": false
     }
