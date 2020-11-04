@@ -1,9 +1,248 @@
 {
   "obstakels": [
     {
+      "kraamA": "4",
+      "kraamB": "8",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "10",
+      "kraamB": "14",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "16",
+      "kraamB": "20",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "26",
+      "kraamB": "30",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "34",
+      "kraamB": "38",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "42",
+      "kraamB": "46",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "48",
+      "kraamB": "52",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "56",
+      "kraamB": "60",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "62",
+      "kraamB": "66",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "72",
+      "kraamB": "76",
+      "obstakel": ["loopje"]
+    },    
+
+    {
+      "kraamA": "80",
+      "kraamB": "82",
+      "obstakel": ["loopje"]
+    },       
+    {
+      "kraamA": "88",
+      "kraamB": "92",
+      "obstakel": ["loopje"]
+    },   
+    {
+      "kraamA": "94",
+      "kraamB": "96",
+      "obstakel": ["loopje"]
+    },  
+    {
+      "kraamA": "102",
+      "kraamB": "104",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "110",
+      "kraamB": "112",
+      "obstakel": ["loopje"]
+    },      
+    {
+      "kraamA": "120",
+      "kraamB": "124",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "126",
+      "kraamB": "130",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "132",
+      "kraamB": "134",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "136",
+      "kraamB": "140",
+      "obstakel": ["loopje"]
+    },    
+
+    {
+      "kraamA": "154",
+      "kraamB": "158",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "208",
+      "kraamB": "212",
+      "obstakel": ["loopje"]
+    },
+    {
       "kraamA": "214",
       "kraamB": "216",
       "obstakel": ["bankje"]
+    },
+    {
+      "kraamA": "218",
+      "kraamB": "222",
+      "obstakel": ["loopje"]
+    },
+
+    {
+      "kraamA": "224",
+      "kraamB": "228",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "242",
+      "kraamB": "246",
+      "obstakel": ["loopje"]
+    },
+
+
+
+    {
+      "kraamA": "9",
+      "kraamB": "13",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "13",
+      "kraamB": "17",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "25",
+      "kraamB": "29",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "33",
+      "kraamB": "37",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "39",
+      "kraamB": "43",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "45",
+      "kraamB": "49",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "57",
+      "kraamB": "61",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "71",
+      "kraamB": "75",
+      "obstakel": ["loopje"]
+    },    
+
+    {
+      "kraamA": "77",
+      "kraamB": "81",
+      "obstakel": ["loopje"]
+    },       
+    {
+      "kraamA": "87",
+      "kraamB": "91",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "101",
+      "kraamB": "105",
+      "obstakel": ["loopje"]
+    },    
+    {
+      "kraamA": "107",
+      "kraamB": "111",
+      "obstakel": ["loopje"]
+    },     
+    {
+      "kraamA": "119",
+      "kraamB": "123",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "125",
+      "kraamB": "129",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "129",
+      "kraamB": "133",
+      "obstakel": ["loopje"]
+    },
+
+    {
+      "kraamA": "149",
+      "kraamB": "153",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "155",
+      "kraamB": "159",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "185",
+      "kraamB": "189",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "199",
+      "kraamB": "203",
+      "obstakel": ["loopje"]
+    },
+
+    {
+      "kraamA": "221",
+      "kraamB": "225",
+      "obstakel": ["loopje"]
+    }, 
+    {
+      "kraamA": "237",
+      "kraamB": "241",
+      "obstakel": ["loopje"]
+    },
+    {
+      "kraamA": "243",
+      "kraamB": "247",
+      "obstakel": ["loopje"]
     }
   ]
 }
