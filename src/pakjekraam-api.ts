@@ -320,8 +320,21 @@ export const getMarktPaginas = (markt: MMMarkt): Promise<IAllocationPrintout> =>
 export const getMarktGeografie = (markt: MMMarkt): Promise<{ obstakels: IObstakelBetween[] }> =>
     loadJSON(`./config/markt/${markt.afkorting}/geografie.json`, { obstakels: [] });
 
-export const getAllBranches = (): Promise<IBranche[]> =>
-    loadJSON('./config/markt/branches.json', []);
+export const getAllBranches = (markt?: MMMarkt): Promise<IBranche[]> => {
+    return Promise.all([
+        loadJSON('./config/markt/branches.json', []),
+        markt ? loadJSON(`./config/markt/${markt.afkorting}/branches.json`, []) : []
+    ]).then(([allBranches, marktBranches]) => {
+        return allBranches.reduce((result, branche) => {
+            const marktBranche = marktBranches.find(({ brancheId }) =>
+                brancheId === branche.brancheId
+            );
+            return marktBranche ?
+                   result.concat({ ...branche, ...marktBranche }) :
+                   result.concat(branche);
+        }, []);
+    });
+};
 
 export const getMededelingen = (): Promise<any> =>
     loadJSON('./config/markt/mededelingen.json', {});
@@ -363,8 +376,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
             getMarktPlaatsenDisabled,
             getAanmeldingen(marktId, marktDate),
             getPlaatsvoorkeuren(marktId),
-            getAllBranches(),
-            getMarktBranches(mmarkt),
+            getAllBranches(mmarkt),
             getMarktPaginas(mmarkt),
             getMarktGeografie(mmarkt),
             getMarkt(marktId),
@@ -377,7 +389,6 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
                 aanmeldingen,
                 voorkeuren,
                 branches,
-                marktBranches,
                 paginas,
                 geografie,
                 markt,
@@ -398,14 +409,7 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
                 marktplaatsen,
                 aanwezigheid: aanmeldingen,
 
-                branches: branches.reduce((result, branche) => {
-                    const marktBranche = marktBranches.find(({ brancheId }) =>
-                        brancheId === branche.brancheId
-                    );
-                    return marktBranche ?
-                           result.concat({ ...branche, ...marktBranche }) :
-                           result.concat(branche);
-                }, []),
+                branches,
 
                 aLijst: aLijst.map(({ erkenningsnummer }) =>
                     ondernemers.find(({ erkenningsNummer }) => erkenningsnummer === erkenningsNummer),

@@ -32,7 +32,7 @@ const getIndelingslijstData = (marktId: string, marktDate: string) =>
             getMarktplaatsen(mmarkt),
             getPlaatsvoorkeuren(marktId),
             getVoorkeurenByMarkt(marktId),
-            getAllBranches(),
+            getAllBranches(mmarkt),
         ]).then( result => {
             const [
                 ondernemers,
