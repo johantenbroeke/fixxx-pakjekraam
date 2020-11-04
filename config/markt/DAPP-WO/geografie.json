@@ -60,7 +60,12 @@
       "kraamA": "88",
       "kraamB": "92",
       "obstakel": ["loopje"]
-    },    
+    },   
+    {
+      "kraamA": "94",
+      "kraamB": "96",
+      "obstakel": ["loopje"]
+    },  
     {
       "kraamA": "102",
       "kraamB": "104",
