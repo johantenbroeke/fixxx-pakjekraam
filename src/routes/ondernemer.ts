@@ -16,10 +16,9 @@ import {
 } from '../pakjekraam-api';
 
 import { deletePlaatsvoorkeurenByErkenningsnummer } from '../model/plaatsvoorkeur.functions';
-import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 import { deleteRsvpsByErkenningsnummer } from '../model/rsvp.functions';
 import { deleteVoorkeurenByErkenningsnummer } from '../model/voorkeur.functions';
-
+import { getToewijzingenByOndernemer } from '../model/allocation.functions';
 import { getAfwijzingenByOndernemer } from '../model/afwijzing.functions';
 
 export const deleteUserPage = ( req: GrantedRequest, res: Response, result: string, error: string, csrfToken: string, role: string) => {
@@ -82,7 +81,6 @@ export const toewijzingenAfwijzingenPage = (
     erkenningsNummer: string,
     role: string
 ) => {
-
     const messages = getQueryErrors(req.query);
 
     Promise.all([
@@ -91,30 +89,36 @@ export const toewijzingenAfwijzingenPage = (
         getOndernemer(erkenningsNummer),
         getAllBranches(),
         getMarkten(),
-    ]).then(
-        ([toewijzingen, afwijzingen, ondernemer, branches, markten]) => {
+    ])
+    .then(([
+        toewijzingen,
+        afwijzingen,
+        ondernemer,
+        branches,
+        markten
+    ]) => {
+        const relevanteMarkten = role === Roles.MARKTONDERNEMER ?
+                                 markten.filter(markt => markt.kiesJeKraamFase === 'live') :
+                                 markten;
+        const marktIds = relevanteMarkten.map(markt => markt.id);
 
-            const marktenLive = markten.filter(markt => markt.kiesJeKraamFase === 'live').map( markt => markt.id);
+        afwijzingen = afwijzingen.filter(afwijzing => {
+            return marktIds.includes(afwijzing.marktId);
+        });
+        toewijzingen = toewijzingen.filter(toewijzing => {
+            return marktIds.includes(parseInt(toewijzing.marktId));
+        });
 
-            afwijzingen = afwijzingen.filter(afwijzing => {
-                return marktenLive.includes(afwijzing.marktId);
-            });
-
-            toewijzingen = toewijzingen.filter(toewijzing => {
-                return marktenLive.includes(parseInt(toewijzing.marktId));
-            });
-
-            res.render('ToewijzingenAfwijzingenPage', {
-                toewijzingen,
-                afwijzingen,
-                ondernemer,
-                role,
-                branches,
-                markten,
-                messages,
-                user: getKeycloakUser(req)
-            });
-        },
-        err => internalServerErrorPage(res)(err),
-    );
+        res.render('ToewijzingenAfwijzingenPage', {
+            toewijzingen,
+            afwijzingen,
+            ondernemer,
+            role,
+            branches,
+            markten,
+            messages,
+            user: getKeycloakUser(req)
+        });
+    })
+    .catch(err => internalServerErrorPage(res)(err));
 };
