@@ -74,7 +74,7 @@
     { "plaatsId": "142" },
     { "plaatsId": "144" },
     { "plaatsId": "146",   "properties": ["electra"] },
-    { "plaatsId": "148", "branches": ["207-grill-frituur"] },
+    { "plaatsId": "148" },
     { "plaatsId": "150", "properties": ["boom"] },
     { "plaatsId": "152" },
     { "plaatsId": "154" },
