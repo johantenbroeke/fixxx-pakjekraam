@@ -5,89 +5,89 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 8
 
     },
     {
         "brancheId": "102-bio-health-fairtrade",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },   
     {
         "brancheId": "103-brood-banket",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 4
     },
     {
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 2
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 2
     },
     {
         "brancheId": "111-exotische-groenten",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 1
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 2
     },
     {
         "brancheId": "209-vis-gebakken",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 8
     },
     {
         "brancheId": "210-snoepwaren",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {
         "brancheId": "301-antiek-kunst",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 4
     },
     {
         "brancheId": "305-horloges-brillen-sieraden",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "308-kleding-onder-beenmode-sokken",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-        "verplicht": false    
+        "verplicht": true    
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": false
+        "verplicht": true
         },
     {
         "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "317-speelgoed-spellen",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": false
+        "verplicht": true
     }
 ]
