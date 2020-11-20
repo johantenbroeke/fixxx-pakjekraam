@@ -7,11 +7,7 @@
         "brancheId": "101-agf",
         "verplicht": true,
         "maximumPlaatsen": 14
-    },
-    {
-        "brancheId": "102-bio-health-fairtrade",
-        "verplicht": true
-    },    
+    },  
     {
         "brancheId": "103-brood-banket",
         "verplicht": true,
@@ -76,10 +72,6 @@
         "brancheId": "207-grill-frituur",
         "verplicht": true,
         "maximumPlaatsen": 3
-    },
-    {
-        "brancheId": "209-vis-gebakken",
-        "verplicht": true
     },
     {   
         "brancheId": "211-delicatessen-hapjes",
