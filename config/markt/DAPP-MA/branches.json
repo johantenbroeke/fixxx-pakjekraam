@@ -54,26 +54,14 @@
         "maximumPlaatsen": 2
     },
     {   
-        "brancheId": "204-koffie-versnaperingen",
-        "verplicht": true
-    },
-    {   
         "brancheId": "205-loempias",
         "verplicht": true,
         "maximumPlaatsen": 1
-    },
-    {   
-        "brancheId": "206-oudhollands-gebak",
-        "verplicht": true
-    },    
+    },   
     {
         "brancheId": "207-grill-frituur",
         "verplicht": true,
         "maximumPlaatsen": 3
-    },
-    {
-        "brancheId": "209-vis-gebakken",
-        "verplicht": true
     },
     {
         "brancheId": "302-bloemen-planten",

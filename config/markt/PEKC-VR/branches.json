@@ -44,40 +44,8 @@
         "maximumPlaatsen": 3
     },
     {
-        "brancheId": "301-antiek-kunst",
-        "verplicht": true    
-    },
-    {
         "brancheId": "302-bloemen-planten",
         "verplicht": true,
         "maximumPlaatsen": 4
-    },
-    {
-        "brancheId": "305-horloges-brillen-sieraden",
-        "verplicht": true
-    },
-    {
-        "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": true
-    },
-    {
-        "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-        "verplicht": true
-    },
-    {
-        "brancheId": "314-partijhandel-inboedels",
-        "verplicht": true
-    },
-    {
-        "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": true
-    },
-    {
-        "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": true
-    },
-    {
-        "brancheId": "322-tapijten-vloerkleden",
-        "verplicht": true
     }
 ]
