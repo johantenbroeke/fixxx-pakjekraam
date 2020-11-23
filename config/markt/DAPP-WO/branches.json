@@ -7,28 +7,16 @@
         "brancheId": "101-agf",
         "verplicht": true,
         "maximumPlaatsen": 14
-    },
-    {
-        "brancheId": "102-bio-health-fairtrade",
-        "verplicht": true
-    },    
+    },  
     {
         "brancheId": "103-brood-banket",
         "verplicht": true,
         "maximumPlaatsen": 4
-    },
-    {    
-        "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": true
-    },   
+    },  
     {    
         "brancheId": "105-noten-zuidvruchten",
         "verplicht": true,
         "maximumPlaatsen": 2
-    },
-    {   
-        "brancheId": "107-vis-nat",
-        "verplicht": true
     },
     {   
         "brancheId": "108-vleeswaren",

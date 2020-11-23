@@ -7,11 +7,7 @@
         "brancheId": "101-agf",
         "verplicht": true,
         "maximumPlaatsen": 14
-    },
-    {
-        "brancheId": "102-bio-health-fairtrade",
-        "verplicht": true
-    },    
+    },  
     {
         "brancheId": "103-brood-banket",
         "verplicht": true,
@@ -40,7 +36,7 @@
     {
         "brancheId": "109-zuivel-eieren",
         "verplicht": true,
-        "maximumPlaatsen": 4
+        "maximumPlaatsen": 5
     },
     {
         "brancheId": "110-poelier",
@@ -60,7 +56,7 @@
     {   
         "brancheId": "204-koffie-versnaperingen",
         "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 1
     },
     {   
         "brancheId": "205-loempias",
@@ -76,10 +72,6 @@
         "brancheId": "207-grill-frituur",
         "verplicht": true,
         "maximumPlaatsen": 3
-    },
-    {
-        "brancheId": "209-vis-gebakken",
-        "verplicht": true
     },
     {   
         "brancheId": "211-delicatessen-hapjes",
