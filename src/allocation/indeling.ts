@@ -657,9 +657,7 @@ const Indeling = {
                       Ondernemer.hasVerplichteBranche(indeling, ondernemer) ? 2 :
                       Ondernemer.hasEVI(ondernemer)                         ? 8 :
                                                                               32;
-        // In Coronatijd krijgen VPHs geen voorrang meer op sollicitanten als ze
-        // willen verplaatsen.
-        return false && Ondernemer.isVast(ondernemer) ?
+        return Ondernemer.isVast(ondernemer) ?
                group >> 1 :
                group;
     },
