@@ -11,7 +11,7 @@
     }, 
     {
         "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": true,
+        "verplicht": false,
         "maximumPlaatsen": 2
     },
     {    
@@ -21,7 +21,7 @@
     },
     {   
         "brancheId": "107-vis-nat",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "111-exotische-groenten",
@@ -30,19 +30,7 @@
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": false
-    },
-    {
-        "brancheId": "305-horloges-brillen-sieraden",
-        "verplicht": false
-    },
-    {
-        "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
-        "verplicht": false
-    },
-    {
-        "brancheId": "307-kleding-baby-kinder",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
@@ -56,26 +44,22 @@
     },
     {
         "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": true,
+        "verplicht": false,
         "maximumPlaatsen": 3
     },
     {
-        "brancheId": "318-doe-het-zelf-gereedschap-ijzerwaren",
-        "verplicht": false
-    },
-    {
         "brancheId": "319-elektronica-mobieltjes-accessoires",
-        "verplicht": true,
+        "verplicht": false,
         "maximumPlaatsen": 2
     },
     {
         "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": true,
+        "verplicht": false,
         "maximumPlaatsen": 2
     },
     {
         "brancheId": "322-tapijten-vloerkleden",
-        "verplicht": true,
+        "verplicht": false,
         "maximumPlaatsen": 4
 
     }
