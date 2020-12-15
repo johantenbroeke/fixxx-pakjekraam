@@ -36,11 +36,6 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "28",
-      "kraamB": "30",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "32",
       "kraamB": "34",
       "obstakel": ["loopje"]
@@ -56,18 +51,8 @@
       "obstakel": ["loopje"]
     },
     {
-      "kraamA": "38",
-      "kraamB": "40",
-      "obstakel": ["loopje"]
-    },
-    {
       "kraamA": "40",
       "kraamB": "42",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "41",
-      "kraamB": "43",
       "obstakel": ["loopje"]
     },
     {
@@ -193,11 +178,6 @@
     {
       "kraamA": "167",
       "kraamB": "169",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "171",
-      "kraamB": "173",
       "obstakel": ["loopje"]
     },
     {
