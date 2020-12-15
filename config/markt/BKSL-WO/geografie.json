@@ -10,6 +10,11 @@
         "kraamA": "407",
         "kraamB": "409",
         "obstakel": ["loopje"]
+      },
+      {
+        "kraamA": "412",
+        "kraamB": "414",
+        "obstakel": ["loopje"]
       }
         ]
   }
