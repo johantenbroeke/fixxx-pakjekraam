@@ -5,50 +5,39 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 15
     },
     {
         "brancheId": "102-bio-health-fairtrade",
-        "verplicht": false
-    }, 
-    {    
-        "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": false,
-        "maximumPlaatsen": 3
-    },   
+        "verplicht": true
+    },  
     {    
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 4
     },
     {   
         "brancheId": "107-vis-nat",
-        "verplicht": false
+        "verplicht": true,        
+        "maximumPlaatsen": 2
+
     },
     {
         "brancheId": "108-vleeswaren",
-        "verplicht": false
-    },
-    {
-        "brancheId": "110-poelier",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "201-broodjes-belegd",
-        "verplicht": false
+        "verplicht": true
     },
     {   
         "brancheId": "205-loempias",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": false
-    },
-    {
-        "brancheId": "304-dierenbijnodigdheden",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
@@ -57,10 +46,6 @@
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": false
-    },
-    {
-        "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": false
+        "verplicht": true
     }
 ]

@@ -5,41 +5,38 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 15
     },
     {
         "brancheId": "102-bio-health-fairtrade",
-        "verplicht": false
+        "verplicht": true
     },    
     {    
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 4
     },   
     {   
         "brancheId": "107-vis-nat",
-        "verplicht": false
-    },
+        "verplicht": true,
+        "maximumPlaatsen": 2
+    }, 
     {
         "brancheId": "108-vleeswaren",
-        "verplicht": false
-    },
-    {
-        "brancheId": "110-poelier",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "201-broodjes-belegd",
-        "verplicht": false
+        "verplicht": true
     },
     {   
         "brancheId": "205-loempias",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
@@ -48,10 +45,14 @@
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": false
+        "verplicht": true
+    },
+    {
+        "brancheId": "316-souvenirs",
+        "verplicht": true
     },
     {
         "brancheId": "318-doe-het-zelf-gereedschap-ijzerwaren",
-        "verplicht": false
+        "verplicht": true
     }
 ]
