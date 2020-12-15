@@ -5,42 +5,42 @@
     },
     {
         "brancheId": "102-bio-health-fairtrade",
-        "verplicht": false
+        "verplicht": true
     },  
     {
         "brancheId": "301-antiek-kunst",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "303-boeken-stripboeken-muziek-film",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "305-horloges-brillen-sieraden",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "310-kleding-vintage-2ehands",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "317-speelgoed-spellen",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": false
+        "verplicht": true
     }
 ]

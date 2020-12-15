@@ -1,34 +1,38 @@
 [
     {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
         "brancheId": "101-agf",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "102-bio-health-fairtrade",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "107-vis-nat",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "108-vleeswaren",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "201-broodjes-belegd",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-        "verplicht": false
+        "verplicht": true
     }
 ]
