@@ -6,79 +6,79 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": false,
+        "verplicht": true,
          "maximumPlaatsen": 19
     }, 
     {
         "brancheId": "103-brood-banket",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {    
         "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },      
     {    
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {
         "brancheId": "108-vleeswaren",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 2
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {
         "brancheId": "201-broodjes-belegd",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {   
         "brancheId": "205-loempias",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {   
         "brancheId": "207-grill-frituur",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {
         "brancheId": "319-elektronica-mobieltjes-accessoires",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 3
     },
     {
         "brancheId": "320-fietsen-auto-accessoires",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 1
     },
     {
         "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": false
+        "verplicht": true
     }
     
 ]
