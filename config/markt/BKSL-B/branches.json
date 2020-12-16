@@ -1,20 +1,24 @@
 [
     {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
        "brancheId": "101-agf",
        "verplicht": true,
        "maximumPlaatsen": 12
    },
     {
        "brancheId": "211-delicatessen-hapjes",
-       "verplicht": false
+       "verplicht": true
    },
     {
         "brancheId": "108-vleeswaren",
-        "verplicht": false
+        "verplicht": true
     },
    {
        "brancheId": "109-zuivel-eieren",
-       "verplicht": false
+       "verplicht": true
    }
            
  ]

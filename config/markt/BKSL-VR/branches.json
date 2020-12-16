@@ -1,7 +1,11 @@
 [
     {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
         "brancheId": "101-agf",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 12
     },
     {
