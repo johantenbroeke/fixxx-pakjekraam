@@ -5,51 +5,43 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": false,
+        "verplicht": true,
         "maximumPlaatsen": 12
-    },
-    {
-        "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": false
     },
     {   
         "brancheId": "107-vis-nat",
-        "verplicht": false
+        "verplicht": true
     },
     {   
         "brancheId": "204-koffie-versnaperingen",
-        "verplicht": false
+        "verplicht": true
     },
     {   
         "brancheId": "205-loempias",
-        "verplicht": false
+        "verplicht": true
     },
     {   
         "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
-        "verplicht": false
-    },
-    {   
-        "brancheId": "307-kleding-baby-kinder",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "317-speelgoed-spellen",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": false
+        "verplicht": true
     }
 ]
