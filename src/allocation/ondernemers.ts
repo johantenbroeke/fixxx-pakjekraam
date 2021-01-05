@@ -65,6 +65,8 @@ const Ondernemers = {
         branche: IBranche
     ): IMarktondernemer[] => {
         return ondernemers.filter(ondernemer =>
+            ondernemer.voorkeur &&
+            ondernemer.voorkeur.branches &&
             ondernemer.voorkeur.branches.includes(branche.brancheId)
         );
     },

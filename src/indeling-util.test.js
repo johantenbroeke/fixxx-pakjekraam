@@ -22,6 +22,31 @@ describe('calcToewijzingen', () => {
     });
 });
 
+describe('Indeling.init', () => {
+    it('corrigeert branche.maximumPlaatsen', () => {
+        const markt = marktScenario({
+            marktplaatsen: [
+                {},
+                { branches: ['a'] }, { branches: ['a'] },
+                { branches: ['b'] }, { branches: ['b'] },
+                { branches: ['c'] }
+            ],
+            branches: [
+                { brancheId: 'a', verplicht: true },
+                { brancheId: 'b', verplicht: true, maximumPlaatsen: 1 },
+                { brancheId: 'c', maximumPlaatsen: 1 },
+                { brancheId: 'd', maximumPlaatsen: 2 }
+            ]
+        });
+        const indeling = Indeling.init(markt);
+
+        expect(indeling.branches[0].maximumPlaatsen).toEqual(2);
+        expect(indeling.branches[1].maximumPlaatsen).toEqual(2);
+        expect(indeling.branches[2].maximumPlaatsen).toEqual(1);
+        expect(indeling.branches[3].maximumPlaatsen).toEqual(2);
+    });
+});
+
 describe('Markt.getAdjacentPlaatsen', () => {
     const getAdjacent = (rows, placeIds, depth=1, obstakels, filter) => {
         const markt = marktScenario({ rows, obstakels });

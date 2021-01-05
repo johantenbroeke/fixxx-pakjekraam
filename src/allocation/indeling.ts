@@ -63,8 +63,29 @@ const Indeling = {
                                markt.expansionLimit :
                                markt.marktplaatsen.length;
 
+        // Indien een branche verplicht is, kunnen we `maximumPlaatsen` berekenen
+        // door het aantal gebrancheerde plaatsen in deze markt te tellen. Dit
+        // elimineert mogelijke menselijke fouten tijdens de invoer van de markt.
+        const branches = markt.branches.map(branche => {
+            if( !branche.verplicht ) {
+                return branche;
+            }
+
+            const maximumPlaatsen = openPlaatsen.reduce((count, plaats) => {
+                return plaats.branches && plaats.branches.includes(branche.brancheId) ?
+                       count + 1 :
+                       count;
+            }, 0);
+
+            return {
+                ...branche,
+                maximumPlaatsen
+            };
+        });
+
         const indeling = <IMarktindeling> {
             ...markt,
+            branches,
             openPlaatsen,
             expansionLimit,
 
@@ -189,7 +210,7 @@ const Indeling = {
             // situatie oplevert waarbij een andere verplaatsende VPH wordt afgewezen:
             // een scenario dat niet mag optreden.
             //
-            // Check of deze ondernemer nu op vaste plaatsen van een andere VPH  staat.
+            // Check of deze ondernemer nu op vaste plaatsen van een andere VPH staat.
             // Is dit niet het geval, dan is er niks aan de hand.
             const affectedVPH = bestePlaatsen
                                 .map(plaats => Ondernemers.findVPHFor(_indeling, plaats.plaatsId))
