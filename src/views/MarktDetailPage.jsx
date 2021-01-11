@@ -1,5 +1,6 @@
 const React           = require('react');
 const PropTypes       = require('prop-types');
+const moment          = require('moment-timezone');
 
 const MarktDetailBase = require('./components/MarktDetailBase');
 const AlertLine       = require('./components/AlertLine');
@@ -14,13 +15,15 @@ const {
     INDELINGSTYPE__AB_LIJST,
     relativeHumanDay,
     toISODate,
-    yyyyMmDdtoDDMMYYYY
+    yyyyMmDdtoDDMMYYYY,
+    tomorrow,
 } = require('../util.ts');
 
 const {
     getUpcomingMarktDays,
     parseMarktDag,
-    A_LIJST_DAYS
+    A_LIJST_DAYS,
+    isAfterAllocationTime,
 } = require('../domain-knowledge.js');
 
 const today = () => toISODate(new Date());
@@ -175,9 +178,10 @@ class MarktDetailPage extends React.Component {
         const fase    = markt.kiesJeKraamFase;
         const week    = marktDay.week;
         const isToday = marktDay.date === today();
+        const marktIsTomorrow = marktDay.date === tomorrow();
 
-        const indeling          = fase === 'wenperiode' && week === 0 && isToday ||
-                                  fase === 'live'       && week === 0 && isToday;
+        const indeling          = fase === 'wenperiode' && week === 0 && ( isToday || (isAfterAllocationTime() && marktIsTomorrow)) ||
+                                  fase === 'live'       && week === 0 && ( isToday || (isAfterAllocationTime() && marktIsTomorrow));
         const nietIngedeeld     = fase === 'activatie' ||
                                   indeling;
         const conceptIndeling   = fase === 'voorbereiding'                  ||

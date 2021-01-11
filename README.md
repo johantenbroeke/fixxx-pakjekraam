@@ -24,12 +24,10 @@ Je kunt ook opstarten via docker, via `docker compose up`.
 
 
 ### Compiling the SCSS
-
 Om de SCSS naar CSS te compilen draai je `npm run watch`. Als je de wijzigingen wilt zien refresh je je browser.
 
 
 ### Compiling JS
-
 You can simply run the command 'webpack'
 
 ### Berekening controleren
@@ -37,3 +35,16 @@ You can simply run the command 'webpack'
 Kopieer output van een dagindeling op een markt uit de log tabel. Run vervolgens `(export $(cat .env-prod) && pbpaste | ts-node src/_debug_check-calc.js)`. (`pbpaste` gebruikt de gekopieerde output om deze als input voor het script door te geven).
 
 Om een debugger te kunnen attachen bij het testen van de berekening: `node --inspect -r ts-node/register src/_debug_analyze-calc.js src/allocation/markt.ts src/allocation/ondernemer.ts src/allocation/ondernemers.ts src/allocation/toewijzing.ts`
+
+### Installing postgres locally
+https://www.robinwieruch.de/postgres-sql-macos-setup
+
+### Start local Postgres DB
+pg_ctl -D /usr/local/var/postgres start
+pg_ctl -D /usr/local/var/postgres stop
+
+### Open psql database
+psql kjk
+
+### Create user and add to DB
+https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
