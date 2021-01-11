@@ -112,7 +112,7 @@ class ToewijzingenAfwijzingenPage extends React.Component {
                                         null }
                                     </td>
                                     <td>{ item.eigenMaterieel !== null ?
-                                        item.bak === true ? 'AAN' : 'UIT' :
+                                        item.eigenMaterieel === true ? 'AAN' : 'UIT' :
                                         null }
                                     </td>
                                     <td>
