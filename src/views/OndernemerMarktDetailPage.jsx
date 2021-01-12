@@ -117,10 +117,9 @@ class OndernemerMarktDetailPage extends React.Component {
                         <div className="col-1-2">
                             <OndernemerMarktAanwezigheid
                                 markt={markt}
-                                ondernemer={ondernemer}
                                 sollicitatie={sollicitatie}
-                                toewijzingen={toewijzingen}
                                 rsvpEntries={rsvpEntries}
+                                disabled={ !voorkeur || !voorkeur.brancheId }
                             />
                         </div>
                         <div className="col-1-2">

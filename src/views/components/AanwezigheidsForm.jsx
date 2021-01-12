@@ -21,6 +21,7 @@ class AanwezigheidsForm extends React.Component {
         query                       : PropTypes.string,
         role                        : PropTypes.string,
         csrfToken                   : PropTypes.string,
+        voorkeuren                  : PropTypes.array.isRequired,
     };
 
     render() {
@@ -29,11 +30,25 @@ class AanwezigheidsForm extends React.Component {
             csrfToken,
             ondernemer,
             role,
-            sollicitaties
+            sollicitaties,
+            voorkeuren
         } = this.props;
+
+        console.log(this.voorkeuren);
 
         // Wordt in de HTML gebruikt om de `rsvp` <input>s te nummeren.
         let index = -1;
+
+        console.log(this.voorkeuren);
+
+        let getVoorkeurForMarkt = (marktId) => {
+            let voorkeur = this.voorkeuren.find( voorkeur => {
+                return voorkeur.marktId === marktId;
+            });
+            return this.voorkeuren.find( voorkeur => {
+                return voorkeur.marktId === marktId;
+            });
+        };
 
         return (
         <Form className="AanwezigheidsForm" decorator="" csrfToken={csrfToken}>
@@ -68,7 +83,10 @@ class AanwezigheidsForm extends React.Component {
                                 type="checkbox"
                                 id={`rsvp-${index}`}
                                 name={`rsvp[${index}][attending]`}
-                                disabled={week[day].isInThePast}
+                                disabled={
+                                    week[day].isInThePast
+                                    || (!getVoorkeurForMarkt(markt.marktId) || getVoorkeurForMarkt(markt.marktId).brancheId)
+                                }
                                 defaultValue="1"
                                 defaultChecked={week[day].attending}
                             />
