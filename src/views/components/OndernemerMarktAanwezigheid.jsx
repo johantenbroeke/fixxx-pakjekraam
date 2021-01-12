@@ -39,8 +39,8 @@ const OndernemerMarktAanwezigheid = ({ rsvpEntries, sollicitatie, disabled, mark
                 { disabled ? (
                     <Alert type="error" inline={true}>
                         <span>
-                            U hebt uw <strong>koopwaar</strong> nog niet doorgegeven in het{' '}
-                            <a href={`/algemene-voorkeuren/${markt.id}/`}>marktprofiel</a>.
+                        U hebt uw <strong>koopwaar</strong> nog niet doorgegeven in het {' '}
+                            <a href={`/algemene-voorkeuren/${markt.id}/`}>marktprofiel</a>, daarom kunt u zich niet aanmelden voor deze markt.
                         </span>
                     </Alert>
                 ) : null }
