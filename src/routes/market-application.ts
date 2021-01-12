@@ -51,6 +51,10 @@ import {
     groupAanmeldingenPerMarktPerWeek
 } from '../model/rsvp.functions';
 
+import {
+    getVoorkeurenByOndernemer
+} from '../model/voorkeur.functions'
+
 interface RSVPFormData {
     marktId: string;
     marktDate: string;
@@ -81,26 +85,31 @@ export const attendancePage = (
     erkenningsNummer: string,
     csrfToken: string,
     messages: object[] = [],
-    newAanmeldingen?: IRSVP[]
+    newAanmeldingen?: IRSVP[],
 ) => {
+
     const thresholdDate       = getMarktThresholdDate(role);
     const ondernemerPromise   = getOndernemer(erkenningsNummer);
     const includeInactive     = role === Roles.MARKTMEESTER;
     const marktenPromise      = getMarktenForOndernemer(ondernemerPromise, includeInactive);
     const aanmeldingenPromise = getAanmeldingenByOndernemer(erkenningsNummer);
+    const voorkeurenPromise = getVoorkeurenByOndernemer(erkenningsNummer);
 
     return Promise.all([
         ondernemerPromise,
         aanmeldingenPromise,
         marktenPromise,
-        getMededelingen()
+        getMededelingen(),
+        voorkeurenPromise,
     ])
     .then(([
         ondernemer,
         aanmeldingen,
         markten,
-        mededelingen
+        mededelingen,
+        voorkeuren
     ]) => {
+
         const sollicitaties = ondernemer.sollicitaties.reduce((result, sollicitatie) => {
             result[sollicitatie.markt.id] = sollicitatie;
             return result;
@@ -124,19 +133,22 @@ export const attendancePage = (
             ondernemer,
             sollicitaties,
             groupAanmeldingenPerMarktPerWeek(markten, sollicitaties, aanmeldingen, thresholdDate),
-            mededelingen
+            mededelingen,
+            voorkeuren
         ];
     })
     .then(([
         ondernemer,
         sollicitaties,
         aanmeldingenPerMarktPerWeek,
-        mededelingen
+        mededelingen,
+        voorkeuren
     ]) => {
         res.render('AanwezigheidPage', {
             aanmeldingenPerMarktPerWeek,
             csrfToken,
             mededelingen,
+            voorkeuren,
             messages,
             ondernemer,
             role,
