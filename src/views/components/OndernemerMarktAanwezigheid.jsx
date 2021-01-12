@@ -6,7 +6,6 @@ const HeaderTitleButton = require('./HeaderTitleButton');
 const Alert = require('./Alert');
 
 const OndernemerMarktAanwezigheid = ({ rsvpEntries, sollicitatie, disabled, markt }) => {
-
     const blockUrl = `../../aanwezigheid/`;
     const weekAanmeldingen = rsvpEntries.reduce(
         (t, { date, rsvp }, i) => {
@@ -33,7 +32,7 @@ const OndernemerMarktAanwezigheid = ({ rsvpEntries, sollicitatie, disabled, mark
         [[], []],
     );
 
-    const renderInner = (disabled) => {
+    const renderInner = () => {
         return (
             <div className={'well' + (disabled ? ' well--disabled' : '' )}>
                 { disabled ? (
@@ -71,7 +70,7 @@ const OndernemerMarktAanwezigheid = ({ rsvpEntries, sollicitatie, disabled, mark
                 ))}
             </div>
         );
-    }
+    };
 
     return (
         <div className="OndernemerMarktAanwezigheid background-link-parent" id="aanwezigheid">

@@ -38,10 +38,7 @@ class AanwezigheidsForm extends React.Component {
         // Wordt in de HTML gebruikt om de `rsvp` <input>s te nummeren.
         let index = -1;
 
-        let getVoorkeurForMarkt = (marktId) => {
-            let voorkeur = voorkeuren.find(voorkeur => {
-                return voorkeur.marktId === marktId;
-            });
+        const getVoorkeurForMarkt = marktId => {
             return voorkeuren.find(voorkeur => {
                 return voorkeur.marktId === marktId;
             });
