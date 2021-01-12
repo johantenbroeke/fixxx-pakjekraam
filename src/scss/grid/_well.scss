@@ -13,21 +13,24 @@
     & > *:last-child {
         margin-bottom: 0;
     }
+
     &--dark {
         background-color: $primary-darkblue;
         color: $primary-white;
     }
-    // & + & {
-    //     margin-top: $vm2;
-    //     @media screen and (min-width: $screenMedium) {
-    //         margin-top: $vm4;
-    //     }
-    // }
+
+    &--disabled{
+        background-color: $primary-red;
+        border: 2px solid $primary-red;
+        color: white;
+        > {
+            color: white;
+        }
+    }
 
     &--max-width {
         max-width: $fieldsetMaxWidth - (2 * $hm2);
     }
-
 
     @media screen and (min-width: $screenMedium) {
         padding: $vm4 $hm4;

@@ -3,6 +3,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 
 const SollicitatieSpecs = require('./SollicitatieSpecs');
+const Alert = require('./Alert');
 
 const {
     formatDayOfWeekShort,
@@ -15,12 +16,13 @@ const {
 
 class AanwezigheidsForm extends React.Component {
     propTypes = {
-        ondernemer                  : PropTypes.object.isRequired,
-        aanmeldingenPerMarktPerWeek : PropTypes.array,
-        sollicitaties               : PropTypes.array.isRequired,
-        query                       : PropTypes.string,
-        role                        : PropTypes.string,
-        csrfToken                   : PropTypes.string,
+        ondernemer: PropTypes.object.isRequired,
+        aanmeldingenPerMarktPerWeek: PropTypes.array,
+        sollicitaties: PropTypes.array.isRequired,
+        query: PropTypes.string,
+        role: PropTypes.string,
+        csrfToken: PropTypes.string,
+        voorkeuren: PropTypes.array.isRequired,
     };
 
     render() {
@@ -29,96 +31,112 @@ class AanwezigheidsForm extends React.Component {
             csrfToken,
             ondernemer,
             role,
-            sollicitaties
+            sollicitaties,
+            voorkeuren
         } = this.props;
 
         // Wordt in de HTML gebruikt om de `rsvp` <input>s te nummeren.
         let index = -1;
 
+        let getVoorkeurForMarkt = (marktId) => {
+            let voorkeur = voorkeuren.find(voorkeur => {
+                return voorkeur.marktId === marktId;
+            });
+            return voorkeuren.find(voorkeur => {
+                return voorkeur.marktId === marktId;
+            });
+        };
+
         return (
-        <Form className="AanwezigheidsForm" decorator="" csrfToken={csrfToken}>
-            <input
-                id="erkenningsNummer"
-                name="erkenningsNummer"
-                defaultValue={ondernemer.erkenningsnummer}
-                type="hidden"
-            />
+            <Form className="AanwezigheidsForm" decorator="" csrfToken={csrfToken}>
+                <input
+                    id="erkenningsNummer"
+                    name="erkenningsNummer"
+                    defaultValue={ondernemer.erkenningsnummer}
+                    type="hidden"
+                />
 
-            {aanmeldingenPerMarktPerWeek.map(({ markt, aanmeldingenPerWeek }) => (
-            <div className="markt" key="{markt.id}">
-                <h2 className="Heading Heading--intro">
-                    {markt.naam} <SollicitatieSpecs sollicitatie={sollicitaties[markt.id]} />
-                </h2>
+                {aanmeldingenPerMarktPerWeek.map(({ markt, aanmeldingenPerWeek }) => (
+                    <div className="markt" key="{markt.id}">
+                        <h2 className="Heading Heading--intro">
+                            {markt.naam} <SollicitatieSpecs sollicitatie={sollicitaties[markt.id]} />
+                        </h2>
+                        { !getVoorkeurForMarkt(markt.id) || !getVoorkeurForMarkt(markt.id).brancheId ? (
+                        <Alert type="error" inline={true} fullwidth={true}>
+                            <span>
+                                U hebt uw <strong>koopwaar</strong> nog niet doorgegeven in het {' '}
+                                <a href={`/algemene-voorkeuren/${markt.id}/`}>marktprofiel</a>, daarom kunt u zich niet aanmelden voor deze markt.
+                            </span>
+                        </Alert> ) : null }
+                        {aanmeldingenPerWeek.map((week, i) => (
+                            <div className="week" key="{i}">
+                                <h4>{i === 0 ? 'Deze week' : 'Volgende week'}</h4>
+                                {[0, 1, 2, 3, 4, 5, 6].map(day => (
+                                    day in week ?
+                                        <span className="day" key={++index}>
+                                            <input type="hidden" name={`rsvp[${index}][marktId]`}
+                                                disabled={week[day].isInThePast} defaultValue={markt.id}
+                                            />
+                                            <input type="hidden" name={`rsvp[${index}][marktDate]`}
+                                                disabled={week[day].isInThePast} defaultValue={toDate(week[day].date)}
+                                            />
 
-                {aanmeldingenPerWeek.map((week, i) => (
-                <div className="week" key="{i}">
-                    <h4>{i === 0 ? 'Deze week' : 'Volgende week'}</h4>
-
-                    {[0, 1, 2, 3, 4, 5, 6].map(day => (
-                    day in week ?
-                        <span className="day" key={++index}>
-                            <input type="hidden" name={`rsvp[${index}][marktId]`}
-                                   disabled={week[day].isInThePast} defaultValue={markt.id}
-                            />
-                            <input type="hidden" name={`rsvp[${index}][marktDate]`}
-                                   disabled={week[day].isInThePast} defaultValue={toDate(week[day].date)}
-                            />
-
-                            <input
-                                type="checkbox"
-                                id={`rsvp-${index}`}
-                                name={`rsvp[${index}][attending]`}
-                                disabled={week[day].isInThePast}
-                                defaultValue="1"
-                                defaultChecked={week[day].attending}
-                            />
-                            <label htmlFor={`rsvp-${index}`}>
-                                <strong>{WEEK_DAYS_SHORT[day]}</strong>
-                            </label>
-                        </span>
-                    :
-                        <span className="day" key={++index}>
-                            <input
-                                disabled={true}
-                                id={`rsvp-${index}`}
-                                type="checkbox"
-                                defaultValue="0"
-                            />
-                            <label htmlFor={`rsvp-${index}`}>
-                                <strong>{WEEK_DAYS_SHORT[day]}</strong>
-                            </label>
-                        </span>
-                    ))}
-                </div>
+                                            <input
+                                                type="checkbox"
+                                                id={`rsvp-${index}`}
+                                                name={`rsvp[${index}][attending]`}
+                                                disabled={
+                                                    week[day].isInThePast
+                                                    || (!getVoorkeurForMarkt(markt.id) || !getVoorkeurForMarkt(markt.id).brancheId)
+                                                }
+                                                defaultValue="1"
+                                                defaultChecked={week[day].attending}
+                                            />
+                                            <label htmlFor={`rsvp-${index}`}>
+                                                <strong>{WEEK_DAYS_SHORT[day]}</strong>
+                                            </label>
+                                        </span>
+                                        :
+                                        <span className="day" key={++index}>
+                                            <input
+                                                disabled={true}
+                                                id={`rsvp-${index}`}
+                                                type="checkbox"
+                                                defaultValue="0"
+                                            />
+                                            <label htmlFor={`rsvp-${index}`}>
+                                                <strong>{WEEK_DAYS_SHORT[day]}</strong>
+                                            </label>
+                                        </span>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
                 ))}
-            </div>
-            ))}
 
-            <p className="InputField InputField--submit">
-                <a
-                    className="Button Button--tertiary"
-                    href={`${
-                        role === 'marktmeester'
-                            ? `/profile/${ondernemer.erkenningsnummer}`
-                            : `/dashboard`
-                        }`}
-                >
-                    Voorkeuren
+                <p className="InputField InputField--submit">
+                    <a
+                        className="Button Button--tertiary"
+                        href={`${role === 'marktmeester'
+                                ? `/profile/${ondernemer.erkenningsnummer}`
+                                : `/dashboard`
+                            }`}
+                    >
+                        Voorkeuren
                 </a>
-                <button
-                    className="Button Button--secondary"
-                    type="submit"
-                    name="next"
-                    value={`${
-                        role === 'marktmeester'
-                            ? `/profile/${ondernemer.erkenningsnummer}?error=aanwezigheid-saved`
-                            : `/dashboard?error=aanwezigheid-saved`
-                        }`}
-                >
-                    Bewaren
+                    <button
+                        className="Button Button--secondary"
+                        type="submit"
+                        name="next"
+                        value={`${role === 'marktmeester'
+                                ? `/profile/${ondernemer.erkenningsnummer}?error=aanwezigheid-saved`
+                                : `/dashboard?error=aanwezigheid-saved`
+                            }`}
+                    >
+                        Bewaren
                 </button>
-            </p>
-        </Form>
+                </p>
+            </Form>
         );
     }
 }

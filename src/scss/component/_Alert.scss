@@ -60,6 +60,12 @@
         font-size: 22px;
         @include icon($icon-Alert);
     }
+    &--fulwidth{
+        background: purple;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
     >h4 {
         @include h4;
         margin: 0;
