@@ -53,7 +53,7 @@ import {
 
 import {
     getVoorkeurenByOndernemer
-} from '../model/voorkeur.functions'
+} from '../model/voorkeur.functions';
 
 interface RSVPFormData {
     marktId: string;

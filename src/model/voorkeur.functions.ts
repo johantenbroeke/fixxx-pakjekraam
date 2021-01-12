@@ -69,7 +69,7 @@ export const getVoorkeurByOndernemer = (erkenningsNummer: string): Promise<IMark
 export const getVoorkeurenByOndernemer = (erkenningsNummer: string): Promise<IMarktondernemerVoorkeur[]> =>
     voorkeur
         .findAll<Voorkeur>({
-            where: { erkenningsNummer}, raw: true
+            where: { erkenningsNummer }, raw: true
         });
 
 
