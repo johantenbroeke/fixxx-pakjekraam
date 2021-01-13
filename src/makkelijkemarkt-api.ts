@@ -85,7 +85,10 @@ const apiBase = (
     api.interceptors.response.use((response: any) => {
         return response;
     }, (error: any) => {
-        if (error.response.status === 401) {
+        if (
+            error.response.status === 401 ||
+            error.response.status === 403
+        ) {
             return retry(api);
         } else {
             return error;
