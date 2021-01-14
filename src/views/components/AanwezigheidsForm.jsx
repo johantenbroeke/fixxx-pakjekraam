@@ -42,7 +42,7 @@ class AanwezigheidsForm extends React.Component {
             });
         };
 
-        const getVoorkeurenLink = () => {
+        const getVoorkeurenLink = markt => {
             let link;
             role === Roles.MARKTMEESTER ? link = `/ondernemer/${ondernemer.erkenningsnummer}/algemene-voorkeuren/${markt.id}/` : link = `/algemene-voorkeuren/${markt.id}/`;
             return link;
@@ -66,7 +66,7 @@ class AanwezigheidsForm extends React.Component {
                         <Alert type="error" inline={true} fullwidth={true}>
                             <span>
                                 U hebt uw <strong>koopwaar</strong> nog niet doorgegeven in het {' '}
-                                <a href={getVoorkeurenLink()}>marktprofiel</a>, daarom kunt u zich niet aanmelden voor deze markt.
+                                <a href={getVoorkeurenLink(markt)}>marktprofiel</a>, daarom kunt u zich niet aanmelden voor deze markt.
                             </span>
                         </Alert> ) : null }
                         {aanmeldingenPerWeek.map((week, i) => (
