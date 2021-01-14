@@ -5,11 +5,9 @@ const PropTypes = require('prop-types');
 const SollicitatieSpecs = require('./SollicitatieSpecs');
 const Alert = require('./Alert');
 
+import { Roles } from '../../authentication';
+
 const {
-    formatDayOfWeekShort,
-    formatDate,
-    endOfWeek,
-    addDays,
     toDate,
     WEEK_DAYS_SHORT
 } = require('../../util.ts');
@@ -44,6 +42,12 @@ class AanwezigheidsForm extends React.Component {
             });
         };
 
+        const getVoorkeurenLink = () => {
+            let link;
+            role === Roles.MARKTMEESTER ? link = `/ondernemer/${ondernemer.erkenningsnummer}/algemene-voorkeuren/${markt.id}/` : link = `/algemene-voorkeuren/${markt.id}/`;
+            return link;
+        };
+
         return (
             <Form className="AanwezigheidsForm" decorator="" csrfToken={csrfToken}>
                 <input
@@ -62,7 +66,7 @@ class AanwezigheidsForm extends React.Component {
                         <Alert type="error" inline={true} fullwidth={true}>
                             <span>
                                 U hebt uw <strong>koopwaar</strong> nog niet doorgegeven in het {' '}
-                                <a href={`/algemene-voorkeuren/${markt.id}/`}>marktprofiel</a>, daarom kunt u zich niet aanmelden voor deze markt.
+                                <a href={getVoorkeurenLink()}>marktprofiel</a>, daarom kunt u zich niet aanmelden voor deze markt.
                             </span>
                         </Alert> ) : null }
                         {aanmeldingenPerWeek.map((week, i) => (
