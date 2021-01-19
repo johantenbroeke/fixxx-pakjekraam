@@ -40,15 +40,19 @@ enum Strategy {
 
 export const BRANCHE_FULL: IAfwijzingReason = {
     code: 1,
-    message: 'Alle marktplaatsen voor deze branch zijn reeds ingedeeld.'
+    message: 'Alle marktplaatsen voor deze branche zijn reeds ingedeeld.'
 };
 export const ADJACENT_UNAVAILABLE: IAfwijzingReason = {
     code: 2,
-    message: 'Geen geschikte plaats(en) gevonden.'
+    message: 'Geen geschikte locatie gevonden met huidige voorkeuren.'
 };
 export const MINIMUM_UNAVAILABLE: IAfwijzingReason = {
     code: 3,
     message: 'Minimum aantal plaatsen niet beschikbaar.'
+};
+export const MARKET_FULL: IAfwijzingReason = {
+    code: 4,
+    message: 'Alle marktplaatsen zijn reeds ingedeeld.'
 };
 
 const Indeling = {
@@ -173,14 +177,14 @@ const Indeling = {
         openPlaatsen: IMarktplaats[] = indeling.openPlaatsen
     ): IMarktindeling => {
         try {
-            const available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
-            const startSize = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
-            const size      = Ondernemer.isVast(ondernemer) ?
-                              startSize :
-                              Math.min(available, startSize);
+            const size = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
 
-            if (!Ondernemer.isVast(ondernemer) && !size) {
-                throw BRANCHE_FULL;
+            if (!size) {
+                if (!indeling.openPlaatsen.length) {
+                    throw MARKET_FULL;
+                } else if (Indeling._countAvailablePlaatsenFor(indeling, ondernemer)) {
+                    throw BRANCHE_FULL;
+                }
             }
 
             const anywhere      = Ondernemer.acceptsRandomAllocation(ondernemer);
@@ -440,12 +444,12 @@ const Indeling = {
         queue: IMarktondernemer[],
         ondernemer: IMarktondernemer
     ): number => {
-        let available = indeling.openPlaatsen.length;
-        if (!available) {
+        if (!indeling.openPlaatsen.length) {
             return 0;
         }
 
         const limitedBranche = Ondernemer.getMostLimitedBranche(ondernemer, indeling);
+        const available      = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
         const startSize      = Ondernemer.getStartSize(ondernemer);
         const targetSize     = Ondernemer.getTargetSize(ondernemer);
         const happySize      = startSize === 1 ? Math.min(targetSize, 2) : startSize;
@@ -454,24 +458,15 @@ const Indeling = {
         // deze ondernemer niet in een gelimiteerde branche zit. Het kan namelijk
         // zijn dat er voor die specifieke branche wel conservatief ingedeeld moet
         // worden.
-        let strategy = Indeling._calculateAllocationStrategy(queue, ondernemer, available);
-        if (strategy === Strategy.CONSERVATIVE) {
-            return startSize;
-        } else if (limitedBranche) {
-            available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
-            if (!available) {
-                return 0;
-            }
+        const ondernemers = limitedBranche ?
+                            Ondernemers.filterByBranche(queue, limitedBranche) :
+                            queue;
+        const strategy    = Indeling._calculateAllocationStrategy(ondernemers, ondernemer, available);
+        const size        = strategy === Strategy.OPTIMISTIC ? happySize : startSize;
 
-            const ondernemers = Ondernemers.filterByBranche(queue, limitedBranche);
-            strategy = Indeling._calculateAllocationStrategy(ondernemers, ondernemer, available);
-
-            return strategy === Strategy.OPTIMISTIC ?
-                   happySize :
-                   startSize;
-        }
-
-        return happySize;
+        return Ondernemer.isVast(ondernemer) ?
+               size :
+               Math.min(available, size);
     },
 
     _compareOndernemers: (
