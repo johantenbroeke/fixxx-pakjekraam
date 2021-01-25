@@ -217,8 +217,8 @@ const Indeling = {
             // Check of deze ondernemer nu op vaste plaatsen van een andere VPH staat.
             // Is dit niet het geval, dan is er niks aan de hand.
             const affectedVPH = bestePlaatsen
-                                .map(plaats => Ondernemers.findVPHFor(_indeling, plaats.plaatsId))
-                                .filter(vph => vph && vph.sollicitatieNummer !== ondernemer.sollicitatieNummer);
+            .map(plaats => Ondernemers.findVPHFor(_indeling, plaats.plaatsId))
+            .filter(vph => vph && vph.sollicitatieNummer !== ondernemer.sollicitatieNummer);
 
             if (!affectedVPH.length) {
                 return _indeling;
@@ -484,6 +484,10 @@ const Indeling = {
     // Tel het totaal aantal nog beschikbare plaatsen op de markt voor deze ondernemer.
     // Als zij in een (of meerdere) gelimiteerde branche(s) zitten, wordt de telling
     // beperkt tot deze 'markt in markt'.
+    //
+    // Deze methode er geen rekening mee of geschikte plaatsen aansluiten op reeds
+    // toegewezen plaatsen. `_findBestePlaatsen` bepaald uiteindelijk of een ondernemer
+    // nog een plaats toegewezen kan krijgen.
     _countAvailablePlaatsenFor: (
         indeling: IMarktindeling,
         ondernemer: IMarktondernemer
