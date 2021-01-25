@@ -2081,4 +2081,24 @@ describe('Bugfix voor', () => {
         expect(findOndernemers(afwijzingen)).toStrictEqual([1, 2]);
         expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['1']);
     });
+
+    it('issue #815', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'soll', voorkeur: { minimum: 2 } },
+                { sollicitatieNummer: 2, status: 'soll', voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 3, status: 'soll', voorkeur: { maximum: 2 } },
+                { sollicitatieNummer: 4, status: 'soll', voorkeur: { maximum: 2 } }
+            ],
+            marktplaatsen: [
+                '1', '2', '3'
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([2, 3, 4]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['3']);
+        expect(findPlaatsen(toewijzingen, 4)).toStrictEqual(['1']);
+    });
 });

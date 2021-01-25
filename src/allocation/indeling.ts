@@ -7,7 +7,8 @@ import {
     IMarktondernemer,
     IMarktplaats,
     IPlaatsvoorkeur,
-    IRSVP
+    IRSVP,
+    IToewijzing,
 } from '../markt.model';
 
 import {
@@ -174,10 +175,13 @@ const Indeling = {
         indeling: IMarktindeling,
         queue: IMarktondernemer[],
         ondernemer: IMarktondernemer,
-        openPlaatsen: IMarktplaats[] = indeling.openPlaatsen
+        openPlaatsen: IMarktplaats[] = indeling.openPlaatsen,
+        size?: number
     ): IMarktindeling => {
         try {
-            const size = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
+            if (size === undefined) {
+                size = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
+            }
 
             if (!size) {
                 if (!indeling.openPlaatsen.length) {
@@ -334,13 +338,6 @@ const Indeling = {
         indeling = Indeling.performAllocation(indeling, queue);
         indeling = Indeling.performExpansion(indeling);
 
-        // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
-        // eerder afgewezen sollicitanten opnieuw in te delen omdat deze mogelijk passen op
-        // de vrijgekomen plaatsen.
-        const rejectedQueue = indeling.afwijzingen.map(({ ondernemer }) => ondernemer);
-        indeling = Indeling.performAllocation(indeling, rejectedQueue);
-        indeling = Indeling.performExpansion(indeling);
-
         return indeling;
     },
 
@@ -367,19 +364,14 @@ const Indeling = {
         indeling: IMarktindeling,
         iteration: number = 2
     ): IMarktindeling => {
-        const queue = indeling.toewijzingen.filter(toewijzing =>
+        const toewijzingen = indeling.toewijzingen.filter(toewijzing =>
             Ondernemer.wantsExpansion(toewijzing)
         );
 
-        const remainingQueue = queue.map(({ ondernemer }) => ondernemer);
-        queue.forEach((toewijzing, i) => {
+        const contenders = toewijzingen.map(({ ondernemer }) => ondernemer);
+        for (let toewijzing, i=0; toewijzing = toewijzingen[i]; i++) {
             const { ondernemer, plaatsen } = toewijzing;
-
-            const available         = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
-            const openAdjacent      = Markt.getAdjacentPlaatsen(indeling, plaatsen, 1);
-            const uitbreidingPlaats = available ?
-                                      Indeling._findBestePlaatsen(indeling, remainingQueue, ondernemer, openAdjacent, 1, true)[0] :
-                                      null;
+            const uitbreidingPlaats = Indeling._findBestExpansion(indeling, contenders, toewijzing);
 
             // Nog voordat we controleren of deze ondernemer in deze iteratie eigenlijk wel kan
             // uitbreiden (zie `canExpandInIteration` in de `else`) bekijken we of er wel een
@@ -387,20 +379,34 @@ const Indeling = {
             // dan kunnen we ze al afwijzen nog voordat ze überhaupt aan de beurt zijn. Dit levert
             // ruimte op voor andere ondernemers.
             if (!uitbreidingPlaats) {
+                contenders.splice(i, 1);
+
                 const { plaatsen } = Toewijzing.find(indeling, ondernemer);
                 const minimum = Ondernemer.getMinimumSize(ondernemer);
 
                 if (minimum > plaatsen.length) {
+                    // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
+                    // eerder afgewezen sollicitanten opnieuw in te delen omdat deze mogelijk passen op
+                    // de vrijgekomen plaatsen.
+                    const rejectedQueue = indeling.afwijzingen.reduce((result, afwijzing) => {
+                        const { ondernemer, reason } = afwijzing;
+                        return reason !== MINIMUM_UNAVAILABLE ?
+                               result.concat(ondernemer) :
+                               result;
+                    }, []);
+
                     indeling = Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE);
-                    remainingQueue.splice(i, 1);
+                    indeling = Indeling.performAllocation(indeling, rejectedQueue);
+
+                    return Indeling.performExpansion(indeling, iteration);
                 }
             } else if (Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
+                contenders.splice(i, 1);
                 indeling = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
-                remainingQueue.splice(i, 1);
             }
-        });
+        }
 
-        return indeling.openPlaatsen.length && remainingQueue.length && iteration < indeling.expansionLimit ?
+        return indeling.openPlaatsen.length && toewijzingen.length && iteration < indeling.expansionLimit ?
                Indeling.performExpansion(indeling, ++iteration) :
                indeling;
     },
@@ -559,7 +565,7 @@ const Indeling = {
 
     _findBestePlaatsen: (
         indeling: IMarktindeling,
-        queue: IMarktondernemer[],
+        contenders: IMarktondernemer[],
         ondernemer: IMarktondernemer,
         openPlaatsen: IMarktplaats[],
         size: number = 1,
@@ -570,8 +576,8 @@ const Indeling = {
         const ondernemerEVI        = Ondernemer.hasEVI(ondernemer);
         // Deze twee worden gebruikt om te bepalen of we een `brancheScore` en/of `eviScore`
         // moeten uitrekenen voor deze plaats.
-        const relevantBranches     = Ondernemers.getRelevantBranches(indeling, queue);
-        const eviCount             = Ondernemers.countEVIs(indeling, queue);
+        const relevantBranches     = Ondernemers.getRelevantBranches(indeling, contenders);
+        const eviCount             = Ondernemers.countEVIs(indeling, contenders);
 
         // 1. Converteer geschikte plaatsen naar IPlaatsvoorkeur (zodat elke optie
         //    een `priority` heeft).
@@ -649,6 +655,25 @@ const Indeling = {
                 compareProperty(b, a, 'priority') ||
                 compareProperty(a, b, 'voorkeurScore')
         );
+    },
+
+    _findBestExpansion: (
+        indeling: IMarktindeling,
+        contenders: IMarktondernemer[],
+        toewijzing: IToewijzing
+    ): IMarktplaats => {
+        const { ondernemer, plaatsen } = toewijzing;
+        const available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
+
+        if (!available) {
+            return null;
+        }
+
+        return Indeling._findBestePlaatsen(
+            indeling, contenders, ondernemer,
+            Markt.getAdjacentPlaatsen(indeling, plaatsen, 1),
+            1, true
+        )[0];
     },
 
     _findRejection: (
