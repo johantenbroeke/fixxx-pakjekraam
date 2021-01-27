@@ -353,8 +353,8 @@ const Indeling = {
         }, indeling);
     },
 
-    // Uitbreiden gaat in iteraties: iedereen die een 3de plaats wil krijgt deze
-    // aangeboden alvorens iedereen die een 4de plaats wil hiertoe de kans krijgt.
+    // Uitbreiden gaat in iteraties: iedereen die een 2de plaats wil krijgt deze
+    // aangeboden alvorens iedereen die een 3de plaats wil hiertoe de kans krijgt, enz.
     performExpansion: (
         indeling: IMarktindeling,
         iteration: number = 2,
@@ -412,8 +412,7 @@ const Indeling = {
     _calculateAllocationStrategy: (
         indeling: IMarktindeling,
         contenders: IMarktondernemer[],
-        ondernemer: IMarktondernemer,
-        available: number
+        ondernemer: IMarktondernemer
     ): Strategy => {
         // Check deze ondernemer niet in een gelimiteerde branche zit. Het kan namelijk
         // zijn dat er voor die specifieke branche conservatief ingedeeld moet
@@ -426,6 +425,7 @@ const Indeling = {
         const minRequired = filteredContenders.reduce((sum, ondernemer) => {
             return sum + Ondernemer.getStartSize(ondernemer);
         }, 0);
+        const available = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
 
         return available > minRequired ?
                Strategy.OPTIMISTIC :
@@ -446,7 +446,7 @@ const Indeling = {
         const targetSize     = Ondernemer.getTargetSize(ondernemer);
         const happySize      = startSize === 1 ? Math.min(targetSize, 2) : startSize;
 
-        const strategy    = Indeling._calculateAllocationStrategy(indeling, contenders, ondernemer, available);
+        const strategy    = Indeling._calculateAllocationStrategy(indeling, contenders, ondernemer);
         const size        = strategy === Strategy.OPTIMISTIC ? happySize : startSize;
 
         return Ondernemer.isVast(ondernemer) ?
@@ -652,7 +652,7 @@ const Indeling = {
             indeling, contenders, ondernemer,
             Markt.getAdjacentPlaatsen(indeling, plaatsen, 1),
             1, true
-        )[0];
+        )[0] || null;
     },
 
     // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
