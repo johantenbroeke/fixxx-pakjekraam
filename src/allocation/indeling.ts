@@ -154,8 +154,14 @@ const Indeling = {
         return indeling;
     },
 
+    // `contenders` en `queue` worden doorgegeven om o.a. goeie beslissingen te kunnen nemen
+    // over de grootte van het aantal plaatsen waar deze ondernemer mee mag starten, en welke
+    // plaatsen het meest geschikt zijn.
+    //
+    // Zie `performCalculation` voor uitleg over de betekenis van deze twee parameters.
     allocateOndernemer: (
         indeling: IMarktindeling,
+        contenders: IMarktondernemer[],
         queue: IMarktondernemer[],
         ondernemer: IMarktondernemer,
         openPlaatsen: IMarktplaats[] = indeling.openPlaatsen,
@@ -164,7 +170,7 @@ const Indeling = {
         try {
             size = size ?
                    Math.min(size, Ondernemer.getTargetSize(ondernemer)) :
-                   Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
+                   Indeling._calculateStartSizeFor(indeling, contenders, ondernemer);
 
             if (!indeling.openPlaatsen.length) {
                 throw Afwijzing.MARKET_FULL;
@@ -175,7 +181,7 @@ const Indeling = {
 
             const anywhere      = Ondernemer.acceptsRandomAllocation(ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(
-                indeling, queue, ondernemer, openPlaatsen, size, anywhere
+                indeling, contenders, ondernemer, openPlaatsen, size, anywhere
             );
 
             if (!bestePlaatsen.length) {
@@ -223,9 +229,12 @@ const Indeling = {
             // Enkel de huidige ondernemer mag in deze run ingedeeld worden. In
             // `Indeling.performAllocation` wordt de juiste volgorde van indeling bepaald.
             //
-            // TODO: `Indeling.performAllocation` hoeft in dit geval enkel VPH die willen
+            // TODO: `Indeling.performAllocation` hoeft in dit geval enkel VPHs die willen
             //       verplaatsen mee te nemen in de berekening. Deze optimalisatie toevoegen?
-            const _indeling2 = Indeling.performAllocation(_indeling, queue.slice(1));
+            const _contenders = Ondernemers.without(contenders, ondernemer);
+            const _indeling2 = Indeling.performAllocation(
+                _indeling, _contenders, queue.slice(1)
+            );
             const rejections = affectedVPH.reduce((result, ondernemer) => {
                 const rejection = Afwijzing.find(_indeling2, ondernemer);
                 return rejection ? result.concat(rejection) : result;
@@ -245,7 +254,7 @@ const Indeling = {
                               .filter(plaats => !Ondernemer.hasVastePlaats(ondernemer, plaats))
                               .map(plaats => plaats.plaatsId);
             openPlaatsen = openPlaatsen.filter(plaats => !offending.includes(plaats.plaatsId));
-            return Indeling.allocateOndernemer(indeling, queue, ondernemer, openPlaatsen);
+            return Indeling.allocateOndernemer(indeling, contenders, queue, ondernemer, openPlaatsen);
         } catch (errorMessage) {
             return Afwijzing.add(indeling, ondernemer, errorMessage);
         }
@@ -313,16 +322,39 @@ const Indeling = {
                !!rsvp && !!rsvp.attending;
     },
 
+    // Probeert de ondernemers in `queue` in te delen op de markt.
+    //
+    // Dit is de methode waar de concepten `queue` en `contenders` voor het eerst
+    // opduiken. De ondernemers in `queue` zijn degenen die momenteel daadwerkelijk
+    // op de markt ingedeeld moeten worden.
+    //
+    // In `contenders` zitten ook alle `queue` ondernemers, plus degenen die nog niet
+    // aan de beurt zijn. Hun data is echter wel van invloed op hoe de ondernemers in
+    // `queue` ingedeeld moeten worden. Het is dus van belang dat beide lijsten meegegeven
+    // worden in alle methodes die bepalen wie waar terecht komt.
     performCalculation: (
         indeling: IMarktindeling,
         queue: IMarktondernemer[]
     ): IMarktindeling => {
-        indeling = Indeling.performAllocation(indeling, queue);
+        const immediateQueue = queue.reduce((result, ondernemer) => {
+            if (
+                !Ondernemer.isVast(ondernemer) &&
+                Indeling._calculateAllocationStrategy(indeling, queue, ondernemer) === Strategy.CONSERVATIVE &&
+                Ondernemer.getMinimumSize(ondernemer) > 1
+            ) {
+                return result;
+            }
+
+            return result.concat(ondernemer);
+        }, []);
+
+        indeling = Indeling.performAllocation(indeling, queue, immediateQueue);
 
         for (let iteration = 2; iteration <= indeling.expansionLimit; iteration++) {
-            const contenders = indeling.toewijzingen.reduce((result, toewijzing) => {
-                return Ondernemer.wantsExpansion(toewijzing) ?
-                       result.concat(toewijzing.ondernemer) :
+            const contenders = queue.reduce((result, ondernemer) => {
+                const toewijzing = Toewijzing.find(indeling, ondernemer);
+                return !toewijzing || Ondernemer.wantsExpansion(toewijzing) ?
+                       result.concat(ondernemer) :
                        result;
             } , []);
 
@@ -344,12 +376,15 @@ const Indeling = {
     // `Indeling.init` wordt gebruikt om alle aanwezige ondernemers te sorteren.
     performAllocation: (
         indeling: IMarktindeling,
+        contenders: IMarktondernemer[],
         queue: IMarktondernemer[]
     ): IMarktindeling => {
-        return queue.reduce((indeling, ondernemer, i) => {
-            const queueRemaining = queue.slice(i);
+        return queue.reduce((_indeling, ondernemer, i) => {
+            const remainingQueue = queue.slice(i);
+            _indeling = Indeling.allocateOndernemer(_indeling, contenders, remainingQueue, ondernemer);
+            contenders = Ondernemers.without(contenders, ondernemer);
 
-            return Indeling.allocateOndernemer(indeling, queueRemaining, ondernemer);
+            return _indeling;
         }, indeling);
     },
 
@@ -360,29 +395,38 @@ const Indeling = {
         iteration: number = 2,
         queue: IMarktondernemer[]
     ): IMarktindeling => {
-        const contenders = queue.slice(0);
+        // TODO: Mutatie van `contenders` maakt geen verschil in de test suite.
+        let contenders = queue.slice(0);
 
         for (let ondernemer, i=0; ondernemer = queue[i]; i++) {
             const toewijzing = Toewijzing.find(indeling, ondernemer);
-            const uitbreidingPlaats = Indeling._findBestExpansion(indeling, contenders, toewijzing);
 
-            // Nog voordat we controleren of deze ondernemer in deze iteratie eigenlijk wel kan
-            // uitbreiden (zie `canExpandInIteration` in de `else`) bekijken we of er wel een
-            // geschikte plaats is. Is dit niet het geval, en heeft de ondernemer een `minimum`,
-            // dan kunnen we ze al afwijzen nog voordat ze überhaupt aan de beurt zijn. Dit levert
-            // ruimte op voor andere ondernemers.
-            if (!uitbreidingPlaats) {
-                contenders.splice(i, 1);
+            if (toewijzing) {
+                const uitbreidingPlaats = Indeling._findBestExpansion(indeling, contenders, toewijzing);
 
-                const { plaatsen } = toewijzing;
-                const minimum      = Ondernemer.getMinimumSize(ondernemer);
+                // Nog voordat we controleren of deze ondernemer in deze iteratie eigenlijk wel kan
+                // uitbreiden (zie `canExpandInIteration` in de `else`) bekijken we of er wel een
+                // geschikte plaats is. Is dit niet het geval, en heeft de ondernemer een `minimum`,
+                // dan kunnen we ze al afwijzen nog voordat ze überhaupt aan de beurt zijn. Dit levert
+                // ruimte op voor andere ondernemers.
+                if (!uitbreidingPlaats) {
+                    contenders = Ondernemers.without(contenders, ondernemer);
 
-                if (minimum > plaatsen.length) {
-                    indeling = Afwijzing.add(indeling, ondernemer, Afwijzing.MINIMUM_UNAVAILABLE);
+                    const { plaatsen } = toewijzing;
+                    const minimum      = Ondernemer.getMinimumSize(ondernemer);
+
+                    if (minimum > plaatsen.length) {
+                        indeling = Afwijzing.add(indeling, ondernemer, Afwijzing.MINIMUM_UNAVAILABLE);
+                    }
+                } else if (Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
+                    contenders = Ondernemers.without(contenders, ondernemer);
+                    indeling = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
                 }
-            } else if (Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
-                contenders.splice(i, 1);
-                indeling = Toewijzing.add(indeling, ondernemer, uitbreidingPlaats);
+            } else if (Ondernemer.getMinimumSize(ondernemer) === iteration) {
+                contenders = Ondernemers.without(contenders, ondernemer);
+                indeling = Indeling.allocateOndernemer(
+                    indeling, contenders, contenders, ondernemer, undefined, iteration
+                );
             }
         }
 

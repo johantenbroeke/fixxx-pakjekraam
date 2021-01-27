@@ -1901,8 +1901,23 @@ describe('Een ondernemer die wil uitbreiden', () => {
     });
 });
 
-describe('Probeer afwijzing te voorkomen', () => {
-    it('bij 2 ondernemers met concurrerende minimum voorkeuren', () => {
+describe('Minimaliseer het aantal afwijzingen', () => {
+    it('bij concurrerende minimum voorkeuren', () => {
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'soll', voorkeur: { minimum: 2 } },
+                { sollicitatieNummer: 2, status: 'soll', voorkeur: { minimum: 2 } },
+                { sollicitatieNummer: 3, status: 'soll', voorkeur: { minimum: 2 } }
+            ],
+            marktplaatsen: [
+                '1', '2', '3'
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([2, 3]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['1', '2']);
+
         var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, voorkeur: { minimum: 3 } },
@@ -2082,8 +2097,8 @@ describe('Bugfix voor', () => {
         expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['1']);
     });
 
-    it.skip('issue #815', () => {
-        const { toewijzingen, afwijzingen } = calc({
+    it('issue #815', () => {
+        var { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'soll', voorkeur: { minimum: 2 } },
                 { sollicitatieNummer: 2, status: 'soll', voorkeur: { minimum: 1, maximum: 2 } },
@@ -2097,8 +2112,24 @@ describe('Bugfix voor', () => {
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([2, 3, 4]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([1]);
-        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['2']);
-        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['3']);
-        expect(findPlaatsen(toewijzingen, 4)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
+        expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['2']);
+        expect(findPlaatsen(toewijzingen, 4)).toStrictEqual(['3']);
+
+        var { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: 'soll', voorkeur: { minimum: 2 } },
+                { sollicitatieNummer: 2, status: 'soll', voorkeur: { minimum: 1, maximum: 2 } },
+                { sollicitatieNummer: 3, status: 'soll', voorkeur: { minimum: 2 } }
+            ],
+            marktplaatsen: [
+                '1', '2', '3'
+            ]
+        });
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1, 2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([3]);
+        expect(findPlaatsen(toewijzingen, 1)).toStrictEqual(['2', '3']);
+        expect(findPlaatsen(toewijzingen, 2)).toStrictEqual(['1']);
     });
 });
