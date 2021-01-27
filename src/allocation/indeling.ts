@@ -179,17 +179,16 @@ const Indeling = {
         size?: number
     ): IMarktindeling => {
         try {
-            if (size === undefined) {
-                size = Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
+            size = size ?
+                   Math.min(size, Ondernemer.getTargetSize(ondernemer)) :
+                   Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
+
+            if (!indeling.openPlaatsen.length) {
+                throw MARKET_FULL;
+            } else if (!size && Indeling._countAvailablePlaatsenFor(indeling, ondernemer)) {
+                throw BRANCHE_FULL;
             }
 
-            if (!size) {
-                if (!indeling.openPlaatsen.length) {
-                    throw MARKET_FULL;
-                } else if (Indeling._countAvailablePlaatsenFor(indeling, ondernemer)) {
-                    throw BRANCHE_FULL;
-                }
-            }
 
             const anywhere      = Ondernemer.acceptsRandomAllocation(ondernemer);
             const bestePlaatsen = Indeling._findBestePlaatsen(
