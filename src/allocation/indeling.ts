@@ -432,11 +432,20 @@ const Indeling = {
     },
 
     _calculateAllocationStrategy: (
-        ondernemers: IMarktondernemer[],
+        indeling: IMarktindeling,
+        contenders: IMarktondernemer[],
         ondernemer: IMarktondernemer,
         available: number
     ): Strategy => {
-        const minRequired = ondernemers.reduce((sum, ondernemer) => {
+        // Check deze ondernemer niet in een gelimiteerde branche zit. Het kan namelijk
+        // zijn dat er voor die specifieke branche conservatief ingedeeld moet
+        // worden terwijl de rest van de markt optimistisch ingedeeld kan worden.
+        const limitedBranche = Ondernemer.getMostLimitedBranche(ondernemer, indeling);
+        const filteredContenders = limitedBranche ?
+                                   Ondernemers.filterByBranche(contenders, limitedBranche) :
+                                   contenders;
+
+        const minRequired = filteredContenders.reduce((sum, ondernemer) => {
             return sum + Ondernemer.getStartSize(ondernemer);
         }, 0);
 
@@ -447,27 +456,19 @@ const Indeling = {
 
     _calculateStartSizeFor: (
         indeling: IMarktindeling,
-        queue: IMarktondernemer[],
+        contenders: IMarktondernemer[],
         ondernemer: IMarktondernemer
     ): number => {
         if (!indeling.openPlaatsen.length) {
             return 0;
         }
 
-        const limitedBranche = Ondernemer.getMostLimitedBranche(ondernemer, indeling);
         const available      = Indeling._countAvailablePlaatsenFor(indeling, ondernemer);
         const startSize      = Ondernemer.getStartSize(ondernemer);
         const targetSize     = Ondernemer.getTargetSize(ondernemer);
         const happySize      = startSize === 1 ? Math.min(targetSize, 2) : startSize;
 
-        // Als de markt optimistisch ingedeeld kan worden, check dan ook nog of
-        // deze ondernemer niet in een gelimiteerde branche zit. Het kan namelijk
-        // zijn dat er voor die specifieke branche wel conservatief ingedeeld moet
-        // worden.
-        const ondernemers = limitedBranche ?
-                            Ondernemers.filterByBranche(queue, limitedBranche) :
-                            queue;
-        const strategy    = Indeling._calculateAllocationStrategy(ondernemers, ondernemer, available);
+        const strategy    = Indeling._calculateAllocationStrategy(indeling, contenders, ondernemer, available);
         const size        = strategy === Strategy.OPTIMISTIC ? happySize : startSize;
 
         return Ondernemer.isVast(ondernemer) ?
