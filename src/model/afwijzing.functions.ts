@@ -6,7 +6,7 @@ import {
     ADJACENT_UNAVAILABLE,
     MINIMUM_UNAVAILABLE,
     MARKET_FULL
-} from '../allocation/indeling';
+} from '../allocation/afwijzing';
 
 import { getVoorkeurByMarktEnOndernemer  } from './voorkeur.functions';
 import { getPlaatsvoorkeurenByMarktEnOndernemer  } from './plaatsvoorkeur.functions';

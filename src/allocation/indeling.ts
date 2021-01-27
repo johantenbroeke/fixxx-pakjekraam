@@ -1,6 +1,5 @@
 import {
     BrancheId,
-    IAfwijzingReason,
     IMarkt,
     IMarktindeling,
     IMarktindelingSeed,
@@ -21,6 +20,7 @@ import {
 import Markt from './markt';
 import Ondernemer from './ondernemer';
 import Ondernemers from './ondernemers';
+import Afwijzing from './afwijzing';
 import Toewijzing from './toewijzing';
 
 // Wordt gebruikt in `_findBestePlaatsen` om `IMarktplaats` object om te vormen
@@ -38,23 +38,6 @@ enum Strategy {
     OPTIMISTIC = 1,
     CONSERVATIVE = 0
 }
-
-export const BRANCHE_FULL: IAfwijzingReason = {
-    code: 1,
-    message: 'Alle marktplaatsen voor deze branche zijn reeds ingedeeld.'
-};
-export const ADJACENT_UNAVAILABLE: IAfwijzingReason = {
-    code: 2,
-    message: 'Geen geschikte locatie gevonden met huidige voorkeuren.'
-};
-export const MINIMUM_UNAVAILABLE: IAfwijzingReason = {
-    code: 3,
-    message: 'Minimum aantal plaatsen niet beschikbaar.'
-};
-export const MARKET_FULL: IAfwijzingReason = {
-    code: 4,
-    message: 'Alle marktplaatsen zijn reeds ingedeeld.'
-};
 
 const Indeling = {
     init: (markt: IMarkt & IMarktindelingSeed): IMarktindeling => {
@@ -184,9 +167,9 @@ const Indeling = {
                    Indeling._calculateStartSizeFor(indeling, queue, ondernemer);
 
             if (!indeling.openPlaatsen.length) {
-                throw MARKET_FULL;
+                throw Afwijzing.MARKET_FULL;
             } else if (!size && Indeling._countAvailablePlaatsenFor(indeling, ondernemer)) {
-                throw BRANCHE_FULL;
+                throw Afwijzing.BRANCHE_FULL;
             }
 
 
@@ -196,7 +179,7 @@ const Indeling = {
             );
 
             if (!bestePlaatsen.length) {
-                throw ADJACENT_UNAVAILABLE;
+                throw Afwijzing.ADJACENT_UNAVAILABLE;
             }
 
             // Deel deze ondernemer op hun meest gewilde locatie in. De resulterende
@@ -244,7 +227,7 @@ const Indeling = {
             //       verplaatsen mee te nemen in de berekening. Deze optimalisatie toevoegen?
             const _indeling2 = Indeling.performAllocation(_indeling, queue.slice(1));
             const rejections = affectedVPH.reduce((result, ondernemer) => {
-                const rejection = Indeling._findRejection(_indeling2, ondernemer);
+                const rejection = Afwijzing.find(_indeling2, ondernemer);
                 return rejection ? result.concat(rejection) : result;
             }, []);
 
@@ -264,7 +247,7 @@ const Indeling = {
             openPlaatsen = openPlaatsen.filter(plaats => !offending.includes(plaats.plaatsId));
             return Indeling.allocateOndernemer(indeling, queue, ondernemer, openPlaatsen);
         } catch (errorMessage) {
-            return Indeling._rejectOndernemer(indeling, ondernemer, errorMessage);
+            return Afwijzing.add(indeling, ondernemer, errorMessage);
         }
     },
 
@@ -395,7 +378,7 @@ const Indeling = {
                 const minimum      = Ondernemer.getMinimumSize(ondernemer);
 
                 if (minimum > plaatsen.length) {
-                    indeling = Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE);
+                    indeling = Afwijzing.add(indeling, ondernemer, Afwijzing.MINIMUM_UNAVAILABLE);
                 }
             } else if (Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
                 contenders.splice(i, 1);
@@ -672,15 +655,6 @@ const Indeling = {
         )[0];
     },
 
-    _findRejection: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer
-    ) => {
-        return indeling.afwijzingen.find(({ erkenningsNummer }) =>
-            erkenningsNummer === ondernemer.erkenningsNummer
-        );
-    },
-
     // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
     // 0.  VPHs die niet willen verplaatsen.
     // 1.  VPH die wil verplaatsen in verplichte branche.
@@ -726,26 +700,6 @@ const Indeling = {
                    ondernemer === plaatsEigenaar ||
                    !Ondernemer.willNeverLeave(plaatsEigenaar, indeling).includes(plaatsId);
         });
-    },
-
-    _rejectOndernemer: (
-        indeling: IMarktindeling,
-        ondernemer: IMarktondernemer,
-        reason: IAfwijzingReason
-    ): IMarktindeling => {
-        indeling = Toewijzing.remove(indeling, ondernemer);
-
-        if( !Indeling._findRejection(indeling, ondernemer) ) {
-            indeling.afwijzingen = indeling.afwijzingen.concat({
-                marktId          : indeling.marktId,
-                marktDate        : indeling.marktDate,
-                erkenningsNummer : ondernemer.erkenningsNummer,
-                reason,
-                ondernemer
-            });
-        }
-
-        return indeling;
     }
 };
 
