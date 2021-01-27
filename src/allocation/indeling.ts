@@ -335,14 +335,20 @@ const Indeling = {
         queue: IMarktondernemer[]
     ): IMarktindeling => {
         indeling = Indeling.performAllocation(indeling, queue);
-        indeling = Indeling.performExpansion(indeling);
 
-        // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
-        // eerder afgewezen sollicitanten opnieuw in te delen omdat deze mogelijk passen op
-        // de vrijgekomen plaatsen.
-        const rejectedQueue = indeling.afwijzingen.map(({ ondernemer }) => ondernemer);
-        indeling = Indeling.performAllocation(indeling, rejectedQueue);
-        indeling = Indeling.performExpansion(indeling);
+        for (let iteration = 2; iteration <= indeling.expansionLimit; iteration++) {
+            const contenders = indeling.toewijzingen.reduce((result, toewijzing) => {
+                return Ondernemer.wantsExpansion(toewijzing) ?
+                       result.concat(toewijzing.ondernemer) :
+                       result;
+            } , []);
+
+            indeling = Indeling.performExpansion(indeling, iteration, contenders);
+
+            if (!indeling.openPlaatsen.length || !contenders.length) {
+                break;
+            }
+        }
 
         return indeling;
     },
@@ -368,15 +374,13 @@ const Indeling = {
     // aangeboden alvorens iedereen die een 4de plaats wil hiertoe de kans krijgt.
     performExpansion: (
         indeling: IMarktindeling,
-        iteration: number = 2
+        iteration: number = 2,
+        queue: IMarktondernemer[]
     ): IMarktindeling => {
-        const toewijzingen = indeling.toewijzingen.filter(toewijzing =>
-            Ondernemer.wantsExpansion(toewijzing)
-        );
+        const contenders = queue.slice(0);
 
-        const contenders = toewijzingen.map(({ ondernemer }) => ondernemer);
-        for (let toewijzing, i=0; toewijzing = toewijzingen[i]; i++) {
-            const { ondernemer, plaatsen } = toewijzing;
+        for (let ondernemer, i=0; ondernemer = queue[i]; i++) {
+            const toewijzing = Toewijzing.find(indeling, ondernemer);
             const uitbreidingPlaats = Indeling._findBestExpansion(indeling, contenders, toewijzing);
 
             // Nog voordat we controleren of deze ondernemer in deze iteratie eigenlijk wel kan
@@ -387,8 +391,8 @@ const Indeling = {
             if (!uitbreidingPlaats) {
                 contenders.splice(i, 1);
 
-                const { plaatsen } = Toewijzing.find(indeling, ondernemer);
-                const minimum = Ondernemer.getMinimumSize(ondernemer);
+                const { plaatsen } = toewijzing;
+                const minimum      = Ondernemer.getMinimumSize(ondernemer);
 
                 if (minimum > plaatsen.length) {
                     indeling = Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE);
@@ -399,9 +403,7 @@ const Indeling = {
             }
         }
 
-        return indeling.openPlaatsen.length && contenders.length && iteration < indeling.expansionLimit ?
-               Indeling.performExpansion(indeling, ++iteration) :
-               indeling;
+        return indeling;
     },
 
     // Als een VPH voorkeuren heeft opgegeven, dan geven zij daarmee aan dat ze

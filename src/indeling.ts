@@ -25,7 +25,7 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         const aListQueue = indeling.ondernemers.filter(ondernemer =>
             getListGroup(indeling, ondernemer) === 1
         );
-        indeling = Indeling.performCalculation(indeling, aListQueue);
+        indeling = calc(indeling, aListQueue);
     }
 
     // ... en probeer daarna de andere ondernemers nog een plaats te geven.
@@ -34,7 +34,18 @@ export const calcToewijzingen = (markt: IMarkt & IMarktindelingSeed): IMarktinde
         !indeling.aLijst.length ||
         getListGroup(indeling, ondernemer) === 2
     );
-    indeling = Indeling.performCalculation(indeling, bListQueue);
+    indeling = calc(indeling, bListQueue);
+
+    return indeling;
+};
+
+const calc = (indeling: IMarktindeling, queue: IMarktondernemer[]): IMarktindeling => {
+    indeling = Indeling.performCalculation(indeling, queue);
+    // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
+    // eerder afgewezen sollicitanten opnieuw in te delen omdat deze mogelijk passen op
+    // de vrijgekomen plaatsen.
+    const rejectedQueue = indeling.afwijzingen.map(({ ondernemer }) => ondernemer);
+    indeling = Indeling.performCalculation(indeling, rejectedQueue);
 
     return indeling;
 };
