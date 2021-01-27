@@ -2082,13 +2082,13 @@ describe('Bugfix voor', () => {
         expect(findPlaatsen(toewijzingen, 3)).toStrictEqual(['1']);
     });
 
-    it('issue #815', () => {
+    it.skip('issue #815', () => {
         const { toewijzingen, afwijzingen } = calc({
             ondernemers: [
                 { sollicitatieNummer: 1, status: 'soll', voorkeur: { minimum: 2 } },
-                { sollicitatieNummer: 2, status: 'soll', voorkeur: { maximum: 2 } },
-                { sollicitatieNummer: 3, status: 'soll', voorkeur: { maximum: 2 } },
-                { sollicitatieNummer: 4, status: 'soll', voorkeur: { maximum: 2 } }
+                { sollicitatieNummer: 2, status: 'soll', voorkeur: { minimum: 1, maximum: 2 } },
+                { sollicitatieNummer: 3, status: 'soll', voorkeur: { minimum: 1, maximum: 2 } },
+                { sollicitatieNummer: 4, status: 'soll', voorkeur: { minimum: 1, maximum: 2 } }
             ],
             marktplaatsen: [
                 '1', '2', '3'

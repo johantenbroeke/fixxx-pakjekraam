@@ -337,6 +337,13 @@ const Indeling = {
         indeling = Indeling.performAllocation(indeling, queue);
         indeling = Indeling.performExpansion(indeling);
 
+        // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
+        // eerder afgewezen sollicitanten opnieuw in te delen omdat deze mogelijk passen op
+        // de vrijgekomen plaatsen.
+        const rejectedQueue = indeling.afwijzingen.map(({ ondernemer }) => ondernemer);
+        indeling = Indeling.performAllocation(indeling, rejectedQueue);
+        indeling = Indeling.performExpansion(indeling);
+
         return indeling;
     },
 
@@ -384,20 +391,7 @@ const Indeling = {
                 const minimum = Ondernemer.getMinimumSize(ondernemer);
 
                 if (minimum > plaatsen.length) {
-                    // Soms komen er plaatsen vrij omdat iemands `minimum` niet verzadigd is. Probeer
-                    // eerder afgewezen sollicitanten opnieuw in te delen omdat deze mogelijk passen op
-                    // de vrijgekomen plaatsen.
-                    const rejectedQueue = indeling.afwijzingen.reduce((result, afwijzing) => {
-                        const { ondernemer, reason } = afwijzing;
-                        return reason !== MINIMUM_UNAVAILABLE ?
-                               result.concat(ondernemer) :
-                               result;
-                    }, []);
-
                     indeling = Indeling._rejectOndernemer(indeling, ondernemer, MINIMUM_UNAVAILABLE);
-                    indeling = Indeling.performAllocation(indeling, rejectedQueue);
-
-                    return Indeling.performExpansion(indeling, iteration);
                 }
             } else if (Ondernemer.canExpandInIteration(indeling, iteration, toewijzing)) {
                 contenders.splice(i, 1);
@@ -405,7 +399,7 @@ const Indeling = {
             }
         }
 
-        return indeling.openPlaatsen.length && toewijzingen.length && iteration < indeling.expansionLimit ?
+        return indeling.openPlaatsen.length && contenders.length && iteration < indeling.expansionLimit ?
                Indeling.performExpansion(indeling, ++iteration) :
                indeling;
     },
