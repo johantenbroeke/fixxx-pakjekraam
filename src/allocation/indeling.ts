@@ -32,6 +32,7 @@ interface IPlaatsvoorkeurPlus extends IPlaatsvoorkeur {
     brancheScore: number;
     eviScore: number;
     voorkeurScore: number;
+    afstandScore: number;
 }
 
 enum Strategy {
@@ -647,19 +648,38 @@ const Indeling = {
             // geen of zo min mogelijk ondernemers een voorkeur voor hebben uitgesproken.
             const voorkeurScore = Ondernemers.countPlaatsVoorkeurenFor(indeling, plaats.plaatsId);
 
+            // Als deze score relevant is, betekent dit dat het deze ondernemer niet uitmaakt waar
+            // zij ingedeeld worden.
+            //
+            // Met de afstandscore proberen we deze ondernemer zo ver mogelijk weg te houden
+            // van plaatsen waar andere ondernemers een voorkeur voor hebben uitgesproken. Op deze
+            // manier is de kans het grootst dat deze ondernemer niet in de weg staat als deze andere
+            // ondernemers nog willen uitbreiden.
+            const afstanden = Markt.getAdjacent(indeling, plaats.plaatsId).map(plaatsen => {
+                for (let plaats, i=0; plaats = plaatsen[i]; i++) {
+                    if (Ondernemers.countPlaatsVoorkeurenFor(indeling, plaats.plaatsId)) {
+                        return i;
+                    }
+                }
+                return Infinity;
+            });
+            const afstandScore = Math.min.apply(null, afstanden);
+
             return {
                 ...plaats,
                 priority,
                 brancheScore,
                 eviScore,
-                voorkeurScore
+                voorkeurScore,
+                afstandScore
             };
         })
         .sort((a, b) =>
             b.priority - a.priority ||
             b.brancheScore - a.brancheScore ||
             b.eviScore - a.eviScore ||
-            a.voorkeurScore - b.voorkeurScore
+            a.voorkeurScore - b.voorkeurScore ||
+            b.afstandScore - a.afstandScore
         );
         // 3. Maak groepen van de plaatsen waar deze ondernemer kan staan (Zie `plaatsFilter`)
         const groups = Markt.groupByAdjacent(indeling, openPlaatsenPrio, plaats =>
@@ -676,7 +696,8 @@ const Indeling = {
                 compareProperty(b, a, 'brancheScore') ||
                 compareProperty(b, a, 'eviScore') ||
                 compareProperty(b, a, 'priority') ||
-                compareProperty(a, b, 'voorkeurScore')
+                compareProperty(a, b, 'voorkeurScore') ||
+                compareProperty(b, a, 'afstandScore')
         );
     },
 
