@@ -98,6 +98,15 @@ const Ondernemers = {
         aLijst: IMarktondernemer[] = []
     ): IMarktondernemer[] => {
         return [...ondernemers].sort((a, b) => Ondernemers.compare(a, b, aLijst));
+    },
+
+    without: (
+        ondernemers: IMarktondernemer[],
+        ondernemer: IMarktondernemer
+    ): IMarktondernemer[] => {
+        return ondernemers.filter(_ondernemer =>
+            _ondernemer !== ondernemer
+        );
     }
 };
 
