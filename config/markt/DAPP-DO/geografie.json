@@ -125,6 +125,11 @@
       "obstakel": ["loopje"]
     },
     {
+      "kraamA": "238",
+      "kraamB": "240",
+      "obstakel": ["loopje"]
+    }, 
+    {
       "kraamA": "242",
       "kraamB": "246",
       "obstakel": ["loopje"]
@@ -231,6 +236,11 @@
       "kraamB": "203",
       "obstakel": ["loopje"]
     },
+    {
+      "kraamA": "209",
+      "kraamB": "211",
+      "obstakel": ["loopje"]
+    }, 
     {
       "kraamA": "221",
       "kraamB": "225",

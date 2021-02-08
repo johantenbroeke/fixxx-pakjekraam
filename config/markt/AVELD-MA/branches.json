@@ -1,5 +1,9 @@
 [
     {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
         "brancheId": "101-agf",
         "verplicht": true,
         "maximumPlaatsen": 1
@@ -11,7 +15,7 @@
     },
     {   
         "brancheId": "302-bloemen-planten",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "305-horloges-brillen-sieraden",

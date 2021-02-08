@@ -33,7 +33,7 @@ export class EmailDataUitslag extends React.Component<Properties> {
                         <tr text-align="left">
                             <th>Plaats(en)</th>
                             <th>Soll nr.</th>
-                            { !isKraamzetter ? <th>Naam</th> : null }
+                            <th>Naam</th>
                             <th>Type</th>
                         </tr>
                         <tbody>
@@ -43,7 +43,7 @@ export class EmailDataUitslag extends React.Component<Properties> {
                                     <tr key={index}>
                                         <td>{toewijzing.plaatsen.sort((a: any, b: any) => a - b).join(', ')}</td>
                                         <td>{ondernemer.sollicitatieNummer}</td>
-                                        { !isKraamzetter ? <td>{ondernemer.description}</td> : null }
+                                        <td>{ondernemer.description}</td>
                                         <td>{ondernemer.status}</td>
                                     </tr>
                                 );

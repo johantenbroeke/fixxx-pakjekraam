@@ -1,26 +1,30 @@
 [
     {
+        "brancheId": "bak",
+        "verplicht": true
+    }, 
+    {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "316-souvenirs",
-        "verplicht": false
+        "verplicht": true
     },
     {   
         "brancheId": "305-horloges-brillen-sieraden",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "303-boeken-stripboeken-muziek-film",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "301-antiek-kunst",
-        "verplicht": false
+        "verplicht": true
     },
     {
         "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": false
+        "verplicht": true
     }
 ]

@@ -18,8 +18,8 @@ class AanwezigheidPage extends React.Component {
         aanmeldingenPerMarktPerWeek : PropTypes.object,
         csrfToken            : PropTypes.string,
         date                 : PropTypes.string.isRequired,
-        mededelingen         : PropTypes.object.isRequired,
         messages             : PropTypes.array,
+        voorkeuren           : PropTypes.array,
         ondernemer           : PropTypes.object.isRequired,
         query                : PropTypes.string,
         role                 : PropTypes.string,
@@ -32,7 +32,7 @@ class AanwezigheidPage extends React.Component {
             aanmeldingenPerMarktPerWeek,
             csrfToken,
             date,
-            mededelingen,
+            voorkeuren,
             messages,
             ondernemer,
             query,
@@ -85,6 +85,7 @@ class AanwezigheidPage extends React.Component {
                         aanmeldingenPerMarktPerWeek={aanmeldingenPerMarktPerWeek}
                         query={query}
                         role={role}
+                        voorkeuren={voorkeuren}
                         csrfToken={csrfToken}
                     />
                 </Content>

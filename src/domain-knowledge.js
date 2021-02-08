@@ -22,7 +22,7 @@ const {
     endOfWeek,
     stringSort,
     getMaDiWoDo,
-    getTimezoneTime
+    getTimezoneTime,
 } = require('./util.ts');
 
 const moment = require('moment');
@@ -71,6 +71,14 @@ const indelingstijdstipInMinutes = () => {
     return ((60 * hours) + minutes );
 };
 
+const allocationHours = () => {
+    return parseInt(INDELINGSTIJDSTIP.split(":", 1), 10);
+};
+
+const allocationMinutes = () => {
+    return parseInt(INDELINGSTIJDSTIP.split(":", 2)[1], 10);
+};
+
 const parseISOMarktDag = dag => (isoMarktDagen.hasOwnProperty(dag) ? isoMarktDagen[dag] : -1);
 
 const isVast = status =>
@@ -85,6 +93,14 @@ const isExp = status =>
     status === DeelnemerStatus.EXPERIMENTAL_F;
 const isVastOfExp = status =>
     isVast(status) || isExp(status);
+
+const isAfterAllocationTime = () => {
+    const timeNow = getTimezoneTime();
+    const allocationTime = getTimezoneTime()
+        .set("hour", allocationHours() )
+        .set("minute", allocationMinutes() );
+    return timeNow.isAfter(allocationTime) || timeNow.isSame(allocationTime);
+};
 
 // Geeft de datum terug vanaf wanneer ondernemers hun aanwezigheid
 // mogen aanpassen.
@@ -226,4 +242,5 @@ module.exports = {
     filterRsvpList,
     plaatsSort,
     isErkenningsnummer,
+    isAfterAllocationTime
 };

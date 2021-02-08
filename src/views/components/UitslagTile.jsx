@@ -6,11 +6,13 @@ import {
 } from '../../util';
 
 import {
-    printAfwijzingReason
-} from '../../model/afwijzing.functions';
-import {
     isMarketClosed
 } from '../../model/markt.functions';
+
+import {
+    printAfwijzingReason
+} from '../../model/afwijzing.functions';
+
 
 const UitslagTile = ({
     date,

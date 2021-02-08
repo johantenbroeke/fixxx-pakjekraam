@@ -1,7 +1,12 @@
 import { IMarkt, IAfwijzing } from 'markt.model';
 import { Afwijzing } from '../model/afwijzing.model';
 import { afwijzing } from '../model/index';
-import { BRANCHE_FULL, ADJACENT_UNAVAILABLE, MINIMUM_UNAVAILABLE } from '../allocation/indeling';
+import {
+    BRANCHE_FULL,
+    ADJACENT_UNAVAILABLE,
+    MINIMUM_UNAVAILABLE,
+    MARKET_FULL
+} from '../allocation/afwijzing';
 
 import { getVoorkeurByMarktEnOndernemer  } from './voorkeur.functions';
 import { getPlaatsvoorkeurenByMarktEnOndernemer  } from './plaatsvoorkeur.functions';
@@ -17,7 +22,12 @@ export const convertAfwijzingForDB = (afwijzing: any, markt: IMarkt, marktDate: 
 };
 
 export const getAfwijzingReason = (reasonCode: number) => {
-    const reasons = [BRANCHE_FULL, ADJACENT_UNAVAILABLE, MINIMUM_UNAVAILABLE];
+    const reasons = [
+        BRANCHE_FULL,
+        ADJACENT_UNAVAILABLE,
+        MINIMUM_UNAVAILABLE,
+        MARKET_FULL
+    ];
     return reasons.find(reason => reason.code === reasonCode);
 };
 

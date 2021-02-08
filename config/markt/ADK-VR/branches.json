@@ -2,77 +2,10 @@
     {
         "brancheId": "bak",
         "verplicht": true
-    },
-    {
-        "brancheId": "101-agf",
-        "verplicht": false
-    },  
-    {
-        "brancheId": "103-brood-banket",
-        "verplicht": false
-    },
-    {    
-        "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": false
-    },   
+    }, 
     {   
         "brancheId": "107-vis-nat",
-        "verplicht": false
-    },
-    {   
-        "brancheId": "108-vleeswaren",
-        "verplicht": false
-    },
-    {   
-        "brancheId": "110-poelier",
-        "verplicht": false
-    },
-    {
-        "brancheId": "111-exotische-groenten",
-        "verplicht": false
-    },
-    {   
-        "brancheId": "205-loempias",
-        "verplicht": false
-    },
-    {   
-        "brancheId": "206-oudhollands-gebak",
-        "verplicht": false
-    },
-    {   
-        "brancheId": "210-snoepwaren",
-        "verplicht": false
-    },
-    {
-        "brancheId": "305-horloges-brillen-sieraden",
-        "verplicht": false
-    },
-    {
-        "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
-        "verplicht": false
-    },
-    {
-        "brancheId": "308-kleding-onder-beenmode-sokken",
-        "verplicht": false
-    },
-    {
-        "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": false
-    },
-    {
-        "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-        "verplicht": false
-    },
-    {
-        "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": false
-    },
-    {
-        "brancheId": "319-elektronica-mobieltjes-accessoires",
-        "verplicht": false
-    },
-    {
-        "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": false
+        "verplicht": true,
+        "maximumPlaatsen": 4
     }
 ]

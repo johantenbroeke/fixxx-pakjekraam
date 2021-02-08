@@ -17,7 +17,7 @@ class HomePage extends React.Component {
                 <Content>
                     <h2>Digitaal indelen</h2>
                     <p>
-                        Sinds augustus 2019 wordt de markt op Plein '40-'45 digitaal ingedeeld.
+                        Sinds augustus 2019 wordt de markt op Plein &apos;40-&apos;45 digitaal ingedeeld.
                         In 2020 zullen er steeds meer markten volgen. Bij digitaal indelen wordt
                         de markt al de avond van tevoren ingedeeld. En dus niet pas op de ochtend
                         zelf. Ondernemers worden zo veel mogelijk ingedeeld op basis van wat ze online

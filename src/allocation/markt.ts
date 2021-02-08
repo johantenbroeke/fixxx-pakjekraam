@@ -14,6 +14,25 @@ import {
 type FilterFunction = (plaats: IMarktplaats) => boolean;
 
 const Markt = {
+    getAdjacent: (
+        markt: IMarkt,
+        plaatsId: PlaatsId,
+        depth: number = Infinity,
+        filter: FilterFunction = null
+    ): IMarktplaats[][] => {
+        if (!depth) {
+            return [];
+        }
+
+        const { obstakels } = markt;
+        const row = Markt.findRowForPlaatsen(markt, [plaatsId]);
+
+        return [
+            Markt._getAdjacent(row, plaatsId, -1, depth, obstakels, filter),
+            Markt._getAdjacent(row, plaatsId, 1, depth, obstakels, filter)
+        ];
+    },
+
     // Get adjacent places for one or multiple `plaatsIds`. The places passed in
     // `plaatsIds` are expected to be adjacent, or this function's behavior is
     // undefined.
@@ -27,18 +46,16 @@ const Markt = {
         depth: number = 1,
         filter: FilterFunction = null
     ): IMarktplaats[] => {
-        if (!depth) {
-            return [];
-        }
-
-        const { obstakels } = markt;
-        const row = Markt.findRowForPlaatsen(markt, plaatsIds);
+        Markt.findRowForPlaatsen(markt, plaatsIds);
 
         return plaatsIds
-        .map(plaatsId => [
-            ...Markt._getAdjacent(row, plaatsId, -1, depth, obstakels, filter),
-            ...Markt._getAdjacent(row, plaatsId, 1, depth, obstakels, filter)
-        ])
+        .map(plaatsId => {
+            const adjacent = Markt.getAdjacent(markt, plaatsId, depth, filter);
+            return [
+                ...adjacent[0],
+                ...adjacent[1]
+            ];
+        })
         .reduce(flatten, [])
         // We need to filter out duplicates, and places that are included
         // in the `plaatsIds` argument. This occurs when multiple IDs are
