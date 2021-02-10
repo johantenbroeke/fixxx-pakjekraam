@@ -92,6 +92,10 @@ import {
 } from './routes/markt';
 
 import {
+    uploadMarkten,
+} from './routes/marktbewerker';
+
+import {
     vasteplaatshoudersPage,
     voorrangslijstPage,
     ondernemersNietIngedeeldPage,
@@ -575,6 +579,19 @@ app.get(
             Roles.MARKTONDERNEMER
         )
 );
+
+
+app.get(
+    '/upload-markten/',
+    // keycloak.protect(Roles.MARKTBEWERKER),
+    (req: GrantedRequest, res: Response) =>
+        uploadMarkten(
+            req,
+            res,
+            Roles.MARKTBEWERKER,
+        )
+);
+
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     if (process.env.APP_ENV === 'production') {
