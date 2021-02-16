@@ -10,6 +10,7 @@ import { initSession } from './session.sequelize';
 import { initVoorkeur } from './voorkeur.sequelize';
 import { initAfwijzing } from './afwijzing.sequelize';
 import { initLog } from './log';
+import { initMarktConfig } from './marktconfig';
 import { requireEnv } from '../util';
 
 requireEnv('DATABASE_URL');
@@ -33,6 +34,7 @@ export const session = initSession(sequelize);
 export const voorkeur = initVoorkeur(sequelize);
 export const afwijzing = initAfwijzing(sequelize);
 export const log = initLog(sequelize);
+export const MarktConfig = initMarktConfig(sequelize);
 
 export default {
     allocation,
@@ -44,4 +46,5 @@ export default {
     voorkeur,
     afwijzing,
     log,
+    MarktConfig
 };
