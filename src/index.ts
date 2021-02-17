@@ -92,7 +92,8 @@ import {
 } from './routes/markt';
 
 import {
-    uploadMarkten,
+    uploadMarktenPage,
+    uploadMarktenZip,
 } from './routes/marktbewerker';
 
 import {
@@ -131,6 +132,15 @@ const isMarktmeester = (req: GrantedRequest) => {
     return (
         !!accessToken.resource_access[process.env.IAM_CLIENT_ID] &&
         accessToken.resource_access[process.env.IAM_CLIENT_ID].roles.includes(Roles.MARKTMEESTER)
+    );
+};
+
+const isMarktBewerker = (req: GrantedRequest) => {
+    const accessToken = req.kauth.grant.access_token.content;
+
+    return (
+        !!accessToken.resource_access[process.env.IAM_CLIENT_ID] &&
+        accessToken.resource_access[process.env.IAM_CLIENT_ID].roles.includes(Roles.MARKTBEWERKER)
     );
 };
 
@@ -187,7 +197,9 @@ app.get('/login', keycloak.protect(), (req: GrantedRequest, res: Response) => {
         res.redirect('/dashboard/');
     } else if (isMarktmeester(req)) {
         res.redirect('/markt/');
-    } else {
+    } else if (isMarktBewerker(req)) {
+        res.redirect('/upload-markten/');
+    }else {
         res.redirect('/');
     }
 });
@@ -583,13 +595,21 @@ app.get(
 
 app.get(
     '/upload-markten/',
-    // keycloak.protect(Roles.MARKTBEWERKER),
+    keycloak.protect(Roles.MARKTBEWERKER),
     (req: GrantedRequest, res: Response) =>
-        uploadMarkten(
+        uploadMarktenPage(
             req,
             res,
             Roles.MARKTBEWERKER,
+            null,
+            null,
         )
+);
+
+app.post(
+    '/upload-markten/',
+    keycloak.protect(Roles.MARKTBEWERKER),
+    uploadMarktenZip
 );
 
 
