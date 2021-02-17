@@ -286,28 +286,29 @@ function validateData(
     property,
     schema,
     extraValidation,
-    required=true
+    required = true
 ) {
-    let propErrors = schema(configData[property]).errors.map(error => {
-        switch (error.name) {
-            case 'enum':
-                return `${error.property} has unknown value '${error.instance}'`;
-            default:
-                return error.stack;
+    let propErrors;
+
+    if (required && !(property in configData)) {
+        propErrors = ['Property is missing'];
+    } else {
+        propErrors = schema(configData[property]).errors.map(error => {
+            switch (error.name) {
+                case 'enum':
+                    return `${error.property} has unknown value '${error.instance}'`;
+                default:
+                    return error.stack;
+            }
+        });
+        if (!propErrors.length && typeof extraValidation === 'function') {
+            propErrors = extraValidation(propErrors, configData[property]);
         }
-    });
-    if (typeof extraValidation === 'function') {
-        propErrors = extraValidation(propErrors, configData[property]);
     }
 
-    if (!propErrors  || !propErrors.length) {
-        return errors;
-    }
-
-    return {
-        ...errors,
-        [property]: propErrors
-    };
+    return propErrors.length ?
+           { ...errors, [property]: propErrors } :
+           errors;
 }
 
 function readJSON(filePath, emitError=true) {
