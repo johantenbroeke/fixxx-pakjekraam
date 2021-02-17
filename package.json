@@ -131,7 +131,7 @@
       "eslint"
     ],
     "src/**/*.{ts,tsx}": [
-      "tslint --type-check --project tsconfig.json --config tslint.json"
+      "npm run lint:tslint"
     ],
     "config/markt/**/*.json": [
       "node ./src/check-markt-config.js"
