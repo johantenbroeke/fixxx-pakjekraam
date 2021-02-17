@@ -17,19 +17,18 @@ class UploadMarktenPage extends React.Component {
 
     render() {
         const { user, role, succesMessage, errorMessage } = this.props;
-
         return (
             <Page messages={this.props.messages}>
                 <Header user={user} role={role}>
                 </Header>
                 <Content>
                     <h1 className="Heading Heading--intro">Uploaden markten</h1>
-                    <form action="/upload-markten/" method="post" encType="multipart/form-data">
-                        <input type="file" id="marktenZip" accept=".zip" name="marktenZip" />
-                        <input type="submit" />
+                    <form class="Form Form--UploadMarktConfigForm" action="/upload-markten/zip/" method="post" encType="multipart/form-data">
+                        <input type="file" id="marktenZip" accept=".zip" name="marktenZip" required/>
+                        <input className="Button Button--secondary Form Form__element" type="submit" />
                     </form>
                     {succesMessage ? (
-                        <Alert type="success" inline={true}>
+                        <Alert type="success" inline={true} >
                             { succesMessage }
                         </Alert>
                     ) : null }

@@ -8,4 +8,13 @@
     &--AlgemenevoorkeurenForm{
         margin-top: $gutter;
     }
+    &--UploadMarktConfigForm{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    &__element{
+        margin-top: $gutter;
+    }
 }

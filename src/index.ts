@@ -607,7 +607,7 @@ app.get(
 );
 
 app.post(
-    '/upload-markten/',
+    '/upload-markten/zip/',
     keycloak.protect(Roles.MARKTBEWERKER),
     uploadMarktenZip
 );

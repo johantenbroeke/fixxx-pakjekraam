@@ -11,9 +11,19 @@ import AdmZip from 'adm-zip';
 import readChunk from 'read-chunk';
 
 import {
+    MarktConfig
+} from '../model/marktconfig';
+
+
+import {
     Roles,
 } from '../authentication';
+import Markt from 'allocation/markt';
 
+interface MarktForDB {
+    config: object;
+    abbreviation: string;
+}
 
 export const uploadMarktenPage = (
     req: GrantedRequest,
@@ -53,36 +63,86 @@ async function branchesToDB(branchesJsonFile) {
     return json;
 }
 
-async function getMarktenDirectories(entriesInZip) {
+async function getMarktenEntries(entriesInZip) {
     // Get all entries that are directories
     const directories = entriesInZip.filter(entry => entry.isDirectory);
     // Filter out the main directory that is called 'markt'
     return directories.filter(entry => entry.entryName !== 'config/' && entry.entryName !== 'config/markt/');
 }
 
-async function marktenToDB(marktenDirectories, zip) {
+async function jsonFromZipEntry(entry) {
+    return JSON.parse(entry.getData().toString('utf8'));
+}
 
+async function marktConfigFromMarktEntries(entries) {
+
+    const config = {
+        branches: null,
+        geografie: null,
+        locaties: null,
+        markt: null,
+        paginas: null,
+    };
+
+    const branchesEntry = entries.find(entry => entry.entryName.includes('branches.json'));
+    const geografieEntry = entries.find(entry => entry.entryName.includes('geografie.json'));
+    const locatiesEntry = entries.find(entry => entry.entryName.includes('locaties.json'));
+    const marktEntry = entries.find(entry => entry.entryName.includes('markt.json'));
+    const paginasEntry = entries.find(entry => entry.entryName.includes('paginas.json'));
+
+    config.branches = await jsonFromZipEntry(branchesEntry);
+    config.geografie = await jsonFromZipEntry(geografieEntry);
+    config.locaties = await jsonFromZipEntry(locatiesEntry);
+    config.markt = await jsonFromZipEntry(marktEntry);
+    config.paginas = await jsonFromZipEntry(paginasEntry);
+
+    return config;
+
+}
+
+function getMarktAbbreviationFromEntry(entry) {
+    return entry.entryName;
+}
+
+
+async function marktToObject(marktDirectoryEntry, zip) {
     const entries = await zip.getEntries();
 
+    const marktForDB = {
+        config: null,
+        abbreviation: null,
+    };
+
+    const marktEntries = entries.filter(
+        // Entry moet in de marktmap zitten
+        entry => entry.entryName.includes(marktDirectoryEntry.entryName) &&
+        // Mag niet identiek zijn, want dan betreft het de entry van de marktmap zelf
+        entry.entryName !== marktDirectoryEntry.entryName
+    );
+    // Create json from marktentries
+    marktForDB.config = await marktConfigFromMarktEntries(marktEntries);
+
+    // Get abberviation from path
+    marktForDB.abbreviation = getMarktAbbreviationFromEntry(marktDirectoryEntry);
+    return marktForDB;
+}
+
+async function marktenToDB(marktenEntries, zip) {
+
     // To do, dit maken zodat deze hele functie terug gegeven kan worden
-    marktenDirectories.map( directory => {
-
-        const jsonFiles = entries.filter(entry => entry.entryName.includes(directory.entryName));
-
-        // marktenPromises.push)
-
-        // for (const jsonFile of jsonFiles) {
-        //     console.log(jsonFile.entryName);
-        // }
-
-        return 0;
-
-        // return saveMarktConfig('DAPP-45', { jsonFiles });
-
+    const marktenForDbPromises = marktenEntries.map(marktDirectory => {
+        return marktToObject(marktDirectory, zip);
     });
 
-    return Promise.all(marktenDirectories);
-
+    return Promise.all(marktenForDbPromises)
+        .then(marktenObjects => {
+            Promise.all(
+                marktenObjects.map( (markt: MarktForDB) => {
+                    console.log(markt.abbreviation);
+                    return MarktConfig.store(markt.abbreviation, markt.config);
+                })
+            );
+        });
 }
 
 export const uploadMarktenZip = (
@@ -99,8 +159,12 @@ export const uploadMarktenZip = (
         let entriesInZip = [];
         let zip = null;
 
+        if (marktenZip.size === 0) {
+            throw Error('Geen bestand gevonden');
+        }
+
         if (err) {
-            throw Error('Er is iets mis gegaan bij het lezen van het formulier.');
+            throw Error('Er is iets mis gegaan bij het lezen van het formulier');
         }
 
         getExtensionFromBuffer(marktenZip.path, marktenZip.size)
@@ -122,10 +186,10 @@ export const uploadMarktenZip = (
         })
         .then(branchesToDB)
         .then(() => {
-            return getMarktenDirectories(entriesInZip);
+            return getMarktenEntries(entriesInZip);
         })
-        .then(marktenDirectories => {
-            return marktenToDB(marktenDirectories, zip);
+        .then(marktenEntries => {
+            return marktenToDB(marktenEntries, zip);
         })
         .then(() => {
             uploadMarktenPage(
@@ -137,6 +201,7 @@ export const uploadMarktenZip = (
             );
         })
         .catch( error => {
+            console.log(error);
             uploadMarktenPage(
                 req,
                 res,
