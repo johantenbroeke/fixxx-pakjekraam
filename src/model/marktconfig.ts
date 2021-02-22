@@ -29,7 +29,7 @@ validateAllBranches(readJSON(`${CONFIG_DIR}/branches.json`));
 
 export class MarktConfig extends Model {
     public id!: number;
-    public marktAfkorting!: number;
+    public marktAfkorting: string;
     public createdBy: number;
     public createdAt!: Date;
     public title!: string;
@@ -78,7 +78,7 @@ export const initMarktConfig = (sequelize: Sequelize) => {
         },
         marktAfkorting: {
             type: DataTypes.STRING(255),
-            allowNull: false
+            allowNull: true
         },
         createdAt: {
             type: DataTypes.DATE,
