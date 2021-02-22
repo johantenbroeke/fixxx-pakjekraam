@@ -4,8 +4,8 @@ const OPTIONS = {
   propertyName : 'DATA'
 };
 
-module.exports = function( INDEX ) {
-  const AllBranches = function( data ) {
+module.exports = {
+  MarketBranches(index, data) {
     return validate(data, {
       type: 'array',
       items: {
@@ -14,34 +14,17 @@ module.exports = function( INDEX ) {
           'brancheId': { type: 'string', required: true },
           'description': { type: 'string', required: true },
           'color': { type: 'string', required: true },
-          'number': { type: 'number' }
-        },
-        additionalProperties: false
-      }
-    }, OPTIONS);
-  };
-
-  const MarketBranches = function( data ) {
-    return validate(data, {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          'brancheId': {
-            type: 'string',
-            enum: INDEX.branches,
-            required: true
-          },
-          'verplicht': { type: 'boolean', required: true },
+          'number': { type: 'number' },
+          'verplicht': { type: 'boolean', required: false },
           'maximumPlaatsen': { type: 'number', minimum: 1 },
           'maximumToewijzingen': { type: 'number', minimum: 1 }
         },
         additionalProperties: false
       }
     }, OPTIONS);
-  };
+  },
 
-  const MarketGeografie = function( data ) {
+  MarketGeografie(index, data) {
     return validate(data, {
       type: 'object',
       properties: {
@@ -56,7 +39,7 @@ module.exports = function( INDEX ) {
                 type: 'array',
                 items: {
                   type: 'string',
-                  enum: INDEX.obstakelTypes
+                  enum: index.obstakelTypes
                 },
                 required: true
               }
@@ -66,9 +49,9 @@ module.exports = function( INDEX ) {
         }
       }
     }, OPTIONS);
-  };
+  },
 
-  const MarketLocaties = function( data ) {
+  MarketLocaties(index, data) {
     return validate(data, {
       type: 'array',
       items: {
@@ -80,7 +63,7 @@ module.exports = function( INDEX ) {
             type: 'array',
             items: {
               type: 'string',
-              enum: INDEX.branches
+              enum: index.branches
             }
           },
           'verkoopinrichting' : {
@@ -94,7 +77,7 @@ module.exports = function( INDEX ) {
             type: 'array',
             items: {
               type: 'string',
-              enum: INDEX.plaatsEigenschappen
+              enum: index.plaatsEigenschappen
             }
           },
           'tags': { type: 'array' }
@@ -102,9 +85,9 @@ module.exports = function( INDEX ) {
         additionalProperties: false
       }
     }, OPTIONS);
-  };
+  },
 
-  const Market = function( data ) {
+  Market(index, data) {
     return validate(data, {
       type: 'object',
       additionalProperties: false,
@@ -121,9 +104,9 @@ module.exports = function( INDEX ) {
         }
       }
     }, OPTIONS);
-  };
+  },
 
-  const Paginas = function( data ) {
+  Paginas(index, data) {
     return validate(data, {
       type: 'array',
       items: {
@@ -158,14 +141,5 @@ module.exports = function( INDEX ) {
         }
       }
     }, OPTIONS);
-  };
-
-  return {
-    AllBranches,
-    MarketBranches,
-    MarketGeografie,
-    MarketLocaties,
-    Market,
-    Paginas
-  };
+  }
 };

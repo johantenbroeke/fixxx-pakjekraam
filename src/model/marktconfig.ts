@@ -16,15 +16,10 @@ const CONFIG_PROPERTIES = [
     'paginas'
 ];
 const INDEX = {
-    branches            : indexAllBranches(readJSON(`${CONFIG_DIR}/branches.json`)),
     obstakelTypes       : readJSON(`${CONFIG_DIR}/obstakeltypes.json`),
     plaatsEigenschappen : readJSON(`${CONFIG_DIR}/plaatseigenschappen.json`)
 };
-const SCHEMAS = require('../markt-config.model.js')(INDEX);
-
-// Dit kan pas na het initialiseren van SCHEMAS gebeuren, omdat SCHEMAS dit
-// bestand gebruikt.
-validateAllBranches(readJSON(`${CONFIG_DIR}/branches.json`));
+const SCHEMAS = require('../markt-config.model.js');
 
 
 export class MarktConfig extends Model {
@@ -42,20 +37,32 @@ export class MarktConfig extends Model {
         });
     }
 
-    public static store(marktAfkorting, data) {
+    public static store(marktAfkorting, allBranches, input) {
         return this.findMostRecent(marktAfkorting)
         .then(configModel => {
+            const data = {
+                ...input,
+                branches: this._mergeBranches(allBranches, input.branches)
+            };
+            validateMarktConfig(data);
+
+            return [
+                configModel,
+                this._homogenizeData(data)
+            ];
+        })
+        .then(([configModel, data]) => {
             if (!configModel) {
-                return null;
+                return [null, data];
             }
 
             const currentData = JSON.stringify(configModel.data);
             const newData     = JSON.stringify(data);
             return currentData === newData ?
-                   configModel :
-                   null;
+                   [configModel, null] :
+                   [null, data];
         })
-        .then(configModel => {
+        .then(([configModel, data]) => {
             if (configModel) {
                 return configModel;
             }
@@ -66,6 +73,53 @@ export class MarktConfig extends Model {
                 data
             });
         });
+    }
+
+    private static _homogenizeData(data) {
+        const branches = (data.branches || []).sort((a, b) => {
+            return a.brancheId.localeCompare(b.brancheId);
+        });
+
+        const geografie = { ...(data.geografie || {}) };
+        geografie.obstakels = (geografie.obstakels || []).slice();
+        geografie.obstakels.sort((a, b) => {
+            return Number(a.kraamA) - Number(b.kraamA) ||
+                   Number(a.kraamB) - Number(b.kraamB);
+        });
+
+        const locaties = (data.locaties || []).sort((a, b) => {
+            return Number(a.plaatsId) - Number(b.plaatsId);
+        });
+
+        return {
+            ...data,
+            branches,
+            geografie,
+            locaties
+        };
+    }
+
+    private static _mergeBranches(allBranches, marktBranches) {
+        const mergedBranches = allBranches.map(branche => ({ ...branche }));
+
+        if (!marktBranches) {
+            return mergedBranches;
+        }
+
+        return marktBranches.reduce((result, marktBranche) => {
+            const { brancheId } = marktBranche;
+            const existing = result.find(b => b.brancheId === brancheId);
+
+            if (existing) {
+                Object.keys(marktBranche).forEach(key => {
+                    existing[key] = marktBranche[key];
+                });
+            } else {
+                result.push(marktBranche);
+            }
+
+            return result;
+        }, mergedBranches);
     }
 }
 
@@ -100,10 +154,7 @@ export const initMarktConfig = (sequelize: Sequelize) => {
         },
         data: {
             type: DataTypes.JSON,
-            allowNull: false,
-            validate: {
-                isValidMarktConfig
-            }
+            allowNull: false
         }
     }, {
         sequelize,
@@ -121,8 +172,10 @@ export const initMarktConfig = (sequelize: Sequelize) => {
     return MarktConfig;
 };
 
-const isValidMarktConfig = (configData) => {
+const validateMarktConfig = (configData) => {
     const index = {
+        ...INDEX,
+        branches: indexBranches(configData.branches),
         locaties: indexMarktPlaatsen(configData.locaties),
         markt: indexMarktRows(configData.markt)
     };
@@ -160,7 +213,7 @@ const VALIDATORS = {
             return fileErrors;
         };
 
-        return validateData(errors, configData, property, SCHEMAS.MarketBranches, validate, false);
+        return validateData(errors, configData, property, index, SCHEMAS.MarketBranches, validate, false);
     },
     geografie( errors, configData, property, index ) {
         const validate = ( fileErrors, { obstakels } ) => {
@@ -195,7 +248,7 @@ const VALIDATORS = {
             return fileErrors;
         };
 
-        return validateData(errors, configData, property, SCHEMAS.MarketGeografie, validate, false);
+        return validateData(errors, configData, property, index, SCHEMAS.MarketGeografie, validate, false);
     },
     locaties( errors, configData, property, index ) {
         const validate = ( fileErrors, locaties ) => {
@@ -216,7 +269,7 @@ const VALIDATORS = {
             return fileErrors;
         };
 
-        return validateData(errors, configData, property, SCHEMAS.MarketLocaties, validate, true);
+        return validateData(errors, configData, property, index, SCHEMAS.MarketLocaties, validate, true);
     },
     markt( errors, configData, property, index ) {
         const validate = ( fileErrors, { rows } ) => {
@@ -231,7 +284,7 @@ const VALIDATORS = {
             }, fileErrors);
         };
 
-        return validateData(errors, configData, property, SCHEMAS.Market, validate, true);
+        return validateData(errors, configData, property, index, SCHEMAS.Market, validate, true);
     },
     paginas( errors, configData, property, index ) {
         const validate = ( fileErrors, sections ) => {
@@ -250,11 +303,11 @@ const VALIDATORS = {
             return fileErrors;
         };
 
-        return validateData(errors, configData, property, SCHEMAS.Paginas, validate, true);
+        return validateData(errors, configData, property, index, SCHEMAS.Paginas, validate, true);
     }
 };
 
-function indexAllBranches(branches) {
+function indexBranches(branches) {
     return branches.map(branche => branche.brancheId);
 }
 function indexMarktPlaatsen(plaatsen=[]) {
@@ -273,17 +326,12 @@ function indexMarktRows(markt) {
     });
     return index;
 }
-function validateAllBranches(branches) {
-    const errors = SCHEMAS.AllBranches(branches).errors;
-    if (errors.length) {
-        throw errors;
-    }
-}
 
 function validateData(
     errors,
     configData,
     property,
+    index,
     schema,
     extraValidation,
     required = true
@@ -293,7 +341,7 @@ function validateData(
     if (required && !(property in configData)) {
         propErrors = ['Property is missing'];
     } else {
-        propErrors = schema(configData[property]).errors.map(error => {
+        propErrors = schema(index, configData[property]).errors.map(error => {
             switch (error.name) {
                 case 'enum':
                     return `${error.property} has unknown value '${error.instance}'`;
