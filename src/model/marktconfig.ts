@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as path from 'path';
 
 import {
@@ -6,6 +5,8 @@ import {
     Model,
     Sequelize,
 } from 'sequelize';
+
+import { readJSON } from '../util';
 
 const CONFIG_DIR = path.resolve(__dirname, '../../config/markt');
 const CONFIG_PROPERTIES = [
@@ -179,9 +180,9 @@ export const initMarktConfig = (sequelize: Sequelize) => {
 const validateMarktConfig = (configData) => {
     const index = {
         ...INDEX,
-        branches: indexBranches(configData.branches),
-        locaties: indexMarktPlaatsen(configData.locaties),
-        markt: indexMarktRows(configData.markt)
+        branches : indexBranches(configData.branches),
+        locaties : indexMarktPlaatsen(configData.locaties),
+        markt    : indexMarktRows(configData.markt)
     };
 
     let errors = {};
@@ -194,7 +195,7 @@ const validateMarktConfig = (configData) => {
     }
 
     const validationError = Object.keys(errors).reduce((result, property) => {
-        const propErrors = errors[property];
+        const propErrors  = errors[property];
         const errorString = propErrors.reduce((errors, error) => `${errors}  ${error}\n`, '');
         return `${result}${property}\n${errorString}\n`;
     }, '');
@@ -219,6 +220,7 @@ const VALIDATORS = {
 
         return validateData(errors, configData, property, index, SCHEMAS.MarketBranches, validate, false);
     },
+
     geografie( errors, configData, property, index ) {
         const validate = ( fileErrors, { obstakels } ) => {
             obstakels.reduce((unique, obstakel, i) => {
@@ -254,6 +256,7 @@ const VALIDATORS = {
 
         return validateData(errors, configData, property, index, SCHEMAS.MarketGeografie, validate, false);
     },
+
     locaties( errors, configData, property, index ) {
         const validate = ( fileErrors, locaties ) => {
             locaties.reduce((unique, { plaatsId }, i) => {
@@ -275,6 +278,7 @@ const VALIDATORS = {
 
         return validateData(errors, configData, property, index, SCHEMAS.MarketLocaties, validate, true);
     },
+
     markt( errors, configData, property, index ) {
         const validate = ( fileErrors, { rows } ) => {
             return rows.reduce((_fileErrors, row, i) => {
@@ -290,6 +294,7 @@ const VALIDATORS = {
 
         return validateData(errors, configData, property, index, SCHEMAS.Market, validate, true);
     },
+
     paginas( errors, configData, property, index ) {
         const validate = ( fileErrors, sections ) => {
             sections.forEach((section, i) => {
@@ -361,17 +366,4 @@ function validateData(
     return propErrors.length ?
            { ...errors, [property]: propErrors } :
            errors;
-}
-
-function readJSON(filePath, emitError=true) {
-    try {
-        const data = fs.readFileSync(filePath, { encoding: 'utf8' });
-        return JSON.parse(String(data));
-    } catch (e) {
-        if (emitError) {
-            throw e;
-        } else {
-            return undefined;
-        }
-    }
 }
