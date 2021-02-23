@@ -30,7 +30,7 @@ export class MarktConfig extends Model {
     public title!: string;
     public data!: object;
 
-    public static findMostRecent(marktAfkorting) {
+    public static findNewestFor(marktAfkorting) {
         return this.findOne({
             where: { marktAfkorting },
             order: [['createdAt', 'DESC']]
@@ -38,43 +38,40 @@ export class MarktConfig extends Model {
     }
 
     public static store(marktAfkorting, allBranches, input) {
-        return this.findMostRecent(marktAfkorting)
-        .then(configModel => {
-            const data = {
+        return this.findNewestFor(marktAfkorting)
+        .then(newestConfigModel => {
+            let marktConfig = {
                 ...input,
                 branches: this._mergeBranches(allBranches, input.branches)
             };
-            validateMarktConfig(data);
+            // Hier valideren, omdat `_homogenizeData` aannames doet t.a.v. de
+            // data structuur van het config bestand. Als we dit een onderdeel
+            // van de model validatie zouden maken, dan zijn we te laat.
+            validateMarktConfig(marktConfig);
+            marktConfig = this._homogenizeData(marktConfig);
 
-            return [
-                configModel,
-                this._homogenizeData(data)
-            ];
-        })
-        .then(([configModel, data]) => {
-            if (!configModel) {
-                return [null, data];
-            }
-
-            const currentData = JSON.stringify(configModel.data);
-            const newData     = JSON.stringify(data);
-            return currentData === newData ?
-                   [configModel, null] :
-                   [null, data];
-        })
-        .then(([configModel, data]) => {
-            if (configModel) {
-                return configModel;
+            if (newestConfigModel) {
+                // Als deze data identiek is aan de meest recente config
+                const currentData = JSON.stringify(newestConfigModel.data);
+                const newData     = JSON.stringify(marktConfig);
+                if (currentData === newData) {
+                    return newestConfigModel;
+                }
             }
 
             return this.create({
                 marktAfkorting,
                 createdAt: new Date(),
-                data
+                data: marktConfig
             });
         });
     }
 
+    // Het kan nl zo zijn dat dit exact dezelfde config data is, maar dat enkel
+    // de sortering gewijzigd is. We proberen de data zoveel mogelijk homogeen te
+    // maken zodat de kans het grootst is dat er een match gemaakt kan worden met
+    // de meest recente data in de database. Is er een match, dan wordt deze config
+    // niet opgeslagen.
     private static _homogenizeData(data) {
         const branches = (data.branches || []).sort((a, b) => {
             return a.brancheId.localeCompare(b.brancheId);
@@ -99,6 +96,13 @@ export class MarktConfig extends Model {
         };
     }
 
+    // Merge de inhoud van de algemene `branches.json` met een markt specifieke
+    // `branches.json`. Dit is een erfenis van de oude manier van het opslaan van
+    // de markt configuratie. Hierin werden alle branches die er bestaan opgeslagen
+    // in `config/markt/branches,json`, en de markt specifieke toevoegingen hierop
+    // in `config/markt/NAAM/branches.json`. Deze methode merged beide bestanden, zodat
+    // ze als één opgeslagen kunnen worden in de database. Op deze manier hoeven we niet
+    // meerdere bestanden te versioneren.
     private static _mergeBranches(allBranches, marktBranches) {
         const mergedBranches = allBranches.map(branche => ({ ...branche }));
 
