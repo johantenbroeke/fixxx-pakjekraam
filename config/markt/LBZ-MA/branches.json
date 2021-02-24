@@ -1,32 +1,32 @@
 [
     {
         "brancheId": "bak",
-        "verplicht": true,
-        "maximumPlaatsen": 8
+        "maximumPlaatsen": 8,
+        "verplicht": true
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 6
-    }, 
+        "maximumPlaatsen": 6,
+        "verplicht": true
+    },
     {
         "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": false,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": false
     },
-    {    
+    {
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "107-vis-nat",
         "verplicht": true
     },
     {
         "brancheId": "111-exotische-groenten",
-        "verplicht": true,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": true
     },
     {
         "brancheId": "207-grill-frituur",
@@ -34,33 +34,32 @@
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": true,
-        "maximumPlaatsen": 19
+        "maximumPlaatsen": 19,
+        "verplicht": true
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": true,
-        "maximumPlaatsen": 7
+        "maximumPlaatsen": 7,
+        "verplicht": true
     },
     {
         "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": false,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": false
     },
     {
         "brancheId": "319-elektronica-mobieltjes-accessoires",
-        "verplicht": false,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": false
     },
     {
         "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": false,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": false
     },
     {
         "brancheId": "322-tapijten-vloerkleden",
-        "verplicht": false,
-        "maximumPlaatsen": 4
-
+        "maximumPlaatsen": 4,
+        "verplicht": false
     }
 ]

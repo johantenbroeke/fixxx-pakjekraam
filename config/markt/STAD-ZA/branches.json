@@ -1,8 +1,9 @@
-[    {
-    "brancheId": "bak",
-    "verplicht": true
-    }, 
-     {
+[
+    {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
         "brancheId": "101-agf",
         "verplicht": true
     },
@@ -45,6 +46,5 @@
     {
         "brancheId": "102-bio-health-fairtrade",
         "verplicht": true
-    }            
-  ]
-
+    }
+]

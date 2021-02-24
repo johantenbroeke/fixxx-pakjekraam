@@ -5,22 +5,22 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 15
-    }, 
+        "maximumPlaatsen": 15,
+        "verplicht": true
+    },
     {
         "brancheId": "102-bio-health-fairtrade",
         "verplicht": true
-    }, 
-    {    
-        "brancheId": "105-noten-zuidvruchten",
-        "verplicht": true,
-        "maximumPlaatsen": 4
     },
-    {   
+    {
+        "brancheId": "105-noten-zuidvruchten",
+        "maximumPlaatsen": 4,
+        "verplicht": true
+    },
+    {
         "brancheId": "107-vis-nat",
-        "verplicht": true,        
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "108-vleeswaren",
@@ -30,18 +30,18 @@
         "brancheId": "201-broodjes-belegd",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "205-loempias",
         "verplicht": true
     },
     {
         "brancheId": "207-grill-frituur",
         "verplicht": true
-    },  
+    },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": true,
-        "maximumPlaatsen": 22
+        "maximumPlaatsen": 22,
+        "verplicht": true
     },
     {
         "brancheId": "314-partijhandel-inboedels",

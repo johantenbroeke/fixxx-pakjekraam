@@ -6,28 +6,28 @@
     {
         "brancheId": "101-agf",
         "verplicht": true
-    },   
+    },
     {
         "brancheId": "103-brood-banket",
         "verplicht": true
     },
-    {    
+    {
         "brancheId": "104-hummus-kruiden-olijven",
         "verplicht": true
-    },   
-    {    
+    },
+    {
         "brancheId": "105-noten-zuidvruchten",
         "verplicht": true
     },
-    {    
+    {
         "brancheId": "106-o-k-oliebollen",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "107-vis-nat",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "108-vleeswaren",
         "verplicht": true
     },
@@ -39,15 +39,15 @@
         "brancheId": "110-poelier",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "205-loempias",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "206-oudhollands-gebak",
-        "verplicht": true,
-        "maximumPlaatsen": 8
-    }, 
+        "maximumPlaatsen": 8,
+        "verplicht": true
+    },
     {
         "brancheId": "207-grill-frituur",
         "verplicht": true

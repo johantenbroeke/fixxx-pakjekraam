@@ -1,58 +1,88 @@
 [
-  {
-    "title": "Boerenmarkt Zaterdag",
-    "indelingslijstGroup": 
-    [
-      {
-        "class": "block-left",
-        "title": "Markt Prinsengracht",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"
-        ]
-      },
-      {
-        "class": "block-right",
-        "title": "Markt middenstuk",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "32", "33", "34", "35", "36", "37", "38", "39"
-        ]
-      },
-      {
-        "class": "block-left",
-        "title": "Markt Westerstraat",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "24", "25", "26", "27", "28", "29", "30", "31"
-        ]
-      },
-      {
-        "class": "block-left",
-        "title": "Markt kerkzijde",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "16", "17", "18", "19", "20", "21"
-        ]
-      },
-      {
-        "class": "block-right",
-        "title": "Markt middenstuk",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "40", "41", "42", "43"
-        ]
-      }
-    ]
-  }
+    {
+        "indelingslijstGroup": [
+            {
+                "class": "block-left",
+                "landmarkBottom": "",
+                "landmarkTop": "",
+                "plaatsList": [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6",
+                    "7",
+                    "8",
+                    "9",
+                    "10",
+                    "11",
+                    "12",
+                    "13",
+                    "14",
+                    "15"
+                ],
+                "title": "Markt Prinsengracht"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "",
+                "landmarkTop": "",
+                "plaatsList": [
+                    "32",
+                    "33",
+                    "34",
+                    "35",
+                    "36",
+                    "37",
+                    "38",
+                    "39"
+                ],
+                "title": "Markt middenstuk"
+            },
+            {
+                "class": "block-left",
+                "landmarkBottom": "",
+                "landmarkTop": "",
+                "plaatsList": [
+                    "24",
+                    "25",
+                    "26",
+                    "27",
+                    "28",
+                    "29",
+                    "30",
+                    "31"
+                ],
+                "title": "Markt Westerstraat"
+            },
+            {
+                "class": "block-left",
+                "landmarkBottom": "",
+                "landmarkTop": "",
+                "plaatsList": [
+                    "16",
+                    "17",
+                    "18",
+                    "19",
+                    "20",
+                    "21"
+                ],
+                "title": "Markt kerkzijde"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "",
+                "landmarkTop": "",
+                "plaatsList": [
+                    "40",
+                    "41",
+                    "42",
+                    "43"
+                ],
+                "title": "Markt middenstuk"
+            }
+        ],
+        "title": "Boerenmarkt Zaterdag"
+    }
 ]

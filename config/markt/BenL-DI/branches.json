@@ -5,18 +5,18 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 12
+        "maximumPlaatsen": 12,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "107-vis-nat",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "204-koffie-versnaperingen",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "205-loempias",
         "verplicht": true
     },

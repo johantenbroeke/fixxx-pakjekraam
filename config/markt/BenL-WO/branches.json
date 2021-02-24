@@ -5,30 +5,30 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 12
+        "maximumPlaatsen": 12,
+        "verplicht": true
     },
     {
         "brancheId": "104-hummus-kruiden-olijven",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "107-vis-nat",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "204-koffie-versnaperingen",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "205-loempias",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "307-kleding-baby-kinder",
         "verplicht": true
     },

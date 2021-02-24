@@ -1,36 +1,37 @@
-[    {
-    "brancheId": "bak",
-    "verplicht": true
-    }, 
-    {   
+[
+    {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
         "brancheId": "302-bloemen-planten",
         "verplicht": true
-    }, 
-    {   
+    },
+    {
         "brancheId": "305-horloges-brillen-sieraden",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "307-kleding-baby-kinder",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "308-kleding-onder-beenmode-sokken",
         "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": true,
-        "maximumPlaatsen": 17
+        "maximumPlaatsen": 17,
+        "verplicht": true
     },
     {
         "brancheId": "310-kleding-vintage-2ehands",
-        "verplicht": true,
-        "maximumPlaatsen": 17
+        "maximumPlaatsen": 17,
+        "verplicht": true
     },
     {
         "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",

@@ -1,39 +1,53 @@
 {
-  "obstakels": [
-    {
-      "kraamA": "1",
-      "kraamB": "2",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "4",
-      "kraamB": "5",
-      "obstakel": ["loopje"]
-    },
-   {
-      "kraamA": "5a",
-      "kraamB": "26",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "28",
-      "kraamB": "6",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "9",
-      "kraamB": "10",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "20a",
-      "kraamB": "21",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "21a",
-      "kraamB": "22",
-      "obstakel": ["loopje"]
-    }
-  ]
+    "obstakels": [
+        {
+            "kraamA": "1",
+            "kraamB": "2",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "4",
+            "kraamB": "5",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "5a",
+            "kraamB": "26",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "28",
+            "kraamB": "6",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "9",
+            "kraamB": "10",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "20a",
+            "kraamB": "21",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "21a",
+            "kraamB": "22",
+            "obstakel": [
+                "loopje"
+            ]
+        }
+    ]
 }

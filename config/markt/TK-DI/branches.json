@@ -1,57 +1,57 @@
 [
     {
         "brancheId": "bak",
-        "verplicht": true,
-        "maximumPlaatsen": 16
+        "maximumPlaatsen": 16,
+        "verplicht": true
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-         "maximumPlaatsen": 19
-    }, 
+        "maximumPlaatsen": 19,
+        "verplicht": true
+    },
     {
         "brancheId": "103-brood-banket",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
-    {    
+    {
         "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": true,
-        "maximumPlaatsen": 3
-    },      
-    {    
+        "maximumPlaatsen": 3,
+        "verplicht": true
+    },
+    {
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
     {
         "brancheId": "108-vleeswaren",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
     {
         "brancheId": "201-broodjes-belegd",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "205-loempias",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "207-grill-frituur",
         "verplicht": true
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
@@ -63,22 +63,21 @@
     },
     {
         "brancheId": "314-partijhandel-inboedels",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
     {
         "brancheId": "319-elektronica-mobieltjes-accessoires",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
     {
         "brancheId": "320-fietsen-auto-accessoires",
-        "verplicht": true,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": true
     },
     {
         "brancheId": "321-stoffen-textiel-fornituren",
         "verplicht": true
     }
-    
 ]

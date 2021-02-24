@@ -1,73 +1,430 @@
 [
-    { "plaatsId": "1" },
-    { "plaatsId": "3" },
-    { "plaatsId": "5" },
-    { "plaatsId": "7" },
-    { "plaatsId": "9", "branches": ["210-snoepwaren"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "11", "branches": ["210-snoepwaren"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "13", "branches": ["210-snoepwaren"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "15", "branches": ["bak", "103-brood-banket"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "17", "branches": ["bak", "103-brood-banket"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "19" },
-    { "plaatsId": "21" },
-    { "plaatsId": "23", "branches": ["bak", "209-vis-gebakken"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "25", "branches": ["bak", "209-vis-gebakken"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "27", "branches": ["bak", "209-vis-gebakken"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "29", "branches": ["bak", "209-vis-gebakken"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "31", "branches": ["109-zuivel-eieren"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "33", "branches": ["109-zuivel-eieren"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "35", "branches": ["bak", "105-noten-zuidvruchten"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "37", "branches": ["bak", "105-noten-zuidvruchten"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "39" },
-    { "plaatsId": "41" },
-    { "plaatsId": "43" },
-    { "plaatsId": "45", "branches": ["bak", "207-grill-frituur"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "47", "branches": ["bak", "207-grill-frituur"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "49" },
-    { "plaatsId": "51" },
-    { "plaatsId": "53" },
-    { "plaatsId": "55", "branches": ["101-agf"] },
-    { "plaatsId": "57", "branches": ["101-agf"] },
-    { "plaatsId": "59", "branches": ["101-agf"] },
-    { "plaatsId": "61", "branches": ["101-agf"] },
-    { "plaatsId": "63", "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "65", "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "67" },  
-    { "plaatsId": "69", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "71", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "73", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "75", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "77", "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "79", "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "81", "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "83" },
-    { "plaatsId": "85" },
-    { "plaatsId": "87" },
-    { "plaatsId": "89" },
-    { "plaatsId": "91" },
-    { "plaatsId": "93" },
-    { "plaatsId": "95", "branches": ["bak", "209-vis-gebakken"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "97", "branches": ["bak", "209-vis-gebakken"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "99", "branches": ["bak", "209-vis-gebakken"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "101", "branches": ["bak", "209-vis-gebakken"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "103", "branches": ["bak"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "105", "branches": ["bak"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "107" },
-    { "plaatsId": "109", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "111", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "113", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "115", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "117" },
-    { "plaatsId": "119" },
-    { "plaatsId": "121" },
-    { "plaatsId": "123", "branches": ["101-agf"] },
-    { "plaatsId": "125", "branches": ["101-agf"] },
-    { "plaatsId": "127", "branches": ["101-agf"] },
-    { "plaatsId": "129", "branches": ["101-agf"] },
-    { "plaatsId": "131" },
-    { "plaatsId": "133" },
-    { "plaatsId": "135" },
-    { "plaatsId": "137" },
-    { "plaatsId": "139" },
-    { "plaatsId": "141" }
+    {
+        "plaatsId": "1"
+    },
+    {
+        "plaatsId": "3"
+    },
+    {
+        "plaatsId": "5"
+    },
+    {
+        "plaatsId": "7"
+    },
+    {
+        "branches": [
+            "210-snoepwaren"
+        ],
+        "plaatsId": "9",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "210-snoepwaren"
+        ],
+        "plaatsId": "11",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "210-snoepwaren"
+        ],
+        "plaatsId": "13",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "103-brood-banket"
+        ],
+        "plaatsId": "15",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "103-brood-banket"
+        ],
+        "plaatsId": "17",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "19"
+    },
+    {
+        "plaatsId": "21"
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "23",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "25",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "27",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "29",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "31",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "33",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "105-noten-zuidvruchten"
+        ],
+        "plaatsId": "35",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "105-noten-zuidvruchten"
+        ],
+        "plaatsId": "37",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "39"
+    },
+    {
+        "plaatsId": "41"
+    },
+    {
+        "plaatsId": "43"
+    },
+    {
+        "branches": [
+            "bak",
+            "207-grill-frituur"
+        ],
+        "plaatsId": "45",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "207-grill-frituur"
+        ],
+        "plaatsId": "47",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "49"
+    },
+    {
+        "plaatsId": "51"
+    },
+    {
+        "plaatsId": "53"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "55"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "57"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "59"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "61"
+    },
+    {
+        "plaatsId": "63",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "65",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "67"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "69",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "71",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "73",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "75",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "77",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "79",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "81",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "83"
+    },
+    {
+        "plaatsId": "85"
+    },
+    {
+        "plaatsId": "87"
+    },
+    {
+        "plaatsId": "89"
+    },
+    {
+        "plaatsId": "91"
+    },
+    {
+        "plaatsId": "93"
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "95",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "97",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "99",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "101",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak"
+        ],
+        "plaatsId": "103",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak"
+        ],
+        "plaatsId": "105",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "107"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "109"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "111"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "113"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "115"
+    },
+    {
+        "plaatsId": "117"
+    },
+    {
+        "plaatsId": "119"
+    },
+    {
+        "plaatsId": "121"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "123"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "125"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "127"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "129"
+    },
+    {
+        "plaatsId": "131"
+    },
+    {
+        "plaatsId": "133"
+    },
+    {
+        "plaatsId": "135"
+    },
+    {
+        "plaatsId": "137"
+    },
+    {
+        "plaatsId": "139"
+    },
+    {
+        "plaatsId": "141"
+    }
 ]

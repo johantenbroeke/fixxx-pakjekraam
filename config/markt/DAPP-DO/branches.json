@@ -5,82 +5,82 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 14
-    },  
+        "maximumPlaatsen": 14,
+        "verplicht": true
+    },
     {
         "brancheId": "103-brood-banket",
-        "verplicht": true,
-        "maximumPlaatsen": 4
+        "maximumPlaatsen": 4,
+        "verplicht": true
     },
-    {    
+    {
         "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": true,
-        "maximumPlaatsen": 2
-    },   
-    {    
+        "maximumPlaatsen": 2,
+        "verplicht": true
+    },
+    {
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "107-vis-nat",
-        "verplicht": true,
-        "maximumPlaatsen": 4
+        "maximumPlaatsen": 4,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "108-vleeswaren",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": true,
-        "maximumPlaatsen": 5
+        "maximumPlaatsen": 5,
+        "verplicht": true
     },
     {
         "brancheId": "110-poelier",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "111-exotische-groenten",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "201-broodjes-belegd",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "204-koffie-versnaperingen",
-        "verplicht": true,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "205-loempias",
-        "verplicht": true,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "206-oudhollands-gebak",
-        "verplicht": true,
-        "maximumPlaatsen": 1
-    },    
+        "maximumPlaatsen": 1,
+        "verplicht": true
+    },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": true,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "211-delicatessen-hapjes",
-        "verplicht": true,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": true
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": true,
-        "maximumPlaatsen": 6
+        "maximumPlaatsen": 6,
+        "verplicht": true
     }
 ]

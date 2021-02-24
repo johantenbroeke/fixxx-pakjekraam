@@ -1,51 +1,301 @@
 [
-    { "plaatsId": "105", "branches": ["bak", "204-koffie-versnaperingen"] },
-    { "plaatsId": "106", "branches": ["bak", "204-koffie-versnaperingen"] },
-    { "plaatsId": "107", "branches": ["bak", "204-koffie-versnaperingen"] },
-    { "plaatsId": "200", "branches": ["bak", "205-loempias"] },
-    { "plaatsId": "201", "branches": ["bak", "205-loempias"] },
-    { "plaatsId": "202" },
-    { "plaatsId": "205", "branches": ["bak", "107-vis-nat"] },
-    { "plaatsId": "206", "branches": ["bak", "107-vis-nat"], "properties": ["electra"] },
-    { "plaatsId": "207", "branches": ["bak", "107-vis-nat"] },
-    { "plaatsId": "300", "branches": ["101-agf"], "properties": ["electra"] },
-    { "plaatsId": "301", "branches": ["101-agf"] },
-    { "plaatsId": "302" },
-    { "plaatsId": "303", "branches": ["317-speelgoed-spellen"] },
-    { "plaatsId": "304", "branches": ["317-speelgoed-spellen"] },
-    { "plaatsId": "305", "branches": ["317-speelgoed-spellen"] },
-    { "plaatsId": "306", "branches": ["309-kleding-volwassenen-hoofddeksels"], "properties": ["electra"] },
-    { "plaatsId": "307", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "308", "branches": ["101-agf"] },
-    { "plaatsId": "309", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "310", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra"] },
-    { "plaatsId": "311", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "400", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "401", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "402", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "403" },
-    { "plaatsId": "404" },
-    { "plaatsId": "405", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "406", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "407", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "408", "branches": ["321-stoffen-textiel-fornituren"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "409", "branches": ["321-stoffen-textiel-fornituren"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "410" },
-    { "plaatsId": "411" },
-    { "plaatsId": "412" },
-    { "plaatsId": "413" },
-    { "plaatsId": "500", "branches": ["101-agf"] },
-    { "plaatsId": "501", "branches": ["101-agf"], "properties": ["electra"] },
-    { "plaatsId": "502", "branches": ["101-agf"] },
-    { "plaatsId": "503", "branches": ["101-agf"] },
-    { "plaatsId": "504", "branches": ["101-agf"] },
-    { "plaatsId": "505", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "506", "branches": ["309-kleding-volwassenen-hoofddeksels"], "properties": ["electra"] },
-    { "plaatsId": "507", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "508", "branches": ["101-agf"] },
-    { "plaatsId": "509", "branches": ["101-agf"], "properties": ["electra"] },
-    { "plaatsId": "510", "branches": ["101-agf"] },
-    { "plaatsId": "511" },
-    { "plaatsId": "512" , "properties": ["electra"] },
-    { "plaatsId": "513" }
+    {
+        "branches": [
+            "bak",
+            "204-koffie-versnaperingen"
+        ],
+        "plaatsId": "105"
+    },
+    {
+        "branches": [
+            "bak",
+            "204-koffie-versnaperingen"
+        ],
+        "plaatsId": "106"
+    },
+    {
+        "branches": [
+            "bak",
+            "204-koffie-versnaperingen"
+        ],
+        "plaatsId": "107"
+    },
+    {
+        "branches": [
+            "bak",
+            "205-loempias"
+        ],
+        "plaatsId": "200"
+    },
+    {
+        "branches": [
+            "bak",
+            "205-loempias"
+        ],
+        "plaatsId": "201"
+    },
+    {
+        "plaatsId": "202"
+    },
+    {
+        "branches": [
+            "bak",
+            "107-vis-nat"
+        ],
+        "plaatsId": "205"
+    },
+    {
+        "branches": [
+            "bak",
+            "107-vis-nat"
+        ],
+        "plaatsId": "206",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "107-vis-nat"
+        ],
+        "plaatsId": "207"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "300",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "301"
+    },
+    {
+        "plaatsId": "302"
+    },
+    {
+        "branches": [
+            "317-speelgoed-spellen"
+        ],
+        "plaatsId": "303"
+    },
+    {
+        "branches": [
+            "317-speelgoed-spellen"
+        ],
+        "plaatsId": "304"
+    },
+    {
+        "branches": [
+            "317-speelgoed-spellen"
+        ],
+        "plaatsId": "305"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "306",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "307"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "308"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "309"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "310",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "311"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "400"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "401"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "402"
+    },
+    {
+        "plaatsId": "403"
+    },
+    {
+        "plaatsId": "404"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "405"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "406"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "407"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "408",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "409",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "410"
+    },
+    {
+        "plaatsId": "411"
+    },
+    {
+        "plaatsId": "412"
+    },
+    {
+        "plaatsId": "413"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "500"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "501",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "502"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "503"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "504"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "505"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "506",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "507"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "508"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "509",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "510"
+    },
+    {
+        "plaatsId": "511"
+    },
+    {
+        "plaatsId": "512",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "plaatsId": "513"
+    }
 ]
