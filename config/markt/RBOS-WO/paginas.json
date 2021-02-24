@@ -1,72 +1,151 @@
 [
     {
-      "title": "Reigersbos markt",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Deel 1",
-          "landmarkTop": "?",
-          "landmarkBottom": "?",
-          "plaatsList": 
-          ["15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", 
-            "26", "27", "28", "29", "30", "31", "32", "33", "34"]
-        },
-        {
-          "class": "block-right",
-          "title": "Deel 1",
-          "landmarkTop": "?",
-          "landmarkBottom": "?",
-          "plaatsList": 
-          ["1", "2", "3", "4", "5", "6", "7"]
-        },
-        {
-          "class": "block-left",
-          "title": "Deel 2",
-          "landmarkTop": "?",
-          "landmarkBottom": "?",
-          "plaatsList": 
-          ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", 
-          "47", "48", "49", "50", "51", "52", "53", "54", "55", "56"]
-        },
-        {
-          "class": "block-right",
-          "title": "Deel 2",
-          "landmarkTop": "?",
-          "landmarkBottom": "?",
-          "plaatsList": 
-          ["57", "58", "59", "60", "61", "62", "63"]
-        }
-      ]
+        "indelingslijstGroup": [
+            {
+                "class": "block-left",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "15",
+                    "16",
+                    "17",
+                    "18",
+                    "19",
+                    "20",
+                    "21",
+                    "22",
+                    "23",
+                    "24",
+                    "25",
+                    "26",
+                    "27",
+                    "28",
+                    "29",
+                    "30",
+                    "31",
+                    "32",
+                    "33",
+                    "34"
+                ],
+                "title": "Deel 1"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6",
+                    "7"
+                ],
+                "title": "Deel 1"
+            },
+            {
+                "class": "block-left",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "35",
+                    "36",
+                    "37",
+                    "38",
+                    "39",
+                    "40",
+                    "41",
+                    "42",
+                    "43",
+                    "44",
+                    "45",
+                    "46",
+                    "47",
+                    "48",
+                    "49",
+                    "50",
+                    "51",
+                    "52",
+                    "53",
+                    "54",
+                    "55",
+                    "56"
+                ],
+                "title": "Deel 2"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "57",
+                    "58",
+                    "59",
+                    "60",
+                    "61",
+                    "62",
+                    "63"
+                ],
+                "title": "Deel 2"
+            }
+        ],
+        "title": "Reigersbos markt"
     },
     {
-        "title": "Reigersbos markt",
-        "indelingslijstGroup": 
-        [
-          {
-            "class": "block-left",
-            "title": "Deel 3",
-            "landmarkTop": "?",
-            "landmarkBottom": "?",
-            "plaatsList": 
-            ["8", "9", "10", "11", "12", "13", "14"]
-          },
-          {
-            "class": "block-right",
-            "title": "Deel 3",
-            "landmarkTop": "?",
-            "landmarkBottom": "?",
-            "plaatsList": 
-            ["82", "81", "80", "79", "78", "77", "76", "75"]
-          },
-        {
-          "class": "block-right",
-          "title": "Markt 3",
-          "landmarkTop": "?",
-          "landmarkBottom": "?",
-          "plaatsList": 
-          ["74", "73", "72","71", "70", "69", "68", "67", "66", "65", "64", "63a"]
-        }
-      ]
+        "indelingslijstGroup": [
+            {
+                "class": "block-left",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "8",
+                    "9",
+                    "10",
+                    "11",
+                    "12",
+                    "13",
+                    "14"
+                ],
+                "title": "Deel 3"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "82",
+                    "81",
+                    "80",
+                    "79",
+                    "78",
+                    "77",
+                    "76",
+                    "75"
+                ],
+                "title": "Deel 3"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "74",
+                    "73",
+                    "72",
+                    "71",
+                    "70",
+                    "69",
+                    "68",
+                    "67",
+                    "66",
+                    "65",
+                    "64",
+                    "63a"
+                ],
+                "title": "Markt 3"
+            }
+        ],
+        "title": "Reigersbos markt"
     }
-  ]
+]

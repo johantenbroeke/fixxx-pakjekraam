@@ -1,10 +1,11 @@
 {
-  "obstakels": 
-  [
-    {
-      "kraamA": "8",
-      "kraamB": "9",
-      "obstakel": ["bankje"]
-    }
-  ]
+    "obstakels": [
+        {
+            "kraamA": "8",
+            "kraamB": "9",
+            "obstakel": [
+                "bankje"
+            ]
+        }
+    ]
 }

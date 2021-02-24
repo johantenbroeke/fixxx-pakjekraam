@@ -1,9 +1,11 @@
 {
-  "obstakels": [
-    {
-      "kraamA": "4",
-      "kraamB": "5",
-      "obstakel": ["loopje"]
-    }
-  ]
+    "obstakels": [
+        {
+            "kraamA": "4",
+            "kraamB": "5",
+            "obstakel": [
+                "loopje"
+            ]
+        }
+    ]
 }

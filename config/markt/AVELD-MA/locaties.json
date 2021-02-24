@@ -1,38 +1,221 @@
 [
-    { "plaatsId": "1", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "2", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "3", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "4", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "5", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "5a", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "6", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "7", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "8", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "9", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "10", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"] },
-
-    { "plaatsId": "11", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "12", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "13", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "14", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "15", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "16", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "17", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "18", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "19", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "19a", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "20", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "20a", "branches": ["302-bloemen-planten"] },
-
-
-    { "plaatsId": "21", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "21a", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "22", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "23", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "24", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "25", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "26", "branches": ["305-horloges-brillen-sieraden"] },
-    { "plaatsId": "27", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "28", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "29", "branches": ["109-zuivel-eieren"] }
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "1",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "2"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "3"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "4"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "5"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "5a"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "6"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "7"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "8"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "9"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "10",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "11"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "12"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "13",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "14",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "15"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "16"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "17"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "18"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "19"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "19a",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "20"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "20a"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "21"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "21a"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "22"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "23",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "24",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "25"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "26"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "27"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "28"
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "29"
+    }
 ]

@@ -10,7 +10,7 @@
     {
         "brancheId": "102-bio-health-fairtrade",
         "verplicht": true
-    },   
+    },
     {
         "brancheId": "103-brood-banket",
         "verplicht": true
@@ -34,15 +34,15 @@
     {
         "brancheId": "204-koffie-versnaperingen",
         "verplicht": true
-    },   
+    },
     {
         "brancheId": "205-loempias",
         "verplicht": true
-    }, 
+    },
     {
         "brancheId": "207-grill-frituur",
         "verplicht": true
-    }, 
+    },
     {
         "brancheId": "302-bloemen-planten",
         "verplicht": true

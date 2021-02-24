@@ -5,56 +5,55 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 12
+        "maximumPlaatsen": 12,
+        "verplicht": true
     },
     {
-       "brancheId": "105-noten-zuidvruchten",
-       "verplicht": false
-   },
+        "brancheId": "105-noten-zuidvruchten",
+        "verplicht": false
+    },
     {
         "brancheId": "109-zuivel-eieren",
         "verplicht": false
     },
-   {
-       "brancheId": "110-poelier",
-       "verplicht": false
-   },
-   {
-       "brancheId": "205-loempias",
-       "verplicht": false
-   },
-   {
-       "brancheId": "209-vis-gebakken",
-       "verplicht": false
-   },
-   {
-       "brancheId": "210-snoepwaren",
-       "verplicht": false
-   },
-   {
-       "brancheId": "302-bloemen-planten",
-       "verplicht": false
-   },  
-   {
-    "brancheId": "304-dierenbijnodigdheden",
-    "verplicht": false
-} ,  
-{
-    "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
-    "verplicht": false
-}   ,
-{
-    "brancheId": "309-kleding-volwassenen-hoofddeksels",
-    "verplicht": false
-}  , 
-{
-    "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-    "verplicht": false
-}   ,          
-{
-    "brancheId": "315-schoenen-tassen-lederwaren",
-    "verplicht": false
-}          
- ]
-
+    {
+        "brancheId": "110-poelier",
+        "verplicht": false
+    },
+    {
+        "brancheId": "205-loempias",
+        "verplicht": false
+    },
+    {
+        "brancheId": "209-vis-gebakken",
+        "verplicht": false
+    },
+    {
+        "brancheId": "210-snoepwaren",
+        "verplicht": false
+    },
+    {
+        "brancheId": "302-bloemen-planten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "304-dierenbijnodigdheden",
+        "verplicht": false
+    },
+    {
+        "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
+        "verplicht": false
+    },
+    {
+        "brancheId": "309-kleding-volwassenen-hoofddeksels",
+        "verplicht": false
+    },
+    {
+        "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
+        "verplicht": false
+    },
+    {
+        "brancheId": "315-schoenen-tassen-lederwaren",
+        "verplicht": false
+    }
+]

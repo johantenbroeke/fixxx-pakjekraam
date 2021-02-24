@@ -1,66 +1,37 @@
 [
     {
-        "brancheId": "bak",
-        "verplicht": true,
-        "maximumPlaatsen": 8
-    },
-    {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 6
-    }, 
+        "maximumPlaatsen": 6,
+        "verplicht": true
+    },
     {
-        "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": false,
-        "maximumPlaatsen": 2
-    },
-    {    
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 4,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "107-vis-nat",
+        "maximumPlaatsen": 2,
         "verplicht": true
     },
     {
         "brancheId": "111-exotische-groenten",
-        "verplicht": true,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": true
     },
     {
         "brancheId": "207-grill-frituur",
+        "maximumPlaatsen": 2,
         "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "verplicht": true,
-        "maximumPlaatsen": 19
+        "maximumPlaatsen": 17,
+        "verplicht": false
     },
     {
-        "brancheId": "314-partijhandel-inboedels",
-        "verplicht": true,
-        "maximumPlaatsen": 7
-    },
-    {
-        "brancheId": "315-schoenen-tassen-lederwaren",
-        "verplicht": false,
-        "maximumPlaatsen": 3
-    },
-    {
-        "brancheId": "319-elektronica-mobieltjes-accessoires",
-        "verplicht": false,
-        "maximumPlaatsen": 2
-    },
-    {
-        "brancheId": "321-stoffen-textiel-fornituren",
-        "verplicht": false,
-        "maximumPlaatsen": 2
-    },
-    {
-        "brancheId": "322-tapijten-vloerkleden",
-        "verplicht": false,
-        "maximumPlaatsen": 4
-
+        "brancheId": "bak",
+        "maximumPlaatsen": 8,
+        "verplicht": true
     }
 ]

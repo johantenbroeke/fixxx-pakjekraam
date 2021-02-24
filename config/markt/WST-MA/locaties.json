@@ -1,112 +1,738 @@
 [
-    { "plaatsId": "1", "branches": ["306-huishoudelijke-artikelen-meubels-apparatuur"] },
-    { "plaatsId": "3", "branches": ["306-huishoudelijke-artikelen-meubels-apparatuur"] },
-    { "plaatsId": "5", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "7", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "9", "branches": ["308-kleding-onder-beenmode-sokken"], "properties": ["boom"] },
-    { "plaatsId": "11", "branches": ["308-kleding-onder-beenmode-sokken"], "properties": ["electra"] },
-    { "plaatsId": "13", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "15", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "17", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["boom"] },
-    { "plaatsId": "19", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "21", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "23", "properties": ["boom"] },
-    { "plaatsId": "25", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "27", "branches": ["308-kleding-onder-beenmode-sokken"], "properties": ["electra"] },
-    { "plaatsId": "29", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "31", "branches": ["309-kleding-volwassenen-hoofddeksels"], "properties": ["boom"] },
-    { "plaatsId": "33", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-
-    { "plaatsId": "101", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "103", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "105", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "107", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["boom"] },
-    { "plaatsId": "109", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "111", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra"] },
-    { "plaatsId": "113", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "115", "branches": ["309-kleding-volwassenen-hoofddeksels"], "properties": ["boom"] },
-    { "plaatsId": "117", "branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"] },
-    { "plaatsId": "119", "branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"] },
-    { "plaatsId": "121", "branches": ["306-huishoudelijke-artikelen-meubels-apparatuur"], "properties": ["boom"] },
-    { "plaatsId": "123", "branches": ["308-kleding-onder-beenmode-sokken"] },
-    { "plaatsId": "125", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra"] },
-    { "plaatsId": "127", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "129", "branches": ["310-kleding-vintage-2ehands"], "properties": ["boom"] },
-    { "plaatsId": "131", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "133", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "135", "properties": ["boom"] },
-    { "plaatsId": "137", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "139", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "141", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "143", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["boom"] },
-    { "plaatsId": "145", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra"] },
-    { "plaatsId": "147", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "149", "branches": ["309-kleding-volwassenen-hoofddeksels"], "properties": ["boom"] },
-    { "plaatsId": "151", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-
-    { "plaatsId": "201", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "203", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "205", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "207", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "209", "branches": ["308-kleding-onder-beenmode-sokken"], "properties": ["boom"] },
-    { "plaatsId": "211", "branches": ["309-kleding-volwassenen-hoofddeksels"], "properties": ["electra"] },
-    { "plaatsId": "213", "branches": ["308-kleding-onder-beenmode-sokken"] },
-    { "plaatsId": "215", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "217", "branches": ["315-schoenen-tassen-lederwaren"], "properties": ["boom"] },
-    { "plaatsId": "219", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "221", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "223", "branches": ["308-kleding-onder-beenmode-sokken"], "properties": ["boom"] },
-    { "plaatsId": "225", "branches": ["308-kleding-onder-beenmode-sokken"] },
-    { "plaatsId": "227", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "229", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "231", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra", "boom"] },
-    { "plaatsId": "233", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "235", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "237", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "239", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["boom"] },
-    { "plaatsId": "241" },
-    { "plaatsId": "243", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "245", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "247", "properties": ["boom"] },
-    { "plaatsId": "249", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "251", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "253", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra"] },
-    { "plaatsId": "255", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "257", "branches": ["305-horloges-brillen-sieraden"] },
-    { "plaatsId": "259", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "261", "branches": ["314-partijhandel-inboedels"], "properties": ["boom"] },
-    { "plaatsId": "263" },
-
-    { "plaatsId": "301", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "303", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "305", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "307", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "309", "branches": ["315-schoenen-tassen-lederwaren"], "properties": ["boom"] },
-    { "plaatsId": "311", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra"] },
-    { "plaatsId": "313", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "315", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["boom"] },
-    { "plaatsId": "317", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "319", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "321", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "323", "branches": ["302-bloemen-planten"], "properties": ["boom"] },
-    { "plaatsId": "325", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "327", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "329", "branches": ["309-kleding-volwassenen-hoofddeksels"], "properties": ["boom"] },
-    { "plaatsId": "331", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "333", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["electra"] },
-    { "plaatsId": "335", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "337", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["boom"] },
-    { "plaatsId": "339", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "341", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "343", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "345", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["boom"] },
-    { "plaatsId": "347", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "349", "branches": ["309-kleding-volwassenen-hoofddeksels"], "properties": ["electra"] },
-    { "plaatsId": "349a", "branches": ["307-kleding-baby-kinder"] },
-    { "plaatsId": "351", "branches": ["305-horloges-brillen-sieraden"], "properties": ["boom"] },
-    { "plaatsId": "353", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "355", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "357", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "359", "branches": ["321-stoffen-textiel-fornituren"], "properties": ["boom"] },
-    { "plaatsId": "361", "branches": ["321-stoffen-textiel-fornituren"] }
+    {
+        "branches": [
+            "306-huishoudelijke-artikelen-meubels-apparatuur"
+        ],
+        "plaatsId": "1"
+    },
+    {
+        "branches": [
+            "306-huishoudelijke-artikelen-meubels-apparatuur"
+        ],
+        "plaatsId": "3"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "5"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "7"
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "9",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "11",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "13"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "15"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "17",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "19"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "21"
+    },
+    {
+        "plaatsId": "23",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "25"
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "27",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "29"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "31",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "33"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "101"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "103"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "105"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "107",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "109"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "111",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "113"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "115",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "313-parfumerie-drogisterij-persoonlijke-verzorging"
+        ],
+        "plaatsId": "117"
+    },
+    {
+        "branches": [
+            "313-parfumerie-drogisterij-persoonlijke-verzorging"
+        ],
+        "plaatsId": "119"
+    },
+    {
+        "branches": [
+            "306-huishoudelijke-artikelen-meubels-apparatuur"
+        ],
+        "plaatsId": "121",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "123"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "125",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "127"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "129",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "131"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "133"
+    },
+    {
+        "plaatsId": "135",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "137"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "139"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "141"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "143",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "145",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "147"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "149",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "151"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "201"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "203"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "205"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "207"
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "209",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "211",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "213"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "215"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "217",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "219"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "221"
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "223",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "225"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "227"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "229"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "231",
+        "properties": [
+            "electra",
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "233"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "235"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "237"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "239",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "plaatsId": "241"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "243"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "245"
+    },
+    {
+        "plaatsId": "247",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "249"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "251"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "253",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "255"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "257"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "259"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "261",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "plaatsId": "263"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "301"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "303"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "305"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "307"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "309",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "311",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "313"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "315",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "317"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "319"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "321"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "323",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "325"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "327"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "329",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "331"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "333",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "335"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "337",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "339"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "341"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "343"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "345",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "347"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "349",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "307-kleding-baby-kinder"
+        ],
+        "plaatsId": "349a"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "351",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "353"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "355"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "357"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "359",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "361"
+    }
 ]

@@ -1,49 +1,67 @@
 {
-  "obstakels": [
-    {
-      "kraamA": "10",
-      "kraamB": "11",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "12",
-      "kraamB": "13",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "28",
-      "kraamB": "29",
-      "obstakel": ["loopje"]    
-    },
-    {
-      "kraamA": "36",
-      "kraamB": "37",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "50",
-      "kraamB": "51",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "52",
-      "kraamB": "53",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "54",
-      "kraamB": "55",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "58",
-      "kraamB": "59",
-      "obstakel": ["loopje"]
-    },
-    {
-      "kraamA": "62",
-      "kraamB": "63",
-      "obstakel": ["loopje"]
-    }
-  ]
+    "obstakels": [
+        {
+            "kraamA": "10",
+            "kraamB": "11",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "12",
+            "kraamB": "13",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "28",
+            "kraamB": "29",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "36",
+            "kraamB": "37",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "50",
+            "kraamB": "51",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "52",
+            "kraamB": "53",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "54",
+            "kraamB": "55",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "58",
+            "kraamB": "59",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "62",
+            "kraamB": "63",
+            "obstakel": [
+                "loopje"
+            ]
+        }
+    ]
 }

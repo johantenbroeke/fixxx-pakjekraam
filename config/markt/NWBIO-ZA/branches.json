@@ -2,28 +2,27 @@
     {
         "brancheId": "bak",
         "verplicht": true
-    }, 
+    },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 8
-
+        "maximumPlaatsen": 8,
+        "verplicht": true
     },
     {
         "brancheId": "102-bio-health-fairtrade",
         "verplicht": true
-    },    
+    },
     {
         "brancheId": "103-brood-banket",
-        "verplicht": true,
-        "maximumPlaatsen": 4
+        "maximumPlaatsen": 4,
+        "verplicht": true
     },
-    {    
+    {
         "brancheId": "104-hummus-kruiden-olijven",
-        "verplicht": true,
-        "maximumPlaatsen": 4
-    },   
-    {   
+        "maximumPlaatsen": 4,
+        "verplicht": true
+    },
+    {
         "brancheId": "107-vis-nat",
         "verplicht": true
     },
@@ -33,27 +32,27 @@
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": true,
-        "maximumPlaatsen": 5
+        "maximumPlaatsen": 5,
+        "verplicht": true
     },
-    {   
+    {
         "brancheId": "206-oudhollands-gebak",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "209-vis-gebakken",
-        "verplicht": true,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": true
     },
     {
         "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-        "verplicht": true,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": true
     }
 ]

@@ -5,68 +5,67 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 12
+        "maximumPlaatsen": 12,
+        "verplicht": true
     },
     {
-       "brancheId": "102-bio-health-fairtrade",
-       "verplicht": false
-   },
-   {
-       "brancheId": "105-noten-zuidvruchten",
-       "verplicht": false
+        "brancheId": "102-bio-health-fairtrade",
+        "verplicht": false
+    },
+    {
+        "brancheId": "105-noten-zuidvruchten",
+        "verplicht": false
     },
     {
         "brancheId": "109-zuivel-eieren",
         "verplicht": false
     },
-   {
-       "brancheId": "110-poelier",
-       "verplicht": false
-   },
-   {
-       "brancheId": "205-loempias",
-       "verplicht": false
-   },
-   {
-       "brancheId": "206-oudhollands-gebak",
-       "verplicht": false
-   },
-   {
-       "brancheId": "208-smoothies",
-       "verplicht": false
-   },
-   {
-       "brancheId": "209-vis-gebakken",
-       "verplicht": false
-   },
-   {
-       "brancheId": "302-bloemen-planten",
-       "verplicht": false
-   },
-   {
-       "brancheId": "304-dierenbijnodigdheden",
-       "verplicht": false
-   } , 
-   {
-    "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
-    "verplicht": false
-}   ,
-{
-    "brancheId": "307-kleding-baby-kinder",
-    "verplicht": false
-}   ,
-{
-    "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-    "verplicht": false
-}   ,
-{
-    "brancheId": "316-souvenirs",
-    "verplicht": false
-}    ,         
-{
-    "brancheId": "317-speelgoed-spellen",
-    "verplicht": false
-}          
- ]
-
+    {
+        "brancheId": "110-poelier",
+        "verplicht": false
+    },
+    {
+        "brancheId": "205-loempias",
+        "verplicht": false
+    },
+    {
+        "brancheId": "206-oudhollands-gebak",
+        "verplicht": false
+    },
+    {
+        "brancheId": "208-smoothies",
+        "verplicht": false
+    },
+    {
+        "brancheId": "209-vis-gebakken",
+        "verplicht": false
+    },
+    {
+        "brancheId": "302-bloemen-planten",
+        "verplicht": false
+    },
+    {
+        "brancheId": "304-dierenbijnodigdheden",
+        "verplicht": false
+    },
+    {
+        "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
+        "verplicht": false
+    },
+    {
+        "brancheId": "307-kleding-baby-kinder",
+        "verplicht": false
+    },
+    {
+        "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
+        "verplicht": false
+    },
+    {
+        "brancheId": "316-souvenirs",
+        "verplicht": false
+    },
+    {
+        "brancheId": "317-speelgoed-spellen",
+        "verplicht": false
+    }
+]

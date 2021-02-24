@@ -22,6 +22,7 @@ export const Roles = {
     MARKTBUREAU: 'marktbureau',
     MARKTMEESTER: 'marktmeester',
     MARKTONDERNEMER: 'marktondernemer',
+    MARKTBEWERKER: 'marktbewerker',
 };
 
 const sessionStore = new connectPgSimple({

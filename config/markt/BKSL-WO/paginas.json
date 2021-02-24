@@ -1,56 +1,49 @@
 [
     {
-      "title": "Buikslotermeerplein",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Rij 1",
-          "landmarkTop": "Buikslotermeerplein",
-          "landmarkBottom": "Stadsloket",
-          "plaatsList": 
-          [
-              "103",
-              "104",
-              "105",
-              "106",
-              "107",
-              "109",
-              "110",
-              "111",
-              "112",
-              "113",
-              "114"
-          ]
-        },
+        "indelingslijstGroup": [
             {
-              "class": "block-left",
-              "title": "Rij 2",
-              "landmarkTop": "Buikslotermeerplein",
-              "landmarkBottom": "Stadsloket",
-              "plaatsList": 
-              [
-
-                  "303",
-                  "304",
-                  "305",
-                  "306",
-                  "307",
-                  "308",
-                  "309",
-                  "310",
-                  "312",
-                  "313",
-                  "314"
-              ]
-            },
-              { 
-                "class": "block-right",
-                "title": "Rij 2",
-                "landmarkTop": "Buikslotermeerplein",
+                "class": "block-left",
                 "landmarkBottom": "Stadsloket",
-                "plaatsList": 
-                [
+                "landmarkTop": "Buikslotermeerplein",
+                "plaatsList": [
+                    "103",
+                    "104",
+                    "105",
+                    "106",
+                    "107",
+                    "109",
+                    "110",
+                    "111",
+                    "112",
+                    "113",
+                    "114"
+                ],
+                "title": "Rij 1"
+            },
+            {
+                "class": "block-left",
+                "landmarkBottom": "Stadsloket",
+                "landmarkTop": "Buikslotermeerplein",
+                "plaatsList": [
+                    "303",
+                    "304",
+                    "305",
+                    "306",
+                    "307",
+                    "308",
+                    "309",
+                    "310",
+                    "312",
+                    "313",
+                    "314"
+                ],
+                "title": "Rij 2"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "Stadsloket",
+                "landmarkTop": "Buikslotermeerplein",
+                "plaatsList": [
                     "403",
                     "404",
                     "406",
@@ -61,11 +54,11 @@
                     "412",
                     "414",
                     "513",
-                    "514"                
-                 ]
-                }
-          ]
-         }
-     
+                    "514"
+                ],
+                "title": "Rij 2"
+            }
+        ],
+        "title": "Buikslotermeerplein"
+    }
 ]
-

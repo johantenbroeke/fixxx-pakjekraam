@@ -1,14 +1,13 @@
 [
-
     {
         "brancheId": "bak",
         "verplicht": true
-    }, 
+    },
     {
         "brancheId": "101-agf",
-        "verplicht": false,
-        "maximumPlaatsen": 4
-    }, 
+        "maximumPlaatsen": 4,
+        "verplicht": false
+    },
     {
         "brancheId": "103-brood-banket",
         "verplicht": false
@@ -23,8 +22,8 @@
     },
     {
         "brancheId": "107-vis-nat",
-        "verplicht": false,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": false
     },
     {
         "brancheId": "109-zuivel-eieren",
@@ -36,8 +35,8 @@
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": false,
-        "maximumPlaatsen": 1
+        "maximumPlaatsen": 1,
+        "verplicht": false
     },
     {
         "brancheId": "302-bloemen-planten",

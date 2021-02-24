@@ -5,42 +5,42 @@
     },
     {
         "brancheId": "101-agf",
-        "verplicht": true,
-        "maximumPlaatsen": 12
+        "maximumPlaatsen": 12,
+        "verplicht": true
     },
     {
         "brancheId": "103-brood-banket",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "105-noten-zuidvruchten",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "109-zuivel-eieren",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": true,
-        "maximumPlaatsen": 2
+        "maximumPlaatsen": 2,
+        "verplicht": true
     },
     {
         "brancheId": "209-vis-gebakken",
-        "verplicht": true,
-        "maximumPlaatsen": 8
+        "maximumPlaatsen": 8,
+        "verplicht": true
     },
     {
         "brancheId": "210-snoepwaren",
-        "verplicht": true ,
-        "maximumPlaatsen": 3  
+        "maximumPlaatsen": 3,
+        "verplicht": true
     },
     {
         "brancheId": "302-bloemen-planten",
-        "verplicht": true  ,
-        "maximumPlaatsen": 4  
+        "maximumPlaatsen": 4,
+        "verplicht": true
     }
 ]

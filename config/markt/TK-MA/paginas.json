@@ -1,79 +1,120 @@
 [
     {
-      "title": "Markt 1",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Rij 1",
-          "landmarkTop": "Kinkerstraat",
-          "landmarkBottom": "Bellamystraat",
-          "plaatsList": 
-          [ "49", "48", "44", "43", "41", "40", 
-            "39", "38", "37", "34", "33",  
-            "28", "27", "26"
-          ]
-        },
-        {
-          "class": "block-right",
-          "title": "Rij 1",
-          "landmarkTop": "Kinkerstraat",
-          "landmarkBottom": "Bellamystraat",
-          "plaatsList": 
-          [
-          "57", "58", "59", 
-          "60", "61", "62", "63", "64", "65", "68", "69", 
-          "70", "71", "74", "76", "77", 
-          "82", "83", "84", "85", "86"
-          ]
-        }
-      ]
+        "indelingslijstGroup": [
+            {
+                "class": "block-left",
+                "landmarkBottom": "Bellamystraat",
+                "landmarkTop": "Kinkerstraat",
+                "plaatsList": [
+                    "49",
+                    "48",
+                    "44",
+                    "43",
+                    "41",
+                    "40",
+                    "39",
+                    "38",
+                    "37",
+                    "34",
+                    "33",
+                    "28",
+                    "27",
+                    "26"
+                ],
+                "title": "Rij 1"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "Bellamystraat",
+                "landmarkTop": "Kinkerstraat",
+                "plaatsList": [
+                    "57",
+                    "58",
+                    "59",
+                    "60",
+                    "61",
+                    "62",
+                    "63",
+                    "64",
+                    "65",
+                    "68",
+                    "69",
+                    "70",
+                    "71",
+                    "74",
+                    "76",
+                    "77",
+                    "82",
+                    "83",
+                    "84",
+                    "85",
+                    "86"
+                ],
+                "title": "Rij 1"
+            }
+        ],
+        "title": "Markt 1"
     },
     {
-      "title": "Markt 2",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Rij 2",
-          "landmarkTop": "Bellamystraat",
-          "landmarkBottom": "",
-          "plaatsList": 
-          [
-            "19", "18", "17", "16", "14", 
-            "8", "7", "4", "3", "2", "1" 
-          ]
-        },
-        {
-          "class": "block-right",
-          "title": "Rij 2",
-          "landmarkTop": "Bellamystraat",
-          "landmarkBottom": "",
-          "plaatsList": 
-          [
-            "90", "91",  "92", "93", "94", "95", "96", "97"
-          ]
-        },
-          {
-            "class": "block-left",
-            "title": "Markt 3",
-            "landmarkTop": "Borgerstraat",
-            "landmarkBottom": "",
-            "plaatsList": 
-            [ 
-              "112", "111"
-            ]
-          },
-          {
-            "class": "block-right",
-            "title": "Markt 3",
-            "landmarkTop": "Borgerstraat",
-            "landmarkBottom": "",
-            "plaatsList": 
-            [
-            "106", "105", "55", "56"
-            ]
-          }
-        ]
-      }
-  ]
+        "indelingslijstGroup": [
+            {
+                "class": "block-left",
+                "landmarkBottom": "",
+                "landmarkTop": "Bellamystraat",
+                "plaatsList": [
+                    "19",
+                    "18",
+                    "17",
+                    "16",
+                    "14",
+                    "8",
+                    "7",
+                    "4",
+                    "3",
+                    "2",
+                    "1"
+                ],
+                "title": "Rij 2"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "",
+                "landmarkTop": "Bellamystraat",
+                "plaatsList": [
+                    "90",
+                    "91",
+                    "92",
+                    "93",
+                    "94",
+                    "95",
+                    "96",
+                    "97"
+                ],
+                "title": "Rij 2"
+            },
+            {
+                "class": "block-left",
+                "landmarkBottom": "",
+                "landmarkTop": "Borgerstraat",
+                "plaatsList": [
+                    "112",
+                    "111"
+                ],
+                "title": "Markt 3"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "",
+                "landmarkTop": "Borgerstraat",
+                "plaatsList": [
+                    "106",
+                    "105",
+                    "55",
+                    "56"
+                ],
+                "title": "Markt 3"
+            }
+        ],
+        "title": "Markt 2"
+    }
+]

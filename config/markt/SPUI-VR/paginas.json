@@ -1,24 +1,48 @@
 [
     {
-      "title": "Spui boekenmarkt",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Deel 1",
-          "landmarkTop": "?",
-          "landmarkBottom": "?",
-          "plaatsList": 
-          ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
-        },
-        {
-          "class": "block-right",
-          "title": "Deel 1",
-          "landmarkTop": "?",
-          "landmarkBottom": "?",
-          "plaatsList": 
-          ["26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13"]
-        }
-      ]
+        "indelingslijstGroup": [
+            {
+                "class": "block-left",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6",
+                    "7",
+                    "8",
+                    "9",
+                    "10",
+                    "11",
+                    "12"
+                ],
+                "title": "Deel 1"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "?",
+                "landmarkTop": "?",
+                "plaatsList": [
+                    "26",
+                    "25",
+                    "24",
+                    "23",
+                    "22",
+                    "21",
+                    "20",
+                    "19",
+                    "18",
+                    "17",
+                    "16",
+                    "15",
+                    "14",
+                    "13"
+                ],
+                "title": "Deel 1"
+            }
+        ],
+        "title": "Spui boekenmarkt"
     }
 ]

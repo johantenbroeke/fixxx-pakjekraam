@@ -1,15 +1,18 @@
 {
     "obstakels": [
-  
-      {
-        "kraamA": "107",
-        "kraamB": "109",
-        "obstakel": ["loopje"]
-      },
-      {
-        "kraamA": "407",
-        "kraamB": "409",
-        "obstakel": ["loopje"]
-      }
-        ]
-  }
+        {
+            "kraamA": "107",
+            "kraamB": "109",
+            "obstakel": [
+                "loopje"
+            ]
+        },
+        {
+            "kraamA": "407",
+            "kraamB": "409",
+            "obstakel": [
+                "loopje"
+            ]
+        }
+    ]
+}

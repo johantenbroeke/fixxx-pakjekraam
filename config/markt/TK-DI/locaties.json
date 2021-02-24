@@ -1,70 +1,499 @@
 [
-    { "plaatsId": "1", "branches": ["bak"] },
-    { "plaatsId": "2", "branches": ["bak"] }, 
-    { "plaatsId": "3", "branches": ["bak"] },  
-    { "plaatsId": "4", "branches": ["bak"] },
-    { "plaatsId": "7" },
-    { "plaatsId": "8" },
-    { "plaatsId": "9", "branches": ["bak", "207-grill-frituur"] },
-    { "plaatsId": "14", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "16", "branches": ["101-agf"] },
-    { "plaatsId": "17", "branches": ["101-agf"] },
-    { "plaatsId": "18", "branches": ["107-vis-nat"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "19", "branches": ["107-vis-nat"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "26", "branches": ["101-agf"] },
-    { "plaatsId": "27", "branches": ["101-agf"] },
-    { "plaatsId": "28", "branches": ["101-agf"] },
-    { "plaatsId": "29", "branches": ["320-fietsen-auto-accessoires"] },
-    { "plaatsId": "32", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "33", "branches": ["bak", "209-vis-gebakken"] },
-    { "plaatsId": "34", "branches": ["bak", "209-vis-gebakken"] },
-    { "plaatsId": "35", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "37", "branches": ["bak", "205-loempias"] },
-    { "plaatsId": "38", "branches": ["bak", "205-loempias"] },
-    { "plaatsId": "39", "branches": ["bak", "105-noten-zuidvruchten"] },
-    { "plaatsId": "40", "branches": ["bak", "105-noten-zuidvruchten"] },
-    { "plaatsId": "41", "branches": ["bak", "105-noten-zuidvruchten"] },
-    { "plaatsId": "43", "branches": ["bak", "108-vleeswaren"] },
-    { "plaatsId": "44", "branches": ["bak", "108-vleeswaren"] },
-    { "plaatsId": "45" },
-    { "plaatsId": "48", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "49", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "55", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "56", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "57", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "58", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "59", "branches": ["302-bloemen-planten"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "60", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "61", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "62", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "64", "branches": ["307-kleding-baby-kinder"] },
-    { "plaatsId": "65", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "66", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "67", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "68", "branches": ["314-partijhandel-inboedels"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "69", "branches": ["314-partijhandel-inboedels"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "70", "branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "71", "branches": ["313-parfumerie-drogisterij-persoonlijke-verzorging"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "74", "branches": ["109-zuivel-eieren"] },
-    { "plaatsId": "76", "branches": ["bak", "104-hummus-kruiden-olijven"]  },
-    { "plaatsId": "77", "branches": ["bak", "104-hummus-kruiden-olijven"]  },
-    { "plaatsId": "80", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "81", "branches": ["201-broodjes-belegd"] },
-    { "plaatsId": "82", "branches": ["319-elektronica-mobieltjes-accessoires"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "83", "branches": ["319-elektronica-mobieltjes-accessoires"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "84", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "85", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "86", "branches": ["101-agf"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "90", "branches": ["bak", "104-hummus-kruiden-olijven"] }, 
-    { "plaatsId": "91", "branches": ["bak", "104-hummus-kruiden-olijven"] },
-    { "plaatsId": "92", "branches": ["108-vleeswaren"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "93", "branches": ["108-vleeswaren"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "94", "branches": ["103-brood-banket"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "95", "branches": ["103-brood-banket"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "96", "branches": ["103-brood-banket"], "verkoopinrichting": ["eigen-materieel"]  },
-    { "plaatsId": "97" },
-    { "plaatsId": "105", "branches": ["201-broodjes-belegd"] },
-    { "plaatsId": "106", "branches": ["201-broodjes-belegd"] },
-    { "plaatsId": "111", "branches": ["109-zuivel-eieren"] },
-    { "plaatsId": "112", "branches": ["109-zuivel-eieren"] }
+    {
+        "branches": [
+            "bak"
+        ],
+        "plaatsId": "1"
+    },
+    {
+        "branches": [
+            "bak"
+        ],
+        "plaatsId": "2"
+    },
+    {
+        "branches": [
+            "bak"
+        ],
+        "plaatsId": "3"
+    },
+    {
+        "branches": [
+            "bak"
+        ],
+        "plaatsId": "4"
+    },
+    {
+        "plaatsId": "7"
+    },
+    {
+        "plaatsId": "8"
+    },
+    {
+        "branches": [
+            "bak",
+            "207-grill-frituur"
+        ],
+        "plaatsId": "9"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "14"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "16"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "17"
+    },
+    {
+        "branches": [
+            "107-vis-nat"
+        ],
+        "plaatsId": "18",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "107-vis-nat"
+        ],
+        "plaatsId": "19",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "26"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "27"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "28"
+    },
+    {
+        "branches": [
+            "320-fietsen-auto-accessoires"
+        ],
+        "plaatsId": "29"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "32"
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "33"
+    },
+    {
+        "branches": [
+            "bak",
+            "209-vis-gebakken"
+        ],
+        "plaatsId": "34"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "35"
+    },
+    {
+        "branches": [
+            "bak",
+            "205-loempias"
+        ],
+        "plaatsId": "37"
+    },
+    {
+        "branches": [
+            "bak",
+            "205-loempias"
+        ],
+        "plaatsId": "38"
+    },
+    {
+        "branches": [
+            "bak",
+            "105-noten-zuidvruchten"
+        ],
+        "plaatsId": "39"
+    },
+    {
+        "branches": [
+            "bak",
+            "105-noten-zuidvruchten"
+        ],
+        "plaatsId": "40"
+    },
+    {
+        "branches": [
+            "bak",
+            "105-noten-zuidvruchten"
+        ],
+        "plaatsId": "41"
+    },
+    {
+        "branches": [
+            "bak",
+            "108-vleeswaren"
+        ],
+        "plaatsId": "43"
+    },
+    {
+        "branches": [
+            "bak",
+            "108-vleeswaren"
+        ],
+        "plaatsId": "44"
+    },
+    {
+        "plaatsId": "45"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "48",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "49",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "55",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "56",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "57",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "58",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "59",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "60",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "61",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "62",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "307-kleding-baby-kinder"
+        ],
+        "plaatsId": "64"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "65",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "66",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "67",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "68",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "69",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "313-parfumerie-drogisterij-persoonlijke-verzorging"
+        ],
+        "plaatsId": "70",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "313-parfumerie-drogisterij-persoonlijke-verzorging"
+        ],
+        "plaatsId": "71",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "74"
+    },
+    {
+        "branches": [
+            "bak",
+            "104-hummus-kruiden-olijven"
+        ],
+        "plaatsId": "76"
+    },
+    {
+        "branches": [
+            "bak",
+            "104-hummus-kruiden-olijven"
+        ],
+        "plaatsId": "77"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "80"
+    },
+    {
+        "branches": [
+            "201-broodjes-belegd"
+        ],
+        "plaatsId": "81"
+    },
+    {
+        "branches": [
+            "319-elektronica-mobieltjes-accessoires"
+        ],
+        "plaatsId": "82",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "319-elektronica-mobieltjes-accessoires"
+        ],
+        "plaatsId": "83",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "84",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "85",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "86",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "104-hummus-kruiden-olijven"
+        ],
+        "plaatsId": "90"
+    },
+    {
+        "branches": [
+            "bak",
+            "104-hummus-kruiden-olijven"
+        ],
+        "plaatsId": "91"
+    },
+    {
+        "branches": [
+            "108-vleeswaren"
+        ],
+        "plaatsId": "92",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "108-vleeswaren"
+        ],
+        "plaatsId": "93",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "103-brood-banket"
+        ],
+        "plaatsId": "94",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "103-brood-banket"
+        ],
+        "plaatsId": "95",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "103-brood-banket"
+        ],
+        "plaatsId": "96",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "plaatsId": "97"
+    },
+    {
+        "branches": [
+            "201-broodjes-belegd"
+        ],
+        "plaatsId": "105"
+    },
+    {
+        "branches": [
+            "201-broodjes-belegd"
+        ],
+        "plaatsId": "106"
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "111"
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "112"
+    }
 ]

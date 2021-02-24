@@ -1,91 +1,526 @@
 [
-    { "plaatsId": "1", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "2", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "3", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "4", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "5", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "6", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "7", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "8", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "9", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "10", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "11", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "12", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "13", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "14", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "15", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "16", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "17", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "18", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "19", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "20", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "21", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "22", "branches": ["bak", "207-grill-frituur"] },
-    { "plaatsId": "23", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "24", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "25", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "26", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "27", "branches": ["316-souvenirs"] },
-    { "plaatsId": "28", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "29", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "30", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "31", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "32", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "33", "branches": ["314-partijhandel-inboedels"] },
-    { "plaatsId": "34", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "35", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "36", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "37", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "38", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "39", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "40", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "41", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "42", "branches": ["308-kleding-onder-beenmode-sokken"] },
-    { "plaatsId": "43", "branches": ["308-kleding-onder-beenmode-sokken"] },  
-    { "plaatsId": "101", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "102", "branches": ["309-kleding-volwassenen-hoofddeksels"] },
-    { "plaatsId": "103", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "104", "branches": ["315-schoenen-tassen-lederwaren"] },
-    { "plaatsId": "105", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "106", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "107", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "108", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "109", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "110", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "111", "branches": ["303-boeken-stripboeken-muziek-film"] },
-    { "plaatsId": "112", "branches": ["303-boeken-stripboeken-muziek-film"] },
-    { "plaatsId": "113", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "114", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "115", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "116", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "117", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "118", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "119", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "120", "branches": ["303-boeken-stripboeken-muziek-film"] },
-    { "plaatsId": "121", "branches": ["303-boeken-stripboeken-muziek-film"] },
-    { "plaatsId": "122", "branches": ["301-antiek-kunst"]  },
-    { "plaatsId": "123", "branches": ["308-kleding-onder-beenmode-sokken"] },  
-    { "plaatsId": "124", "branches": ["305-horloges-brillen-sieraden"] },
-    { "plaatsId": "125"},
-    { "plaatsId": "126", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "127", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "128", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "129", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "130", "branches": ["305-horloges-brillen-sieraden"] },
-    { "plaatsId": "131", "branches": ["305-horloges-brillen-sieraden"] },
-    { "plaatsId": "132", "branches": ["301-antiek-kunst"] },
-    { "plaatsId": "133", "branches": ["303-boeken-stripboeken-muziek-film"] },
-    { "plaatsId": "134", "branches": ["305-horloges-brillen-sieraden"] },
-    { "plaatsId": "134a", "branches": ["317-speelgoed-spellen"] },
-    { "plaatsId": "135", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "136", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "137", "branches": ["321-stoffen-textiel-fornituren"] },
-    { "plaatsId": "138", "branches": ["305-horloges-brillen-sieraden"] },
-    { "plaatsId": "139", "branches": ["305-horloges-brillen-sieraden"] },
-    { "plaatsId": "140", "branches": ["bak", "205-loempias"] },
-    { "plaatsId": "141"},
-    { "plaatsId": "142", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "143", "branches": ["310-kleding-vintage-2ehands"] },
-    { "plaatsId": "144"},
-    { "plaatsId": "145"}
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "1"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "2"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "3"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "4"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "5"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "6"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "7"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "8"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "9"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "10"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "11"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "12"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "13"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "14"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "15"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "16"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "17"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "18"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "19"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "20"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "21"
+    },
+    {
+        "branches": [
+            "bak",
+            "207-grill-frituur"
+        ],
+        "plaatsId": "22"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "23"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "24"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "25"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "26"
+    },
+    {
+        "branches": [
+            "316-souvenirs"
+        ],
+        "plaatsId": "27"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "28"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "29"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "30"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "31"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "32"
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "33"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "34"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "35"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "36"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "37"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "38"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "39"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "40"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "41"
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "42"
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "43"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "101"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "102"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "103"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "104"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "105"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "106"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "107"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "108"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "109"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "110"
+    },
+    {
+        "branches": [
+            "303-boeken-stripboeken-muziek-film"
+        ],
+        "plaatsId": "111"
+    },
+    {
+        "branches": [
+            "303-boeken-stripboeken-muziek-film"
+        ],
+        "plaatsId": "112"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "113"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "114"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "115"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "116"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "117"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "118"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "119"
+    },
+    {
+        "branches": [
+            "303-boeken-stripboeken-muziek-film"
+        ],
+        "plaatsId": "120"
+    },
+    {
+        "branches": [
+            "303-boeken-stripboeken-muziek-film"
+        ],
+        "plaatsId": "121"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "122"
+    },
+    {
+        "branches": [
+            "308-kleding-onder-beenmode-sokken"
+        ],
+        "plaatsId": "123"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "124"
+    },
+    {
+        "plaatsId": "125"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "126"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "127"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "128"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "129"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "130"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "131"
+    },
+    {
+        "branches": [
+            "301-antiek-kunst"
+        ],
+        "plaatsId": "132"
+    },
+    {
+        "branches": [
+            "303-boeken-stripboeken-muziek-film"
+        ],
+        "plaatsId": "133"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "134"
+    },
+    {
+        "branches": [
+            "317-speelgoed-spellen"
+        ],
+        "plaatsId": "134a"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "135"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "136"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "137"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "138"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "139"
+    },
+    {
+        "branches": [
+            "bak",
+            "205-loempias"
+        ],
+        "plaatsId": "140"
+    },
+    {
+        "plaatsId": "141"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "142"
+    },
+    {
+        "branches": [
+            "310-kleding-vintage-2ehands"
+        ],
+        "plaatsId": "143"
+    },
+    {
+        "plaatsId": "144"
+    },
+    {
+        "plaatsId": "145"
+    }
 ]

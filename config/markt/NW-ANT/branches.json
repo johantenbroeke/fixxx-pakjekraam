@@ -2,7 +2,7 @@
     {
         "brancheId": "bak",
         "verplicht": true
-    }, 
+    },
     {
         "brancheId": "314-partijhandel-inboedels",
         "verplicht": true
@@ -11,7 +11,7 @@
         "brancheId": "316-souvenirs",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "305-horloges-brillen-sieraden",
         "verplicht": true
     },

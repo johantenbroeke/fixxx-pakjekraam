@@ -1,28 +1,200 @@
 [
-    { "plaatsId": "1", "branches": ["101-agf"] },
-    { "plaatsId": "2", "branches": ["101-agf"] },
-    { "plaatsId": "3", "branches": ["104-hummus-kruiden-olijven"], "properties": ["electra"] },
-    { "plaatsId": "4", "branches": ["103-brood-banket"] },
-    { "plaatsId": "5", "branches": ["104-hummus-kruiden-olijven"] },
-    { "plaatsId": "6", "branches": ["109-zuivel-eieren"] },
-    { "plaatsId": "7", "branches": ["103-brood-banket"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "8", "branches": ["103-brood-banket"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "9", "branches": ["101-agf"] },
-    { "plaatsId": "10", "branches": ["101-agf"] },
-    { "plaatsId": "11", "branches": ["110-poelier"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "12", "branches": ["110-poelier"], "verkoopinrichting": ["eigen-materieel"], "properties": ["lantaarnpaal"] },
-    { "plaatsId": "13", "branches": ["207-grill-frituur"], "verkoopinrichting": ["eigen-materieel"], "properties": ["lantaarnpaal"] },
-    { "plaatsId": "14", "branches": ["110-poelier"], "verkoopinrichting": ["eigen-materieel"], "properties": ["lantaarnpaal"] },
-    { "plaatsId": "15", "branches": ["107-vis-nat"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "16", "branches": ["108-vleeswaren"] },
-    { "plaatsId": "17", "branches": ["104-hummus-kruiden-olijven"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "18", "branches": ["104-hummus-kruiden-olijven"], "verkoopinrichting": ["eigen-materieel"] },
-    { "plaatsId": "19", "branches": ["101-agf"] },
-    { "plaatsId": "20", "branches": ["101-agf"] },
-    { "plaatsId": "21", "branches": ["109-zuivel-eieren"] },
-    { "plaatsId": "22", "branches": ["109-zuivel-eieren"] },
-    { "plaatsId": "23", "branches": ["302-bloemen-planten"] },
-    { "plaatsId": "24", "branches": ["302-bloemen-planten"], "properties": ["boom"] },
-    { "plaatsId": "25", "branches": ["102-bio-health-fairtrade"] },
-    { "plaatsId": "26", "branches": ["302-bloemen-planten"] }
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "1"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "2"
+    },
+    {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
+        "plaatsId": "3",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "103-brood-banket"
+        ],
+        "plaatsId": "4"
+    },
+    {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
+        "plaatsId": "5"
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "6"
+    },
+    {
+        "branches": [
+            "103-brood-banket"
+        ],
+        "plaatsId": "7",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "103-brood-banket"
+        ],
+        "plaatsId": "8",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "9"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "10"
+    },
+    {
+        "branches": [
+            "110-poelier"
+        ],
+        "plaatsId": "11",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "110-poelier"
+        ],
+        "plaatsId": "12",
+        "properties": [
+            "lantaarnpaal"
+        ],
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "207-grill-frituur"
+        ],
+        "plaatsId": "13",
+        "properties": [
+            "lantaarnpaal"
+        ],
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "110-poelier"
+        ],
+        "plaatsId": "14",
+        "properties": [
+            "lantaarnpaal"
+        ],
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "107-vis-nat"
+        ],
+        "plaatsId": "15",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "108-vleeswaren"
+        ],
+        "plaatsId": "16"
+    },
+    {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
+        "plaatsId": "17",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
+        "plaatsId": "18",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "19"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "20"
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "21"
+    },
+    {
+        "branches": [
+            "109-zuivel-eieren"
+        ],
+        "plaatsId": "22"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "23"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "24",
+        "properties": [
+            "boom"
+        ]
+    },
+    {
+        "branches": [
+            "102-bio-health-fairtrade"
+        ],
+        "plaatsId": "25"
+    },
+    {
+        "branches": [
+            "302-bloemen-planten"
+        ],
+        "plaatsId": "26"
+    }
 ]

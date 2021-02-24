@@ -1,28 +1,49 @@
 [
     {
-      "title": "Haarlemmerplein markt",
-      "indelingslijstGroup": 
-      [
-        {
-          "class": "block-left",
-          "title": "Markt",
-          "landmarkTop": "",
-          "landmarkBottom": "",
-          "plaatsList": 
-          [
-          "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"
-          ]
-        },
-        {
-          "class": "block-right",
-          "title": "Markt",
-          "landmarkTop": "",
-          "landmarkBottom": "",
-          "plaatsList": 
-          [
-          "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"
-          ]
-        }
-      ]
+        "indelingslijstGroup": [
+            {
+                "class": "block-left",
+                "landmarkBottom": "",
+                "landmarkTop": "",
+                "plaatsList": [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6",
+                    "7",
+                    "8",
+                    "9",
+                    "10",
+                    "11",
+                    "12",
+                    "13",
+                    "14"
+                ],
+                "title": "Markt"
+            },
+            {
+                "class": "block-right",
+                "landmarkBottom": "",
+                "landmarkTop": "",
+                "plaatsList": [
+                    "15",
+                    "16",
+                    "17",
+                    "18",
+                    "19",
+                    "20",
+                    "21",
+                    "22",
+                    "23",
+                    "24",
+                    "25",
+                    "26"
+                ],
+                "title": "Markt"
+            }
+        ],
+        "title": "Haarlemmerplein markt"
     }
-  ]
+]

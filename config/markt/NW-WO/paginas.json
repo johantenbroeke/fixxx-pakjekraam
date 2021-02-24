@@ -1,18 +1,30 @@
 [
-  {
-    "title": "Nieuwmarkt Woensdag",
-    "indelingslijstGroup": 
-    [
-      {
-        "class": "block-right",
-        "title": "",
-        "landmarkTop": "",
-        "landmarkBottom": "",
-        "plaatsList": 
-        [
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14","15"
-        ]
-      }
-    ]
-  }
+    {
+        "indelingslijstGroup": [
+            {
+                "class": "block-right",
+                "landmarkBottom": "",
+                "landmarkTop": "",
+                "plaatsList": [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6",
+                    "7",
+                    "8",
+                    "9",
+                    "10",
+                    "11",
+                    "12",
+                    "13",
+                    "14",
+                    "15"
+                ],
+                "title": ""
+            }
+        ],
+        "title": "Nieuwmarkt Woensdag"
+    }
 ]

@@ -3,9 +3,9 @@
         "brancheId": "bak",
         "verplicht": true
     },
-    {   
+    {
         "brancheId": "107-vis-nat",
-        "verplicht": false,
-        "maximumPlaatsen": 3
+        "maximumPlaatsen": 3,
+        "verplicht": false
     }
 ]

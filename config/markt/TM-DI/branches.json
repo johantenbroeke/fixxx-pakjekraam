@@ -1,72 +1,96 @@
-[{
-  "brancheId": "bak",
-  "verplicht": true
-}, 
-{
-  "brancheId": "104-hummus-kruiden-olijven",
-  "verplicht": true
-}, 
-{
-  "brancheId": "105-noten-zuidvruchten",
-  "verplicht": true
-}, 
-{
-  "brancheId": "107-vis-nat",
-  "verplicht": true
-}, 
-{
-  "brancheId": "109-zuivel-eieren",
-  "verplicht": true
-}, 
-{
-  "brancheId": "111-exotische-groenten",
-  "verplicht": true
-}, 
-{
-  "brancheId": "205-loempias",
-  "verplicht": true
-}, 
-{
-  "brancheId": "305-horloges-brillen-sieraden",
-  "verplicht": true
-}, 
-{
-  "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
-  "verplicht": true
-}, 
-{
-  "brancheId": "307-kleding-baby-kinder",
-  "verplicht": true
-}, 
-{
-  "brancheId": "308-kleding-onder-beenmode-sokken",
-  "verplicht": true
-}, 
-{
-  "brancheId": "309-kleding-volwassenen-hoofddeksels",
-  "verplicht": true
-}, 
-{
-  "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
-  "verplicht": true
-}, 
-{
-  "brancheId": "314-partijhandel-inboedels",
-  "verplicht": true
-}, 
-{
-  "brancheId": "315-schoenen-tassen-lederwaren",
-  "verplicht": true
-}, 
-{
-  "brancheId": "319-elektronica-mobieltjes-accessoires",
-  "verplicht": true
-}, 
-{
-  "brancheId": "321-stoffen-textiel-fornituren",
-  "verplicht": true
-}, 
-{
-  "brancheId": "322-tapijten-vloerkleden",
-  "verplicht": true
-}]
+[
+    {
+        "brancheId": "104-hummus-kruiden-olijven",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "105-noten-zuidvruchten",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "107-vis-nat",
+        "maximumPlaatsen": 5,
+        "verplicht": false
+    },
+    {
+        "brancheId": "109-zuivel-eieren",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "111-exotische-groenten",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "205-loempias",
+        "maximumPlaatsen": 1,
+        "verplicht": false
+    },
+    {
+        "brancheId": "305-horloges-brillen-sieraden",
+        "maximumPlaatsen": 3,
+        "verplicht": false
+    },
+    {
+        "brancheId": "306-huishoudelijke-artikelen-meubels-apparatuur",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "307-kleding-baby-kinder",
+        "maximumPlaatsen": 3,
+        "verplicht": false
+    },
+    {
+        "brancheId": "308-kleding-onder-beenmode-sokken",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "309-kleding-volwassenen-hoofddeksels",
+        "maximumPlaatsen": 6,
+        "verplicht": false
+    },
+    {
+        "brancheId": "313-parfumerie-drogisterij-persoonlijke-verzorging",
+        "maximumPlaatsen": 4,
+        "verplicht": false
+    },
+    {
+        "brancheId": "314-partijhandel-inboedels",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "315-schoenen-tassen-lederwaren",
+        "maximumPlaatsen": 3,
+        "verplicht": false
+    },
+    {
+        "brancheId": "319-elektronica-mobieltjes-accessoires",
+        "maximumPlaatsen": 1,
+        "verplicht": false
+    },
+    {
+        "brancheId": "321-stoffen-textiel-fornituren",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "322-tapijten-vloerkleden",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "bak",
+        "verplicht": true
+    },
+    {
+        "brancheId": "101-agf",
+        "maximumPlaatsen": 3,
+        "verplicht": false
+    }
+]
