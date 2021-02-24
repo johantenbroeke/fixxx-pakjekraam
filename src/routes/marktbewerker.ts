@@ -139,7 +139,7 @@ async function marktenToDB(marktenEntries, zip) {
             Promise.all(
                 marktenObjects.map( (markt: MarktForDB) => {
                     console.log(markt.abbreviation);
-                    return MarktConfig.store(markt.abbreviation, markt.config);
+                    return MarktConfig.store(markt.abbreviation, [], markt.config);
                 })
             );
         });
