@@ -38,6 +38,7 @@ import { RSVP } from './model/rsvp.model';
 import { Allocation } from './model/allocation.model';
 import { Plaatsvoorkeur } from './model/plaatsvoorkeur.model';
 import { Voorkeur } from './model/voorkeur.model';
+import { MarktConfig } from './model/marktconfig';
 
 import {
     getALijst,
@@ -305,6 +306,9 @@ export const getPlaatsvoorkeurenOndernemer = (erkenningsNummer: string): Promise
         where: { erkenningsNummer },
     });
 
+export const getMarktConfig = (markt: MMMarkt): Promise<any> =>
+    MarktConfig.get(markt.afkorting);
+
 export const getMarktBranches = (markt: MMMarkt): Promise<any> =>
     loadJSON(`./config/markt/${markt.afkorting}/branches.json`, []);
 
@@ -344,62 +348,65 @@ export const getDaysClosed = (): Promise<any> =>
 
 export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
     return getMarkt(marktId).then(mmarkt => {
-        const voorkeurenPromise = Voorkeur.findAll({ where: { marktId }, raw: true })
-            .then(voorkeuren => voorkeuren.map(convertVoorkeur));
+        const {
+            afkorting: marktAfkorting,
+            kiesJeKraamGeblokkeerdePlaatsen: geblokkeerdePlaatsen,
+        } = mmarkt;
 
         // Populate the `ondernemer.voorkeur` field
-        const enrichedOndernemers = Promise.all([
+        const ondernemersPromise = Promise.all([
             getOndernemersByMarkt(marktId),
-            voorkeurenPromise
-        ]).then(result => {
-            return enrichOndernemersWithVoorkeuren(...result);
+            Voorkeur.findAll({ where: { marktId }, raw: true })
+        ]).then(([ondernemers, voorkeuren]) => {
+            const convertedVoorkeuren = voorkeuren.map(convertVoorkeur);
+            return enrichOndernemersWithVoorkeuren(ondernemers, convertedVoorkeuren);
         });
 
-        const getMarktPlaatsenDisabled = Promise.all([
-            getMarkt(marktId),
-            getMarktplaatsen(mmarkt)
-        ]).then(([makkelijkemarkt, marktplaatsen]) => {
-            if (makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen) {
-                const geblokkeerdePlaatsen = makkelijkemarkt.kiesJeKraamGeblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
-                return marktplaatsen.map(plaats => {
-                    geblokkeerdePlaatsen.includes(plaats.plaatsId) ? plaats.inactive = true : null;
-                    return plaats;
-                });
-            } else {
-                return marktplaatsen;
+        const marktConfigPromise = MarktConfig.get(marktAfkorting)
+        .then(configModel => {
+            const config = configModel.data;
+
+            // Verwijder geblokkeerde plaatsen. Voorheen werd een `inactive` property
+            // toegevoegd en op `false` gezet, maar aangezien deze nergens werd gecontroleerd
+            // (behalve in de indeling), worden de plaatsen nu simpelweg verwijderd.
+            if (geblokkeerdePlaatsen) {
+                const marktplaatsen = config.locaties;
+                const blocked = geblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
+                config.locaties = marktplaatsen.filter(({ plaatsId }) =>
+                    !blocked.includes(plaatsId)
+                );
             }
+
+            return config;
         });
 
         return Promise.all([
-            getMarktProperties(mmarkt),
-            enrichedOndernemers,
-            getMarktPlaatsenDisabled,
+            mmarkt,
+            getALijst(marktId, marktDate),
+            marktConfigPromise,
+            ondernemersPromise,
             getAanmeldingen(marktId, marktDate),
             getPlaatsvoorkeuren(marktId),
-            getAllBranches(mmarkt),
-            getMarktPaginas(mmarkt),
-            getMarktGeografie(mmarkt),
-            getMarkt(marktId),
-            getALijst(marktId, marktDate),
-        ]).then(args => {
-            const [
-                marktProperties,
-                ondernemers,
-                marktplaatsen,
-                aanmeldingen,
-                voorkeuren,
+        ]).then(([
+            markt,
+            aLijst,
+            marktConfig,
+            ondernemers,
+            aanmeldingen,
+            voorkeuren,
+        ]) => {
+            const {
                 branches,
-                paginas,
+                markt: marktProperties,
                 geografie,
-                markt,
-                aLijst,
-            ] = args;
+                locaties: marktplaatsen,
+                paginas,
+            } = marktConfig;
 
             return {
                 naam: '?',
                 marktId,
                 marktDate,
-                ...marktProperties,
                 aanmeldingen,
                 voorkeuren,
                 ondernemers,
@@ -415,18 +422,9 @@ export const getIndelingslijstInput = (marktId: string, marktDate: string) => {
                     ondernemers.find(({ erkenningsNummer }) => erkenningsnummer === erkenningsNummer),
                 ),
 
-                rows: (
-                    marktProperties.rows ||
-                    paginas.reduce(
-                        (list: string[][], pagina: IAllocationPrintoutPage): string[][] => [
-                            ...list,
-                            ...pagina.indelingslijstGroup
-                                .map(group => (group as IMarketRow).plaatsList)
-                                .filter(Array.isArray),
-                        ],
-                        [],
-                    )
-                ).map(row => row.map(plaatsId => marktplaatsen.find(plaats => plaats.plaatsId === plaatsId))),
+                rows: marktProperties.rows.map(row =>
+                    row.map(plaatsId => marktplaatsen.find(plaats => plaats.plaatsId === plaatsId))
+                ),
             };
         });
     });
