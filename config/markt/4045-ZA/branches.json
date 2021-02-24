@@ -1,50 +1,46 @@
 [
     {
-        "brancheId": "bak",
-        "verplicht": true
-    },
-    {
         "brancheId": "101-agf",
         "maximumPlaatsen": 15,
-        "verplicht": true
+        "verplicht": false
     },
     {
         "brancheId": "102-bio-health-fairtrade",
-        "verplicht": true
+        "maximumPlaatsen": 2,
+        "verplicht": false
     },
     {
         "brancheId": "105-noten-zuidvruchten",
         "maximumPlaatsen": 4,
-        "verplicht": true
+        "verplicht": false
     },
     {
         "brancheId": "107-vis-nat",
         "maximumPlaatsen": 2,
-        "verplicht": true
-    },
-    {
-        "brancheId": "108-vleeswaren",
-        "verplicht": true
-    },
-    {
-        "brancheId": "201-broodjes-belegd",
-        "verplicht": true
-    },
-    {
-        "brancheId": "205-loempias",
-        "verplicht": true
+        "verplicht": false
     },
     {
         "brancheId": "207-grill-frituur",
-        "verplicht": true
+        "maximumPlaatsen": 1,
+        "verplicht": false
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "maximumPlaatsen": 22,
+        "maximumPlaatsen": 18,
         "verplicht": true
     },
     {
-        "brancheId": "314-partijhandel-inboedels",
+        "brancheId": "bak",
         "verplicht": true
+    },
+    {
+        "brancheId": "302-bloemen-planten",
+        "maximumPlaatsen": 2,
+        "verplicht": false
+    },
+    {
+        "brancheId": "205-loempias",
+        "maximumPlaatsen": 3,
+        "verplicht": false
     }
 ]

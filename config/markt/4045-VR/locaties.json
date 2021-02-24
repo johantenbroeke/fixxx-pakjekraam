@@ -117,18 +117,14 @@
         "plaatsId": "43"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "44",
         "properties": [
             "electra"
         ]
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "45"
     },
     {
@@ -141,9 +137,7 @@
         "plaatsId": "48"
     },
     {
-        "branches": [
-            "316-souvenirs"
-        ],
+        "branches": [],
         "plaatsId": "49"
     },
     {
@@ -162,15 +156,11 @@
         "plaatsId": "51"
     },
     {
-        "branches": [
-            "309-kleding-volwassenen-hoofddeksels"
-        ],
+        "branches": [],
         "plaatsId": "52"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "53"
     },
     {
@@ -314,15 +304,13 @@
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "111"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "112"
     },
@@ -344,13 +332,13 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
         "plaatsId": "116"
     },
     {
         "branches": [
+            "207-grill-frituur",
             "bak"
         ],
         "plaatsId": "117"
@@ -363,6 +351,7 @@
         "plaatsId": "118"
     },
     {
+        "branches": [],
         "plaatsId": "119",
         "verkoopinrichting": [
             "eigen-materieel"
@@ -376,20 +365,24 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
         "plaatsId": "121",
         "properties": [
             "electra"
+        ],
+        "verkoopinrichting": [
+            "eigen-materieel"
         ]
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
-        "plaatsId": "122"
+        "plaatsId": "122",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
     },
     {
         "branches": [
@@ -437,9 +430,15 @@
         "plaatsId": "130"
     },
     {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
         "plaatsId": "131"
     },
     {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
         "plaatsId": "132"
     },
     {

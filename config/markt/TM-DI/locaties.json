@@ -1,141 +1,6 @@
 [
     {
         "branches": [
-            "319-elektronica-mobieltjes-accessoires"
-        ],
-        "plaatsId": "1"
-    },
-    {
-        "plaatsId": "2",
-        "properties": [
-            "electra"
-        ]
-    },
-    {
-        "branches": [
-            "321-stoffen-textiel-fornituren"
-        ],
-        "plaatsId": "3"
-    },
-    {
-        "branches": [
-            "101-agf"
-        ],
-        "plaatsId": "4",
-        "verkoopinrichting": [
-            "eigen-materieel"
-        ]
-    },
-    {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
-        "plaatsId": "5",
-        "properties": [
-            "electra"
-        ]
-    },
-    {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
-        "plaatsId": "6"
-    },
-    {
-        "branches": [
-            "313-parfumerie-drogisterij-persoonlijke-verzorging"
-        ],
-        "plaatsId": "7"
-    },
-    {
-        "branches": [
-            "313-parfumerie-drogisterij-persoonlijke-verzorging"
-        ],
-        "plaatsId": "8"
-    },
-    {
-        "branches": [
-            "321-stoffen-textiel-fornituren"
-        ],
-        "plaatsId": "9"
-    },
-    {
-        "branches": [
-            "305-horloges-brillen-sieraden"
-        ],
-        "plaatsId": "10"
-    },
-    {
-        "branches": [
-            "305-horloges-brillen-sieraden"
-        ],
-        "plaatsId": "11"
-    },
-    {
-        "branches": [
-            "305-horloges-brillen-sieraden"
-        ],
-        "plaatsId": "12"
-    },
-    {
-        "branches": [
-            "309-kleding-volwassenen-hoofddeksels"
-        ],
-        "plaatsId": "13"
-    },
-    {
-        "branches": [
-            "309-kleding-volwassenen-hoofddeksels"
-        ],
-        "plaatsId": "14",
-        "properties": [
-            "electra"
-        ]
-    },
-    {
-        "branches": [
-            "bak",
-            "205-loempias"
-        ],
-        "plaatsId": "15"
-    },
-    {
-        "branches": [
-            "bak",
-            "107-vis-nat"
-        ],
-        "plaatsId": "16",
-        "verkoopinrichting": [
-            "eigen-materieel"
-        ]
-    },
-    {
-        "branches": [
-            "bak",
-            "107-vis-nat"
-        ],
-        "plaatsId": "17",
-        "properties": [
-            "electra"
-        ],
-        "verkoopinrichting": [
-            "eigen-materieel"
-        ]
-    },
-    {
-        "branches": [
-            "315-schoenen-tassen-lederwaren"
-        ],
-        "plaatsId": "18"
-    },
-    {
-        "branches": [
-            "315-schoenen-tassen-lederwaren"
-        ],
-        "plaatsId": "19"
-    },
-    {
-        "branches": [
             "101-agf"
         ],
         "plaatsId": "20",
@@ -356,5 +221,143 @@
         "verkoopinrichting": [
             "eigen-materieel"
         ]
+    },
+    {
+        "branches": [
+            "319-elektronica-mobieltjes-accessoires"
+        ],
+        "plaatsId": "1"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "2",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "3"
+    },
+    {
+        "branches": [
+            "101-agf"
+        ],
+        "plaatsId": "4",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "5",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "314-partijhandel-inboedels"
+        ],
+        "plaatsId": "6"
+    },
+    {
+        "branches": [
+            "313-parfumerie-drogisterij-persoonlijke-verzorging"
+        ],
+        "plaatsId": "7"
+    },
+    {
+        "branches": [
+            "313-parfumerie-drogisterij-persoonlijke-verzorging"
+        ],
+        "plaatsId": "8"
+    },
+    {
+        "branches": [
+            "321-stoffen-textiel-fornituren"
+        ],
+        "plaatsId": "9"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "10"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "11"
+    },
+    {
+        "branches": [
+            "305-horloges-brillen-sieraden"
+        ],
+        "plaatsId": "12"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "13"
+    },
+    {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "14",
+        "properties": [
+            "electra"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "205-loempias"
+        ],
+        "plaatsId": "15"
+    },
+    {
+        "branches": [
+            "bak",
+            "107-vis-nat"
+        ],
+        "plaatsId": "16",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "bak",
+            "107-vis-nat"
+        ],
+        "plaatsId": "17",
+        "properties": [
+            "electra"
+        ],
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "18"
+    },
+    {
+        "branches": [
+            "315-schoenen-tassen-lederwaren"
+        ],
+        "plaatsId": "19"
     }
 ]

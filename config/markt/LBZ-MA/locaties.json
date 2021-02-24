@@ -54,10 +54,13 @@
     },
     {
         "branches": [
-            "bak",
-            "207-grill-frituur"
+            "207-grill-frituur",
+            "bak"
         ],
-        "plaatsId": "16"
+        "plaatsId": "16",
+        "verkoopinrichting": [
+            "eigen-materieel"
+        ]
     },
     {
         "branches": [
@@ -67,58 +70,92 @@
         "plaatsId": "17",
         "properties": [
             "electra"
+        ],
+        "verkoopinrichting": [
+            "eigen-materieel"
         ]
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "18"
+        "plaatsId": "18",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "19"
+        "branches": [],
+        "plaatsId": "19",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "20"
+        "branches": [],
+        "plaatsId": "20",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
+        "branches": [],
         "plaatsId": "21",
         "properties": [
             "electra"
-        ]
+        ],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "22"
+        "branches": [],
+        "plaatsId": "22",
+        "properties": [],
+        "verkoopinrichting": []
+    },
+    {
+        "branches": [],
+        "plaatsId": "23",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "23"
-    },
-    {
-        "branches": [
-            "309-kleding-volwassenen-hoofddeksels"
-        ],
-        "plaatsId": "24"
+        "plaatsId": "24",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "101-agf"
         ],
-        "plaatsId": "25"
+        "plaatsId": "25",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "26"
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "26",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "27"
+        "branches": [],
+        "plaatsId": "27",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "28"
+        "branches": [],
+        "plaatsId": "28",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "29"
+        "branches": [],
+        "plaatsId": "29",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "plaatsId": "30",
@@ -127,21 +164,15 @@
         ]
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "31"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "32"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "33"
     },
     {
@@ -151,15 +182,11 @@
         "plaatsId": "35"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "36"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "37"
     },
     {
@@ -184,64 +211,112 @@
         "plaatsId": "42"
     },
     {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
         "plaatsId": "43"
     },
     {
-        "plaatsId": "44"
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "44",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "45"
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "45",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "46"
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "46",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "47"
+        "branches": [],
+        "plaatsId": "47",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
+        "branches": [],
         "plaatsId": "48",
         "properties": [
             "electra"
-        ]
-    },
-    {
-        "plaatsId": "49"
-    },
-    {
-        "branches": [
-            "314-partijhandel-inboedels"
         ],
-        "plaatsId": "50"
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "51"
+        "plaatsId": "49",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "52"
+        "plaatsId": "50",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "53"
+        "branches": [],
+        "plaatsId": "51",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "54"
+        "branches": [],
+        "plaatsId": "52",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "55"
+        "branches": [],
+        "plaatsId": "53",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "56"
+        "branches": [
+            "105-noten-zuidvruchten"
+        ],
+        "plaatsId": "54",
+        "properties": [],
+        "verkoopinrichting": []
+    },
+    {
+        "branches": [
+            "105-noten-zuidvruchten"
+        ],
+        "plaatsId": "55",
+        "properties": [],
+        "verkoopinrichting": []
+    },
+    {
+        "branches": [],
+        "plaatsId": "56",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "57"
+        "plaatsId": "57",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
@@ -250,61 +325,94 @@
         "plaatsId": "58",
         "properties": [
             "electra"
-        ]
+        ],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "59"
+        "plaatsId": "59",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "60"
+        "plaatsId": "60",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "101-agf"
         ],
-        "plaatsId": "61"
-    },
-    {
-        "plaatsId": "62"
-    },
-    {
-        "plaatsId": "63"
-    },
-    {
-        "plaatsId": "64"
+        "plaatsId": "61",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "65"
+        "plaatsId": "62",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [
             "309-kleding-volwassenen-hoofddeksels"
         ],
-        "plaatsId": "66"
+        "plaatsId": "63",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
+        "plaatsId": "64",
+        "properties": [],
+        "verkoopinrichting": []
+    },
+    {
+        "branches": [],
+        "plaatsId": "65",
+        "properties": [],
+        "verkoopinrichting": []
+    },
+    {
+        "branches": [],
+        "plaatsId": "66",
+        "properties": [],
+        "verkoopinrichting": []
+    },
+    {
+        "branches": [],
         "plaatsId": "67",
         "properties": [
             "electra"
-        ]
+        ],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "68"
+        "branches": [],
+        "plaatsId": "68",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "69"
+        "branches": [],
+        "plaatsId": "69",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
-        "plaatsId": "70"
+        "branches": [],
+        "plaatsId": "70",
+        "properties": [],
+        "verkoopinrichting": []
     },
     {
         "branches": [

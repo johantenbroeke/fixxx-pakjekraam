@@ -81,9 +81,7 @@
         "plaatsId": "17"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "36"
     },
     {
@@ -129,9 +127,7 @@
         ]
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "45"
     },
     {
@@ -314,15 +310,13 @@
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "111"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "112"
     },
@@ -334,9 +328,15 @@
         "plaatsId": "113"
     },
     {
+        "branches": [
+            "302-bloemen-planten"
+        ],
         "plaatsId": "114"
     },
     {
+        "branches": [
+            "302-bloemen-planten"
+        ],
         "plaatsId": "115",
         "properties": [
             "electra"
@@ -344,32 +344,36 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "205-loempias",
+            "bak"
         ],
         "plaatsId": "116"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "117"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "118"
     },
     {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
         "plaatsId": "119",
         "verkoopinrichting": [
             "eigen-materieel"
         ]
     },
     {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
         "plaatsId": "120",
         "verkoopinrichting": [
             "eigen-materieel"
@@ -377,8 +381,7 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
         "plaatsId": "121",
         "properties": [
@@ -387,8 +390,7 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
         "plaatsId": "122"
     },
@@ -435,6 +437,9 @@
         "plaatsId": "129"
     },
     {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
         "plaatsId": "130"
     },
     {
