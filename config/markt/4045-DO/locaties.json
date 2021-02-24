@@ -78,9 +78,7 @@
         "plaatsId": "17"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "36"
     },
     {
@@ -132,9 +130,7 @@
         "plaatsId": "48"
     },
     {
-        "branches": [
-            "321-stoffen-textiel-fornituren"
-        ],
+        "branches": [],
         "plaatsId": "49"
     },
     {
@@ -305,15 +301,13 @@
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "111"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "112"
     },
@@ -325,9 +319,15 @@
         "plaatsId": "113"
     },
     {
+        "branches": [
+            "302-bloemen-planten"
+        ],
         "plaatsId": "114"
     },
     {
+        "branches": [
+            "302-bloemen-planten"
+        ],
         "plaatsId": "115",
         "properties": [
             "electra"
@@ -335,26 +335,28 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "205-loempias",
+            "bak"
         ],
         "plaatsId": "116"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "117"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "118"
     },
     {
+        "branches": [
+            "207-grill-frituur",
+            "bak"
+        ],
         "plaatsId": "119",
         "verkoopinrichting": [
             "eigen-materieel"
@@ -368,8 +370,7 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
         "plaatsId": "121",
         "properties": [
@@ -378,8 +379,7 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
         "plaatsId": "122"
     },
@@ -435,9 +435,7 @@
         "plaatsId": "130"
     },
     {
-        "branches": [
-            "321-stoffen-textiel-fornituren"
-        ],
+        "branches": [],
         "plaatsId": "131"
     },
     {

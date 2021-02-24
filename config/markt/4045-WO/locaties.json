@@ -96,24 +96,26 @@
         "plaatsId": "17"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "36"
     },
     {
-        "branches": [
-            "110-poelier"
-        ],
+        "branches": [],
         "plaatsId": "37"
     },
     {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
         "plaatsId": "38",
         "properties": [
             "electra"
         ]
     },
     {
+        "branches": [
+            "309-kleding-volwassenen-hoofddeksels"
+        ],
         "plaatsId": "39"
     },
     {
@@ -129,18 +131,14 @@
         "plaatsId": "43"
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "44",
         "properties": [
             "electra"
         ]
     },
     {
-        "branches": [
-            "314-partijhandel-inboedels"
-        ],
+        "branches": [],
         "plaatsId": "45"
     },
     {
@@ -171,15 +169,11 @@
         "plaatsId": "51"
     },
     {
-        "branches": [
-            "309-kleding-volwassenen-hoofddeksels"
-        ],
+        "branches": [],
         "plaatsId": "52"
     },
     {
-        "branches": [
-            "309-kleding-volwassenen-hoofddeksels"
-        ],
+        "branches": [],
         "plaatsId": "53"
     },
     {
@@ -322,29 +316,26 @@
     },
     {
         "branches": [
-            "bak",
-            "107-vis-nat"
+            "bak"
         ],
         "plaatsId": "110"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "111"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "112"
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "207-grill-frituur",
+            "bak"
         ],
         "plaatsId": "113"
     },
@@ -365,32 +356,36 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "205-loempias",
+            "bak"
         ],
         "plaatsId": "116"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "117"
     },
     {
         "branches": [
-            "bak",
-            "108-vleeswaren"
+            "bak"
         ],
         "plaatsId": "118"
     },
     {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
         "plaatsId": "119",
         "verkoopinrichting": [
             "eigen-materieel"
         ]
     },
     {
+        "branches": [
+            "104-hummus-kruiden-olijven"
+        ],
         "plaatsId": "120",
         "verkoopinrichting": [
             "eigen-materieel"
@@ -398,8 +393,7 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
         "plaatsId": "121",
         "properties": [
@@ -408,8 +402,7 @@
     },
     {
         "branches": [
-            "bak",
-            "201-broodjes-belegd"
+            "bak"
         ],
         "plaatsId": "122"
     },
@@ -456,9 +449,7 @@
         "plaatsId": "129"
     },
     {
-        "branches": [
-            "318-doe-het-zelf-gereedschap-ijzerwaren"
-        ],
+        "branches": [],
         "plaatsId": "130"
     },
     {

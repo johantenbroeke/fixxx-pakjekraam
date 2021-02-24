@@ -1,16 +1,12 @@
 [
     {
-        "brancheId": "bak",
-        "verplicht": true
-    },
-    {
         "brancheId": "101-agf",
         "maximumPlaatsen": 15,
         "verplicht": true
     },
     {
         "brancheId": "105-noten-zuidvruchten",
-        "maximumPlaatsen": 4,
+        "maximumPlaatsen": 2,
         "verplicht": true
     },
     {
@@ -19,36 +15,23 @@
         "verplicht": true
     },
     {
-        "brancheId": "108-vleeswaren",
-        "verplicht": true
-    },
-    {
-        "brancheId": "110-poelier",
-        "verplicht": true
-    },
-    {
-        "brancheId": "201-broodjes-belegd",
-        "verplicht": true
-    },
-    {
         "brancheId": "205-loempias",
+        "maximumPlaatsen": 3,
         "verplicht": true
     },
     {
         "brancheId": "207-grill-frituur",
+        "maximumPlaatsen": 2,
         "verplicht": true
     },
     {
         "brancheId": "309-kleding-volwassenen-hoofddeksels",
-        "maximumPlaatsen": 22,
+        "maximumPlaatsen": 17,
         "verplicht": true
     },
     {
-        "brancheId": "314-partijhandel-inboedels",
-        "verplicht": true
-    },
-    {
-        "brancheId": "318-doe-het-zelf-gereedschap-ijzerwaren",
+        "brancheId": "bak",
+        "maximumPlaatsen": 12,
         "verplicht": true
     }
 ]
