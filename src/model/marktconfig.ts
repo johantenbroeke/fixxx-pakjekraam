@@ -6,6 +6,9 @@ import {
     Sequelize,
 } from 'sequelize';
 
+// import * as NodeCache from 'node-cache';
+const NodeCache = require('node-cache');
+
 import { readJSON } from '../util';
 
 const CONFIG_DIR = path.resolve(__dirname, '../../config/markt');
@@ -22,6 +25,10 @@ const INDEX = {
 };
 const SCHEMAS = require('../markt-config.model.js');
 
+const marktCache = new NodeCache({
+    stdTTL    : 3600, // in seconds
+    useClones : false
+});
 
 export class MarktConfig extends Model {
     public id!: number;
@@ -31,15 +38,32 @@ export class MarktConfig extends Model {
     public title!: string;
     public data!: object;
 
-    public static findNewestFor(marktAfkorting) {
-        return this.findOne({
-            where: { marktAfkorting },
-            order: [['createdAt', 'DESC']]
-        });
+    public static get(marktAfkorting) {
+        const cachedConfigModel = marktCache.get(marktAfkorting);
+
+        if (cachedConfigModel) {
+            // Update cached item's TTL.
+            marktCache.ttl(marktAfkorting);
+            return Promise.resolve(cachedConfigModel);
+        } else {
+            return this.findOne({
+                where: { marktAfkorting },
+                order: [['createdAt', 'DESC']]
+            })
+            .then(configModel => {
+                if (!configModel) {
+                    throw Error('Markt niet gevonden');
+                }
+                marktCache.set(marktAfkorting, configModel);
+                return configModel;
+            });
+        }
     }
 
     public static store(marktAfkorting, allBranches, input) {
-        return this.findNewestFor(marktAfkorting)
+        marktCache.flushAll();
+
+        return this.get(marktAfkorting)
         .then(newestConfigModel => {
             let marktConfig = {
                 ...input,
