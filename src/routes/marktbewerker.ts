@@ -56,13 +56,6 @@ async function getExtensionFromBuffer(filepath, filesize) {
     return await FileType.fromBuffer(buffer);
 }
 
-// TODO make this function put it in the database
-async function branchesToDB(branchesJsonFile) {
-    // Turn the object into a usable JSON
-    const json = JSON.parse(branchesJsonFile.getData().toString('utf8'));
-    return json;
-}
-
 async function getMarktenEntries(entriesInZip) {
     // Get all entries that are directories
     const directories = entriesInZip.filter(entry => entry.isDirectory);
@@ -101,7 +94,8 @@ async function marktConfigFromMarktEntries(entries) {
 }
 
 function getMarktAbbreviationFromEntry(entry) {
-    return entry.entryName;
+    const abbreviationArray = entry.entryName.split('/');
+    return abbreviationArray[abbreviationArray.length - 2];
 }
 
 
@@ -127,7 +121,7 @@ async function marktToObject(marktDirectoryEntry, zip) {
     return marktForDB;
 }
 
-async function marktenToDB(marktenEntries, zip) {
+async function marktenToDB(marktenEntries, branchesJson, zip) {
 
     // To do, dit maken zodat deze hele functie terug gegeven kan worden
     const marktenForDbPromises = marktenEntries.map(marktDirectory => {
@@ -139,7 +133,7 @@ async function marktenToDB(marktenEntries, zip) {
             Promise.all(
                 marktenObjects.map( (markt: MarktForDB) => {
                     console.log(markt.abbreviation);
-                    return MarktConfig.store(markt.abbreviation, [], markt.config);
+                    return MarktConfig.store(markt.abbreviation, branchesJson, markt.config);
                 })
             );
         });
@@ -158,6 +152,7 @@ export const uploadMarktenZip = (
         const marktenZip = filesFromForm.marktenZip;
         let entriesInZip = [];
         let zip = null;
+        let branchesJson = null;
 
         if (marktenZip.size === 0) {
             throw Error('Geen bestand gevonden');
@@ -182,14 +177,15 @@ export const uploadMarktenZip = (
         })
         .then(entriesRead => {
             entriesInZip = entriesRead;
-            return entriesInZip.find(file => file.name === 'branches.json');
+            return entriesInZip.find(file => file.entryName === 'config/markt/branches.json');
         })
-        .then(branchesToDB)
-        .then(() => {
+        .then(jsonFromZipEntry)
+        .then((branchesResult) => {
+            branchesJson = branchesResult;
             return getMarktenEntries(entriesInZip);
         })
         .then(marktenEntries => {
-            return marktenToDB(marktenEntries, zip);
+            return marktenToDB(marktenEntries, branchesJson, zip);
         })
         .then(() => {
             uploadMarktenPage(
