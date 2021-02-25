@@ -39,31 +39,19 @@ export class MarktConfig extends Model {
     public data!: object;
 
     public static get(marktAfkorting) {
-        const cachedConfigModel = marktCache.get(marktAfkorting);
-
-        if (cachedConfigModel) {
-            // Update cached item's TTL.
-            marktCache.ttl(marktAfkorting);
-            return Promise.resolve(cachedConfigModel);
-        } else {
-            return this.findOne({
-                where: { marktAfkorting },
-                order: [['createdAt', 'DESC']]
-            })
-            .then(configModel => {
-                if (!configModel) {
-                    throw Error('Markt niet gevonden');
-                }
-                marktCache.set(marktAfkorting, configModel);
-                return configModel;
-            });
-        }
+        return this._get(marktAfkorting)
+        .then(configModel => {
+            if (!configModel) {
+                throw Error('Markt niet gevonden');
+            }
+            return configModel;
+        });
     }
 
     public static store(marktAfkorting, allBranches, input) {
         marktCache.flushAll();
 
-        return this.get(marktAfkorting)
+        return this._get(marktAfkorting)
         .then(newestConfigModel => {
             let marktConfig = {
                 ...input,
@@ -90,6 +78,27 @@ export class MarktConfig extends Model {
                 data: marktConfig
             });
         });
+    }
+
+    private static _get(marktAfkorting) {
+        const cachedConfigModel = marktCache.get(marktAfkorting);
+
+        if (cachedConfigModel) {
+            // Update cached item's TTL.
+            marktCache.ttl(marktAfkorting);
+            return Promise.resolve(cachedConfigModel);
+        } else {
+            return this.findOne({
+                where: { marktAfkorting },
+                order: [['createdAt', 'DESC']]
+            })
+            .then(configModel => {
+                if (configModel) {
+                    marktCache.set(marktAfkorting, configModel);
+                }
+                return configModel;
+            });
+        }
     }
 
     // Het kan nl zo zijn dat dit exact dezelfde config data is, maar dat enkel
