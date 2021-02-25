@@ -1,11 +1,14 @@
-import { voorkeur } from './index';
-import { IMarktondernemerVoorkeur, IMarktondernemerVoorkeurRow } from '../markt.model';
-import { MMSollicitatie } from '../makkelijkemarkt.model';
-import { isVast } from '../domain-knowledge';
-import { ddmmyyyyToDate } from '../util';
-import { Voorkeur } from './voorkeur.model';
+import { Sequelize, Op } from 'sequelize';
 
-import Sequelize from 'sequelize';
+import { ddmmyyyyToDate } from '../util';
+import { isVast } from '../domain-knowledge';
+
+import {
+    IMarktondernemerVoorkeur,
+    IMarktondernemerVoorkeurRow
+} from '../markt.model';
+import { MMSollicitatie } from '../makkelijkemarkt.model';
+import { Voorkeur } from './voorkeur.model';
 
 export const getDefaultVoorkeur = (sollicitatie: MMSollicitatie) => {
     return {
@@ -16,7 +19,6 @@ export const getDefaultVoorkeur = (sollicitatie: MMSollicitatie) => {
 };
 
 export const voorkeurenFormData = (body: any): IMarktondernemerVoorkeurRow => {
-
     const { absentFrom, absentUntil, erkenningsNummer, marktId, marktDate, brancheId, parentBrancheId, inrichting } = body;
     const anywhere = JSON.parse(body.anywhere);
     const minimum = typeof body.minimum === 'string' ? parseInt(body.minimum, 10) || null : null;
@@ -50,45 +52,36 @@ export const voorkeurenFormData = (body: any): IMarktondernemerVoorkeurRow => {
 };
 
 export const deleteVoorkeurenByErkenningsnummer = (erkenningsNummer: string) =>
-    voorkeur
-        .destroy({ where: { erkenningsNummer } });
+    Voorkeur.destroy({ where: { erkenningsNummer } });
 
 export const getVoorkeurenByMarkt = (marktId: string): Promise<IMarktondernemerVoorkeur[]> =>
-    voorkeur
-        .findAll<Voorkeur>({
-            where: { marktId }, raw: true
-        })
-        .then(voorkeuren => voorkeuren);
-
-export const getVoorkeurByOndernemer = (erkenningsNummer: string): Promise<IMarktondernemerVoorkeur> =>
-    voorkeur
-        .findOne<Voorkeur>({
-            where: { erkenningsNummer }, raw: true
-        });
+    Voorkeur.findAll({
+        where: { marktId },
+        raw: true
+    });
 
 export const getVoorkeurenByOndernemer = (erkenningsNummer: string): Promise<IMarktondernemerVoorkeur[]> =>
-    voorkeur
-        .findAll<Voorkeur>({
-            where: { erkenningsNummer }, raw: true
-        });
-
+    Voorkeur.findAll({
+        where: { erkenningsNummer },
+        raw: true
+    });
 
 export const getVoorkeurByMarktEnOndernemer = (marktId: string, erkenningsNummer: string): Promise<IMarktondernemerVoorkeurRow> =>
-voorkeur
-    .findOne<Voorkeur>({
-        where: { erkenningsNummer, marktId }, raw: true
+    Voorkeur.findOne({
+        where: { erkenningsNummer, marktId },
+        raw: true
     });
 
 export const getVoorkeurenAbsentByMarkt = (marktId: string): Promise<IMarktondernemerVoorkeur[]> =>
-    voorkeur
-        .findAll<Voorkeur>({
-            where: {
-                marktId,
-                absentFrom: {
-                    [Sequelize.Op.ne]: null
-                },
-                absentUntil: {
-                    [Sequelize.Op.ne]: null
-                },
-            }, raw: true
-        });
+    Voorkeur.findAll({
+        where: {
+            marktId,
+            absentFrom: {
+                [Op.ne]: null
+            },
+            absentUntil: {
+                [Op.ne]: null
+            },
+        },
+        raw: true
+    });

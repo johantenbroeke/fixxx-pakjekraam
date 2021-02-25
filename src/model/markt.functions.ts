@@ -5,8 +5,7 @@ import {
 import {
     getMarktProperties,
     getMarktPaginas,
-    getMarktplaatsen,
-    getDaysClosed
+    getMarktplaatsen
 } from '../pakjekraam-api';
 
 import {

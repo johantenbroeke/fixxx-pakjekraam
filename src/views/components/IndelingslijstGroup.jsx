@@ -21,7 +21,6 @@ const IndelingslijstGroup = ({
     aanmeldingen,
     toewijzingen = [],
     datum,
-    voorkeuren,
     branches,
 }) => {
     let first = true;
@@ -60,8 +59,10 @@ const IndelingslijstGroup = ({
                         let voorkeurOp = null;
 
                         if (originelePlaatshouder) {
-                            originelePlaatshouder = ondernemers.find(ondernemer => ondernemer.erkenningsNummer == originelePlaatshouder.erkenningsNummer);
-                            voorkeurOp = voorkeuren.find(voorkeur => voorkeur.erkenningsNummer == originelePlaatshouder.erkenningsNummer);
+                            originelePlaatshouder = ondernemers.find(ondernemer =>
+                                ondernemer.erkenningsNummer == originelePlaatshouder.erkenningsNummer
+                            );
+                            voorkeurOp = originelePlaatshouder.voorkeur;
                         }
 
                         const aanmeldingVph = originelePlaatshouder ?
@@ -140,7 +141,6 @@ IndelingslijstGroup.propTypes = {
     ondernemers: PropTypes.array.isRequired,
     markt: PropTypes.object.isRequired,
     datum: PropTypes.string,
-    voorkeuren: PropTypes.array,
     branches: PropTypes.array.isRequired
 };
 

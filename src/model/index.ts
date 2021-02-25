@@ -7,7 +7,7 @@ import { initRSVP } from './rsvp.sequelize';
 import { initAllocation } from './allocation.sequelize';
 import { initPlaatsvoorkeur } from './plaatsvoorkeur.sequelize';
 import { initSession } from './session.sequelize';
-import { initVoorkeur } from './voorkeur.sequelize';
+import { initVoorkeur } from './voorkeur.model';
 import { initAfwijzing } from './afwijzing.sequelize';
 import { initLog } from './log';
 import { initMarktConfig } from './marktconfig';
