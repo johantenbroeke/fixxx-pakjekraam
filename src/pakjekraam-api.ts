@@ -72,27 +72,6 @@ const loadJSON = <T>(path: string, defaultValue: T = null): Promise<T> =>
         });
     });
 
-const toewijzingenPerDatum = (toewijzingen: IToewijzing[], row: Allocation): IToewijzing[] => {
-
-    const { marktId, marktDate, erkenningsNummer } = row;
-
-    const existing = toewijzingen.find(toewijzing => toewijzing.marktDate === marktDate);
-
-    const voorkeur: IToewijzing = {
-        marktId,
-        marktDate,
-        erkenningsNummer,
-        plaatsen: [...(existing ? existing.plaatsen : []), row.plaatsId],
-    };
-
-    if (existing) {
-        return [...toewijzingen.filter(toewijzing => toewijzing.marktDate !== marktDate), voorkeur];
-    } else {
-        return [...toewijzingen, voorkeur];
-    }
-
-};
-
 export const groupAllocationRows = (toewijzingen: IToewijzing[], row: Allocation): IToewijzing[] => {
 
     const { marktId, marktDate, erkenningsNummer } = row;
@@ -136,14 +115,6 @@ export const getAanmeldingenByOndernemer = (erkenningsNummer: string): Promise<I
             raw: true,
         })
         .then(aanmeldingen => aanmeldingen);
-
-export const getToewijzingenByOndernemerEnMarkt = (marktId: string, erkenningsNummer: string): Promise<IToewijzing[]> =>
-    allocation
-        .findAll<Allocation>({
-            where: { marktId, erkenningsNummer },
-            raw: true,
-        })
-        .then(toewijzingen => toewijzingen.reduce(toewijzingenPerDatum, []));
 
 export const getToewijzingen = (marktId: string, marktDate: string): Promise<IToewijzing[]> =>
     allocation
