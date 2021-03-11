@@ -44,7 +44,20 @@ export class MarktConfig extends Model {
             if (!configModel) {
                 throw Error('Markt niet gevonden');
             }
-            return configModel;
+
+            const marktplaatsen = configModel.data.locaties;
+            const rows          = configModel.data.markt.rows.map(row =>
+                row.map(plaatsId =>
+                    marktplaatsen.find(plaats => plaats.plaatsId === plaatsId)
+                )
+            );
+            return {
+                marktplaatsen,
+                rows,
+                branches      : configModel.data.branches,
+                obstakels     : configModel.data.geografie.obstakels,
+                paginas       : configModel.data.paginas
+            };
         });
     }
 

@@ -4,7 +4,7 @@ import {
     getOndernemersByMarkt
 } from '../makkelijkemarkt-api';
 import {
-    getIndelingslijstInput,
+    getCalculationInput,
     getSollicitantenlijstInput,
     getVoorrangslijstInput,
     getToewijzingslijst,
@@ -26,7 +26,7 @@ import { getPlaatsvoorkeurenByMarkt } from '../model/plaatsvoorkeur.functions';
 export const vasteplaatshoudersPage = (req: GrantedRequest, res: Response) => {
     const datum = req.params.datum;
     const type = 'vasteplaatshouders';
-    getIndelingslijstInput(req.params.marktId, datum).then((data: any) => {
+    getCalculationInput(req.params.marktId, datum).then((data: any) => {
         res.render('VastplaatshoudersPage', {
             data,
             datum,

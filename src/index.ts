@@ -45,10 +45,6 @@ import {
     getMarkten
 } from './makkelijkemarkt-api';
 
-import {
-    getMarktEnriched
-} from './model/markt.functions';
-
 // Routes
 // ------
 
@@ -226,12 +222,12 @@ app.get(
     '/markt/:marktId/',
     keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
-        getMarktEnriched(req.params.marktId)
-        .then(markt => {
+        getMarkt(req.params.marktId)
+        .then(mmarkt => {
             res.render('MarktDetailPage', {
                 role: Roles.MARKTMEESTER,
                 user: getKeycloakUser(req),
-                markt
+                markt: mmarkt
             });
         })
         .catch(next);
