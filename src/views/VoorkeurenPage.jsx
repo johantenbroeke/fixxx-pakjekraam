@@ -74,8 +74,8 @@ class VoorkeurenPage extends React.Component {
                     ) : null}
                     <PlaatsvoorkeurenForm
                         plaatsvoorkeuren={plaatsvoorkeuren}
-                        ondernemer={this.props.ondernemer}
-                        markt={this.props.markt}
+                        ondernemer={ondernemer}
+                        markt={markt}
                         indelingVoorkeur={indelingVoorkeur}
                         role={role}
                         marktplaatsen={marktplaatsen}

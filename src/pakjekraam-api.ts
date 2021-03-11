@@ -161,14 +161,6 @@ export const getPlaatsvoorkeuren = (marktId: string): Promise<IPlaatsvoorkeur[]>
         })
         .then(plaatsvoorkeuren => plaatsvoorkeuren);
 
-export const getVoorkeurenMarktOndern = (marktId: string, erkenningsNummer: string): Promise<IPlaatsvoorkeur[]> =>
-    plaatsvoorkeur
-        .findAll<Plaatsvoorkeur>({
-            where: { marktId, erkenningsNummer },
-            raw: true,
-        })
-        .then(plaatsvoorkeuren => plaatsvoorkeuren);
-
 const indelingVoorkeurPrio = (voorkeur: IMarktondernemerVoorkeur): number =>
     (voorkeur.marktId ? 1 : 0) | (voorkeur.marktDate ? 2 : 0);
 

@@ -1,24 +1,14 @@
 import { Request, Response } from 'express';
+import { GrantedRequest } from 'keycloak-connect';
+
+import { internalServerErrorPage } from '../express-util';
+import { Roles } from '../authentication';
+
+import { getKeycloakUser } from '../keycloak-api';
 import {
     calculateIndelingslijst,
     getIndelingslijst,
-    getAanmeldingen,
-    getToewijzingen,
-    getMarktPaginas,
-    getMarktGeografie,
-    getMarktplaatsen,
-    getPlaatsvoorkeuren,
-    getAllBranches,
 } from '../pakjekraam-api';
-import {
-    getMarkt,
-    getOndernemersByMarkt
-} from '../makkelijkemarkt-api';
-import { internalServerErrorPage } from '../express-util';
-import { Roles } from '../authentication';
-import { getKeycloakUser } from '../keycloak-api';
-
-import { GrantedRequest } from 'keycloak-connect';
 
 export const conceptIndelingPage = (req: GrantedRequest, res: Response) => {
     const { marktDate, marktId } = req.params;
@@ -37,10 +27,11 @@ export const conceptIndelingPage = (req: GrantedRequest, res: Response) => {
 
 export const indelingPage = (req: GrantedRequest, res: Response, type: string = 'indeling') => {
     const { marktDate, marktId } = req.params;
+
     getIndelingslijst(marktId, marktDate)
-    .then(data => {
+    .then(indeling => {
         res.render('IndelingslijstPage.tsx', {
-            ...data,
+            ...indeling,
             type,
             datum : marktDate,
             role  : Roles.MARKTMEESTER,
