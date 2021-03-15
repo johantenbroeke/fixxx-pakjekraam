@@ -3,35 +3,44 @@ const Header = require('./components/Header');
 const Page = require('./components/Page.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
-const OndernemerProfileHeader = require('./components/OndernemerProfileHeader');
+const Alert = require('./components/Alert');
 const moment = require('moment');
 const { getBreadcrumbsOndernemer } = require('../util');
 
-class ToewijzingenAfwijzingenPage extends React.Component {
+class UploadMarktenPage extends React.Component {
     propTypes = {
         user: PropTypes.object.isRequired,
-        role: PropTypes.string.isRequired
+        role: PropTypes.string.isRequired,
+        succesMessage: PropTypes.string,
+        errorMessage: PropTypes.string,
     };
 
     render() {
-        const { user, role } = this.props;
-
+        const { user, role, succesMessage, errorMessage } = this.props;
         return (
             <Page messages={this.props.messages}>
                 <Header user={user} role={role}>
                 </Header>
                 <Content>
-                    {role === 'marktmeester' ?
-                        <h2 className="Heading Heading--intro">Ondernemer</h2> : null
-                    }
-                    {role === 'marktmeester' ?
-                        <OndernemerProfileHeader inline={true} user={ondernemer} /> : null
-                    }
                     <h1 className="Heading Heading--intro">Uploaden markten</h1>
+                    <form class="Form Form--UploadMarktConfigForm" action="/upload-markten/zip/" method="post" encType="multipart/form-data">
+                        <input type="file" id="marktenZip" accept=".zip" name="marktenZip" required/>
+                        <input className="Button Button--secondary Form Form__element" type="submit" />
+                    </form>
+                    {succesMessage ? (
+                        <Alert type="success" inline={true} >
+                            { succesMessage }
+                        </Alert>
+                    ) : null }
+                    { errorMessage ? (
+                        <Alert type="error" inline={true}>
+                            <span>{ errorMessage }</span>
+                        </Alert>
+                    ) : null }
                 </Content>
             </Page>
         );
     }
 }
 
-module.exports = ToewijzingenAfwijzingenPage;
+module.exports = UploadMarktenPage;

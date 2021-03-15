@@ -51,3 +51,6 @@ sudo chmod 700 -R /usr/local/var/postgres
 
 ### Create user and add to DB
 https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
+
+### Migrations and database
+For more information check ./migrations.md

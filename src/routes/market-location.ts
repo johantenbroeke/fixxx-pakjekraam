@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { getMarkt, getOndernemer } from '../makkelijkemarkt-api';
 import {
     getIndelingVoorkeur,
-    getMarktplaatsen,
+    getMarktBasics,
     getMededelingen,
 } from '../pakjekraam-api';
 
@@ -11,7 +11,6 @@ const { isExp } = require('../domain-knowledge.js');
 import { getQueryErrors, internalServerErrorPage, HTTP_CREATED_SUCCESS } from '../express-util';
 import { upsert } from '../sequelize-util.js';
 import { IPlaatsvoorkeurRow } from '../markt.model';
-import { getMarktEnriched } from '../model/markt.functions';
 import { getPlaatsvoorkeurenByMarktEnOndernemer } from '../model/plaatsvoorkeur.functions';
 import models from '../model/index';
 import { getKeycloakUser } from '../keycloak-api';
@@ -37,7 +36,7 @@ export const plaatsvoorkeurenPage = (
             throw Error('Geen sollicitatie voor deze markt gevonden');
         }
 
-        return getMarktEnriched(currentMarktId);
+        return getMarktBasics(currentMarktId);
     });
 
     Promise.all([
@@ -47,9 +46,9 @@ export const plaatsvoorkeurenPage = (
         getIndelingVoorkeur(erkenningsNummer, currentMarktId),
         getMededelingen(),
     ]).then(
-        ([ondernemer, markt, plaatsvoorkeuren, indelingVoorkeur, mededelingen]) => {
+        ([ondernemer, marktBasics, plaatsvoorkeuren, indelingVoorkeur, mededelingen]) => {
             const sollicitatie = ondernemer.sollicitaties.find(soll =>
-                soll.markt.id === markt.id
+                soll.markt.id === marktBasics.markt.id
             );
 
             // Als iemand de status experimenteel heeft mag degene zijn plaatsvoorkeuren niet wijzigen
@@ -59,9 +58,9 @@ export const plaatsvoorkeurenPage = (
             }
             res.render('VoorkeurenPage', {
                 ondernemer,
-                markt,
+                markt: marktBasics.markt,
                 plaatsvoorkeuren,
-                marktplaatsen: markt.plaatsen,
+                marktplaatsen: marktBasics.marktplaatsen,
                 indelingVoorkeur,
                 query,
                 messages,

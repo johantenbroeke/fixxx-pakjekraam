@@ -153,7 +153,7 @@
     "no-lone-blocks": ["error"],
     "no-lonely-if": ["error"],
     "no-loop-func": ["error"],
-    "no-magic-numbers": ["warn", { "ignore": [-2, -1, -0.5, 0, 0.5, 1, 2], "ignoreArrayIndexes": true }],
+    "no-magic-numbers": ["off", { "ignore": [-2, -1, -0.5, 0, 0.5, 1, 2], "ignoreArrayIndexes": true }],
     "no-misleading-character-class": ["error"],
     "no-mixed-requires": ["error"],
     "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
@@ -274,7 +274,8 @@
     "valid-typeof": ["error"],
     "wrap-iife": [2, "any"],
     "consistent-return": ["off"],
-    "react/prop-types": ["off"]
+    "react/prop-types": ["off"],
+    "react/no-unknown-property": ["off"]
   },
   "settings": {
     "react": {
