@@ -11,9 +11,6 @@ import {
     getMarkten,
     getOndernemer
 } from '../makkelijkemarkt-api';
-import {
-    getAllBranches
-} from '../pakjekraam-api';
 
 import { deletePlaatsvoorkeurenByErkenningsnummer } from '../model/plaatsvoorkeur.functions';
 import { deleteRsvpsByErkenningsnummer } from '../model/rsvp.functions';
@@ -87,14 +84,12 @@ export const toewijzingenAfwijzingenPage = (
         getToewijzingenByOndernemer(erkenningsNummer),
         getAfwijzingenByOndernemer(erkenningsNummer),
         getOndernemer(erkenningsNummer),
-        getAllBranches(),
         getMarkten(),
     ])
     .then(([
         toewijzingen,
         afwijzingen,
         ondernemer,
-        branches,
         markten
     ]) => {
         const relevanteMarkten = role === Roles.MARKTONDERNEMER ?
@@ -114,7 +109,6 @@ export const toewijzingenAfwijzingenPage = (
             afwijzingen,
             ondernemer,
             role,
-            branches,
             markten,
             messages,
             user: getKeycloakUser(req)

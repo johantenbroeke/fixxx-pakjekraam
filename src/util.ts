@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 // import moment from 'moment';
 const moment = require('moment-timezone');
 
@@ -187,6 +189,19 @@ export const compareProperty = (
 
 // General
 // -------
+export const readJSON = (filePath, emitError=true, defaultValue?) => {
+    try {
+        const data = fs.readFileSync(filePath, { encoding: 'utf8' });
+        return JSON.parse(String(data));
+    } catch (e) {
+        if (emitError) {
+            throw e;
+        } else {
+            return defaultValue;
+        }
+    }
+};
+
 export const arrayToObject = <T, K extends keyof T>(array: T[], keyField: K): { [index: string]: T } => {
     return array.reduce((obj: { [index: string]: T }, item: T) => {
         obj[String(item[keyField])] = item;
@@ -287,9 +302,6 @@ export const requireOne = <T>(arg: T[] | T | null): T => {
         throw new TypeError('Must be exactly one');
     }
 };
-
-// Misc
-// ====
 
 export const requireEnv = (key: string) => {
     if (!process.env[key]) {

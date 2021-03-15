@@ -233,7 +233,6 @@ class PlaatsvoorkeurenForm extends React.Component {
                                         <MarktplaatsSelect
                                             name={`plaatsvoorkeuren[${plaatsvoorkeuren.length + 1}][plaatsId]`}
                                             id={`voorkeur-${plaatsvoorkeuren.length + 1}`}
-                                            markt={markt}
                                             data={marktplaatsen}
                                             optional={true}
                                         />

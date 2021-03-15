@@ -93,7 +93,7 @@ export const attendancePage = (
     const includeInactive     = role === Roles.MARKTMEESTER;
     const marktenPromise      = getMarktenForOndernemer(ondernemerPromise, includeInactive);
     const aanmeldingenPromise = getAanmeldingenByOndernemer(erkenningsNummer);
-    const voorkeurenPromise = getVoorkeurenByOndernemer(erkenningsNummer);
+    const voorkeurenPromise   = getVoorkeurenByOndernemer(erkenningsNummer);
 
     return Promise.all([
         ondernemerPromise,

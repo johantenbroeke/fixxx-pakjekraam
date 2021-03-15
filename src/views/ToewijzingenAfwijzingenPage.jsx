@@ -13,14 +13,13 @@ class ToewijzingenAfwijzingenPage extends React.Component {
         afwijzingen: PropTypes.array,
         ondernemer: PropTypes.object,
         role: PropTypes.string,
-        branches: PropTypes.array,
         markten: PropTypes.array,
         messages: PropTypes.array,
         user: PropTypes.object.isRequired
     };
 
     render() {
-        const { toewijzingen, afwijzingen, ondernemer, role, branches, markten, user } = this.props;
+        const { toewijzingen, afwijzingen, ondernemer, role, markten, user } = this.props;
 
         toewijzingen.map(toewijzing => {
             toewijzing.type = 'toew.';
@@ -41,15 +40,6 @@ class ToewijzingenAfwijzingenPage extends React.Component {
 
         // Take only the first 14 records
         toewijzingenAfwijzingen = toewijzingenAfwijzingen.slice(0, 13);
-
-        function getBranche(brancheId) {
-            if (brancheId) {
-                const branche = branches.find(thisBranche => thisBranche.brancheId === brancheId);
-                return branche ? branche.description : null;
-            } else {
-                return '';
-            }
-        }
 
         function isVph(ondernemerObj, marktId) {
             const sollicitatie = ondernemerObj.sollicitaties.find(soll => soll.markt.id === marktId);
@@ -118,7 +108,7 @@ class ToewijzingenAfwijzingenPage extends React.Component {
                                     <td>
                                         { item.plaatsvoorkeuren !== null ? item.plaatsvoorkeuren.join(',') : null }
                                     </td>
-                                    <td>{ getBranche(item.brancheId) }</td>
+                                    <td>{ item.brancheId }</td>
                                 </tr>
                             ))}
                             </tbody>

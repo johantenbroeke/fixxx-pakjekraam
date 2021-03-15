@@ -1,9 +1,7 @@
 const PropTypes = require('prop-types');
 const React = require('react');
-const { plaatsSort } = require('../../domain-knowledge.js');
-const marktplaatsSort = (plaatsA, plaatsB) => plaatsSort(plaatsA.plaatsId, plaatsB.plaatsId);
 
-const MarktplaatsSelect = ({ id, name, markt, data, value, optional, readonly, newItem }) => {
+const MarktplaatsSelect = ({ id, name, data, value, optional, readonly, newItem }) => {
     const attrs = newItem ? { 'data-id': id, 'data-name': name } : { id, name };
 
     return (
@@ -30,7 +28,6 @@ const MarktplaatsSelect = ({ id, name, markt, data, value, optional, readonly, n
 };
 
 MarktplaatsSelect.propTypes = {
-    markt: PropTypes.object,
     data: PropTypes.array.isRequired,
     value: PropTypes.string,
     id: PropTypes.string,
