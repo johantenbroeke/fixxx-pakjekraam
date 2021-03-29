@@ -29,25 +29,16 @@ export const uploadMarktenPage = (
     req: GrantedRequest,
     res: Response,
     role: String,
-    errorMessage: String,
-    succesMessage: String,
+    errorMessage?: String,
+    succesMessage?: String,
 ) => {
-
-    Promise.all([
-    ])
-        .then(([
-            toewijzingen,
-        ]) => {
-            res.render('UploadMarktenPage', {
-                // user: getKeycloakUser(req),
-                user: {},
-                role,
-                succesMessage,
-                errorMessage
-            });
-        })
-        .catch(err => internalServerErrorPage(res)(err));
-
+    res.render('UploadMarktenPage', {
+        // user: getKeycloakUser(req),
+        user: {},
+        role,
+        succesMessage,
+        errorMessage
+    });
 };
 
 // NPM package file-type is a package which can detect the file type of a Buffer/Uint8Array/ArrayBuffer
@@ -164,7 +155,6 @@ export const uploadMarktenZip = (
 
         getExtensionFromBuffer(marktenZip.path, marktenZip.size)
         .then(filetype => {
-
             if (filetype === undefined) {
                 throw Error('Bestandsextensie onbekend: het lijkt er op dat je een beschadigd bestand hebt geüpload');
             }

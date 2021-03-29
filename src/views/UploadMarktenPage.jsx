@@ -23,7 +23,7 @@ class UploadMarktenPage extends React.Component {
                 </Header>
                 <Content>
                     <h1 className="Heading Heading--intro">Uploaden markten</h1>
-                    <form class="Form Form--UploadMarktConfigForm" action="/upload-markten/zip/" method="post" encType="multipart/form-data">
+                    <form className="Form Form--UploadMarktConfigForm" action="/upload-markten/zip/" method="post" encType="multipart/form-data">
                         <input type="file" id="marktenZip" accept=".zip" name="marktenZip" required/>
                         <input className="Button Button--secondary Form Form__element" type="submit" />
                     </form>

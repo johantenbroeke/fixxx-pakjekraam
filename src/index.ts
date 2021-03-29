@@ -212,11 +212,12 @@ app.get(
     '/markt/',
     keycloak.protect(Roles.MARKTMEESTER),
     (req: GrantedRequest, res: Response) => {
-        return getMarkten(true)
-            .then((markten: any) => {
-                res.render('MarktenPage',{ markten, role: Roles.MARKTMEESTER, user: getKeycloakUser(req) });
-            }, internalServerErrorPage(res));
-});
+        getMarkten(true)
+        .then((markten: any) => {
+            res.render('MarktenPage',{ markten, role: Roles.MARKTMEESTER, user: getKeycloakUser(req) });
+        }, internalServerErrorPage(res));
+    }
+);
 
 app.get(
     '/markt/:marktId/',
@@ -231,7 +232,7 @@ app.get(
             });
         })
         .catch(next);
-    },
+    }
 );
 
 app.get(
