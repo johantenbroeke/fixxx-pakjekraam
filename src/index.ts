@@ -592,21 +592,43 @@ app.get(
 
 app.get(
     '/upload-markten/',
-    keycloak.protect(Roles.MARKTBEWERKER),
-    (req: GrantedRequest, res: Response) =>
-        uploadMarktenPage(
-            req,
-            res,
-            Roles.MARKTBEWERKER,
-            null,
-            null,
-        )
+    keycloak.protect(token =>
+        token.hasRole(Roles.MARKTBEWERKER) ||
+        token.hasRole(Roles.MARKTMEESTER)
+    ),
+    (req: GrantedRequest, res: Response) => {
+        // TODO: Handmatig de rollen uit het token vissen zou eigenlijk centraal
+        //       moeten gebeuren. Bijvoorbeeld in components/Header.jsx, omdat het
+        //       erop lijkt dat dat de voornaamste plek is waar de rolnaam gebruikt
+        //       wordt? Verder uitzoeken!
+
+        const token = req.kauth.grant.access_token;
+        // const roles = token.content.resource_access[token.clientId];
+        // console.log(roles, token.hasRole(Roles.MARKTMEESTER));
+
+        const mostImportantRole = token.hasRole(Roles.MARKTMEESTER) ?
+                                  Roles.MARKTMEESTER :
+                                  Roles.MARKTBEWERKER;
+
+        uploadMarktenPage(req, res, mostImportantRole);
+    }
 );
 
 app.post(
     '/upload-markten/zip/',
-    keycloak.protect(Roles.MARKTBEWERKER),
-    uploadMarktenZip
+    keycloak.protect(token =>
+        token.hasRole(Roles.MARKTBEWERKER) ||
+        token.hasRole(Roles.MARKTMEESTER)
+    ),
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
+        // TODO: Zie request hierboven voor extra info over dit stukje code.
+        const token = req.kauth.grant.access_token;
+        const mostImportantRole = token.hasRole(Roles.MARKTMEESTER) ?
+                                  Roles.MARKTMEESTER :
+                                  Roles.MARKTBEWERKER;
+
+        uploadMarktenZip(req, res, mostImportantRole);
+    }
 );
 
 

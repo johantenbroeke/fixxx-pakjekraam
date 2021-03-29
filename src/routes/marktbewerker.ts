@@ -133,7 +133,7 @@ async function marktenToDB(marktenEntries, branchesJson, zip) {
 export const uploadMarktenZip = (
     req: GrantedRequest,
     res: Response,
-    next: NextFunction,
+    role: String
 ) => {
 
     const form = formidable.IncomingForm();
@@ -181,7 +181,7 @@ export const uploadMarktenZip = (
             uploadMarktenPage(
                 req,
                 res,
-                Roles.MARKTBEWERKER,
+                role,
                 null,
                 'Uploaden configuratie geslaagd'
             );
@@ -191,7 +191,7 @@ export const uploadMarktenZip = (
             uploadMarktenPage(
                 req,
                 res,
-                Roles.MARKTBEWERKER,
+                role,
                 error.message,
                 null
             );
