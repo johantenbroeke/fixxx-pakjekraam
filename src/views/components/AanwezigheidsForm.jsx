@@ -48,6 +48,11 @@ class AanwezigheidsForm extends React.Component {
             return link;
         };
 
+        const noBranche = markt => {
+            const voorkeur = getVoorkeurForMarkt(markt.id);
+            return !voorkeur || !voorkeur.brancheId;
+        };
+
         return (
             <Form className="AanwezigheidsForm" decorator="" csrfToken={csrfToken}>
                 <input
@@ -62,7 +67,7 @@ class AanwezigheidsForm extends React.Component {
                         <h2 className="Heading Heading--intro">
                             {markt.naam} <SollicitatieSpecs sollicitatie={sollicitaties[markt.id]} />
                         </h2>
-                        { !getVoorkeurForMarkt(markt.id) || !getVoorkeurForMarkt(markt.id).brancheId ? (
+                        { noBranche(markt) ? (
                         <Alert type="error" inline={true} fullwidth={true}>
                             <span>
                                 U hebt uw <strong>koopwaar</strong> nog niet doorgegeven in het {' '}
@@ -86,10 +91,7 @@ class AanwezigheidsForm extends React.Component {
                                                 type="checkbox"
                                                 id={`rsvp-${index}`}
                                                 name={`rsvp[${index}][attending]`}
-                                                disabled={
-                                                    week[day].isInThePast
-                                                    || (!getVoorkeurForMarkt(markt.id) || !getVoorkeurForMarkt(markt.id).brancheId)
-                                                }
+                                                disabled={week[day].isInThePast || noBranche(markt)}
                                                 defaultValue="1"
                                                 defaultChecked={week[day].attending}
                                             />

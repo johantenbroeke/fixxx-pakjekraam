@@ -37,7 +37,6 @@ type IndelingslijstPageState = {
     paginas: IAllocationPrintout;
     toewijzingen: IToewijzing[];
     markt: IMarkt;
-    voorkeuren: IMarktondernemerVoorkeur[];
     marktId: string;
     datum: string;
     type: string;
@@ -64,7 +63,6 @@ export default class IndelingslijstPage extends React.Component {
             markt,
             datum,
             type = 'indeling',
-            voorkeuren,
             branches,
             role,
             user
@@ -114,7 +112,6 @@ export default class IndelingslijstPage extends React.Component {
                          ondernemers={ondernemers}
                          markt={markt}
                          datum={datum}
-                         voorkeuren={voorkeuren}
                          branches={branches}
                      />
                 )}

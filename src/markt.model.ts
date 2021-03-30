@@ -195,10 +195,3 @@ export interface IPlaatsvoorkeurRow {
     plaatsId: string;
     priority: number;
 }
-
-export interface IMarktInfo {
-    plaatsen?: IMarktplaats[];
-    paginas: any[];
-}
-
-export interface IMarktEnriched extends IMarktInfo, MMMarkt, IMarktProperties {}

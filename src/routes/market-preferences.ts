@@ -1,17 +1,33 @@
 import { NextFunction, Request, Response } from 'express';
-import { IMarktondernemerVoorkeurRow } from '../markt.model';
-import { upsert } from '../sequelize-util.js';
-import models from '../model/index';
-import { internalServerErrorPage, HTTP_CREATED_SUCCESS, getQueryErrors } from '../express-util';
-import { getMarkt, getOndernemer } from '../makkelijkemarkt-api';
-import { getAllBranches } from '../pakjekraam-api';
-
-import { Voorkeur } from '../model/voorkeur.model';
-import { voorkeurenFormData } from '../model/voorkeur.functions';
-
-import moment from 'moment';
-import { getKeycloakUser } from '../keycloak-api';
 import { GrantedRequest } from 'keycloak-connect';
+import moment from 'moment';
+
+import { upsert } from '../sequelize-util.js';
+import {
+    internalServerErrorPage,
+    HTTP_CREATED_SUCCESS,
+    getQueryErrors
+} from '../express-util';
+
+import {
+    getKeycloakUser
+} from '../keycloak-api';
+import {
+    getMarkt,
+    getOndernemer
+} from '../makkelijkemarkt-api';
+import {
+    getMarktBasics
+} from '../pakjekraam-api';
+
+import { IMarktondernemerVoorkeurRow } from '../markt.model';
+import models from '../model/index';
+import { Voorkeur } from '../model/voorkeur.model';
+import {
+    getVoorkeurByMarktEnOndernemer,
+    voorkeurenFormData
+} from '../model/voorkeur.functions';
+
 
 export const algemeneVoorkeurenFormCheckForError = (body: any, role: string) => {
 
@@ -66,33 +82,26 @@ export const marketPreferencesPage = (
     role: string,
     csrfToken: string,
 ) => {
-
-    const messages = getQueryErrors(req.query);
-    const ondernemerPromise = getOndernemer(erkenningsNummer);
-    const marktPromise = marktId ? getMarkt(marktId) : Promise.resolve(null);
-
-    // TODO: Only allow relative URLs in `next`, to prevent redirection to 3rd party phishing sites
+    // TODO: Only allow relative URLs in `next`, to prevent redirection
+    // to 3rd party phishing sites
     const next = req.query.next;
     const query = req.query;
 
     Promise.all([
-        ondernemerPromise,
-        marktPromise,
-        Voorkeur.findOne({
-            where: { erkenningsNummer, marktId },
-            raw: true
-        }),
-        getAllBranches(),
-    ]).then(([ondernemer, markt, voorkeur, branches]) => {
+        getMarktBasics(marktId),
+        getOndernemer(erkenningsNummer),
+        getVoorkeurByMarktEnOndernemer(marktId, erkenningsNummer),
+    ]).then(([marktBasics, ondernemer, voorkeur]) => {
         res.render('AlgemeneVoorkeurenPage', {
-            ondernemer,
-            markt,
             marktId,
+            markt: marktBasics.markt,
+            branches: marktBasics.branches,
+            ondernemer,
             voorkeur,
-            branches,
+
             next,
             query,
-            messages,
+            messages: getQueryErrors(req.query),
             role,
             csrfToken,
             user: getKeycloakUser(req)

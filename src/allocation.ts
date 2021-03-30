@@ -1,5 +1,5 @@
 const models = require('./model/index.ts');
-import { getIndelingslijst, getDaysClosed } from './pakjekraam-api';
+import { calculateIndelingslijst, getDaysClosed } from './pakjekraam-api';
 
 import { flatten, getTimezoneTime } from './util';
 import { INDELING_DAG_OFFSET } from './domain-knowledge.js';
@@ -71,7 +71,7 @@ async function allocate() {
         }
 
         const indelingen = await Promise.all(markten.map((markt: MMMarkt) =>
-            getIndelingslijst(String(markt.id), marktDate, true))
+            calculateIndelingslijst(String(markt.id), marktDate, true))
         );
 
         const toewijzingen = await mapMarktenToToewijzingen(indelingen);

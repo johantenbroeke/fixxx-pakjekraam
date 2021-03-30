@@ -2,8 +2,12 @@ const LoginButton = require('./LoginButton');
 const PropTypes = require('prop-types');
 const React = require('react');
 
+import {
+    Roles,
+} from '../../authentication';
+
 const Header = ({ user, children, hideLogout, breadcrumbs, role }) => {
-    if (!breadcrumbs) {
+    if (!breadcrumbs && role !== Roles.MARKTBEWERKER) {
         breadcrumbs = [
             {
                 "title":"Markten",
