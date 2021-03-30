@@ -32,7 +32,7 @@ class UploadMarktenPage extends React.Component {
                 <Content>
                     <h1 className="Heading Heading--intro">Uploaden markten</h1>
 
-                    <div style={{ backgroundColor: '#E6E6E6', marginBottom: 20, padding: '15px 10px' }}>Meest recente upload: <b>{configName}</b></div>
+                    <div style={{ backgroundColor: '#E6E6E6', marginBottom: 20, padding: '15px 10px' }}>Meest recente upload: <b>{configName || 'Geen gegevens'}</b></div>
 
                     <form className="Form Form--UploadMarktConfigForm" action="/upload-markten/zip/" method="post" encType="multipart/form-data">
                         <input type="file" id="marktenZip" accept=".zip" name="marktenZip" required/>
