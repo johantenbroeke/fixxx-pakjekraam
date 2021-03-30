@@ -596,11 +596,13 @@ app.get(
         token.hasRole(Roles.MARKTBEWERKER)/* ||
         token.hasRole(Roles.MARKTMEESTER)*/
     ),
-    (req: GrantedRequest, res: Response) => {
+    (req: GrantedRequest, res: Response, next: NextFunction) => {
         // TODO: Handmatig de rollen uit het token vissen zou eigenlijk centraal
         //       moeten gebeuren. Bijvoorbeeld in components/Header.jsx, omdat het
         //       erop lijkt dat dat de voornaamste plek is waar de rolnaam gebruikt
         //       wordt? Verder uitzoeken!
+        //
+        //       Zie ook `keycloak-api.ts/getKeycloakUser`.
 
         const token = req.kauth.grant.access_token;
         // const roles = token.content.resource_access[token.clientId];
@@ -610,7 +612,7 @@ app.get(
                                   Roles.MARKTMEESTER :
                                   Roles.MARKTBEWERKER;
 
-        uploadMarktenPage(req, res, mostImportantRole);
+        uploadMarktenPage(req, res, next, mostImportantRole);
     }
 );
 
@@ -627,7 +629,7 @@ app.post(
                                   Roles.MARKTMEESTER :
                                   Roles.MARKTBEWERKER;
 
-        uploadMarktenZip(req, res, mostImportantRole);
+        uploadMarktenZip(req, res, next, mostImportantRole);
     }
 );
 

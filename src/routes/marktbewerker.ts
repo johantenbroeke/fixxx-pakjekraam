@@ -20,25 +20,26 @@ import {
 } from '../authentication';
 import Markt from 'allocation/markt';
 
-interface MarktForDB {
-    config: object;
-    abbreviation: string;
-}
-
 export const uploadMarktenPage = (
     req: GrantedRequest,
     res: Response,
+    next: NextFunction,
     role: String,
     errorMessage?: String,
     succesMessage?: String,
 ) => {
-    res.render('UploadMarktenPage', {
-        // user: getKeycloakUser(req),
-        user: {},
-        role,
-        succesMessage,
-        errorMessage
-    });
+    MarktConfig.getNewestConfigName()
+    .then(configName => {
+        res.render('UploadMarktenPage', {
+            // user: getKeycloakUser(req),
+            user: {},
+            role,
+            configName,
+            succesMessage,
+            errorMessage
+        });
+    })
+    .catch(next);
 };
 
 // NPM package file-type is a package which can detect the file type of a Buffer/Uint8Array/ArrayBuffer
@@ -59,7 +60,6 @@ async function jsonFromZipEntry(entry) {
 }
 
 async function marktConfigFromMarktEntries(entries) {
-
     const config = {
         branches: null,
         geografie: null,
@@ -94,7 +94,7 @@ async function marktToObject(marktDirectoryEntry, zip) {
     const entries = await zip.getEntries();
 
     const marktForDB = {
-        config: null,
+        json: null,
         abbreviation: null,
     };
 
@@ -105,44 +105,41 @@ async function marktToObject(marktDirectoryEntry, zip) {
         entry.entryName !== marktDirectoryEntry.entryName
     );
     // Create json from marktentries
-    marktForDB.config = await marktConfigFromMarktEntries(marktEntries);
+    marktForDB.json = await marktConfigFromMarktEntries(marktEntries);
 
     // Get abberviation from path
     marktForDB.abbreviation = getMarktAbbreviationFromEntry(marktDirectoryEntry);
     return marktForDB;
 }
 
-async function marktenToDB(marktenEntries, branchesJson, zip) {
-
-    // To do, dit maken zodat deze hele functie terug gegeven kan worden
-    const marktenForDbPromises = marktenEntries.map(marktDirectory => {
+async function storeMarkten(configName, marktenEntries, branchesJSON, zip) {
+    const marktConfigs: any[] = marktenEntries.map(marktDirectory => {
         return marktToObject(marktDirectory, zip);
     });
 
-    return Promise.all(marktenForDbPromises)
-        .then(marktenObjects => {
-            Promise.all(
-                marktenObjects.map( (markt: MarktForDB) => {
-                    console.log(markt.abbreviation);
-                    return MarktConfig.store(markt.abbreviation, branchesJson, markt.config);
-                })
-            );
-        });
+    return Promise.all(marktConfigs)
+    .then(marktConfigs => {
+        return Promise.all(
+            marktConfigs.map(marktConfig =>
+                MarktConfig.store(configName, marktConfig.abbreviation, branchesJSON, marktConfig.json)
+            )
+        );
+    });
 }
 
 export const uploadMarktenZip = (
     req: GrantedRequest,
     res: Response,
+    next: NextFunction,
     role: String
 ) => {
-
     const form = formidable.IncomingForm();
 
     form.parse(req, (err, fields, filesFromForm) => {
-
         const marktenZip = filesFromForm.marktenZip;
+        const configName = marktenZip.name;
         let entriesInZip = [];
-        let zip = null;
+        let zip          = null;
         let branchesJson = null;
 
         if (marktenZip.size === 0) {
@@ -175,22 +172,24 @@ export const uploadMarktenZip = (
             return getMarktenEntries(entriesInZip);
         })
         .then(marktenEntries => {
-            return marktenToDB(marktenEntries, branchesJson, zip);
+            return storeMarkten(configName, marktenEntries, branchesJson, zip);
         })
         .then(() => {
             uploadMarktenPage(
                 req,
                 res,
+                next,
                 role,
                 null,
                 'Uploaden configuratie geslaagd'
             );
         })
         .catch( error => {
-            console.log(error);
+            console.error(error);
             uploadMarktenPage(
                 req,
                 res,
+                next,
                 role,
                 error.message,
                 null
