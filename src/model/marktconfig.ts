@@ -61,14 +61,23 @@ export class MarktConfig extends Model {
         });
     }
 
-    public static store(marktAfkorting, allBranches, input) {
+    public static getNewestConfigName() {
+        return this.findOne({
+            order: [['createdAt', 'DESC']]
+        })
+        .then(newestConfigModel =>
+            newestConfigModel.title
+        );
+    }
+
+    public static store(configName, marktAfkorting, allBranches, configJSON) {
         marktCache.flushAll();
 
         return this._get(marktAfkorting)
         .then(newestConfigModel => {
             let marktConfig = {
-                ...input,
-                branches: this._mergeBranches(allBranches, input.branches)
+                ...configJSON,
+                branches: this._mergeBranches(allBranches, configJSON.branches)
             };
             // Hier valideren, omdat `_homogenizeData` aannames doet t.a.v. de
             // data structuur van het config bestand. Als we dit een onderdeel
@@ -86,6 +95,7 @@ export class MarktConfig extends Model {
             }
 
             return this.create({
+                title: configName,
                 marktAfkorting,
                 createdAt: new Date(),
                 data: marktConfig
