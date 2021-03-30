@@ -65,9 +65,11 @@ export class MarktConfig extends Model {
         return this.findOne({
             order: [['createdAt', 'DESC']]
         })
-        .then(newestConfigModel =>
-            newestConfigModel.title
-        );
+        .then(newestConfigModel => {
+            return newestConfigModel ?
+                   newestConfigModel.title :
+                   undefined;
+        });
     }
 
     public static store(configName, marktAfkorting, allBranches, configJSON) {
