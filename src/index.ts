@@ -593,8 +593,8 @@ app.get(
 app.get(
     '/upload-markten/',
     keycloak.protect(token =>
-        token.hasRole(Roles.MARKTBEWERKER) ||
-        token.hasRole(Roles.MARKTMEESTER)
+        token.hasRole(Roles.MARKTBEWERKER)/* ||
+        token.hasRole(Roles.MARKTMEESTER)*/
     ),
     (req: GrantedRequest, res: Response) => {
         // TODO: Handmatig de rollen uit het token vissen zou eigenlijk centraal
@@ -617,8 +617,8 @@ app.get(
 app.post(
     '/upload-markten/zip/',
     keycloak.protect(token =>
-        token.hasRole(Roles.MARKTBEWERKER) ||
-        token.hasRole(Roles.MARKTMEESTER)
+        token.hasRole(Roles.MARKTBEWERKER)/* ||
+        token.hasRole(Roles.MARKTMEESTER)*/
     ),
     (req: GrantedRequest, res: Response, next: NextFunction) => {
         // TODO: Zie request hierboven voor extra info over dit stukje code.
