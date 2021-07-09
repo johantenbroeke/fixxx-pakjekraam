@@ -30,6 +30,67 @@ function isRejected(afwijzingen, sollicitatieNummer) {
     return afwijzingen.some(({ ondernemer }) => ondernemer.sollicitatieNummer === sollicitatieNummer);
 }
 
+describe('BUG 9718 (Markt22): Een ondernemer (sollicitant) die een extra kraam wil', () => {
+    it('krijgt voorrang op andere sollicitanten die een *extra* kraam willen als de vrije kraam in zijn branche is', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                //{ sollicitatieNummer: 1, status: "soll", voorkeur: { branches: ['afg'], maximum:2, minimum:1 } },
+                { sollicitatieNummer: 2, status: "soll", voorkeur: { branches: ['kleding'], maximum:2, minimum:1 } },
+                { sollicitatieNummer: 1, status: "soll", voorkeur: { branches: ['afg'], maximum:2, minimum:1 } }
+            ],
+            marktplaatsen: [
+                { branches: ['afg'] , plaatsId: "1"}, 
+                { branches: ['afg'] , plaatsId: "2"},
+                { branches: ['kleding'] , plaatsId: "3"}
+            ],
+            aLijst: [
+                //{ sollicitatieNummer: 1 }
+            ]
+        });
+        
+        console.log(toewijzingen);
+        console.log(findOndernemers(toewijzingen));
+        
+        console.log(afwijzingen);
+        console.log(findOndernemers(afwijzingen));
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1,2]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([]);
+        expect(toewijzingen.length).toBe(2);
+        expect(afwijzingen.length).toBe(0);
+
+    });
+
+    it('krijgt voorrang op andere sollicitanten die een *eerste* kraam willen als de laatste vrije kraam in zijn branche is', () => {
+        const { toewijzingen, afwijzingen } = calc({
+            ondernemers: [
+                { sollicitatieNummer: 1, status: "soll", voorkeur: { branches: ['afg'], maximum:2, minimum:1 } },
+                { sollicitatieNummer: 2, status: "soll", voorkeur: { branches: ['kleding'], maximum:2, minimum:1 } }
+            ],
+            marktplaatsen: [
+                { branches: ['afg'] }, 
+                { branches: ['afg'] }
+            ],
+            aLijst: [
+                //{ sollicitatieNummer: 1 }
+            ]
+        });
+        
+        console.log(toewijzingen);
+        console.log(findOndernemers(toewijzingen));
+        
+        console.log(afwijzingen);
+        console.log(findOndernemers(afwijzingen));
+
+        expect(findOndernemers(toewijzingen)).toStrictEqual([1]);
+        expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
+        expect(toewijzingen.length).toBe(1);
+        expect(afwijzingen.length).toBe(1);
+
+    });
+
+});
+
 describe('Een ondernemer die ingedeeld wil worden', () => {
     it('wordt toegewezen aan een lege plek', () => {
         const { toewijzingen, afwijzingen } = calc({
