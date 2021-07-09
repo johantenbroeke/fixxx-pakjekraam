@@ -25,6 +25,7 @@ export const dashboardPage = (
     next: NextFunction,
     erkenningsNummer: string
 ) => {
+
     const messages = getQueryErrors(req.query);
 
     Promise.props({

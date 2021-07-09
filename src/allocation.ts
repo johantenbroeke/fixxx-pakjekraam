@@ -10,6 +10,7 @@ import { getMarktenByDate } from './model/markt.functions';
 import { sequelize } from './model/index';
 import { IToewijzing, IAfwijzing } from 'markt.model';
 import { MMMarkt } from 'makkelijkemarkt.model';
+import console from 'console';
 
 const timezoneTime = getTimezoneTime();
 timezoneTime.add(INDELING_DAG_OFFSET, 'days');
@@ -70,9 +71,11 @@ async function allocate() {
             process.exit(0);
         }
 
-        const indelingen = await Promise.all(markten.map((markt: MMMarkt) =>
-            calculateIndelingslijst(String(markt.id), marktDate, true))
-        );
+        //const indelingen = await Promise.all(markten.map((markt: MMMarkt) =>
+        //  calculateIndelingslijst(String(markt.id), marktDate, true))
+        //);
+
+        const indelingen = [calculateIndelingslijst(String(91), marktDate, true)];
 
         const toewijzingen = await mapMarktenToToewijzingen(indelingen);
         const afwijzingen = await mapMarktenToAfwijzingen(indelingen);

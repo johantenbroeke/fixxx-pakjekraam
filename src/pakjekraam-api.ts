@@ -291,6 +291,9 @@ export const getMarktBasics = (
             // Verwijder geblokkeerde plaatsen. Voorheen werd een `inactive` property
             // toegevoegd en op `false` gezet, maar aangezien deze nergens werd gecontroleerd
             // (behalve in de indeling), worden de plaatsen nu simpelweg verwijderd.
+
+            console.log("config :", marktConfig.branches);
+
             if (geblokkeerdePlaatsen) {
                 const blocked = geblokkeerdePlaatsen.replace(/\s+/g, '').split(',');
                 marktConfig.marktplaatsen = marktConfig.marktplaatsen.filter(({ plaatsId }) =>

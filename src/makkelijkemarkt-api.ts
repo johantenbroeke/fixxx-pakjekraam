@@ -61,6 +61,7 @@ const login = (api: AxiosInstance) =>
 const apiBase = (
     url: string
 ): Promise<AxiosResponse> => {
+    console.log("MM API request: ", url);
     const api = getApi();
     const getFunction = (url: string, token: string): AxiosResponse => {
         return api.get(url, {

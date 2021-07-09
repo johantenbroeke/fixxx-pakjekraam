@@ -109,6 +109,7 @@ async function marktToObject(marktDirectoryEntry, zip) {
 
     // Get abberviation from path
     marktForDB.abbreviation = getMarktAbbreviationFromEntry(marktDirectoryEntry);
+    console.log("abbreviation: ", marktForDB.abbreviation);
     return marktForDB;
 }
 

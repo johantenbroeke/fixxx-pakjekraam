@@ -26,7 +26,7 @@ const INDEX = {
 const SCHEMAS = require('../markt-config.model.js');
 
 const marktCache = new NodeCache({
-    stdTTL    : 3600, // in seconds
+    stdTTL    : 60*5, // in seconds
     useClones : false
 });
 
@@ -42,7 +42,7 @@ export class MarktConfig extends Model {
         return this._get(marktAfkorting)
         .then(configModel => {
             if (!configModel) {
-                throw Error('Markt niet gevonden');
+                throw Error('Markt niet gevonden: '+ marktAfkorting);
             }
 
             const marktplaatsen = configModel.data.locaties;
@@ -74,6 +74,7 @@ export class MarktConfig extends Model {
 
     public static store(configName, marktAfkorting, allBranches, configJSON) {
         marktCache.flushAll();
+        console.log("cache flushed! ");
 
         return this._get(marktAfkorting)
         .then(newestConfigModel => {
@@ -109,6 +110,8 @@ export class MarktConfig extends Model {
         // Hier valideren, omdat `_homogenizeData` aannames doet t.a.v. de
         // data structuur van het config bestand. Als we dit een onderdeel
         // van de model validatie zouden maken, dan zijn we te laat.
+
+        // console.log("markt config: ", marktConfig);
         validateMarktConfig(marktConfig);
 
         return marktConfig;
@@ -116,6 +119,8 @@ export class MarktConfig extends Model {
 
     private static _get(marktAfkorting) {
         const cachedConfigModel = marktCache.get(marktAfkorting);
+
+        console.log("cache hit", cachedConfigModel);
 
         if (cachedConfigModel) {
             // Update cached item's TTL.

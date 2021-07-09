@@ -115,10 +115,13 @@ const HTTP_DEFAULT_PORT = 8080;
 
 const isMarktondernemer = (req: GrantedRequest) => {
     const accessToken = req.kauth.grant.access_token.content;
+    // console.log("access token: ", accessToken);
+    // console.log("client id: ", process.env.IAM_CLIENT_ID);
+    // console.log("resource access: ", accessToken.resource_access);
 
     return (
-        !!accessToken.resource_access[process.env.IAM_CLIENT_ID] &&
-        accessToken.resource_access[process.env.IAM_CLIENT_ID].roles.includes(Roles.MARKTONDERNEMER)
+       !!accessToken.resource_access[process.env.IAM_CLIENT_ID] &&
+       accessToken.resource_access[process.env.IAM_CLIENT_ID].roles.includes(Roles.MARKTONDERNEMER)
     );
 };
 
