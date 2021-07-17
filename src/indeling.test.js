@@ -45,14 +45,17 @@ describe('BUG 9718 (Markt22): Een ondernemer (sollicitant) die een extra kraam w
             ],
             aLijst: [
                 //{ sollicitatieNummer: 1 }
-            ]
+            ],
+            branches: [{
+                brancheId: 'afg', verplicht: false
+            }]
         });
         
-        console.log(toewijzingen);
-        console.log(findOndernemers(toewijzingen));
+        // console.log(toewijzingen);
+        // console.log(findOndernemers(toewijzingen));
         
-        console.log(afwijzingen);
-        console.log(findOndernemers(afwijzingen));
+        // console.log(afwijzingen);
+        // console.log(findOndernemers(afwijzingen));
 
         expect(findOndernemers(toewijzingen)).toStrictEqual([1,2]);
         expect(findOndernemers(afwijzingen)).toStrictEqual([]);
@@ -70,10 +73,14 @@ describe('BUG 9718 (Markt22): Een ondernemer (sollicitant) die een extra kraam w
             marktplaatsen: [
                 { branches: ['afg'] }, 
                 { branches: ['afg'] }
+                //,{}
             ],
             aLijst: [
-                //{ sollicitatieNummer: 1 }
-            ]
+                //{ sollicitatieNummer: 2 }
+            ],
+            branches: [{
+                brancheId: 'afg', verplicht: false
+            }]
         });
         
         console.log(toewijzingen);
@@ -86,6 +93,7 @@ describe('BUG 9718 (Markt22): Een ondernemer (sollicitant) die een extra kraam w
         expect(findOndernemers(afwijzingen)).toStrictEqual([2]);
         expect(toewijzingen.length).toBe(1);
         expect(afwijzingen.length).toBe(1);
+
 
     });
 

@@ -52,6 +52,19 @@ const Toewijzing = {
             toewijzing.erkenningsNummer === ondernemer.erkenningsNummer
         );
     },
+    
+    findByPlaats: (
+        indeling: IMarktindeling,
+        plaats: IMarktplaats
+    ): IToewijzing => {
+        for (var i in indeling.toewijzingen){
+            let tw:IToewijzing = indeling.toewijzingen[i];
+            if(tw.plaatsen.includes(plaats.plaatsId)){
+                return tw;
+            }
+        }
+        return null;
+    },
 
     remove: (
         indeling: IMarktindeling,

@@ -148,9 +148,14 @@ const Indeling = {
         // Deze sortering kan pas plaatsvinden nadat `indeling.voorkeuren` gevuld is, omdat
         // `_compareOndernemers` gebruikt maakt van deze array. De sortering is van groot
         // belang voor de gehele indeling..
+
+        //console.log("pre sort: ", indeling);
+
         indeling.ondernemers.sort((a, b) =>
             Indeling._compareOndernemers(indeling, a, b)
         );
+        
+        //console.log("post sort: ",indeling);
 
         return indeling;
     },
@@ -350,6 +355,7 @@ const Indeling = {
         }, []);
 
         indeling = Indeling.performAllocation(indeling, queue, immediateQueue);
+        //console.log("pre expansion:", indeling);
 
         for (let iteration = 2; iteration <= indeling.expansionLimit; iteration++) {
             const contenders = queue.reduce((result, ondernemer) => {
@@ -365,6 +371,8 @@ const Indeling = {
                 break;
             }
         }
+
+        //console.log("post expansion:", indeling);
 
         return indeling;
     },
@@ -412,6 +420,19 @@ const Indeling = {
                 // ruimte op voor andere ondernemers.
                 if (!uitbreidingPlaats) {
                     contenders = Ondernemers.without(contenders, ondernemer);
+
+                    let p = Indeling._tryBestExpansion(indeling, contenders, toewijzing);
+                    if(p != null){
+                        const sect = intersection(ondernemer.voorkeur.branches, p.branches);
+                        if(p != null && sect.length > 0){
+                            const t:IToewijzing = Toewijzing.findByPlaats(indeling, p);
+                            if(!Ondernemer.hasVerplichteBranche(indeling, t.ondernemer)){
+                                indeling = Toewijzing.add(indeling, ondernemer, p);
+                                indeling = Toewijzing.remove(indeling, t.ondernemer);
+                                indeling = Afwijzing.add(indeling, t.ondernemer, Afwijzing.MINIMUM_UNAVAILABLE);
+                            }
+                        }
+                    }
 
                     const { plaatsen } = toewijzing;
                     const minimum      = Ondernemer.getMinimumSize(ondernemer);
@@ -718,6 +739,16 @@ const Indeling = {
             Markt.getAdjacentPlaatsen(indeling, plaatsen, 1),
             1, true
         )[0] || null;
+    },
+
+
+    _tryBestExpansion: (
+        indeling: IMarktindeling,
+        contenders: IMarktondernemer[],
+        toewijzing: IToewijzing
+    ): IMarktplaats => {
+        const { ondernemer, plaatsen } = toewijzing;
+        return Markt.getAdjacentPlaatsen(indeling, plaatsen, 1)[0] || null;
     },
 
     // Bepaalt samen met `_compareOndernemers` de volgorde van indeling:
